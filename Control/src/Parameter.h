@@ -32,22 +32,20 @@ public:
     void setEasingCoefficient(float e) {easeCoeff = e;}
     
     void lerpTo(T rhs, int numFrames) {
-        this->numFrames = numFrames;
-        frame = 0;
-        startValue = *value;
-        endValue = rhs;
-        lerpType = LERP;
+        setLerp(rhs, numFrames, LERP);
     }
     
     void easeTo(T rhs, int numFrames) {
+        setLerp(rhs, numFrames, EASE);
+    }
+    
+    void setLerp(T rhs, int numFrames, LerpType lerpType) {
+        this->lerpType = lerpType;
         this->numFrames = numFrames;
         frame = 0;
         startValue = *value;
         endValue = rhs;
-        lerpType = EASE;
     }
-    
-    int getDim() { return dim; }
 
 private:
     
@@ -66,7 +64,6 @@ private:
     
     ofParameter<T> *value;
     T minValue, maxValue;
-    int dim;
     
     T startValue, endValue;
     int frame = 0;
