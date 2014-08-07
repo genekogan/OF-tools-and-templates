@@ -2,14 +2,15 @@
 
 
 //--------
-void Syphon::setup(int width, int height){
-    Scene::setup(width, height);
+void Syphon::setup() {
+    setName(typeid(this).name());
     client.setup();
 }
 
 //--------
 void Syphon::setClient(string serverName, string appName) {
     client.set(serverName, appName);
+    setName(appName);
 }
 
 //--------

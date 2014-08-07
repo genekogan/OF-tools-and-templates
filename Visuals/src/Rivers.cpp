@@ -43,9 +43,8 @@ bool Streak::isActive() {
 
 
 //--------
-void Rivers::setup(int width, int height){
-    Scene::setup(width, height);
-    
+void Rivers::setup(){
+    setName(typeid(this).name());
     control.registerParameter("numStreaks", &numStreaks, 1, 60000);
     control.registerParameter("complexity", &complexity, 0.001f, 0.1f);
     control.registerParameter("baseSpeed", &baseSpeed, -5.0f, 5.0f);

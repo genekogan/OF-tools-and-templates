@@ -10,7 +10,7 @@ enum DebugType { FULL, FRAME, FRAMES };
 class DebugScreen : public Scene
 {
 public:
-    void setup(int width, int height);
+    void setup();
     void update();
     void draw();
 

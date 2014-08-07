@@ -1,8 +1,8 @@
 #include "MoviePlayer.h"
 
 //--------
-void MoviePlayer::setup(int width, int height) {
-    Scene::setup(width, height);
+void MoviePlayer::setup() {
+    setName(typeid(this).name());
     
     control.registerParameter("speed", &speed, -3.0f, 3.0f);
     

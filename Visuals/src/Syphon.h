@@ -12,7 +12,7 @@
 class Syphon : public Scene
 {
 public:
-    void setup(int width, int height);
+    void setup();
     void setClient(string serverName, string appName);
     void update();
     void draw();

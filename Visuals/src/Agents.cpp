@@ -2,9 +2,9 @@
 
 
 //---------
-void Agents::setup(int width, int height) {
-    Scene::setup(width, height);
-    
+void Agents::setup() {
+    setName(typeid(this).name());
+
     control.registerParameter("numAgents", &numAgents, 1, 120);
     control.registerParameter("speed", &speed, -5.0f, 5.0f);
     control.registerParameter("size", &size, 30, 800);

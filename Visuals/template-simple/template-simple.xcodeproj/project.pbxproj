@@ -14,6 +14,7 @@
 		856AA354D08AB4B323081444 /* ofxBaseGui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9604B925D32EE39065747725 /* ofxBaseGui.cpp */; };
 		B09E34D9198F1E2B00E237EE /* DebugScreen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B09E34D7198F1E2B00E237EE /* DebugScreen.cpp */; };
 		B09E34DF198F383900E237EE /* Rivers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B09E34DD198F383900E237EE /* Rivers.cpp */; };
+		B09ED4C01993137E0066265D /* Subdivide.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B09ED4BE1993137E0066265D /* Subdivide.cpp */; };
 		B0A50848198F705000010892 /* Agents.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0A5083E198F705000010892 /* Agents.cpp */; };
 		B0A50852198F78AB00010892 /* MoviePlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0A50850198F78AB00010892 /* MoviePlayer.cpp */; };
 		B0A50855198F7AE900010892 /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0A50853198F7AE900010892 /* Shader.cpp */; };
@@ -25,6 +26,9 @@
 		B0A50894199006BA00010892 /* ofxSyphonServer.mm in Sources */ = {isa = PBXBuildFile; fileRef = B0A5088A199006BA00010892 /* ofxSyphonServer.mm */; };
 		B0A50895199006BA00010892 /* ofxSyphonServerDirectory.mm in Sources */ = {isa = PBXBuildFile; fileRef = B0A5088C199006BA00010892 /* ofxSyphonServerDirectory.mm */; };
 		B0A5089C199006E000010892 /* Syphon.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = B0A5087F199006BA00010892 /* Syphon.framework */; };
+		B0A5089F199026A100010892 /* Amoeba.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0A5089D199026A100010892 /* Amoeba.cpp */; };
+		B0A508AA1990ACC600010892 /* Bubbles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0A508A81990ACC600010892 /* Bubbles.cpp */; };
+		B0A508C41990ACF200010892 /* ofxBlurShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0A508BF1990ACF200010892 /* ofxBlurShader.cpp */; };
 		B266578FC55D23BFEBC042E7 /* ofxGuiGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECF8674C7975F1063C5E30CA /* ofxGuiGroup.cpp */; };
 		B56FE57CC35806596D38118C /* ofxSliderGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 802251BAF1B35B1D67B32FD0 /* ofxSliderGroup.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
@@ -100,6 +104,8 @@
 		B09E34DB198F1F1F00E237EE /* Scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scene.h; sourceTree = "<group>"; };
 		B09E34DD198F383900E237EE /* Rivers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Rivers.cpp; sourceTree = "<group>"; };
 		B09E34DE198F383900E237EE /* Rivers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rivers.h; sourceTree = "<group>"; };
+		B09ED4BE1993137E0066265D /* Subdivide.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Subdivide.cpp; sourceTree = "<group>"; };
+		B09ED4BF1993137E0066265D /* Subdivide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Subdivide.h; sourceTree = "<group>"; };
 		B0A5083E198F705000010892 /* Agents.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Agents.cpp; sourceTree = "<group>"; };
 		B0A5083F198F705000010892 /* Agents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Agents.h; sourceTree = "<group>"; };
 		B0A50850198F78AB00010892 /* MoviePlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MoviePlayer.cpp; sourceTree = "<group>"; };
@@ -120,6 +126,12 @@
 		B0A5088A199006BA00010892 /* ofxSyphonServer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ofxSyphonServer.mm; sourceTree = "<group>"; };
 		B0A5088B199006BA00010892 /* ofxSyphonServerDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxSyphonServerDirectory.h; sourceTree = "<group>"; };
 		B0A5088C199006BA00010892 /* ofxSyphonServerDirectory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ofxSyphonServerDirectory.mm; sourceTree = "<group>"; };
+		B0A5089D199026A100010892 /* Amoeba.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Amoeba.cpp; sourceTree = "<group>"; };
+		B0A5089E199026A100010892 /* Amoeba.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Amoeba.h; sourceTree = "<group>"; };
+		B0A508A81990ACC600010892 /* Bubbles.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Bubbles.cpp; sourceTree = "<group>"; };
+		B0A508A91990ACC600010892 /* Bubbles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bubbles.h; sourceTree = "<group>"; };
+		B0A508BF1990ACF200010892 /* ofxBlurShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxBlurShader.cpp; sourceTree = "<group>"; };
+		B0A508C01990ACF200010892 /* ofxBlurShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxBlurShader.h; sourceTree = "<group>"; };
 		B87C60311EC1FE841C1ECD89 /* ofxLabel.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxLabel.h; path = ../../../addons/ofxGui/src/ofxLabel.h; sourceTree = SOURCE_ROOT; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		C70D8946940288799E82131E /* ofxSliderGroup.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxSliderGroup.h; path = ../../../addons/ofxGui/src/ofxSliderGroup.h; sourceTree = SOURCE_ROOT; };
@@ -254,6 +266,12 @@
 				B09E34D7198F1E2B00E237EE /* DebugScreen.cpp */,
 				B09E34D8198F1E2B00E237EE /* DebugScreen.h */,
 				B09E34DB198F1F1F00E237EE /* Scene.h */,
+				B0A5089D199026A100010892 /* Amoeba.cpp */,
+				B0A5089E199026A100010892 /* Amoeba.h */,
+				B0A508A81990ACC600010892 /* Bubbles.cpp */,
+				B0A508A91990ACC600010892 /* Bubbles.h */,
+				B09ED4BE1993137E0066265D /* Subdivide.cpp */,
+				B09ED4BF1993137E0066265D /* Subdivide.h */,
 			);
 			name = src;
 			path = ../src;
@@ -325,9 +343,28 @@
 			path = src;
 			sourceTree = "<group>";
 		};
+		B0A508AB1990ACF200010892 /* ofxBlurShader */ = {
+			isa = PBXGroup;
+			children = (
+				B0A508BE1990ACF200010892 /* src */,
+			);
+			name = ofxBlurShader;
+			path = ../../../addons/ofxBlurShader;
+			sourceTree = "<group>";
+		};
+		B0A508BE1990ACF200010892 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B0A508BF1990ACF200010892 /* ofxBlurShader.cpp */,
+				B0A508C01990ACF200010892 /* ofxBlurShader.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				B0A508AB1990ACF200010892 /* ofxBlurShader */,
 				B0A50862199006BA00010892 /* ofxSyphon */,
 				B09E34B2198F19C500E237EE /* Control */,
 				B09E34B1198F19B200E237EE /* Visuals */,
@@ -502,6 +539,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
+				B09ED4C01993137E0066265D /* Subdivide.cpp in Sources */,
+				B0A508AA1990ACC600010892 /* Bubbles.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				856AA354D08AB4B323081444 /* ofxBaseGui.cpp in Sources */,
 				B0A50848198F705000010892 /* Agents.cpp in Sources */,
@@ -517,8 +556,10 @@
 				B0A50894199006BA00010892 /* ofxSyphonServer.mm in Sources */,
 				B0A50895199006BA00010892 /* ofxSyphonServerDirectory.mm in Sources */,
 				837220E80EB56CD44AD27F2A /* ofxSlider.cpp in Sources */,
+				B0A508C41990ACF200010892 /* ofxBlurShader.cpp in Sources */,
 				B56FE57CC35806596D38118C /* ofxSliderGroup.cpp in Sources */,
 				B09E34DF198F383900E237EE /* Rivers.cpp in Sources */,
+				B0A5089F199026A100010892 /* Amoeba.cpp in Sources */,
 				1CD33E884D9E3358252E82A1 /* ofxToggle.cpp in Sources */,
 				B0A50893199006BA00010892 /* ofxSyphonClient.mm in Sources */,
 				B0A50860198FFC1E00010892 /* Letters.cpp in Sources */,

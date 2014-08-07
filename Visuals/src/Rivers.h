@@ -25,7 +25,7 @@ public:
 class Rivers : public Scene
 {
 public:
-    void setup(int width, int height);
+    void setup();
     void update();
     void draw();
 

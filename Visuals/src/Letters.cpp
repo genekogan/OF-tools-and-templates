@@ -1,8 +1,8 @@
 #include "Letters.h"
 
-void Letters::setup(int width, int height) {
-    Scene::setup(width, height);
-    
+void Letters::setup() {
+    setName(typeid(this).name());
+
     control.registerParameter("rows", &nrows, 2, 200);
     control.registerParameter("cols", &ncols, 2, 200);
     control.registerParameter("rate", &rate, 1, 10);
@@ -12,15 +12,12 @@ void Letters::setup(int width, int height) {
     ncols = 24;
     rate = 1;
     color = ofColor(0, 255, 20);
-    
-    font.loadFont("AndaleMono.ttf", 24);
-    
-    chars.resize(nrows * ncols);
 }
 
 void Letters::update() {
     if (chars.size() != nrows * ncols) {
         chars.resize(nrows * ncols);
+        font.loadFont("AndaleMono.ttf", (int) height / ncols);
     }
     
     if (ofGetFrameNum() % rate == 0) {
@@ -49,6 +46,7 @@ void Letters::draw() {
             y = ofMap(j, 0, ncols, 0, height);
             ofSetColor(color);
             font.drawString(ofToString(chars[idx++]), x, y);
+            //ofDrawBitmapString(ofToString(chars[idx++]), x, y);
         }
     }
 }

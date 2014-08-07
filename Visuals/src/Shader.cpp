@@ -2,16 +2,16 @@
 
 
 //--------
-void Shader::setup(int width, int height){
-    Scene::setup(width, height);
+void Shader::setup() {
+    setName(typeid(this).name());
     fbo.allocate(width, height);
 }
 
 //--------
 void Shader::setShader(string vert, string frag) {
-    control.clearParameters();
-    Scene::setup(width, height);
     shader.load(vert, frag);
+    Scene::setup(width, height);
+    setName(frag);
 }
 
 //--------

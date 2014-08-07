@@ -47,7 +47,7 @@ void ShaderParameter<ofColor>::update(ofShader *shader) {
 class Shader : public Scene
 {
 public:
-    void setup(int width, int height);
+    void setup();
     void setShader(string vert, string frag);
     
     void update(ofFbo *fboTex);

@@ -2,8 +2,8 @@
 
 
 //--------
-void DebugScreen::setup(int width, int height) {
-    Scene::setup(width, height);
+void DebugScreen::setup() {
+    setName(typeid(this).name());
     control.registerParameter("color", &color, ofColor(0, 0), ofColor(255, 255));
     color = ofColor(ofRandom(255), ofRandom(255), ofRandom(255), 255);
 }

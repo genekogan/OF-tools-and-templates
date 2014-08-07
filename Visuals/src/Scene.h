@@ -8,42 +8,81 @@ class Scene
 {
 public:
     Scene() {
+        ofAddListener(ofEvents().update, this, &Scene::update);
+        control.setVisible(false);
         width = ofGetWidth();
         height = ofGetHeight();
+        name = "Scene";
+        upsideDown = false;
+        active = false;
     }
 
-    template<class T> const T& getName2() const;
+    string getName() {
+        return name;
+    }
     
-    virtual void setup(int width, int height) {
-        this->width = width;
-        this->height = height;
-        control.registerParameter("bgColor", &bgColor, ofColor(0,0), ofColor(255,255));
-        bgColor = ofColor(0, 255);
-        ofAddListener(ofEvents().update, this, &Scene::update);
-    };
-    
-    void update(ofEventArgs &data) {update();}
+    void setName(string name) {
+        this->name = name;
+    }
+        
+    virtual void setup() { }
 
     virtual void update() { }
+    
+    virtual void draw() { }
+    
+    void setup(int width, int height) {
+        this->width = width;
+        this->height = height;
+        control.clearParameters();
+        control.setVisible(true);
+        control.setName(name);
+        control.registerParameter("bgColor", &bgColor, ofColor(0,0), ofColor(255,255));
+        bgColor = ofColor(0, 255);
+        active = true;
+        setup();
+    }
+    
+    void update(ofEventArgs &data) {
+        if (active) {
+            update();
+        }
+    }
     
     void draw(int x, int y) {
         ofPushMatrix();
         ofPushStyle();
+        
         ofTranslate(x, y);
         
-        ofFill();
-        ofSetColor(bgColor);
-        ofRect(0, 0, width, height);
+        if (upsideDown) {
+            ofTranslate(width, height);
+            ofRotate(180);
+        }
+        
+        if (bgColor->a > 0) {
+            ofFill();
+            ofSetColor(bgColor);
+            ofRect(0, 0, width, height);
+        }
 
         ofSetColor(255);
+
         draw();
         
         ofPopStyle();
         ofPopMatrix();
     };
     
-    virtual void draw() {}
-    
+    bool getActive() {
+        return active;
+    }
+
+    void setActive(bool active) {
+        this->active = active;
+        control.setVisible(active);
+    }
+
     void setGuiPosition(int x, int y) {
         control.setGuiPosition(x, y);
     }
@@ -51,8 +90,16 @@ public:
     void toggeVisible() {
         control.toggleVisible();
     }
-
+    
+    void setUpsideDown(bool upsideDown) {
+        this->upsideDown = upsideDown;
+    }
+    
     Control control;
     ofParameter<ofColor> bgColor;
     int width, height;
+    string name;
+    bool upsideDown;
+    bool active;
 };
+

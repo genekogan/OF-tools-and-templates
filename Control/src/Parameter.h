@@ -47,6 +47,7 @@ public:
         endValue = rhs;
     }
 
+    
 private:
     
     void update() {
@@ -75,13 +76,18 @@ private:
 
 
 // dynamically cast base class templates
+
 template<class T> const T& ParameterBase::get() const
 { return dynamic_cast<const Parameter<T>&>(*this).get(); }
+
 template<class T> const T& ParameterBase::getRef() const
 { return dynamic_cast<const Parameter<T>&>(*this).getRef(); }
+
 template<class T, class U> void ParameterBase::set(const U& rhs)
 { return dynamic_cast<Parameter<T>&>(*this).set(rhs); }
+
 template<class T> void ParameterBase::lerpTo(T rhs, int numFrames)
 { return dynamic_cast<Parameter<T>&>(*this).lerpTo(rhs, numFrames); }
+
 template<class T> void ParameterBase::easeTo(T rhs, int numFrames)
 { return dynamic_cast<Parameter<T>&>(*this).easeTo(rhs, numFrames); }
