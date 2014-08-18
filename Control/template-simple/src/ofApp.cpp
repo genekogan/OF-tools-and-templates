@@ -9,11 +9,13 @@ void ofApp::setup(){
     control.registerParameter("position", &position, ofVec2f(0, 0), ofVec2f(ofGetWidth(), ofGetHeight()));
     control.registerParameter("resolution", &resolution, 3, 30);
     control.registerParameter("filled", &filled);
+    
+    filled = true;
 }
 
 //---------
 void ofApp::update(){
-    control.setEasingCoefficient( (float)ofGetMouseX()/ofGetWidth() );
+
 }
 
 //---------
@@ -29,28 +31,29 @@ void ofApp::draw(){
 void ofApp::keyPressed(int key){
     // easing
     if      (key=='1')   {
-        control.easeTo(&radius, ofRandom(100, 500), 20);
+        radius.easeTo(ofRandom(100, 300), 20);
     }
     else if (key=='2') {
-        control.easeTo(&position, ofVec2f(ofRandom(ofGetWidth()), ofRandom(ofGetHeight())), 20);
+        position.easeTo(ofVec2f(ofRandom(100, ofGetWidth()-100), ofRandom(100, ofGetHeight()-100)), 20);
     }
     else if (key=='3') {
-        control.easeTo(&resolution, (int) ofRandom(3, 30), 20);
+        resolution.easeTo(ofRandom(5, 30), 20);
     }
     else if (key=='4') {
-        control.easeTo(&color, ofColor(ofRandom(255), ofRandom(255), ofRandom(255)), 10);
+        color.easeTo(ofColor(ofRandom(255), ofRandom(255), ofRandom(255)), 10);
     }
+    
     // lerping
     else if  (key=='q') {
-        control.lerpTo(&radius, ofRandom(100, 500), 20);
+        radius.lerpTo(ofRandom(100, 300), 20);
     }
     else if (key=='w') {
-        control.lerpTo(&position, ofVec2f(ofRandom(ofGetWidth()), ofRandom(ofGetHeight())), 20);
+        position.lerpTo(ofVec2f(ofRandom(100, ofGetWidth()-100), ofRandom(100, ofGetHeight()-100)), 20);
     }
     else if (key=='e') {
-        control.lerpTo(&resolution, (int) ofRandom(3, 30), 20);
+        resolution.lerpTo(ofRandom(5, 30), 20);
     }
     else if (key=='r') {
-        control.lerpTo(&color, ofColor(ofRandom(255), ofRandom(255), ofRandom(255)), 10);
+        color.lerpTo(ofColor(ofRandom(255), ofRandom(255), ofRandom(255)), 10);
     }
 }

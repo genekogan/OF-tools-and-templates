@@ -15,9 +15,9 @@ public:
     
     Control control;
     
-    ofParameter<float>   radius;
-    ofParameter<ofColor> color;
-    ofParameter<ofVec2f> position;
-    ofParameter<int>     resolution;
-    ofParameter<bool>    filled;
+    ofxParameter<float>   radius;
+    ofxParameter<ofColor> color;
+    ofxParameter<ofVec2f> position;
+    ofxParameter<int>     resolution;
+    ofxParameter<bool>    filled;
 };
