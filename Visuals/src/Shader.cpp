@@ -3,22 +3,31 @@
 
 //--------
 void Shader::setup() {
-    setName(typeid(this).name());
+    setName("Shader");
     fbo.allocate(width, height);
 }
 
 //--------
 void Shader::setShader(string vert, string frag) {
+    vector<string> fragName = ofSplitString(frag, "/");
     shader.load(vert, frag);
     Scene::setup(width, height);
-    setName(frag);
+    setName(fragName[fragName.size()-1]);
+    control.registerParameter("clearFbo", &clearFbo);
+    clearFbo = true;
 }
 
 //--------
 void Shader::update(ofFbo *fboTex){
+    
     fbo.begin();
     
+    if (clearFbo) {
+        ofClear(0, 0);
+    }
+    
     shader.begin();
+    
     shader.setUniform2f("resolution", width, height);
     shader.setUniform1f("time", ofGetElapsedTimef());
 
@@ -37,6 +46,7 @@ void Shader::update(ofFbo *fboTex){
     else {
         fboTex->draw(0, 0, width, height);
     }
+    
     shader.end();
     
     fbo.end();
@@ -49,7 +59,7 @@ void Shader::draw() {
 
 //--------
 void Shader::addParameter(string name, float min, float max){
-    ofParameter<float> *var = new ofParameter<float>();
+    ofxParameter<float> *var = new ofxParameter<float>();
     control.registerParameter(name, var, min, max);
     var->set((min+max)*0.5);
     shaderParameters.push_back(new ShaderParameter<float>(var));
@@ -57,7 +67,7 @@ void Shader::addParameter(string name, float min, float max){
 
 //--------
 void Shader::addParameter(string name, ofVec2f min, ofVec2f max) {
-    ofParameter<ofVec2f> *var = new ofParameter<ofVec2f>();
+    ofxParameter<ofVec2f> *var = new ofxParameter<ofVec2f>();
     control.registerParameter(name, var, min, max);
     var->set((min+max)*0.5);
     shaderParameters.push_back(new ShaderParameter<ofVec2f>(var));
@@ -65,7 +75,7 @@ void Shader::addParameter(string name, ofVec2f min, ofVec2f max) {
 
 //--------
 void Shader::addParameter(string name, ofVec3f min, ofVec3f max){
-    ofParameter<ofVec3f> *var = new ofParameter<ofVec3f>();
+    ofxParameter<ofVec3f> *var = new ofxParameter<ofVec3f>();
     control.registerParameter(name, var, min, max);
     var->set((min+max)*0.5);
     shaderParameters.push_back(new ShaderParameter<ofVec3f>(var));
@@ -73,27 +83,38 @@ void Shader::addParameter(string name, ofVec3f min, ofVec3f max){
 
 //--------
 void Shader::addParameter(string name, ofColor min, ofColor max){
-    ofParameter<ofColor> *var = new ofParameter<ofColor>();
+    ofxParameter<ofColor> *var = new ofxParameter<ofColor>();
     control.registerParameter(name, var, min, max);
     var->set((min+max)*0.5);
     shaderParameters.push_back(new ShaderParameter<ofColor>(var));
 }
 
 
+
 /*  COLOR PRESETS */
 //------------------
+
 void Shader::setupBlobby(){
     setShader("shaders_color/standard.vert", "shaders_color/blobby.frag");
     addParameter("depth", 0, 2);
     addParameter("rate", 0, 2);
+    addParameter("speed", 0, 2);
+    addParameter("density", 0, 40);
+    addParameter("zoomout", 0, 200);
 }
 void Shader::setupBits(){
     setShader("shaders_color/standard.vert", "shaders_color/bits.frag");
-    addParameter("mx", 0, 1);
-    addParameter("my", 0, 1);
+    addParameter("mult", ofVec3f(0, 0, 0), ofVec3f(100, 100, 100));
+    addParameter("grid", ofVec2f(0, 0), ofVec2f(1, 1));
+    addParameter("fieldsize", 1, 160);
+    addParameter("offset", 0, 10);
+    addParameter("speed", 0, 1);
+    addParameter("combo", ofVec3f(0, 0, 0), ofVec3f(1, 1, 1));
 }
 void Shader::setupElectro(){
     setShader("shaders_color/standard.vert", "shaders_color/electro.frag");
+    addParameter("centeredness", ofVec2f(-50, -50), ofVec2f(50, 50));
+    addParameter("fieldsize", 0, 20);
     addParameter("rings", 5, 40);
     addParameter("complexity", 1, 60);
     addParameter("espeed", -2, 2);
@@ -101,11 +122,18 @@ void Shader::setupElectro(){
 void Shader::setupEye(){
     setShader("shaders_color/standard.vert", "shaders_color/eye.frag");
     addParameter("rad_eye", 0.1, 1.0);
+    addParameter("color1", ofColor(0, 0, 0), ofColor(255, 255, 255));
+    addParameter("color2", ofColor(0, 0, 0), ofColor(255, 255, 255));
     addParameter("mouse", ofVec2f(0, 0), ofVec2f(ofGetWidth(), ofGetHeight()));
 }
 void Shader::setupHerokuBubbles(){
     setShader("shaders_color/standard.vert", "shaders_color/herokububbles.frag");
     addParameter("fRadius", 0, 0.5);
+    addParameter("numBubbles", 0, 400);
+    addParameter("color1", ofColor(0, 0, 0), ofColor(255, 255, 255));
+    addParameter("color2", ofColor(0, 0, 0), ofColor(255, 255, 255));
+    addParameter("dir", 0, 100);
+    addParameter("speed", ofVec2f(-1,-1), ofVec2f(1, 1));
 }
 void Shader::setupLandscape(){
     setShader("shaders_color/standard.vert", "shaders_color/landscape.frag");
@@ -139,13 +167,25 @@ void Shader::setupSinewave(){
     addParameter("colorMult", ofVec2f(0.5, 0.5), ofVec2f(5.0, 2.0));
     addParameter("coeff", ofVec3f(10, 0, 1), ofVec3f(50, 90, 200));
 }
+void Shader::setupSinewaveExperimental(){
+    setShader("shaders_color/standard.vert", "shaders_color/sinewave_experimental.frag");
+    addParameter("color", ofColor(0, 0, 0), ofColor(255, 255, 255));
+    addParameter("colorFreq", ofVec3f(0, 0, 0), ofVec3f(20, 20, 20));
+    addParameter("coeff1", ofVec3f(1, 1, 1), ofVec3f(50, 90, 200));
+    addParameter("coeff2", ofVec3f(1, 1, 1), ofVec3f(50, 90, 200));
+}
 void Shader::setupWave(){
     setShader("shaders_color/standard.vert", "shaders_color/wave.frag");
-    addParameter("r", ofVec2f(0, 0), ofVec2f(100, 20));
-    addParameter("t", ofVec2f(0, 0), ofVec2f(100, 20));
+    addParameter("r", ofVec2f(0, 0), ofVec2f(20, 10));
+    addParameter("t", ofVec2f(0, 0), ofVec2f(20, 10));
     addParameter("bright", 0, 2);
     addParameter("mode", ofVec2f(0, 0), ofVec2f(1, 1));
+    addParameter("multiplicity", -0.9, 1);
+    addParameter("fieldsize", 0, 20);
 }
+
+
+
 
 
 /*  TEXTURE PRESETS */

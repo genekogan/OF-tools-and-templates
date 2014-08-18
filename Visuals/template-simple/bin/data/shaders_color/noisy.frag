@@ -105,18 +105,7 @@ float noise(vec3 P) {
 
 void main( void ) {
 	vec2 p = gl_FragCoord.xy / resolution.y;
-	//p *= vec2(800, 600);
-	//p += mouse * 1.0;
-	//float z = 1.0;
-	//float speed = 1.0;
-	
-	//p.y += time * 0.1;
-	
-	vec2 nx = p * noiseFactor; //vec2(p.x * noiseFactor.x, p.y * noiseFactor.y);
-	
-	float v = noise(vec3(nx, time * noiseFactorTime) * 3.0) * 6.28318531;
-	v = v * 0.15 + 0.5;
-	
-	gl_FragColor = vec4(v * color, 1.0);
-
+	vec2 nx = p * noiseFactor;
+	float v = noise(vec3(nx, time * noiseFactorTime) * 3.0) * 6.28318531;	
+	gl_FragColor = vec4(v * color, v);
 }

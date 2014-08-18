@@ -12,9 +12,11 @@
 		5CBB2AB3A60F65431D7B555D /* ofxButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C88333E71C9457E441C33474 /* ofxButton.cpp */; };
 		837220E80EB56CD44AD27F2A /* ofxSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 15F2C6477A769C03A56D1401 /* ofxSlider.cpp */; };
 		856AA354D08AB4B323081444 /* ofxBaseGui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9604B925D32EE39065747725 /* ofxBaseGui.cpp */; };
+		B096B8F219A16EFE0044ECD8 /* Cubes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B096B8F019A16EFE0044ECD8 /* Cubes.cpp */; };
 		B09E34D9198F1E2B00E237EE /* DebugScreen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B09E34D7198F1E2B00E237EE /* DebugScreen.cpp */; };
 		B09E34DF198F383900E237EE /* Rivers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B09E34DD198F383900E237EE /* Rivers.cpp */; };
 		B09ED4C01993137E0066265D /* Subdivide.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B09ED4BE1993137E0066265D /* Subdivide.cpp */; };
+		B09ED4C5199468C00066265D /* Polar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B09ED4C3199468C00066265D /* Polar.cpp */; };
 		B0A50848198F705000010892 /* Agents.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0A5083E198F705000010892 /* Agents.cpp */; };
 		B0A50852198F78AB00010892 /* MoviePlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0A50850198F78AB00010892 /* MoviePlayer.cpp */; };
 		B0A50855198F7AE900010892 /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0A50853198F7AE900010892 /* Shader.cpp */; };
@@ -97,6 +99,11 @@
 		89449E3044D456F7DE7BEA14 /* ofxPanel.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxPanel.h; path = ../../../addons/ofxGui/src/ofxPanel.h; sourceTree = SOURCE_ROOT; };
 		907C5B5E104864A2D3A25745 /* ofxToggle.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxToggle.cpp; path = ../../../addons/ofxGui/src/ofxToggle.cpp; sourceTree = SOURCE_ROOT; };
 		9604B925D32EE39065747725 /* ofxBaseGui.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxBaseGui.cpp; path = ../../../addons/ofxGui/src/ofxBaseGui.cpp; sourceTree = SOURCE_ROOT; };
+		B096B8F019A16EFE0044ECD8 /* Cubes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cubes.cpp; sourceTree = "<group>"; };
+		B096B8F119A16EFE0044ECD8 /* Cubes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cubes.h; sourceTree = "<group>"; };
+		B096B8F619A191220044ECD8 /* Algorithms.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Algorithms.cpp; sourceTree = "<group>"; };
+		B096B8F719A191220044ECD8 /* Algorithms.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Algorithms.h; sourceTree = "<group>"; };
+		B096B8F919A191630044ECD8 /* TimeFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeFunction.h; sourceTree = "<group>"; };
 		B09E34B4198F19C500E237EE /* Control.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Control.h; sourceTree = "<group>"; };
 		B09E34B5198F19C500E237EE /* Parameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parameter.h; sourceTree = "<group>"; };
 		B09E34D7198F1E2B00E237EE /* DebugScreen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DebugScreen.cpp; sourceTree = "<group>"; };
@@ -106,6 +113,8 @@
 		B09E34DE198F383900E237EE /* Rivers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rivers.h; sourceTree = "<group>"; };
 		B09ED4BE1993137E0066265D /* Subdivide.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Subdivide.cpp; sourceTree = "<group>"; };
 		B09ED4BF1993137E0066265D /* Subdivide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Subdivide.h; sourceTree = "<group>"; };
+		B09ED4C3199468C00066265D /* Polar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Polar.cpp; sourceTree = "<group>"; };
+		B09ED4C4199468C00066265D /* Polar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Polar.h; sourceTree = "<group>"; };
 		B0A5083E198F705000010892 /* Agents.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Agents.cpp; sourceTree = "<group>"; };
 		B0A5083F198F705000010892 /* Agents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Agents.h; sourceTree = "<group>"; };
 		B0A50850198F78AB00010892 /* MoviePlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MoviePlayer.cpp; sourceTree = "<group>"; };
@@ -132,6 +141,7 @@
 		B0A508A91990ACC600010892 /* Bubbles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bubbles.h; sourceTree = "<group>"; };
 		B0A508BF1990ACF200010892 /* ofxBlurShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxBlurShader.cpp; sourceTree = "<group>"; };
 		B0A508C01990ACF200010892 /* ofxBlurShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxBlurShader.h; sourceTree = "<group>"; };
+		B0FA83CD199FFD4C00149A2D /* Dropdown.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Dropdown.h; sourceTree = "<group>"; };
 		B87C60311EC1FE841C1ECD89 /* ofxLabel.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxLabel.h; path = ../../../addons/ofxGui/src/ofxLabel.h; sourceTree = SOURCE_ROOT; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		C70D8946940288799E82131E /* ofxSliderGroup.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxSliderGroup.h; path = ../../../addons/ofxGui/src/ofxSliderGroup.h; sourceTree = SOURCE_ROOT; };
@@ -222,6 +232,25 @@
 			name = src;
 			sourceTree = "<group>";
 		};
+		B096B8F419A1911B0044ECD8 /* Algorithms */ = {
+			isa = PBXGroup;
+			children = (
+				B096B8F519A191220044ECD8 /* src */,
+			);
+			name = Algorithms;
+			sourceTree = "<group>";
+		};
+		B096B8F519A191220044ECD8 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B096B8F619A191220044ECD8 /* Algorithms.cpp */,
+				B096B8F719A191220044ECD8 /* Algorithms.h */,
+				B096B8F919A191630044ECD8 /* TimeFunction.h */,
+			);
+			name = src;
+			path = ../../Algorithms/src;
+			sourceTree = "<group>";
+		};
 		B09E34B1198F19B200E237EE /* Visuals */ = {
 			isa = PBXGroup;
 			children = (
@@ -244,6 +273,7 @@
 			children = (
 				B09E34B4198F19C500E237EE /* Control.h */,
 				B09E34B5198F19C500E237EE /* Parameter.h */,
+				B0FA83CD199FFD4C00149A2D /* Dropdown.h */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -272,6 +302,10 @@
 				B0A508A91990ACC600010892 /* Bubbles.h */,
 				B09ED4BE1993137E0066265D /* Subdivide.cpp */,
 				B09ED4BF1993137E0066265D /* Subdivide.h */,
+				B09ED4C3199468C00066265D /* Polar.cpp */,
+				B09ED4C4199468C00066265D /* Polar.h */,
+				B096B8F019A16EFE0044ECD8 /* Cubes.cpp */,
+				B096B8F119A16EFE0044ECD8 /* Cubes.h */,
 			);
 			name = src;
 			path = ../src;
@@ -364,10 +398,11 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				B09E34B1198F19B200E237EE /* Visuals */,
+				B09E34B2198F19C500E237EE /* Control */,
+				B096B8F419A1911B0044ECD8 /* Algorithms */,
 				B0A508AB1990ACF200010892 /* ofxBlurShader */,
 				B0A50862199006BA00010892 /* ofxSyphon */,
-				B09E34B2198F19C500E237EE /* Control */,
-				B09E34B1198F19B200E237EE /* Visuals */,
 				480A780D8D0308AE4A368801 /* ofxGui */,
 			);
 			name = addons;
@@ -542,6 +577,7 @@
 				B09ED4C01993137E0066265D /* Subdivide.cpp in Sources */,
 				B0A508AA1990ACC600010892 /* Bubbles.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
+				B09ED4C5199468C00066265D /* Polar.cpp in Sources */,
 				856AA354D08AB4B323081444 /* ofxBaseGui.cpp in Sources */,
 				B0A50848198F705000010892 /* Agents.cpp in Sources */,
 				B0A50855198F7AE900010892 /* Shader.cpp in Sources */,
@@ -553,6 +589,7 @@
 				483908258D00B98B4BE69F07 /* ofxLabel.cpp in Sources */,
 				B09E34D9198F1E2B00E237EE /* DebugScreen.cpp in Sources */,
 				F285EB3169F1566CA3D93C20 /* ofxPanel.cpp in Sources */,
+				B096B8F219A16EFE0044ECD8 /* Cubes.cpp in Sources */,
 				B0A50894199006BA00010892 /* ofxSyphonServer.mm in Sources */,
 				B0A50895199006BA00010892 /* ofxSyphonServerDirectory.mm in Sources */,
 				837220E80EB56CD44AD27F2A /* ofxSlider.cpp in Sources */,

@@ -36,8 +36,9 @@ public:
     void update();
     void draw();
     
-    ofParameter<int> ndivisions;
-    ofParameter<ofColor> color;
-    ofParameter<ofColor> varColor;
+    ofxParameter<int> ndivisions;
+    ofxParameter<ofColor> color;
+    ofxParameter<ofColor> varColor;
     Subdivision *start;
 };
+

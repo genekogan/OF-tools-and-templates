@@ -2,7 +2,7 @@
 
 //--------
 void MoviePlayer::setup() {
-    setName(typeid(this).name());
+    setName("MoviePlayer");
     
     control.registerParameter("speed", &speed, -3.0f, 3.0f);
     

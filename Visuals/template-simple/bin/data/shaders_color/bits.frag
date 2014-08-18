@@ -2,8 +2,12 @@
 
 uniform float time;
 uniform vec2 resolution;
-uniform float mx;
-uniform float my;
+uniform vec3 mult;
+uniform vec2 grid;
+uniform float fieldsize;
+uniform float speed;
+uniform float offset;
+uniform vec3 combo;
 
 vec3 mod289(vec3 x) {
 	return x - floor(x * (1.0 / 289.0)) * 289.0;
@@ -102,11 +106,18 @@ float noise(vec3 P) {
 }
 
 void main( void ) {
-	vec2 p = -3.0 + 2.0*gl_FragCoord.xy / resolution.xy;
-	p.x -= mod(p.x, 0.001);
-	p.y -= mod(p.y, 0.25);
-	float z = noise(vec3(1.0*time, 40000000000000.2*p.x/mx, 90.2*my*p.y*4.0));
-	float z2 = step(z, 0.0);
+	vec2 p = fieldsize*gl_FragCoord.xy / resolution.xy;
+	p.x -= mod(p.x, grid.x);
+	p.y -= mod(p.y, grid.y);
 	
-	gl_FragColor = vec4(z2, z2, z2, 0.7 );
+	float z1 = noise(vec3(   speed*time + offset,     mult.z * p.x / mult.x,   mult.y * p.y));
+	float z2 = noise(vec3(   mult.x * p.x / mult.y,   speed*time + offset,     mult.z * p.x / p.y));
+	
+	float z3 = noise(vec3(   p.x * p.y * mult.z,      speed*time + offset,     mult.x * p.x / mult.y));
+	float z4 = noise(vec3(   speed*time + offset,     p.x / mult.y  , mult.z * p.y / mult.x));
+
+	float z = mix(mix(z1, z2, combo.x), mix(z3, z4, combo.y), combo.z);
+	z = step(z, 0.0);	
+
+	gl_FragColor = vec4(z, z, z, 1.0 );
 }

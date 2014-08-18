@@ -3,42 +3,43 @@
 
 //---------
 void Agents::setup() {
-    setName(typeid(this).name());
-
+    setName("Agents");
+    
     control.registerParameter("numAgents", &numAgents, 1, 120);
     control.registerParameter("speed", &speed, -5.0f, 5.0f);
     control.registerParameter("size", &size, 30, 800);
     
-    control.registerParameter("color", &color, ofColor(0), ofColor(255));
+    control.registerParameter("colorLines", &color1, ofColor(0), ofColor(255));
+    control.registerParameter("colorTri", &color2, ofColor(0), ofColor(255));
     control.registerParameter("fillAlpha", &fillAlpha, 0, 255);
     control.registerParameter("strokeAlpha", &strokeAlpha, 0, 255);
 
-    control.registerParameter("t1", &t1, 80.0f, 1000.0f);
-    control.registerParameter("t2", &t2, 1.0f, 10.0f);
+    control.registerParameter("cycle", &cycle, 4, 1000);
+    control.registerParameter("density", &density, 0.0f, 1.0f);
     
     control.registerParameter("wrap", &wrapping);
     control.registerParameter("debug", &debug);
+    
+    control.registerParameter("lines", &drawLines);
+    control.registerParameter("triangles", &drawTriangles);
     
     numAgents = 16;
     wrapping = true;
     debug = false;
     speed = 1.0;
     size = 200;
-    color = ofColor(255);
+    color1 = ofColor(255);
+    color2 = ofColor(255);
     fillAlpha = 25;
     strokeAlpha = 25;
-    t1 = 300;
-    t2 = 2;
-
-    for (int i=0; i<numAgents; i++) {
-        addNewAgent();
-    }
+    cycle = 100;
+    density = 0.7;
+    drawLines = false;
+    drawTriangles = true;
 }
 
 //---------
 void Agents::update() {
-    numAgents = (int) numAgents;
-    
     while (agents.size() < numAgents) {
         addNewAgent();
     }
@@ -93,31 +94,28 @@ void Agents::draw(){
     }
     
     // draw lines between all intersecting agents
-    if (type == LINES) {
+    if (drawLines) {
         for (int i=0; i<numAgents; i++) {
-            if (agents[i].getIntersecting().size() > 0) {
-                for (int j=0; j<agents[i].getIntersecting().size(); j++) {
-                    Agent *a = agents[i].getIntersecting()[j];
-                    ofSetColor(color, fillAlpha);
-                    int t = ofGetFrameNum() + agents[i].tOffset;
-                    if ((t - (t % (int) t1)) % ((int)t2 * (int)t1) == 0) {                        
-                        ofSetColor(color, fillAlpha);
-                        ofLine(agents[i].pos.x, agents[i].pos.y, a->pos.x, a->pos.y);
-                    }
+            for (int j=0; j<agents[i].getIntersecting().size(); j++) {
+                Agent *a = agents[i].getIntersecting()[j];
+                float t = (float) ((ofGetFrameNum() + a->tOffset) % cycle) / cycle;
+                if (t < density) {
+                    ofSetColor(color1, strokeAlpha);
+                    ofLine(agents[i].pos.x, agents[i].pos.y, a->pos.x, a->pos.y);
                 }
             }
         }   
     }
     
     // when intersecting exactly with two agents, draw triangle
-    else if (type == TRIANGLES) {
+    if (drawTriangles) {
         for (int i=0; i<numAgents; i++) {
             if (agents[i].getIntersecting().size() == 2) {
                 Agent *a1 = agents[i].getIntersecting()[0];
                 Agent *a2 = agents[i].getIntersecting()[1];
-                int t = ofGetFrameNum() + agents[i].tOffset;
-                if ((t - (t % (int) t1)) % ((int)t2 * (int)t1) == 0) {                    
-                    ofSetColor(color, fillAlpha);
+                float t = (float) ((ofGetFrameNum() + a1->tOffset + a2->tOffset) % cycle) / cycle;
+                if (t < density) {
+                    ofSetColor(color2, fillAlpha);
                     ofFill();
                     ofTriangle(agents[i].pos.x, agents[i].pos.y,
                                a1->pos.x, a1->pos.y, a2->pos.x, a2->pos.y);

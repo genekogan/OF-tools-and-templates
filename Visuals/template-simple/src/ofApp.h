@@ -12,6 +12,8 @@
 #include "Amoeba.h"
 #include "Bubbles.h"
 #include "Subdivide.h"
+#include "Polar.h"
+#include "Cubes.h"
 
 
 class ofApp : public ofBaseApp
@@ -24,10 +26,12 @@ public:
     void keyPressed(int key);
 
 private:
+    
     Scene *debug, *rivers, *agents,
           *movie, *shader, *syphon,
           *letters, *amoeba, *bubbles,
-          *subdivide;
+          *subdivide, *polar, *cubes;
+
     
     void disableAll() {
         debug->setActive(false);
@@ -40,5 +44,9 @@ private:
         amoeba->setActive(false);
         bubbles->setActive(false);
         subdivide->setActive(false);
+        polar->setActive(false);
+        cubes->setActive(false);
     }
+    
+    bool autoUpdate;
 };

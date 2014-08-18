@@ -11,16 +11,28 @@ public:
     void update();
     void draw();
     
-    ofParameter<int> numVertices;
-    ofParameter<ofVec2f> radRange;
-    ofParameter<ofVec2f> center;
-    ofParameter<float> speed;
-    ofParameter<float> noiseFactor;
-    ofParameter<float> noiseRegion;
-    ofParameter<float> offset;
-    ofParameter<ofColor> color;
-    ofParameter<float> lineWidth;
-    ofParameter<bool> filled;
-    ofParameter<bool> curvedVertices;
+private:
+    
+    void drawAmoeba();
+    
     float time;
+    
+    ofxParameter<int> numVertices;
+    ofxParameter<ofVec2f> radRange;
+    ofxParameter<ofVec2f> center;
+    ofxParameter<float> speed;
+    ofxParameter<float> noiseFactor;
+    ofxParameter<float> noiseRegion;
+    ofxParameter<float> offset;
+    ofxParameter<ofColor> colorFill;
+    ofxParameter<ofColor> colorStroke;
+    ofxParameter<float> lineWidth;
+    ofxParameter<bool> filled;
+    ofxParameter<bool> stroked;
+    ofxParameter<bool> curvedVertices;
+    ofxParameter<int> cycleStroke;
+    ofxParameter<float> densityStroke;
+    ofxParameter<int> cycleFill;
+    ofxParameter<float> densityFill;
+
 };

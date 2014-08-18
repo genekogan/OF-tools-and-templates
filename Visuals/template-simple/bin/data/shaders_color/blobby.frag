@@ -4,15 +4,18 @@ uniform float time;
 uniform vec2 resolution;
 uniform float depth;
 uniform float rate;
+uniform float speed;
+uniform float density;
+uniform float zoomout;
 
-#define N 16
 
 void main()
 {
-	vec2 v=(gl_FragCoord.xy-(resolution*0.5))/min(resolution.y,resolution.x)*10.0;
-	float t=time * 0.3,r=2.0;
-	for (int i=1;i<N;i++){
-		float d=(3.14159265 / float(N))*(float(i)*14.0);
+	vec2 v=(gl_FragCoord.xy-(resolution*0.5))/min(resolution.y,resolution.x)*zoomout;
+	float t=time * speed;
+	float r=0.0;
+	for (int i=1;i<density;i++){
+		float d=(3.14159265 / density)*(float(i)*14.0);
 		r+=length(vec2(rate*v.y,rate*v.x))+1.21;
 		v = vec2(v.x+cos(v.y+cos(r)+d)+cos(t),v.y-sin(v.x+cos(r)+d)+sin(t));
 	}

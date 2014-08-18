@@ -23,6 +23,10 @@ public:
     
     void setName(string name) {
         this->name = name;
+        control.setName(name);
+        control.refreshGui();
+        control.registerParameter("bgColor", &bgColor, ofColor(0,0), ofColor(255,255));
+        bgColor = ofColor(0, 255);
     }
         
     virtual void setup() { }
@@ -34,11 +38,6 @@ public:
     void setup(int width, int height) {
         this->width = width;
         this->height = height;
-        control.clearParameters();
-        control.setVisible(true);
-        control.setName(name);
-        control.registerParameter("bgColor", &bgColor, ofColor(0,0), ofColor(255,255));
-        bgColor = ofColor(0, 255);
         active = true;
         setup();
     }
@@ -66,7 +65,7 @@ public:
             ofRect(0, 0, width, height);
         }
 
-        ofSetColor(255);
+        ofSetColor(255, 255);
 
         draw();
         
@@ -96,7 +95,7 @@ public:
     }
     
     Control control;
-    ofParameter<ofColor> bgColor;
+    ofxParameter<ofColor> bgColor;
     int width, height;
     string name;
     bool upsideDown;

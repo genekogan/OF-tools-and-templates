@@ -20,7 +20,8 @@ public:
     bool isIntersecting(Agent *other);
     vector<Agent *> getIntersecting();
 
-    float rad, baseRad, speed, size, tOffset;
+    float rad, baseRad, speed, size;
+    int tOffset;
     ofVec2f pos, vel;
     int width, height;
     
@@ -37,22 +38,25 @@ public:
     void draw();
     
 protected:
+    void setDrawingMode(string & s);
     void addNewAgent();
     void refresh();
     void drawDebug();
 
     vector<Agent> agents;
     
-    ofParameter<int> numAgents;
-    ofParameter<bool> wrapping;
-    ofParameter<bool> debug;
-    ofParameter<float> speed;
-    ofParameter<int> size;
-    ofParameter<ofColor> color;
-    ofParameter<int> fillAlpha;
-    ofParameter<int> strokeAlpha;
-    ofParameter<float> t1;
-    ofParameter<float> t2;
+    ofxParameter<int> numAgents;
+    ofxParameter<bool> wrapping;
+    ofxParameter<bool> debug;
+    ofxParameter<float> speed;
+    ofxParameter<int> size;
+    ofxParameter<ofColor> color1;
+    ofxParameter<ofColor> color2;
+    ofxParameter<int> fillAlpha;
+    ofxParameter<int> strokeAlpha;
+    ofxParameter<int> cycle;
+    ofxParameter<float> density;
+    ofxParameter<bool> drawLines;
+    ofxParameter<bool> drawTriangles;
     
-    AgentsDrawType type = LINES;
 };

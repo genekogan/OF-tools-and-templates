@@ -16,7 +16,7 @@ private:
     
     ofVideoPlayer player;
     int w, h;
-    ofParameter<float> speed;
+    ofxParameter<float> speed;
     float oldSpeed;
 };
 

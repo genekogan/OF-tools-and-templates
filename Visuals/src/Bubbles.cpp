@@ -1,7 +1,8 @@
 #include "Bubbles.h"
 
 void Bubbles::setup() {
-    setName(typeid(this).name());
+    setName("Bubbles");
+    
     control.registerParameter("speed", &speed, 0.0f, 0.1f);
     control.registerParameter("numBubbles", &numBubbles, 1, 2048);
     control.registerParameter("maxSizeInitial", &maxSizeInitial, 100, 1000);
@@ -67,8 +68,10 @@ void Bubbles::setupBubblesFbo() {
 }
 
 void Bubbles::addNewBubble() {
-    ofVec2f newPosition(ofRandom(ofGetWidth()), ofRandom(ofGetHeight()));
-    centerPosition.push_back(newPosition);
+    TimeFunction<ofPoint> *newPosition = new TimeFunction<ofPoint>();
+    newPosition->setConstant(ofPoint(ofRandom(ofGetWidth()), ofRandom(ofGetHeight())));
+    newPosition->setFunctionNoise(ofPoint(-100, -100), ofPoint(100, 100), ofPoint(0.001, 0.001));
+
     position.push_back(newPosition);
     blurLevel.push_back(ofRandom(1));
     alpha.push_back(0);
@@ -80,8 +83,8 @@ void Bubbles::update() {
     while (position.size() < numBubbles) {
         addNewBubble();
     }
+    
     if (position.size() > numBubbles) {
-        centerPosition.resize(numBubbles);
         position.resize(numBubbles);
         colorMargin.resize(numBubbles);
         blurLevel.resize(numBubbles);
@@ -90,46 +93,9 @@ void Bubbles::update() {
     }
     
     for (int i=0; i<numBubbles; i++) {
-        
-//        positon[i].x = centerPosition[i].x +
-        
         alpha[i] = ofLerp(alpha[i], 100 + 100*sin(time + i), 0.03f);
         blurLevel[i] = ofLerp(blurLevel[i], 0.5 + 0.5*sin(1.2*time - i), 0.03f);
         size[i] = ofLerp(size[i], 0.2 + 0.4*sin(1.1*time-5+1.8*i), 0.03f);
-        
-//        alpha[i] = ofLerp(alpha[i],
-//                          127 + 127*sin(time + position[i].x/200.0),
-//                          0.03f);
-//        
-//        blurLevel[i] = ofLerp(blurLevel[i],
-//                              0.5 + 0.5*sin(1.2*time - position[i].x/200.0),
-//                              0.03f);
-//        size[i] = ofLerp(size[i],
-//                         0.2 + 0.4*sin(1.1*time-5+1.8*position[i].x/200.0),
-//                         0.03f);
-        
-        
-//        float minAlpha = 0;
-//        float maxAlpha = 255;
-//        float minBlurLevel = 0;
-//        float maxBlurLevel = 1;
-//        float minSize = 0;
-//        float maxSize = 1;
-//
-//        
-//        float lerpRate = 0.03f;
-//        
-//        float b = getFieldValue(position[i]) / 200.0;
-//        
-//        float func1 = sin(0.8*time + b + 5);
-//        float func2 = sin(0.7*time + b + 10);
-//        float func3 = sin(0.9*time + b + 15);
-//        
-//        alpha[i] = ofLerp(alpha[i], ofMap(func1, -1, 1, minAlpha, maxAlpha), lerpRate);
-//        blurLevel[i] = ofLerp(blurLevel[i], ofMap(func2, -1, 1, minBlurLevel, maxBlurLevel), lerpRate);
-//        size[i] = ofLerp(size[i], ofMap(func3, -1, 1, minSize, maxSize), lerpRate);
-
-        
     }
     
     time += speed;
@@ -143,7 +109,8 @@ void Bubbles::draw() {
                    baseColor->b + colorMargin[i].z * varColor->z,
                    alpha[i]);
         int idx = (int) (blurAmt * blurLevel[i]);
-        bubbleFbo[idx].draw(position[i].x, position[i].y,
+            bubbleFbo[idx].draw(position[i]->get().x, position[i]->get().y,
                             maxSize * size[i], maxSize * size[i]);
+
     }
 }

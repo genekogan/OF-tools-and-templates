@@ -47,9 +47,10 @@ void Subdivision::update() {
         width = parent->width;
         height = parent->height * (topleft ? parent->ratio : 1.0-parent->ratio);
     }
-    color->set(ofColor(parent->color->get().r + varColor->get().r * offset.x,
-                       parent->color->get().g + varColor->get().g * offset.y,
-                       parent->color->get().b + varColor->get().b * offset.z));
+    float r = ofLerp(color->get().r, parent->color->get().r + varColor->get().r * offset.x, 0.5);
+    float g = ofLerp(color->get().g, parent->color->get().g + varColor->get().g * offset.y, 0.5);
+    float b = ofLerp(color->get().b, parent->color->get().b + varColor->get().b * offset.z, 0.5);
+    color->set(ofColor(r, g, b));
 }
 
 void Subdivision::draw() {
@@ -71,7 +72,7 @@ void Subdivision::draw() {
 
 
 void Subdivide::setup() {
-    setName(typeid(this).name());
+    setName("Subdivide");
 
     control.registerParameter("color", &color, ofColor(0), ofColor(255));
     control.registerParameter("varColor", &varColor, ofColor(0), ofColor(255));

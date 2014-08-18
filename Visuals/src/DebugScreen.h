@@ -4,9 +4,6 @@
 #include "Scene.h"
 
 
-enum DebugType { FULL, FRAME, FRAMES };
-
-
 class DebugScreen : public Scene
 {
 public:
@@ -15,6 +12,22 @@ public:
     void draw();
 
 private:
-    ofParameter<ofColor> color;
-    DebugType type = FRAMES;
+    enum DebugType { FULL, GRADIENT, CHECKERBOARD, FRAMES };
+    
+    void drawFull();
+    void drawCheckerboard();
+    void drawFrames();
+    void drawGradient();
+
+    void setType(string & s);
+    void setupGradient(string &gradientType);
+    void changedColor(ofColor & c);
+    
+    ofVboMesh gradientMesh;
+    DebugType type = GRADIENT;
+    string gradientMode;
+    
+    ofxParameter<ofColor> color1, color2;
+    ofxParameter<int> numRects;
+    ofxParameter<int> speed;
 };

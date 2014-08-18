@@ -4,6 +4,8 @@ uniform float time;
 uniform vec2 resolution;
 uniform vec2 mouse;
 uniform float rad_eye;
+uniform vec3 color1;
+uniform vec3 color2;
 
 mat2 m = mat2( 0.8,  0.6, -0.6,  0.6 );
 
@@ -67,13 +69,13 @@ void main(void)
 //	vec3 iris2 = vec3(0.9, 0.6, 0.2);
 	vec3 iris1, iris2;
 	
-	iris1.x = 0.1 + 0.3*fbm(2.3*p + vec2(time*0.4, time*0.5));
-	iris1.y = 0.3 + 0.4*fbm(4.3*p + vec2(time*0.1, time*0.2));
-	iris1.z = 0.2 + 0.4*fbm(1.3*p + vec2(time*0.3, time*0.3));
+	iris1.x = color1.x + 0.4*fbm(2.3*p + vec2(time*0.4, time*0.5));
+	iris1.y = color1.y + 0.4*fbm(4.3*p + vec2(time*0.1, time*0.2));
+	iris1.z = color1.z + 0.4*fbm(1.3*p + vec2(time*0.3, time*0.3));
 
-	iris2.x = 0.8 + 0.2*fbm(1.7*p + vec2(time*0.2, time*0.3));
-	iris2.y = 0.4 + 0.4*fbm(3.1*p + vec2(time*0.3, time*0.4));
-	iris2.z = 0.0 + 0.4*fbm(2.3*p + vec2(time*0.1, time*0.2));
+	iris2.x = color2.x + 0.4*fbm(1.7*p + vec2(time*0.2, time*0.3));
+	iris2.y = color2.y + 0.4*fbm(3.1*p + vec2(time*0.3, time*0.4));
+	iris2.z = color2.z + 0.4*fbm(2.3*p + vec2(time*0.1, time*0.2));
 	
 	
 	// add some noise to iris
@@ -103,8 +105,8 @@ void main(void)
 	col += vec3(1.0,0.9,0.9)*f*0.985;
 	col *= vec3(0.8+0.2*cos(r2*a));
 
-	col = mix(col, vec3(1.0, 1.0, 1.0), smoothstep(rad_iris , rad_iris + 0.09, r2) );
-	col = mix(col, vec3(0.0, 0.0, 0.0), smoothstep(rad_eye  , rad_eye + 0.05, r3) );
+	col = mix(col, vec3(1.0), smoothstep(rad_iris , rad_iris + 0.09, r2) );
+	col = mix(col, vec3(0.0), smoothstep(rad_eye  , rad_eye + 0.03, r3) );
 
-	gl_FragColor = vec4(col, 1.0);
+	gl_FragColor = vec4(col, 1.0-smoothstep(rad_eye  , rad_eye + 0.03, r3));
 }

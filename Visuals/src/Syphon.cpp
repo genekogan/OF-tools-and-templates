@@ -3,7 +3,7 @@
 
 //--------
 void Syphon::setup() {
-    setName(typeid(this).name());
+    setName("Syphon");
     client.setup();
 }
 

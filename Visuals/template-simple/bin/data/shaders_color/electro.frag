@@ -5,10 +5,11 @@
 
 uniform vec2 resolution;
 uniform float time;
+uniform float fieldsize;
 uniform float complexity;
 uniform float rings;
 uniform float espeed;
-uniform float cx, cy;
+uniform vec2 centeredness;
 
 float viewAngle = 0.040*sin(0.1*time);
 
@@ -17,13 +18,13 @@ float baseamp = 0.10;
 
 void main(void)
 {
-  vec2 p = -1.0 + 2.0 * (gl_FragCoord.xy / resolution.xy);
+  vec2 p = -fieldsize/2.0 + fieldsize * (gl_FragCoord.xy / resolution.xy);
   vec2 op = p;
-  p = vec2(distance(p, vec2(cx, cy)), sin(0.40*time+atan(p.x, p.y) * complexity));
+  p = vec2(distance(p, vec2(fieldsize/centeredness.x, fieldsize/centeredness.y)), sin(0.40*time+atan(p.x, p.y) * complexity));
   float x = espeed * viewAngle * time + rate * p.x;
-  float base = (0.1 + 3.0*tan(x*0.7 + espeed*time)) * (2.37 + 2.5*sin(x*rings + espeed*time));
+  float base = (0.1 + 10.0*tan(x*0.7 + espeed*time)) * (2.37 + 0.5*sin(x*rings + espeed*time));
   float z = fract(0.05*x);
-  z = max(z, 100.0-z);
+  z = max(z, 10.0-z);
   z = pow(z, 50.0);
   float pulse = exp(-1000000.0 * z);
   vec4 ecg_color = vec4(0.3, 1.0, 0.4, 1.0);

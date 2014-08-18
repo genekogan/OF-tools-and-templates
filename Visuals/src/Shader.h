@@ -11,7 +11,7 @@ struct ShaderParameterBase {
 
 template<typename T>
 struct ShaderParameter : public ShaderParameterBase {
-    ShaderParameter(ofParameter<T> *val) {
+    ShaderParameter(ofxParameter<T> *val) {
         value = val;
         name = value->getName();
     }
@@ -62,6 +62,7 @@ public:
     ofShader shader;
     ofFbo fbo;
     vector<ShaderParameterBase *> shaderParameters;
+    ofxParameter<bool> clearFbo;
     
     /* color presets */
     void setupBlobby();
@@ -75,6 +76,7 @@ public:
     void setupNoisy();
     void setupRain();
     void setupSinewave();
+    void setupSinewaveExperimental();
     void setupWave();
     
     /* texture presets */
