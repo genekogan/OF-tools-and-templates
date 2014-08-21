@@ -104,6 +104,11 @@ void Shader::setupBlobby(){
 }
 void Shader::setupBits(){
     setShader("shaders_color/standard.vert", "shaders_color/bits.frag");
+    addParameter("mult", ofVec2f(0, 0), ofVec2f(100, 10));
+    addParameter("grid", ofVec2f(0, 0), ofVec2f(1, 1));
+}
+void Shader::setupBitsExperimental(){
+    setShader("shaders_color/standard.vert", "shaders_color/bits_experimental.frag");
     addParameter("mult", ofVec3f(0, 0, 0), ofVec3f(100, 100, 100));
     addParameter("grid", ofVec2f(0, 0), ofVec2f(1, 1));
     addParameter("fieldsize", 1, 160);
@@ -183,8 +188,26 @@ void Shader::setupWave(){
     addParameter("multiplicity", -0.9, 1);
     addParameter("fieldsize", 0, 20);
 }
-
-
+void Shader::setupFractalScope(){
+    setShader("shaders_color/standard.vert", "shaders_color/fractal_scope.frag");
+    addParameter("angle", 0, PI);
+    addParameter("zoom", 0, 1);
+    addParameter("iterations", 1, 100);
+}
+void Shader::setupFractalFlower(){
+    setShader("shaders_color/standard.vert", "shaders_color/fractal_flower.frag");
+    addParameter("mouse", ofVec2f(0, 0), ofVec2f(1, 1));
+    addParameter("iter", 1, 8);
+}
+void Shader::setupCurtains(){
+    setShader("shaders_color/standard.vert", "shaders_color/curtains.frag");
+    addParameter("zoom", 0, 1);
+    addParameter("shift", 0, 2*TWO_PI);
+    addParameter("speed", 0, 1);
+    addParameter("fall", 0, 100);
+    addParameter("rows", 1, 8);
+    addParameter("color", ofColor(0, 0, 0), ofColor(255, 255, 255));
+}
 
 
 

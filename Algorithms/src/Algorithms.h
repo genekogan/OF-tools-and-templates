@@ -49,7 +49,7 @@ public:
     void triangulate(vector<ofPoint> *points);
     vector<ITRIANGLE> getTriangles() { return triangles; }
     vector<XYZ> getVertices() { return vertices; }
-private:
+private:    
     ofxDelaunay         triangulation;
     vector<ITRIANGLE>   triangles;
     vector<XYZ>         vertices;

@@ -1,0 +1,13 @@
+<Scene>
+	<bgColor>0, 0, 0, 255</bgColor>
+	<numStreaks>1500</numStreaks>
+	<complexity>0.01</complexity>
+	<baseSpeed>1</baseSpeed>
+	<speedVar>0.5</speedVar>
+	<maxAge>100</maxAge>
+	<refreshAlpha>5</refreshAlpha>
+	<streakAlpha>50</streakAlpha>
+	<maxThickness>8</maxThickness>
+	<color>255, 255, 255, 255</color>
+	<colorVar>10</colorVar>
+</Scene>

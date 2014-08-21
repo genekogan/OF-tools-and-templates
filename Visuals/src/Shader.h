@@ -67,6 +67,7 @@ public:
     /* color presets */
     void setupBlobby();
     void setupBits();
+    void setupBitsExperimental();
     void setupElectro();
     void setupEye();
     void setupHerokuBubbles();
@@ -78,6 +79,9 @@ public:
     void setupSinewave();
     void setupSinewaveExperimental();
     void setupWave();
+    void setupFractalScope();
+    void setupFractalFlower();
+    void setupCurtains();
     
     /* texture presets */
     void setupBrCoSa();

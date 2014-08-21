@@ -2,112 +2,53 @@
 
 #include "ofMain.h"
 #include "Scene.h"
+#include "ofxTwistedRibbon.h"
 
 
 class PolarEq
 {
 public:
-    PolarEq() {
-        
-        nx = 1;
-        ny = 1;
-       
-        ang = 0;
-        dAng = 0;
-        a = 0;
-        b = 0;
-        da = 0;
-        db = 0;
-        dangmax = 0;
-        damax = 0;
-        dbmax = 0;
-        w1 = 0;
-        w2 = 0;
-        w3 = 0;
-        o1 = 0;
-        o2 = 0;
-        o3 = 0;
-        age = 0;
-        
-        refresh();
-
-    }
+    PolarEq(ofxParameter<bool> *is3d, ofxParameter<bool> *isRibbon, ofxParameter<ofVec3f> *speedRotation);
     
+    void refresh();
+    void update();
+    void draw();
     
-    void setA(float a) { this->a = a; }
-    void setB(float a) { this->b = a; }
-    void setDangMax(float a) { this->dangmax = a; }
-    void setW1(float a) { this->w1 = a; }
-    void setW2(float a) { this->w2 = a; }
-    void setW3(float a) { this->w3 = a; }
+    void setNumPoints(int n) { this->numPoints = n; }
     
+    void setColor(ofColor a) { this->color = a; }
+    void setLineWidth(float a) { this->lineWidth = a; }
     
-    void refresh() {
-        age = (int) ofRandom(100, 800);
-        ang = 0;
-        a = (float) ofGetWidth()/(3.0 * nx);
-        dangmax = 1;
-        b = ofRandom(10);
-        w1= ofRandom(0.0005, 0.0015);
-        w2= ofRandom(0.0005, 0.0015);
-        w3= ofRandom(0.0005, 0.0015);
-        o1 = ofRandom(100);
-        o2 = ofRandom(100);
-        o3 = ofRandom(100);
-    }
+    void setRad(float rad) { this->rad = rad; }
+    void setDRadMax(float dRadMax) { this->dRadMax = dRadMax; }
+    void setDRateMax(float dRateMax) { this->dRateMax = dRateMax; }
+    void setDAngMax(float dAngMax) { this->dAngMax = dAngMax; }
+    void setRadNoiseFactor(float radNoiseFactor) { this->radNoiseFactor = radNoiseFactor; }
+    void setRadNoiseMargin(float radNoiseMargin) { this->radNoiseMargin = radNoiseMargin; }
+    void setNoiseFactor(ofVec3f noiseFactor) { this->noiseFactor = noiseFactor; }
     
-    void update() {
-        ang += dAng;
-        a += da;
-        b += db;
-        
-        damax = ofMap(ofGetMouseX(), 0, ofGetWidth(), 0, 1);
-        dbmax = ofMap(ofGetMouseY(), 0, ofGetHeight(), 0, 1);
-        
-        dAng = ofMap(ofNoise(w1*ofGetFrameNum()+o1, 5), 0, 1, 0, dangmax);
-        da = ofMap(ofNoise(w2*ofGetFrameNum()+o2, 10), 0, 1, -damax, damax);
-        db = ofMap(ofNoise(w3*ofGetFrameNum()+o3, 20), 0, 1, -dbmax, dbmax);
-        float r = a * cos(b * ang);
-        float x = r * cos(ang);
-        float y = r * sin(ang);
-        
-        pts.push_back(ofVec2f(x, y));
-        
-        if (pts.size() > 16) {
-            //pts.pop_back();
-            pts.erase(pts.begin());
-        }
-    }
+private:
     
-    void draw() {
-        
-        //if (ofGetFrameNum() % 200 == 0) {refresh();}
-        ofSetColor(255, 90);
-        
-        ofSetLineWidth(2);
-        
-        ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
-        ofNoFill();
-        ofBeginShape();
-        for (int i=0; i<pts.size(); i++) {
-            ofCurveVertex(pts[i].x, pts[i].y);
-        }
-        ofEndShape();
-
-    }
-
+    ofColor color;
+    float lineWidth;
     
-    float ang, dAng;
-    float a, b, da, db;
+    int numPoints;
+    float ang, rad, rate;
+    float dAng, dRad, dRate;
+    float dAngMax, dRadMax, dRateMax;
+    float radNoiseFactor, radNoiseMargin;
+    ofVec3f noiseFactor;
+    ofVec3f noiseOffset;
+    ofVec3f rotAngle;
+    
     vector<ofVec3f> pts;
-    float dangmax, damax, dbmax;
-    float w1, w2, w3;
-    float o1, o2, o3;
     int age;
-
-    int nx, ny;
     
+    ofxParameter<bool> *is3d, *isRibbon;
+    ofxParameter<ofVec3f> *speedRotation;
     
+    ofxTwistedRibbon *ribbon;
+    ofEasyCam cam;
 };
 
 
@@ -119,9 +60,20 @@ public:
     void update();
     void draw();
     
-    PolarEq *p;
 private:
-    ofxParameter<float> a, b, dangmax;
-    ofxParameter<float> w1, w2, w3;
+    void refresh();
     
+    vector<PolarEq *> polars;
+    
+    ofxParameter<int> nx, ny;
+    ofxParameter<ofColor> color;
+    ofxParameter<float> lineWidth;
+    ofxParameter<int> numPoints;
+    ofxParameter<float> rad;
+    ofxParameter<float> dRadMax, dRateMax, dAngMax;
+    ofxParameter<float> radNoiseFactor, radNoiseMargin;
+    ofxParameter<ofVec3f> noiseFactor;
+    ofxParameter<bool> is3d;
+    ofxParameter<bool> isRibbon;
+    ofxParameter<ofVec3f> speedRotation;
 };

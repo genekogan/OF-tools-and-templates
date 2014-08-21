@@ -68,6 +68,10 @@ public:
     void setGuiPosition(int x, int y) {
         gui.setPosition(x, y);
     }
+
+    bool getVisible() {
+        return visible;
+    }
     
     void setVisible(bool b) {
         visible = b;

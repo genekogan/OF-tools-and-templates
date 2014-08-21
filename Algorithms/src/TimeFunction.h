@@ -4,12 +4,6 @@
 #include "Parameter.h"
 
 
-
-#pragma once
-
-#include "ofMain.h"
-#include "Parameter.h"
-
 template <typename T>
 class TimeFunction
 {
@@ -17,7 +11,6 @@ public:
     TimeFunction() {
         noiseOffset = ofVec3f(ofRandom(100), ofRandom(100), ofRandom(100));
         sinePhase = ofVec3f(ofRandom(TWO_PI), ofRandom(TWO_PI), ofRandom(TWO_PI));
-        time = 0;
         delTime = 1.0;
         ofAddListener(ofEvents().update, this, &TimeFunction::update);
     }
@@ -38,8 +31,7 @@ public:
 	ofxParameter<T> getSineFreq() { return sineFreq; }
 	ofxParameter<ofVec3f> getSinePhase() { return sinePhase; }
 	ofxParameter<T> getDelTime() { return delTime; }
-	float getTime() { return time; }
-    
+	
 	/* reference getters */
     ofxParameter<T> & getConstantRef() { return constant; }
     ofxParameter<T> & getTimeCoefficientRef() { return timeCoefficient; }
@@ -61,7 +53,7 @@ public:
 	void setRandMin(T z) { this->randMin.set(z); }
 	void setRandMax(T z) { this->randMax.set(z); }
 	void setNoiseMin(T z) { this->noiseMin.set(z); }
-	void setNoiseMax(T z) { this->noiseSpeed.set(z); }
+	void setNoiseMax(T z) { this->noiseMax.set(z); }
 	void setNoiseSpeed(T z) { this->noiseSpeed.set(z); }
 	void setNoiseOffset(ofVec3f z) { this->noiseOffset.set(z); }
 	void setSineMin(T z) { this->sineMin.set(z); }
@@ -69,8 +61,9 @@ public:
 	void setSineFreq(T z) { this->sineFreq.set(z); }
 	void setSinePhase(ofVec3f z) { this->sinePhase.set(z); }
 	void setTime(T z) { this->time.set(z); }
-	void setDelTime(T z) { this->delTime.set(z); }
+	void setDelTime(float z) { this->delTime.set(z); }
     
+    /* main function setters */
 	void setFunctionRandom(T randMin, T randMax) {
 	    this->randMin.set(randMin);
 	    this->randMax.set(randMax);
@@ -97,13 +90,15 @@ public:
     }
 
     /* sample current value */
-    T get();
     ofxParameter<T> getRef() { return &value; }
+    T get();
     
 private:
     
     void update(ofEventArgs &data) {
-        time += delTime;
+        timeFactor += (delTime * timeCoefficient);
+        noiseFactor += (delTime * noiseSpeed);
+        sineFactor += (delTime * sineFreq);
     }
     
     ofxParameter<T> constant;
@@ -112,9 +107,12 @@ private:
     ofxParameter<T> noiseMin, noiseMax, noiseSpeed;
     ofxParameter<T> sineMin, sineMax, sineFreq;
     ofxParameter<T> value;
-    float time;
  	ofxParameter<float> delTime;
     ofxParameter<ofVec3f> noiseOffset, sinePhase;
+    
+    T noiseFactor;
+    T sineFactor;
+    T timeFactor;
 };
 
 
@@ -150,56 +148,48 @@ template<> inline void TimeFunction<ofVec2f>::reset() {
 
 template<> inline int TimeFunction<int>::get() {
     value.set(constant +
-              time * timeCoefficient +
-              (int) ofRandom(randMin, randMax) +
-              (int) ofMap(ofNoise(noiseSpeed * time + noiseOffset->x), 0, 1, noiseMin, noiseMax) +
-              (int) ofMap(sin(sineFreq * time + sinePhase->x), -1, 1, sineMin, sineMax) );
+              timeFactor +
+              ofRandom(randMin, randMax) +
+              ofMap(ofNoise(noiseFactor + noiseOffset->x), 0, 1, noiseMin, noiseMax) +
+              ofMap(sin(sineFactor + sinePhase->x), -1, 1, sineMin, sineMax) );
     return value;
 }
 
 template<> inline float TimeFunction<float>::get() {
     value.set(constant +
-              time * timeCoefficient +
+              timeFactor +
               ofRandom(randMin, randMax) +
-              ofMap(ofNoise(noiseSpeed * time + noiseOffset->x), 0, 1, noiseMin, noiseMax) +
-              ofMap(sin(sineFreq * time + sinePhase->x), -1, 1, sineMin, sineMax) );
+              ofMap(ofNoise(noiseFactor + noiseOffset->x), 0, 1, noiseMin, noiseMax) +
+              ofMap(sin(sineFactor + sinePhase->x), -1, 1, sineMin, sineMax) );
     return value;
 }
 
 template<> inline ofVec3f TimeFunction<ofVec3f>::get() {
     value.set(constant.get() +
-              ofVec3f(
-                      time * timeCoefficient->x,
-                      time * timeCoefficient->y,
-                      time * timeCoefficient->z) +
-              ofVec3f(
-                      ofRandom(randMin->x, randMax->x),
+              ofVec3f(timeFactor.x,
+                      timeFactor.y,
+                      timeFactor.z) +
+              ofVec3f(ofRandom(randMin->x, randMax->x),
                       ofRandom(randMin->y, randMax->y),
                       ofRandom(randMin->z, randMax->z)) +
-              ofVec3f(
-                      ofMap(ofNoise(noiseSpeed->x * time + noiseOffset->x), 0, 1, noiseMin->x, noiseMax->x),
-                      ofMap(ofNoise(noiseSpeed->y * time + noiseOffset->y), 0, 1, noiseMin->y, noiseMax->y),
-                      ofMap(ofNoise(noiseSpeed->z * time + noiseOffset->z), 0, 1, noiseMin->z, noiseMax->z)) +
-              ofVec3f(
-                      ofMap(sin(sineFreq->x * time + sinePhase->x), -1, 1, sineMin->x, sineMax->x),
-                      ofMap(sin(sineFreq->y * time + sinePhase->y), -1, 1, sineMin->y, sineMax->y),
-                      ofMap(sin(sineFreq->z * time + sinePhase->z), -1, 1, sineMin->z, sineMax->z)) );
+              ofVec3f(ofMap(ofNoise(noiseFactor.x + noiseOffset->x), 0, 1, noiseMin->x, noiseMax->x),
+                      ofMap(ofNoise(noiseFactor.y + noiseOffset->y), 0, 1, noiseMin->y, noiseMax->y),
+                      ofMap(ofNoise(noiseFactor.z + noiseOffset->z), 0, 1, noiseMin->z, noiseMax->z)) +
+              ofVec3f(ofMap(sin(sineFactor.x + sinePhase->x), -1, 1, sineMin->x, sineMax->x),
+                      ofMap(sin(sineFactor.y + sinePhase->y), -1, 1, sineMin->y, sineMax->y),
+                      ofMap(sin(sineFactor.z + sinePhase->z), -1, 1, sineMin->z, sineMax->z)) );
     return value;
 }
 
 template<> inline ofVec2f TimeFunction<ofVec2f>::get() {
     value.set(constant.get() +
-              ofVec2f(
-                      time * timeCoefficient->x,
-                      time * timeCoefficient->y) +
-              ofVec2f(
-                      ofRandom(randMin->x, randMax->x),
+              ofVec2f(timeFactor.x,
+                      timeFactor.y) +
+              ofVec2f(ofRandom(randMin->x, randMax->x),
                       ofRandom(randMin->y, randMax->y))+
-              ofVec2f(
-                      ofMap(ofNoise(noiseSpeed->x * time + noiseOffset->x), 0, 1, noiseMin->x, noiseMax->x),
-                      ofMap(ofNoise(noiseSpeed->y * time + noiseOffset->y), 0, 1, noiseMin->y, noiseMax->y))+
-              ofVec2f(
-                      ofMap(sin(sineFreq->x * time + sinePhase->x), -1, 1, sineMin->x, sineMax->x),
-                      ofMap(sin(sineFreq->y * time + sinePhase->y), -1, 1, sineMin->y, sineMax->y)) );
+              ofVec2f(ofMap(ofNoise(noiseFactor.x + noiseOffset->x), 0, 1, noiseMin->x, noiseMax->x),
+                      ofMap(ofNoise(noiseFactor.y + noiseOffset->y), 0, 1, noiseMin->y, noiseMax->y))+
+              ofVec2f(ofMap(sin(sineFactor.x + sinePhase->x), -1, 1, sineMin->x, sineMax->x),
+                      ofMap(sin(sineFactor.y + sinePhase->y), -1, 1, sineMin->y, sineMax->y)) );
     return value;
 }

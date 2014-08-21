@@ -13,6 +13,8 @@ public:
     void draw();
     
 private:
+    void jumpBack();
+    void jumpRandom();
     
     ofVideoPlayer player;
     int w, h;

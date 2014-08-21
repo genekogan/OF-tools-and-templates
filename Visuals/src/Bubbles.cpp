@@ -9,17 +9,27 @@ void Bubbles::setup() {
     control.registerParameter("maxSize", &maxSize, 10, 800);
     control.registerParameter("baseColor", &baseColor, ofColor(0), ofColor(255));
     control.registerParameter("varColor", &varColor, ofVec3f(0,0,0), ofVec3f(255,255,255));
+    control.registerParameter("position_NoiseMargin", &positionNoiseMargin, ofVec2f(0, 0), ofVec2f(300, 300));
+    control.registerParameter("position_NoiseFactor", &positionNoiseFactor, ofVec2f(0, 0), ofVec2f(0.1, 0.1));
+    control.registerParameter("position_SineMargin", &positionSineMargin, ofVec2f(0, 0), ofVec2f(300, 300));
+    control.registerParameter("position_SineFreq", &positionSineFreq, ofVec2f(0, 0), ofVec2f(0.1, 0.1));
+    control.registerParameter("position_TimeConstant", &positionTimeConstant, ofVec2f(-10, -10), ofVec2f(10, 10));
     control.registerParameter("maxPasses", &maxPasses, 3, 50);
     control.registerParameter("blurAmt", &blurAmt, 0, 20);
     
     speed = 0.091;
-    numBubbles = 700;
+    numBubbles = 600;
     maxSizeInitial = 500;
-    maxSize = 100;
+    maxSize = 140;
     baseColor = ofColor(200, 40, 220);
     varColor = ofVec3f(20, 20, 20);
+    positionNoiseMargin = ofVec2f(30, 30);
+    positionNoiseFactor = ofVec2f(0.01, 0.01);
+    positionSineMargin = ofVec2f(0, 0);
+    positionSineFreq = ofVec2f(0.05, 0.05);
+    positionTimeConstant = ofVec2f(0, 0);
     maxPasses = 30;
-    blurAmt = 5;
+    blurAmt = 7;
     
     maxPasses.addListener(this, &Bubbles::fboParametersChanged);
     blurAmt.addListener(this, &Bubbles::fboParametersChanged);
@@ -27,6 +37,8 @@ void Bubbles::setup() {
     
     setupBubblesFbo();
     time = 0;
+    
+    bubbleCreator.setup(&position, &colorMargin, &blurLevel, &alpha, &size, &numBubbles);
 }
 
 void Bubbles::fboParametersChanged(int & newMaxPasses) {
@@ -34,68 +46,51 @@ void Bubbles::fboParametersChanged(int & newMaxPasses) {
 }
 
 void Bubbles::setupBubblesFbo() {
-    ofPushMatrix();
     ofPushStyle();
-
     ofSetCircleResolution(1024);
     blur.setup(maxSizeInitial*1.25, maxSizeInitial*1.25);
-
     for (int passes=1; passes <= maxPasses; passes++) {
         ofFbo fbo;
         fbo.allocate(blur.getWidth(), blur.getHeight(), GL_RGBA);
-        
         fbo.begin();
-        ofClear(255, 0);
-        fbo.end();
-        
-        fbo.begin();
-        
-        blur.begin(blurAmt, passes+1);
-        
-        ofClear(255, 0);
+        ofClear(0, 0);
         ofSetColor(255);
+        blur.begin(blurAmt, passes+1);
         ofCircle(fbo.getWidth()/2, fbo.getHeight()/2, maxSizeInitial/2);
-        
         blur.end();
-        
         fbo.end();
-        
         bubbleFbo.push_back(fbo);
     }
-    
     ofPopStyle();
-    ofPopMatrix();
-}
-
-void Bubbles::addNewBubble() {
-    TimeFunction<ofPoint> *newPosition = new TimeFunction<ofPoint>();
-    newPosition->setConstant(ofPoint(ofRandom(ofGetWidth()), ofRandom(ofGetHeight())));
-    newPosition->setFunctionNoise(ofPoint(-100, -100), ofPoint(100, 100), ofPoint(0.001, 0.001));
-
-    position.push_back(newPosition);
-    blurLevel.push_back(ofRandom(1));
-    alpha.push_back(0);
-    size.push_back(0);
-    colorMargin.push_back(ofVec3f(ofRandom(-1,1), ofRandom(-1,1), ofRandom(-1,1)));
 }
 
 void Bubbles::update() {
-    while (position.size() < numBubbles) {
-        addNewBubble();
-    }
+
+    bubbleCreator.setRunning(position.size()<numBubbles);
     
     if (position.size() > numBubbles) {
-        position.resize(numBubbles);
-        colorMargin.resize(numBubbles);
-        blurLevel.resize(numBubbles);
-        alpha.resize(numBubbles);
-        size.resize(numBubbles);
+        int newSize = position.size()-1;
+        position.resize(newSize);
+        colorMargin.resize(newSize);
+        blurLevel.resize(newSize);
+        alpha.resize(newSize);
+        size.resize(newSize);
     }
     
-    for (int i=0; i<numBubbles; i++) {
+    for (int i=0; i<position.size(); i++) {
         alpha[i] = ofLerp(alpha[i], 100 + 100*sin(time + i), 0.03f);
         blurLevel[i] = ofLerp(blurLevel[i], 0.5 + 0.5*sin(1.2*time - i), 0.03f);
         size[i] = ofLerp(size[i], 0.2 + 0.4*sin(1.1*time-5+1.8*i), 0.03f);
+        position[i]->setNoiseMin(-1*positionNoiseMargin);
+        position[i]->setNoiseMax(positionNoiseMargin);
+        position[i]->setNoiseSpeed(positionNoiseFactor);
+        position[i]->setSineMin(-1*positionSineMargin);
+        position[i]->setSineMax(positionSineMargin);
+        position[i]->setSineFreq(positionSineFreq);
+        position[i]->setTimeCoefficient(ofVec2f(
+            positionTimeConstant->x * (0.5 + 0.5*ofNoise(i, 10)),
+            positionTimeConstant->y * (0.5 + 0.5*ofNoise(i, 20))));
+        position[i]->setDelTime(speed*10.0);
     }
     
     time += speed;
@@ -103,14 +98,17 @@ void Bubbles::update() {
 
 void Bubbles::draw() {
     ofSetRectMode(OF_RECTMODE_CENTER);
-    for (int i=0; i<numBubbles; i++) {
+    for (int i=0; i<position.size(); i++) {
         ofSetColor(baseColor->r + colorMargin[i].x * varColor->x,
                    baseColor->g + colorMargin[i].y * varColor->y,
                    baseColor->b + colorMargin[i].z * varColor->z,
                    alpha[i]);
         int idx = (int) (blurAmt * blurLevel[i]);
-            bubbleFbo[idx].draw(position[i]->get().x, position[i]->get().y,
+        
+        // draw + wrap
+        ofVec2f pos = position[i]->get();
+        bubbleFbo[idx].draw((int)(pos.x + ofGetWidth()  * (1 + abs(ceil(pos.x / ofGetWidth() )))) % ofGetWidth(),
+                            (int)(pos.y + ofGetHeight() * (1 + abs(ceil(pos.y / ofGetHeight())))) % ofGetHeight(),
                             maxSize * size[i], maxSize * size[i]);
-
     }
 }

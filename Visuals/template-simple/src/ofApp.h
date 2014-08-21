@@ -14,6 +14,8 @@
 #include "Subdivide.h"
 #include "Polar.h"
 #include "Cubes.h"
+#include "GridFly.h"
+#include "ShapeSpace.h"
 
 
 class ofApp : public ofBaseApp
@@ -22,16 +24,17 @@ public:
     void setup();
     void update();
     void draw();
-
+    
     void keyPressed(int key);
-
+    
 private:
     
     Scene *debug, *rivers, *agents,
-          *movie, *shader, *syphon,
-          *letters, *amoeba, *bubbles,
-          *subdivide, *polar, *cubes;
-
+        *movie, *shader, *syphon,
+        *letters, *amoeba, *bubbles,
+        *subdivide, *polar, *cubes,
+        *gridfly, *shapespace;
+    
     
     void disableAll() {
         debug->setActive(false);
@@ -46,6 +49,8 @@ private:
         subdivide->setActive(false);
         polar->setActive(false);
         cubes->setActive(false);
+        gridfly->setActive(false);
+        shapespace->setActive(false);
     }
     
     bool autoUpdate;

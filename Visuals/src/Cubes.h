@@ -5,11 +5,10 @@
 #include "TimeFunction.h"
 
 
-
 class Cube
 {
 public:
-    void setup(ofVec3f mainPosition, ofVec3f marginPosition, ofVec3f targetSize, ofVec3f marginSize, ofVec3f ang, ofVec3f dAng, ofxParameter<ofVec3f> *pan);
+    void setup(ofVec3f mainPosition, ofVec3f marginPosition, ofVec3f targetSize, ofVec3f marginSize, ofVec3f ang, ofVec3f dAng, ofColor color, ofxParameter<ofVec3f> *pan);
     void draw();
     
 private:
@@ -17,6 +16,7 @@ private:
     ofVec3f mainSize, targetSize, marginSize, wSize;
     ofVec3f ang, dAng;
     ofVec3f offsetP, offsetS;
+    ofColor color;
     ofxParameter<ofVec3f> *pan;
 };
 
@@ -51,5 +51,7 @@ private:
     ofxParameter<ofVec2f> translation;
     ofxParameter<ofVec3f> pan;
     ofxParameter<int> newBoxRate;
+    ofxParameter<ofColor> color;
+    ofxParameter<int> colorVar;
 };
 

@@ -2,8 +2,7 @@
 
 
 //---------
-void Cube::setup(ofVec3f mainPosition, ofVec3f marginPosition, ofVec3f targetSize, ofVec3f marginSize, ofVec3f ang, ofVec3f dAng, ofxParameter<ofVec3f> *pan) {
-    this->pan = pan;
+void Cube::setup(ofVec3f mainPosition, ofVec3f marginPosition, ofVec3f targetSize, ofVec3f marginSize, ofVec3f ang, ofVec3f dAng, ofColor color, ofxParameter<ofVec3f> *pan) {
     this->mainPosition = mainPosition;
     this->marginPosition = marginPosition;
     wPosition = ofVec3f(0.04, 0.04, 0.04);
@@ -15,12 +14,14 @@ void Cube::setup(ofVec3f mainPosition, ofVec3f marginPosition, ofVec3f targetSiz
     this->dAng = dAng;
     offsetP = ofVec3f(ofRandom(100), ofRandom(100), ofRandom(100));
     offsetS = ofVec3f(ofRandom(100), ofRandom(100), ofRandom(100));
+    this->color = color;
+    this->pan = pan;
 }
 
 //---------
 void Cube::draw() {
     mainPosition += pan->get();
-
+    
     // update position
     ofVec3f mp = ofVec3f(marginPosition.x * sin(wPosition.x * ofGetFrameNum() + offsetP.x),
                          marginPosition.y * sin(wPosition.y * ofGetFrameNum() + offsetP.y),
@@ -37,7 +38,7 @@ void Cube::draw() {
     
     // update angle
     ang += dAng;
-
+    
     
     // draw
     ofPushMatrix();
@@ -49,7 +50,7 @@ void Cube::draw() {
     ofRotateZ(ang.z);
     
     ofFill();
-    ofSetColor(255, 0, 0, 80);
+    ofSetColor(color);
     ofDrawBox(0, 0, 0, size.x, size.y, size.z);
     
     ofNoFill();
@@ -67,11 +68,22 @@ void Cubes::setup() {
     control.registerParameter("newBoxRate", &newBoxRate, 1, 10);
     control.registerParameter("pan", &pan, ofVec3f(-20, -20, -20), ofVec3f(20, 20, 20));
     control.registerParameter("translation", &translation, ofVec2f(0, 0), ofVec2f(ofGetWidth(), ofGetHeight()));
-
+    control.registerParameter("color", &color, ofColor(0, 0), ofColor(255, 255));
+    control.registerParameter("colorVar", &colorVar, 0, 200);
+    control.registerEvent("preset1", this, &Cubes::preset1);
+    control.registerEvent("preset2", this, &Cubes::preset2);
+    control.registerEvent("preset3", this, &Cubes::preset3);
+    control.registerEvent("preset4", this, &Cubes::preset4);
+    control.registerEvent("preset5", this, &Cubes::preset5);
+    control.registerEvent("preset6", this, &Cubes::preset6);
+    control.registerEvent("preset7", this, &Cubes::preset7);
+    
     newBoxRate = 3;
     pan = ofVec3f(-8, -3, 0);
     panPosition = ofVec3f(0, 0, 0);
-
+    color = ofColor(255, 0, 0, 80);
+    colorVar = 10;
+    
     preset1();
 }
 
@@ -79,6 +91,7 @@ void Cubes::setup() {
 void Cubes::update() {
     translation.set(ofVec2f(ofLerp(translation->x, ofGetMouseY(), 0.01),
                             ofLerp(translation->y, ofGetMouseX(), 0.01)));
+    
     if (ofGetFrameNum() % newBoxRate == 0) {
         addNewBox();
     }
@@ -98,6 +111,11 @@ void Cubes::draw() {
 
 //---------
 void Cubes::addNewBox() {
+    ofColor newColor = ofColor(ofClamp(color->r + ofRandom(-colorVar,colorVar), 0, 255),
+                               ofClamp(color->g + ofRandom(-colorVar,colorVar), 0, 255),
+                               ofClamp(color->b + ofRandom(-colorVar,colorVar), 0, 255),
+                               ofClamp(color->a + ofRandom(-colorVar,colorVar), 0, 255));
+    
     Cube cube;
     cube.setup(ofVec3f(panPosition.x, panPosition.y, 0) + mainPosition.get(),
                marginPosition.get(),
@@ -105,8 +123,8 @@ void Cubes::addNewBox() {
                marginSize.get(),
                ang.get(),
                dAng.get(),
+               newColor,
                &pan);
-    cout << "new vox "<<ofToString(pan.get()) <<endl;
     cubes.push_back(cube);
     
     if (cubes.size() > MAXBOXES)  {

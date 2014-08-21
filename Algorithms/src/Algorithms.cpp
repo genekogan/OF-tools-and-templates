@@ -121,6 +121,6 @@ void Triangulator::triangulate(vector<ofPoint> *points) {
         triangulation.addPoint(points->at(i));
     }
     triangulation.triangulate();
-    triangles = triangulation.getTriangles();
-    vertices = triangulation.getVertices();
+//    triangles = triangulation.getTriangles();
+//    vertices = triangulation.getVertices();
 }
