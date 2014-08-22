@@ -107,8 +107,8 @@ void Bubbles::draw() {
         
         // draw + wrap
         ofVec2f pos = position[i]->get();
-        bubbleFbo[idx].draw((int)(pos.x + ofGetWidth()  * (1 + abs(ceil(pos.x / ofGetWidth() )))) % ofGetWidth(),
-                            (int)(pos.y + ofGetHeight() * (1 + abs(ceil(pos.y / ofGetHeight())))) % ofGetHeight(),
+        bubbleFbo[idx].draw((int)(pos.x + width  * (1 + abs(ceil(pos.x / width )))) % width,
+                            (int)(pos.y + height * (1 + abs(ceil(pos.y / height)))) % height,
                             maxSize * size[i], maxSize * size[i]);
     }
 }

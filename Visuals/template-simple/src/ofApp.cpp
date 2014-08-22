@@ -2,96 +2,124 @@
 
 //-----------
 void ofApp::setup(){
-    
     ofSetBackgroundAuto(false);
+    autoUpdate = false;
+    int w = 1024;
+    int h = 768;
     
-    debug = new DebugScreen();
-    debug->setup(1024, 768);
-    
-    rivers = new Rivers();
-    rivers->setup(1024, 768);
-    
+    //----- Agents
     agents = new Agents();
-    agents->setup(1024, 768);
-    
-    movie = new MoviePlayer();
-    movie->setup(1024, 768);
-    
-    shader = new Shader();
-    shader->setup(1024, 768);
-    ((Shader *) shader)->setupFractalFlower();
-    
-    syphon = new Syphon();
-    syphon->setup(1024, 768);
-    ((Syphon *) syphon)->setClient("serverName", "appName");
-    
-    letters = new Letters();
-    letters->setup(1024, 768);
-    
+    agents->setup(w, h);
+
+    //----- Amoeba
     amoeba = new Amoeba();
-    amoeba->setup(1024, 768);
+    amoeba->setup(w, h);
     
+    //----- Bubbles
     bubbles = new Bubbles();
-    bubbles->setup(1024, 768);
+    bubbles->setup(w, h);
     
-    subdivide = new Subdivide();
-    subdivide->setup(1024, 768);
-    
-    polar = new Polar();
-    polar->setup(1024, 768);
-    
+    //----- Cubes
     cubes = new Cubes();
-    cubes->setup(1024, 768);
+    cubes->setup(w, h);
     
+    //----- Debug
+    debug = new DebugScreen();
+    debug->setup(w, h);
+    
+    //----- GridFly
     gridfly = new GridFly();
-    gridfly->setup(1024, 768);
+    gridfly->setup(w, h);
     
+    //----- Letters
+    letters = new Letters();
+    letters->setup(w, h);
+    
+    //----- Meshy
+    meshy = new Meshy();
+    meshy->setup(w, h);
+    
+    //----- Movie
+    movie = new MoviePlayer();
+    movie->setup(w, h);
+    
+    //----- Polar
+    polar = new Polar();
+    polar->setup(w, h);
+    
+    //----- Rivers
+    rivers = new Rivers();
+    rivers->setup(w, h);
+    
+    //----- Shader
+    shader = new Shader();
+    shader->setup(w, h);
+    ((Shader *) shader)->setupIkeda();
+    
+    //----- Shapespace
     shapespace = new ShapeSpace();
-    shapespace->setup(1024, 768);
+    shapespace->setup(w, h);
+    
+    //----- Subdivide
+    subdivide = new Subdivide();
+    subdivide->setup(w, h);
+    
+    //----- Syphon
+    syphon = new Syphon();
+    syphon->setup(w, h);
+    ((Syphon *) syphon)->setClient("serverName", "appName");
     
     
     disableAll();
     shapespace->setActive(true);
-    
 }
 
 //-----------
 void ofApp::update(){
-    
-    if (autoUpdate){
+    if (autoUpdate && shader->getActive()) {
         if (ofGetFrameNum() % 60 == 0) {
-            //            ((Shader *) shader)->setupNew4();
+            ((Shader *) shader)->setupIkeda();
         }
     }
-    
 }
 
 //-----------
-void ofApp::draw(){
-    
-    if (debug->getActive()) debug->draw(0, 0);
-    if (rivers->getActive()) rivers->draw(0, 0);
-    if (agents->getActive()) agents->draw(0, 0);
-    if (movie->getActive()) movie->draw(0, 0);
-    if (shader->getActive()) shader->draw(0, 0);
-    if (syphon->getActive()) syphon->draw(0, 0);
-    if (letters->getActive()) letters->draw(0, 0);
-    if (amoeba->getActive()) amoeba->draw(0, 0);
-    if (bubbles->getActive()) bubbles->draw(0, 0);
-    if (subdivide->getActive()) subdivide->draw(0, 0);
-    if (polar->getActive()) polar->draw(0, 0);
-    if (cubes->getActive()) cubes->draw(0, 0);
-    if (gridfly->getActive()) gridfly->draw(0, 0);
+void ofApp::draw() {
+    if (agents->getActive())     agents->draw(0, 0);
+    if (amoeba->getActive())     amoeba->draw(0, 0);
+    if (bubbles->getActive())    bubbles->draw(0, 0);
+    if (cubes->getActive())      cubes->draw(0, 0);
+    if (debug->getActive())      debug->draw(0, 0);
+    if (gridfly->getActive())    gridfly->draw(0, 0);
+    if (letters->getActive())    letters->draw(0, 0);
+    if (meshy->getActive())      meshy->draw(0, 0);
+    if (movie->getActive())      movie->draw(0, 0);
+    if (polar->getActive())      polar->draw(0, 0);
+    if (rivers->getActive())     rivers->draw(0, 0);
+    if (shader->getActive())     shader->draw(0, 0);
     if (shapespace->getActive()) shapespace->draw(0, 0);
-    
-    if (autoUpdate) { ofSetColor(255, 0, 0); ofEllipse(10, 10, 20, 20); }
+    if (subdivide->getActive())  subdivide->draw(0, 0);
+    if (syphon->getActive())     syphon->draw(0, 0);
 }
 
 //-----------
 void ofApp::keyPressed(int key){
-    if (key==' ') { autoUpdate = !autoUpdate; }
-    if (key=='a') subdivide->setup();
-    
+    if      (key=='q') { disableAll(); agents->setActive(true); }
+    else if (key=='w') { disableAll(); amoeba->setActive(true); }
+    else if (key=='e') { disableAll(); bubbles->setActive(true); }
+    else if (key=='r') { disableAll(); cubes->setActive(true); }
+    else if (key=='t') { disableAll(); debug->setActive(true); }
+    else if (key=='y') { disableAll(); gridfly->setActive(true); }
+    else if (key=='u') { disableAll(); letters->setActive(true); }
+    else if (key=='i') { disableAll(); meshy->setActive(true); }
+    else if (key=='o') { disableAll(); movie->setActive(true); }
+    else if (key=='p') { disableAll(); polar->setActive(true); }
+    else if (key=='a') { disableAll(); rivers->setActive(true); }
+    else if (key=='s') { disableAll(); shader->setActive(true); }
+    else if (key=='d') { disableAll(); shapespace->setActive(true); }
+    else if (key=='f') { disableAll(); subdivide->setActive(true); }
+    else if (key=='g') { disableAll(); syphon->setActive(true); }
+
     if (shader->getActive()) {
         if      (key=='`') ((Shader *) shader)->setupBits();
         else if (key=='1') ((Shader *) shader)->setupBitsExperimental();
@@ -105,40 +133,11 @@ void ofApp::keyPressed(int key){
         else if (key=='9') ((Shader *) shader)->setupSinewave();
         else if (key=='0') ((Shader *) shader)->setupSinewaveExperimental();
         else if (key=='-') ((Shader *) shader)->setupNoisy();
-        else if (key=='=') ((Shader *) shader)->setupHerokuBubbles();
-        else if (key=='+') ((Shader *) shader)->setupNebula();
-        else if (key=='!') ((Shader *) shader)->setupFractalScope();
-        else if (key=='@') ((Shader *) shader)->setupFractalFlower();
-        else if (key=='#') ((Shader *) shader)->setupCurtains();
-        else if (key=='x')  shader->setUpsideDown(true);
-    }
-    
-    
-    if      (key=='q') { disableAll(); debug->setActive(true); }
-    else if (key=='w') { disableAll(); rivers->setActive(true); }
-    else if (key=='e') { disableAll(); agents->setActive(true); }
-    else if (key=='r') { disableAll(); movie->setActive(true); }
-    else if (key=='t') { disableAll(); shader->setActive(true); }
-    else if (key=='y') { disableAll(); syphon->setActive(true); }
-    else if (key=='u') { disableAll(); letters->setActive(true); }
-    else if (key=='i') { disableAll(); amoeba->setActive(true); }
-    else if (key=='o') { disableAll(); bubbles->setActive(true); }
-    else if (key=='p') { disableAll(); polar->setActive(true); }
-    else if (key=='[') { disableAll(); cubes->setActive(true); }
-    else if (key==']') { disableAll(); gridfly->setActive(true); }
-    else if (key=='\\') { disableAll(); shapespace->setActive(true); }
-    
-    
-    if      (key=='1')   ((Cubes *) cubes)->preset1();
-    else if (key=='2')   ((Cubes *) cubes)->preset2();
-    else if (key=='3')   ((Cubes *) cubes)->preset3();
-    else if (key=='4')   ((Cubes *) cubes)->preset4();
-    else if (key=='5')   ((Cubes *) cubes)->preset5();
-    else if (key=='6')   ((Cubes *) cubes)->preset6();
-    else if (key=='7')   ((Cubes *) cubes)->preset7();
-    
-    
-    if (key=='g') {
-        cubes->toggeVisible();
+        else if (key=='=') ((Shader *) shader)->setupIkeda();
+        else if (key=='~') ((Shader *) shader)->setupHerokuBubbles();
+        else if (key=='!') ((Shader *) shader)->setupNebula();
+        else if (key=='@') ((Shader *) shader)->setupFractalScope();
+        else if (key=='#') ((Shader *) shader)->setupFractalFlower();
+        else if (key=='$') ((Shader *) shader)->setupCurtains();
     }
 }

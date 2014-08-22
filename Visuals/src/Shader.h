@@ -75,6 +75,7 @@ public:
     void setupMonjori();
     void setupNebula();
     void setupNoisy();
+    void setupIkeda();
     void setupRain();
     void setupSinewave();
     void setupSinewaveExperimental();

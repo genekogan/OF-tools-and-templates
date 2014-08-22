@@ -150,8 +150,8 @@ void Polar::update() {
 void Polar::draw() {
     for (int i=0; i<nx; i++) {
         for (int j=0; j<ny; j++) {
-            float x = ofMap(i+0.5, 0, nx, 0, ofGetWidth());
-            float y = ofMap(j+0.5, 0, ny, 0, ofGetHeight());
+            float x = ofMap(i+0.5, 0, nx, 0, width);
+            float y = ofMap(j+0.5, 0, ny, 0, height);
             ofPushMatrix();
             ofTranslate(x, y);
             polars[i*ny + j]->draw();

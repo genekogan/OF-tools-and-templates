@@ -2,20 +2,21 @@
 
 #include "ofMain.h"
 
-#include "DebugScreen.h"
-#include "Rivers.h"
 #include "Agents.h"
-#include "MoviePlayer.h"
-#include "Shader.h"
-#include "Syphon.h"
-#include "Letters.h"
 #include "Amoeba.h"
 #include "Bubbles.h"
-#include "Subdivide.h"
-#include "Polar.h"
 #include "Cubes.h"
+#include "DebugScreen.h"
 #include "GridFly.h"
+#include "Letters.h"
+#include "Meshy.h"
+#include "MoviePlayer.h"
+#include "Polar.h"
+#include "Rivers.h"
+#include "Shader.h"
 #include "ShapeSpace.h"
+#include "Subdivide.h"
+#include "Syphon.h"
 
 
 class ofApp : public ofBaseApp
@@ -28,30 +29,28 @@ public:
     void keyPressed(int key);
     
 private:
-    
-    Scene *debug, *rivers, *agents,
-        *movie, *shader, *syphon,
-        *letters, *amoeba, *bubbles,
-        *subdivide, *polar, *cubes,
-        *gridfly, *shapespace;
-    
-    
-    void disableAll() {
-        debug->setActive(false);
-        rivers->setActive(false);
-        agents->setActive(false);
-        movie->setActive(false);
-        shader->setActive(false);
-        syphon->setActive(false);
-        letters->setActive(false);
-        amoeba->setActive(false);
-        bubbles->setActive(false);
-        subdivide->setActive(false);
-        polar->setActive(false);
-        cubes->setActive(false);
-        gridfly->setActive(false);
-        shapespace->setActive(false);
-    }
+    Scene *agents, *amoeba, *bubbles, *cubes,
+        *debug, *gridfly, *letters, *meshy,
+        *movie, *polar, *rivers, *shader,
+        *shapespace, *subdivide, *syphon;
     
     bool autoUpdate;
+    
+    void disableAll() {
+        agents->setActive(false);
+        amoeba->setActive(false);
+        bubbles->setActive(false);
+        cubes->setActive(false);
+        debug->setActive(false);
+        gridfly->setActive(false);
+        letters->setActive(false);
+        meshy->setActive(false);
+        movie->setActive(false);
+        polar->setActive(false);
+        rivers->setActive(false);
+        shader->setActive(false);
+        shapespace->setActive(false);
+        subdivide->setActive(false);
+        syphon->setActive(false);
+    }
 };

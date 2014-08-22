@@ -34,9 +34,10 @@
 		B07ECFEA19A6689E001A868A /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07ECFD119A66821001A868A /* Shader.cpp */; };
 		B07ECFEB19A6689E001A868A /* Subdivide.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07ECFD319A66821001A868A /* Subdivide.cpp */; };
 		B07ECFEC19A6689E001A868A /* Syphon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07ECFD519A66821001A868A /* Syphon.cpp */; };
-		B07ECFED19A6689E001A868A /* Algorithms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07ECFDC19A6682D001A868A /* Algorithms.cpp */; };
+		B07ECFED19A6689E001A868A /* PointGeneration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07ECFDC19A6682D001A868A /* PointGeneration.cpp */; };
 		B07ECFEE19A6689E001A868A /* TimeFunction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07ECFDE19A6682D001A868A /* TimeFunction.cpp */; };
 		B0A0BA0B19A680E800616318 /* ShapeSpace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0A0BA0919A680E800616318 /* ShapeSpace.cpp */; };
+		B0A0BA1019A6B14300616318 /* Meshy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0A0BA0E19A6B14300616318 /* Meshy.cpp */; };
 		B266578FC55D23BFEBC042E7 /* ofxGuiGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECF8674C7975F1063C5E30CA /* ofxGuiGroup.cpp */; };
 		B56FE57CC35806596D38118C /* ofxSliderGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 802251BAF1B35B1D67B32FD0 /* ofxSliderGroup.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
@@ -150,12 +151,14 @@
 		B07ECFD819A66827001A868A /* Control.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Control.h; sourceTree = "<group>"; };
 		B07ECFD919A66827001A868A /* Dropdown.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Dropdown.h; sourceTree = "<group>"; };
 		B07ECFDA19A66827001A868A /* Parameter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Parameter.h; sourceTree = "<group>"; };
-		B07ECFDC19A6682D001A868A /* Algorithms.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Algorithms.cpp; sourceTree = "<group>"; };
-		B07ECFDD19A6682D001A868A /* Algorithms.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Algorithms.h; sourceTree = "<group>"; };
+		B07ECFDC19A6682D001A868A /* PointGeneration.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PointGeneration.cpp; sourceTree = "<group>"; };
+		B07ECFDD19A6682D001A868A /* PointGeneration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PointGeneration.h; sourceTree = "<group>"; };
 		B07ECFDE19A6682D001A868A /* TimeFunction.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TimeFunction.cpp; sourceTree = "<group>"; };
 		B07ECFDF19A6682D001A868A /* TimeFunction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimeFunction.h; sourceTree = "<group>"; };
 		B0A0BA0919A680E800616318 /* ShapeSpace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeSpace.cpp; sourceTree = "<group>"; };
 		B0A0BA0A19A680E800616318 /* ShapeSpace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapeSpace.h; sourceTree = "<group>"; };
+		B0A0BA0E19A6B14300616318 /* Meshy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Meshy.cpp; sourceTree = "<group>"; };
+		B0A0BA0F19A6B14300616318 /* Meshy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Meshy.h; sourceTree = "<group>"; };
 		B87C60311EC1FE841C1ECD89 /* ofxLabel.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxLabel.h; path = ../../../addons/ofxGui/src/ofxLabel.h; sourceTree = SOURCE_ROOT; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		BBE3E908E4BB3468853C50ED /* ofxDelaunay.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxDelaunay.cpp; path = ../../../addons/ofxDelaunay/src/ofxDelaunay.cpp; sourceTree = SOURCE_ROOT; };
@@ -410,6 +413,8 @@
 				B07ECFC719A66821001A868A /* GridFly.h */,
 				B07ECFC819A66821001A868A /* Letters.cpp */,
 				B07ECFC919A66821001A868A /* Letters.h */,
+				B0A0BA0E19A6B14300616318 /* Meshy.cpp */,
+				B0A0BA0F19A6B14300616318 /* Meshy.h */,
 				B07ECFCA19A66821001A868A /* MoviePlayer.cpp */,
 				B07ECFCB19A66821001A868A /* MoviePlayer.h */,
 				B07ECFCC19A66821001A868A /* Polar.cpp */,
@@ -419,12 +424,12 @@
 				B07ECFD019A66821001A868A /* Scene.h */,
 				B07ECFD119A66821001A868A /* Shader.cpp */,
 				B07ECFD219A66821001A868A /* Shader.h */,
+				B0A0BA0919A680E800616318 /* ShapeSpace.cpp */,
+				B0A0BA0A19A680E800616318 /* ShapeSpace.h */,
 				B07ECFD319A66821001A868A /* Subdivide.cpp */,
 				B07ECFD419A66821001A868A /* Subdivide.h */,
 				B07ECFD519A66821001A868A /* Syphon.cpp */,
 				B07ECFD619A66821001A868A /* Syphon.h */,
-				B0A0BA0919A680E800616318 /* ShapeSpace.cpp */,
-				B0A0BA0A19A680E800616318 /* ShapeSpace.h */,
 			);
 			name = src;
 			path = ../src;
@@ -444,8 +449,8 @@
 		B07ECFDB19A6682D001A868A /* src */ = {
 			isa = PBXGroup;
 			children = (
-				B07ECFDC19A6682D001A868A /* Algorithms.cpp */,
-				B07ECFDD19A6682D001A868A /* Algorithms.h */,
+				B07ECFDC19A6682D001A868A /* PointGeneration.cpp */,
+				B07ECFDD19A6682D001A868A /* PointGeneration.h */,
 				B07ECFDE19A6682D001A868A /* TimeFunction.cpp */,
 				B07ECFDF19A6682D001A868A /* TimeFunction.h */,
 			);
@@ -663,9 +668,10 @@
 				B07ECFE819A6689E001A868A /* Polar.cpp in Sources */,
 				B07ECFE919A6689E001A868A /* Rivers.cpp in Sources */,
 				B07ECFEA19A6689E001A868A /* Shader.cpp in Sources */,
+				B0A0BA1019A6B14300616318 /* Meshy.cpp in Sources */,
 				B07ECFEB19A6689E001A868A /* Subdivide.cpp in Sources */,
 				B07ECFEC19A6689E001A868A /* Syphon.cpp in Sources */,
-				B07ECFED19A6689E001A868A /* Algorithms.cpp in Sources */,
+				B07ECFED19A6689E001A868A /* PointGeneration.cpp in Sources */,
 				B07ECFEE19A6689E001A868A /* TimeFunction.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,

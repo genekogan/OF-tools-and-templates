@@ -129,7 +129,7 @@ void Shader::setupEye(){
     addParameter("rad_eye", 0.1, 1.0);
     addParameter("color1", ofColor(0, 0, 0), ofColor(255, 255, 255));
     addParameter("color2", ofColor(0, 0, 0), ofColor(255, 255, 255));
-    addParameter("mouse", ofVec2f(0, 0), ofVec2f(ofGetWidth(), ofGetHeight()));
+    addParameter("mouse", ofVec2f(0, 0), ofVec2f(width, height));
 }
 void Shader::setupHerokuBubbles(){
     setShader("shaders_color/standard.vert", "shaders_color/herokububbles.frag");
@@ -159,6 +159,9 @@ void Shader::setupNoisy(){
     addParameter("noiseFactor", ofVec2f(0, 0), ofVec2f(10, 10));
     addParameter("noiseFactorTime", 0, 2);
     addParameter("color", ofColor(0, 0, 0), ofColor(255, 255, 255));
+}
+void Shader::setupIkeda(){
+    setShader("shaders_color/standard.vert", "shaders_color/ikeda.frag");
 }
 void Shader::setupRain(){
     setShader("shaders_color/standard.vert", "shaders_color/rain.frag");

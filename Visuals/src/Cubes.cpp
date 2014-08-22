@@ -67,7 +67,7 @@ void Cubes::setup() {
     
     control.registerParameter("newBoxRate", &newBoxRate, 1, 10);
     control.registerParameter("pan", &pan, ofVec3f(-20, -20, -20), ofVec3f(20, 20, 20));
-    control.registerParameter("translation", &translation, ofVec2f(0, 0), ofVec2f(ofGetWidth(), ofGetHeight()));
+    control.registerParameter("translation", &translation, ofVec2f(0, 0), ofVec2f(width, height));
     control.registerParameter("color", &color, ofColor(0, 0), ofColor(255, 255));
     control.registerParameter("colorVar", &colorVar, 0, 200);
     control.registerEvent("preset1", this, &Cubes::preset1);
@@ -102,7 +102,7 @@ void Cubes::draw() {
     ofRotateX(ofMap(ofNoise(0.002*ofGetFrameNum()+5), 0, 1, -0.5, 0.5));
     ofRotateY(ofMap(ofNoise(0.002*ofGetFrameNum()+15), 0, 1, -0.5, 0.5));
     ofRotateZ(ofMap(ofNoise(0.002*ofGetFrameNum()+25), 0, 1, -0.5, 0.5));
-    ofTranslate(ofGetWidth()/2, translation->x, translation->y);
+    ofTranslate(width/2, translation->x, translation->y);
     
     for (int i=0; i<cubes.size(); i++) {
         cubes[i].draw();
