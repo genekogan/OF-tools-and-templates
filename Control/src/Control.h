@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Parameter.h"
 #include "Dropdown.h"
 #include "ofxGui.h"

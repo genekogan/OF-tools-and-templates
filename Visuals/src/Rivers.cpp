@@ -129,8 +129,7 @@ void Rivers::update(){
         int iy = ofMap((*streak)->pos.y, 0, height, 0, FORCE_RESOLUTION);
         (*streak)->update(force[ix][iy]);
         if (!(*streak)->isActive()) {
-            setupStreak(*streak);
-            
+            setupStreak(*streak);            
         }
         streak++;
     }

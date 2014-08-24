@@ -23,6 +23,7 @@
 		B07ECFB719A667EE001A868A /* Syphon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B07ECFB319A66784001A868A /* Syphon.framework */; };
 		B07ECFED19A6689E001A868A /* PointGeneration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07ECFDC19A6682D001A868A /* PointGeneration.cpp */; };
 		B07ECFEE19A6689E001A868A /* TimeFunction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07ECFDE19A6682D001A868A /* TimeFunction.cpp */; };
+		B085735919AA607E00CD4B01 /* Modifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B085735719AA607E00CD4B01 /* Modifier.cpp */; };
 		B0CE426419A7F72B0025C47C /* Canvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0CE426219A7F6460025C47C /* Canvas.cpp */; };
 		B0CE426519A7F7630025C47C /* Agents.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0CE424119A7F5DF0025C47C /* Agents.cpp */; };
 		B0CE426619A7F7630025C47C /* Amoeba.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0CE424319A7F5DF0025C47C /* Amoeba.cpp */; };
@@ -129,6 +130,8 @@
 		B07ECFDD19A6682D001A868A /* PointGeneration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PointGeneration.h; sourceTree = "<group>"; };
 		B07ECFDE19A6682D001A868A /* TimeFunction.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TimeFunction.cpp; sourceTree = "<group>"; };
 		B07ECFDF19A6682D001A868A /* TimeFunction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimeFunction.h; sourceTree = "<group>"; };
+		B085735719AA607E00CD4B01 /* Modifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Modifier.cpp; sourceTree = "<group>"; };
+		B085735819AA607E00CD4B01 /* Modifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Modifier.h; sourceTree = "<group>"; };
 		B0CE424119A7F5DF0025C47C /* Agents.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Agents.cpp; sourceTree = "<group>"; };
 		B0CE424219A7F5DF0025C47C /* Agents.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Agents.h; sourceTree = "<group>"; };
 		B0CE424319A7F5DF0025C47C /* Amoeba.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Amoeba.cpp; sourceTree = "<group>"; };
@@ -474,6 +477,8 @@
 			children = (
 				B0CE426219A7F6460025C47C /* Canvas.cpp */,
 				B0CE426319A7F6460025C47C /* Canvas.h */,
+				B085735719AA607E00CD4B01 /* Modifier.cpp */,
+				B085735819AA607E00CD4B01 /* Modifier.h */,
 			);
 			name = src;
 			path = ../src;
@@ -712,6 +717,7 @@
 				B07ECFB519A6678B001A868A /* SyphonNameboundClient.m in Sources */,
 				1F558B76FB3412843DDAA031 /* ofxSyphonClient.mm in Sources */,
 				8D60C222CBD3F869382832E9 /* ofxSyphonServer.mm in Sources */,
+				B085735919AA607E00CD4B01 /* Modifier.cpp in Sources */,
 				11DF9AB1B4EAA63E3B190CA0 /* ofxSyphonServerDirectory.mm in Sources */,
 				4A9A21E8FF2F9966A3C03A3A /* ofxTwistedRibbon.cpp in Sources */,
 			);

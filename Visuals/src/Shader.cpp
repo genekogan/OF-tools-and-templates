@@ -216,6 +216,7 @@ void Shader::setupCurtains(){
 
 /*  TEXTURE PRESETS */
 //--------------------
+
 void Shader::setupBrCoSa(){
     setShader("shaders_texture/standard.vert", "shaders_texture/brcosa.frag");
     addParameter("brightness", 0.5, 1.5);
@@ -224,7 +225,7 @@ void Shader::setupBrCoSa(){
 }
 void Shader::setupPixelate(){
     setShader("shaders_texture/standard.vert", "shaders_texture/pixelate.frag");
-    addParameter("pixelSize", ofVec2f(1, 100), ofVec2f(1, 100));
+    addParameter("pixelSize", ofVec2f(1, 1), ofVec2f(100, 100));
 }
 void Shader::setupBilateralFilter(){
 	setShader("shaders_texture/standard.vert", "shaders_texture/bilateral_filter.frag");
@@ -277,7 +278,7 @@ void Shader::setupPatches(){
 	setShader("shaders_texture/standard.vert", "shaders_texture/patches.frag");
 	addParameter("row", 0, 1);
 	addParameter("col", 0, 1);
-    addParameter("speed", ofVec2f(0, 0), ofVec2f(1, 1));
+    addParameter("speed", ofVec2f(0, 0), ofVec2f(0.1, 0.1));
 }
 void Shader::setupPixelRolls(){
     setShader("shaders_texture/standard.vert", "shaders_texture/pixelrolls.frag");

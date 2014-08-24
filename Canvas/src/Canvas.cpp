@@ -44,10 +44,16 @@ void Canvas::setup(int width, int height, int numCreators, int numModifiers) {
     }
     
     for (int i=0; i<numModifiers; i++) {
-    
+        Modifier *newModifier = new Modifier();
+        newModifier->setup(width, height);
+        modifiers.push_back(newModifier);
     }
     
     setGuiPosition(5, 5);
+    
+    
+    fbo1.allocate(width, height);
+    fbo2.allocate(width, height);
 }
 
 //--------
@@ -57,6 +63,9 @@ void Canvas::setGuiPosition(int x, int y) {
     for (int i=0; i<scenes.size(); i++) {
         selectors[i]->setGuiPosition(guiPosition.x + i*420, guiPosition.y);
         scenes[i]->setGuiPosition(guiPosition.x + i*420 + 208, guiPosition.y);
+    }
+    for (int i=0; i<numModifiers; i++) {
+        modifiers[i]->setGuiPosition(guiPosition.x + 420*scenes.size() + 210*i, guiPosition.y);
     }
 }
 
@@ -75,9 +84,22 @@ void Canvas::update() {
 
 //--------
 void Canvas::draw(int x, int y) {
+    
+    fbo1.begin();
     for (int i=0; i<scenes.size(); i++) {
         scenes[i]->draw(x, y);
     }
+    fbo1.end();
+    
+    
+    
+    modifiers[0]->apply(&fbo1);
+
+    fbo2.begin();
+    modifiers[0]->draw(0, 0);
+    fbo2.end();
+
+    fbo2.draw(x, y);
 }
 
 //--------
@@ -100,8 +122,13 @@ void Canvas::selectScene(int idx, string &s) {
     else if (s == "syphon")     newScene = new Syphon();
     
     Scene *oldScene = scenes[idx];
+    delete oldScene;
     scenes[idx] = newScene;
+
     newScene->setup(width, height);
     newScene->setGuiPosition(guiPosition.x + idx*420 + 208, guiPosition.y);
-    delete oldScene;
+
+    if (s == "shader") {
+        ((Shader *) newScene)->setupBlobby();
+    }
 }

@@ -4,11 +4,17 @@
 void ofApp::setup(){
     ofSetBackgroundAuto(false);
     
-    canvas.setup(1024, 768, 2, 2);
+    canvas.setup(1024, 768, 1, 1);
 }
 
 //-----------
 void ofApp::update(){
+    if (dispFrameRate) {
+        if (ofGetFrameNum() % 90 == 0) {
+            cout << "FrameRate :: " << ofGetFrameRate() << endl;
+        }
+    }
+    
     canvas.update();
 }
 
@@ -19,5 +25,10 @@ void ofApp::draw() {
 
 //-----------
 void ofApp::keyPressed(int key){
-    if (key=='g')   canvas.toggleGuiVisible();
+    if (key=='g') {
+        canvas.toggleGuiVisible();
+    }
+    else if (key=='z') {
+        dispFrameRate = !dispFrameRate;
+    }
 }

@@ -18,6 +18,9 @@
 #include "Subdivide.h"
 #include "Syphon.h"
 
+#include "Modifier.h"
+#include "Control.h"
+
 
 class Canvas
 {
@@ -31,12 +34,12 @@ public:
     
 private:
 
+    void selectScene(int idx, string &s);
     void selectScene0(string &s) {selectScene(0, s);}
     void selectScene1(string &s) {selectScene(1, s);}
     void selectScene2(string &s) {selectScene(2, s);}
     void selectScene3(string &s) {selectScene(3, s);}
-    
-    void selectScene(int idx, string &s);
+    void selectScene4(string &s) {selectScene(4, s);}
     
     int numCreators, numModifiers;
     int width, height;
@@ -44,8 +47,12 @@ private:
     vector<ofFbo *> fbo;
     vector<Scene *> scenes;
     vector<Control *> selectors;
+    vector<Modifier *> modifiers;
     
     ofPoint guiPosition;
+    
+    
+    ofFbo fbo1, fbo2;
 };
 
 

@@ -76,7 +76,7 @@ public:
         
         ofPopStyle();
         ofPopMatrix();
-    };
+    }
     
     bool getActive() {
         return active;

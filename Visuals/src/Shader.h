@@ -5,7 +5,6 @@
 
 
 struct ShaderParameterBase {
-    virtual string getName() { }
     virtual void update(ofShader *shader) {};
 };
 
@@ -16,9 +15,8 @@ struct ShaderParameter : public ShaderParameterBase {
         name = value->getName();
     }
     void update(ofShader *shader);
-    string getName() { return name; }
-    string name;
     ofParameter<T> *value;
+    string name;
 };
 
 template<> inline
@@ -59,11 +57,6 @@ public:
     void addParameter(string name, ofVec3f min, ofVec3f max);
     void addParameter(string name, ofColor min, ofColor max);
     
-    ofShader shader;
-    ofFbo fbo;
-    vector<ShaderParameterBase *> shaderParameters;
-    ofxParameter<bool> clearFbo;
-    
     /* color presets */
     void setupBlobby();
     void setupBits();
@@ -101,4 +94,12 @@ public:
     void setupPixelRolls();
     void setupThreshold();
     void setupWrap();
+    
+private:
+    
+    ofShader shader;
+    ofFbo fbo;
+    vector<ShaderParameterBase *> shaderParameters;
+    ofxParameter<bool> clearFbo;
+
 };
