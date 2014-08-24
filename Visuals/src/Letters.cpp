@@ -7,12 +7,6 @@ const char * Letters::alphanum = {
     "STUVWXYZabcdefghijklmnopqrst"
     "uvwxyz!@#$%^&*()_+;<>?~`"};
 
-const char * Letters::chineseCharacters = {
-    "指事字指事字指事字指事字指事字指事字指事字指事字指事字"
-    "指事字指事字指事字指事字指事字指事字指事字指事字指事字"
-    "指事字指事字指事字指事字指事字指事字指事字指事字指事字"};
-
-
 void Letters::setup() {
     setName("Letters");
 
@@ -27,6 +21,7 @@ void Letters::setup() {
     control.registerParameter("letterNoise", &letterNoise, ofVec2f(0, 0), ofVec2f(0.1, 0.1));
     control.registerParameter("letterNoiseTime", &letterNoiseTime, 0.0f, 1.0f);
     control.registerParameter("noisyLetters", &noisyLetters);
+    control.registerParameter("chinese", &chinese);
     
     nrows = 30;
     ncols = 40;
@@ -39,33 +34,37 @@ void Letters::setup() {
     letterNoiseTime = 0.1;
     color = ofColor(0, 255, 20);
     noisyLetters = false;
-    
+    chinese = false;
 }
 
 void Letters::update() {
     if (chars.size() != nrows * ncols) {
         chars.resize(nrows * ncols);
-        font.loadFont("AndaleMono.ttf", (int) height / nrows);
+        charsC.resize(nrows * ncols);
+        font.loadFont("fonts/AndaleMono.ttf", (int) height / nrows);
+        fontC.loadFont("fonts/Chinese4.ttf", 0.72 * (int) height / nrows, true, true, true);
     }
     
     if (ofGetFrameNum() % rate == 0) {
         int idx = 0;
+        float noiseX;
         for (int i=0; i<ncols; i++) {
             for (int j=0; j<nrows; j++) {
                 if (ofNoise(rateNoise->x*i, rateNoise->y*j, rateNoiseTime * ofGetFrameNum()) < density) {
                     if (noisyLetters) {
-                        chars[idx] = alphanum [ (int) ofMap(ofNoise(letterNoise->x*i, letterNoiseTime * ofGetFrameNum(), letterNoise->y*j), 0, 1, 81*letterRange->x, 81*letterRange->y) ];
+                        noiseX = ofNoise(letterNoise->x*i, letterNoiseTime * ofGetFrameNum(), letterNoise->y*j);
+                        chars[idx] = alphanum [ (int) ofMap(noiseX, 0, 1, 81*letterRange->x, 81*letterRange->y) ];
+                        charsC[idx] = 38 + (int) ofMap(noiseX, 0, 1, 86 * letterRange->x, 86 * letterRange->y);
                     }
                     else {
                         chars[idx] = alphanum[ (int) ofRandom(81 * letterRange->x, 81 * letterRange->y) ];
+                        charsC[idx] = 38 + (int) ofRandom(86 * letterRange->x, 86 * letterRange->y);
                     }
-                    
                 }
                 idx++;
             }
         }
     }
-    
 }
 
 void Letters::draw() {
@@ -76,8 +75,12 @@ void Letters::draw() {
             x = ofMap(i, 0, ncols, 0, width);
             y = ofMap(j, 0, nrows, 0, height);
             ofSetColor(color);
-            font.drawString(ofToString(chars[idx++]), x, y);
-            //ofDrawBitmapString(ofToString(chars[idx++]), x, y);
+            if (chinese) {
+                fontC.drawString(ofToString(char(charsC[idx++])), x, y);
+            }
+            else {
+                font.drawString(ofToString(chars[idx++]), x, y);
+            }
         }
     }
 }

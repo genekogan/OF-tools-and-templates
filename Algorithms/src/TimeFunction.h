@@ -8,11 +8,29 @@ template <typename T>
 class TimeFunction
 {
 public:
-    TimeFunction() {
+    TimeFunction(bool autoUpdate) {
+        setAutoUpdate(autoUpdate);
         noiseOffset = ofVec3f(ofRandom(100), ofRandom(100), ofRandom(100));
         sinePhase = ofVec3f(ofRandom(TWO_PI), ofRandom(TWO_PI), ofRandom(TWO_PI));
         delTime = 1.0;
-        ofAddListener(ofEvents().update, this, &TimeFunction::update);
+    }
+    
+    TimeFunction() {
+        TimeFunction(true);
+    }
+    
+    ~TimeFunction() {
+        setAutoUpdate(false);
+    }
+    
+    void setAutoUpdate(bool autoUpdate) {
+        this->autoUpdate = autoUpdate;
+        if (autoUpdate) {
+            ofAddListener(ofEvents().update, this, &TimeFunction::update);
+        }
+        else {
+            ofRemoveListener(ofEvents().update, this, &TimeFunction::update);
+        }
     }
     
     void reset();
@@ -88,6 +106,13 @@ public:
         setFunctionSine(sineMin, sineMax, sineFreq,
                         ofVec3f(ofRandom(TWO_PI), ofRandom(TWO_PI), ofRandom(TWO_PI)));
     }
+    
+    /* update time factors */
+    void update() {
+        timeFactor += (delTime * timeCoefficient);
+        noiseFactor += (delTime * noiseSpeed);
+        sineFactor += (delTime * sineFreq);
+    }
 
     /* sample current value */
     ofxParameter<T> getRef() { return &value; }
@@ -96,9 +121,7 @@ public:
 private:
     
     void update(ofEventArgs &data) {
-        timeFactor += (delTime * timeCoefficient);
-        noiseFactor += (delTime * noiseSpeed);
-        sineFactor += (delTime * sineFreq);
+        update();
     }
     
     ofxParameter<T> constant;
@@ -113,6 +136,8 @@ private:
     T noiseFactor;
     T sineFactor;
     T timeFactor;
+    
+    bool autoUpdate;
 };
 
 

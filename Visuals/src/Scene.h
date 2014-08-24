@@ -15,6 +15,11 @@ public:
         name = "Scene";
         upsideDown = false;
         active = false;
+        bgColor.setName("bgColor");
+    }
+    
+    virtual ~Scene() {
+        ofRemoveListener(ofEvents().update, this, &Scene::update);
     }
 
     string getName() {
@@ -77,7 +82,7 @@ public:
         return active;
     }
 
-    void setActive(bool active) {
+    virtual void setActive(bool active) {
         this->active = active;
         control.setVisible(active);
     }
@@ -93,7 +98,7 @@ public:
     void setUpsideDown(bool upsideDown) {
         this->upsideDown = upsideDown;
     }
-    
+
     Control control;
     ofxParameter<ofColor> bgColor;
     int width, height;

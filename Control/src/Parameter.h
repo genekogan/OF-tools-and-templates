@@ -15,6 +15,10 @@ public:
         numFrames = 0;
     }
     
+    ~ofxParameter() {
+        ofRemoveListener(ofEvents().update, this, &ofxParameter::update);
+    }
+    
     void lerpTo(ParameterType goToValue, int numFrames) {
         setInterpolation(goToValue, numFrames, LERP);
     }

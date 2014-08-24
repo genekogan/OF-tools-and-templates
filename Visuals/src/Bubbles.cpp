@@ -38,7 +38,14 @@ void Bubbles::setup() {
     setupBubblesFbo();
     time = 0;
     
-    bubbleCreator.setup(&position, &colorMargin, &blurLevel, &alpha, &size, &numBubbles);
+    bubbleCreator.setup(position, colorMargin, blurLevel, alpha, size, numBubbles);
+}
+
+Bubbles::~Bubbles() {
+    cout << "DELETE BUBBS"<<endl;
+    for (int i=0; i<position.size(); i++) {
+        delete position[i];
+    }
 }
 
 void Bubbles::fboParametersChanged(int & newMaxPasses) {
@@ -65,16 +72,19 @@ void Bubbles::setupBubblesFbo() {
 }
 
 void Bubbles::update() {
-
+    
     bubbleCreator.setRunning(position.size()<numBubbles);
     
     if (position.size() > numBubbles) {
         int newSize = position.size()-1;
-        position.resize(newSize);
-        colorMargin.resize(newSize);
-        blurLevel.resize(newSize);
-        alpha.resize(newSize);
-        size.resize(newSize);
+        for (int i=newSize; i<position.size(); i++) {
+            delete position[i];
+        }
+        position.erase(position.begin()+newSize, position.end());
+        blurLevel.erase(blurLevel.begin()+newSize, blurLevel.end());
+        alpha.erase(alpha.begin()+newSize, alpha.end());
+        size.erase(size.begin()+newSize, size.end());
+        colorMargin.erase(colorMargin.begin()+newSize, colorMargin.end());
     }
     
     for (int i=0; i<position.size(); i++) {
@@ -91,6 +101,7 @@ void Bubbles::update() {
             positionTimeConstant->x * (0.5 + 0.5*ofNoise(i, 10)),
             positionTimeConstant->y * (0.5 + 0.5*ofNoise(i, 20))));
         position[i]->setDelTime(speed*10.0);
+        position[i]->update();
     }
     
     time += speed;

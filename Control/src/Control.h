@@ -12,6 +12,11 @@ public:
         gui.setup(name);
         guiPresets.setup(name+" presets");
         setupGui();
+        guiType = GUI_PARAMETERS;
+    }
+    
+    ~Control() {
+        ofRemoveListener(ofEvents().draw, this, &Control::draw);
     }
     
     string getName() {
@@ -59,7 +64,7 @@ public:
     
     template <typename L, typename M>
     void registerEvent(string name, L listenerClass, M listenerMethod) {
-        ofxButton *button = new ofxButton();;
+        ofxButton *button = new ofxButton();
         button->setup(name);
         button->addListener(listenerClass, listenerMethod);
         gui.add(button);
@@ -67,6 +72,7 @@ public:
 
     void setGuiPosition(int x, int y) {
         gui.setPosition(x, y);
+        guiPresets.setPosition(x, y);
     }
 
     bool getVisible() {
@@ -86,22 +92,25 @@ public:
         setVisible(true);
         setupGui();
     }
-    
+
 private:
     
     enum GuiType { GUI_PARAMETERS, GUI_PRESETS };
     
     void setupGui() {
-        ofxButton *switchGui = new ofxButton();
-        switchGui->setup("parameters/presets");
-        switchGui->addListener(this, &Control::toggleGui);
+        ofxButton *switchGui1 = new ofxButton();
+        ofxButton *switchGui2 = new ofxButton();
+        switchGui1->setup("view presets");
+        switchGui2->setup("view parameters");
+        switchGui1->addListener(this, &Control::toggleGui);
+        switchGui2->addListener(this, &Control::toggleGui);
         
         ofxButton *saveButton = new ofxButton();
         saveButton->setup("save preset");
         saveButton->addListener(this, &Control::savePreset);
         
-        gui.add(switchGui);
-        guiPresets.add(switchGui);
+        gui.add(switchGui1);
+        guiPresets.add(switchGui2);
         guiPresets.add(saveButton);
         cout <<ofToDataPath("presets/"+name+"/") << endl;
         ofDirectory dir(ofToDataPath("presets/"+name+"/"));
@@ -137,6 +146,5 @@ private:
     string name;
     bool visible;
     GuiType guiType;
-    
 };
 

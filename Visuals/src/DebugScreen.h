@@ -27,7 +27,8 @@ private:
     DebugType type = GRADIENT;
     string gradientMode;
     
-    ofxParameter<ofColor> color1, color2;
+    ofxParameter<ofColor> color1;
+    ofxParameter<ofColor> color2;
     ofxParameter<int> numRects;
     ofxParameter<int> speed;
 };

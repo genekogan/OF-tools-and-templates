@@ -23,11 +23,11 @@ private:
     ofxParameter<ofVec2f> letterNoise;
     ofxParameter<float> letterNoiseTime;
     ofxParameter<bool> noisyLetters;
-    
+    ofxParameter<bool> chinese;
     vector<char> chars;
-    ofTrueTypeFont font;
+    vector<int> charsC;
+    ofTrueTypeFont font, fontC;
     static const char * alphanum;
-    static const char * chineseCharacters;
 };
 
 

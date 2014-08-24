@@ -44,7 +44,7 @@ void DebugScreen::setType(string &s) {
 
 //--------
 void DebugScreen::update() {
-    
+
 }
 
 //--------
