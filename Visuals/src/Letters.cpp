@@ -35,6 +35,8 @@ void Letters::setup() {
     color = ofColor(0, 255, 20);
     noisyLetters = false;
     chinese = false;
+    
+    update();
 }
 
 void Letters::update() {

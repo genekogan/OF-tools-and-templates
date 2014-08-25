@@ -71,6 +71,12 @@ public:
         button->addListener(listenerClass, listenerMethod);
         gui.add(button);
     }
+    
+    void registerLabel(string name) {
+        ofxLabel *label = new ofxLabel();
+        label->setup(name);
+        gui.add(label);
+    }
 
     void setGuiPosition(int x, int y) {
         gui.setPosition(x, y);

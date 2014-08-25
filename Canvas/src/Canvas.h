@@ -18,21 +18,50 @@
 #include "Subdivide.h"
 #include "Syphon.h"
 
-#include "Modifier.h"
 #include "Control.h"
 
+#include "ofxPostGlitch.h"
 
 
-class CanvasLayer {
+
+class CanvasLayer
+{
 public:
     ~CanvasLayer() { delete scene; }
-    void setup(int width, int height, CanvasLayer *texLayer);
-    void setup(int width, int height) { setup(width, height, NULL); }
+    
+    void setup(int width, int height, CanvasLayer *texLayer) {
+        this->width = width;
+        this->height = height;
+        this->texLayer = texLayer;
+        fbo.allocate(width, height);
+        setup();
+    }
+    
+    void setup(int width, int height) {
+        setup(width, height, NULL);
+    }
+    
     virtual void setup() {}
+    
     virtual void render() {}
+    
+    virtual void setGuiPosition(int x, int y) {
+        this->guiPosition = ofPoint(x, y);
+        control.setGuiPosition(x, y);
+        //if (scene != NULL)
+        scene->setGuiPosition(x+208, y);
+    }
+    
+    virtual void toggleVisible() {
+        control.toggleVisible();
+        //if (scene != NULL)
+        scene->toggeVisible();
+    }
+    
     void draw(int x, int y) {
         fbo.draw(x, y);
     }
+    
     ofFbo *getFbo() {
         return &fbo;
     }
@@ -41,9 +70,10 @@ public:
     ofFbo fbo;
     Scene *scene;
     CanvasLayer *texLayer;
-    ofPoint position;
+    ofPoint guiPosition;
     int width, height;
     vector<string> choices;
+    
 };
 
 class CreatorLayer : public CanvasLayer {
@@ -60,6 +90,8 @@ public:
     void select(string & s);
 };
 
+#include "PostProcessor.h"
+
 
 class Canvas
 {
@@ -73,6 +105,7 @@ public:
     
     void addCreator(int n);
     void addModifier(int n);
+    void addPostProcessingLayer(int n);
 
 private:
 

@@ -16,6 +16,8 @@ void ShapeSpace::setup() {
     noiseSpeed = ofVec3f(0.001, 0.001, 0.001);
     color = ofColor(255, 0, 0, 80);
     colorVar = ofColor(80);
+    
+	light.setPosition(1000, 1000, 2000);
 }
 
 //--------

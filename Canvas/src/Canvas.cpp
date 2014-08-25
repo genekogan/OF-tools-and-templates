@@ -1,19 +1,7 @@
 #include "Canvas.h"
 
-//--------
-void CanvasLayer::setup(int width, int height, CanvasLayer *texLayer) {
-    this->width = width;
-    this->height = height;
-    this->texLayer = texLayer;
-    fbo.allocate(width, height);
-    setup();
-    if (texLayer != NULL) {
-        ((Shader *) scene)->setTexture(texLayer->getFbo());
-    }
-}
 
-
-//--------
+//----------------
 void CreatorLayer::setup() {
     vector<string> choices;
     choices.push_back("debug");
@@ -34,9 +22,12 @@ void CreatorLayer::setup() {
 
     scene = new DebugScreen();
     control.registerMenu("select scene", this, &CreatorLayer::select, choices);
+    if (texLayer != NULL) {
+        ((Shader *) scene)->setTexture(texLayer->getFbo());
+    }
 }
 
-//--------
+//----------------
 void ModifierLayer::setup() {
     vector<string> choices;
     choices.push_back("brcosa");
@@ -59,9 +50,12 @@ void ModifierLayer::setup() {
     scene = new Shader();
     ((Shader *) scene)->setupBrCoSa();
     control.registerMenu("select scene", this, &ModifierLayer::select, choices);
+    if (texLayer != NULL) {
+        ((Shader *) scene)->setTexture(texLayer->getFbo());
+    }
 }
 
-//--------
+//----------------
 void CreatorLayer::render() {
     fbo.begin();
     if (texLayer != NULL)
@@ -70,14 +64,14 @@ void CreatorLayer::render() {
     fbo.end();
 }
 
-//--------
+//----------------
 void ModifierLayer::render() {
     fbo.begin();
     scene->draw(0, 0);
     fbo.end();
 }
 
-//--------
+//----------------
 void CreatorLayer::select(string &s) {
     delete scene;
     if      (s == "debug")      scene = new DebugScreen();
@@ -98,9 +92,10 @@ void CreatorLayer::select(string &s) {
     
     scene->setup(width, height);
     if (s == "shader")  ((Shader *) scene)->setupBlobby();
+    scene->setGuiPosition(guiPosition.x+208, guiPosition.y);
 }
 
-//--------
+//----------------
 void ModifierLayer::select(string &s) {
     if      (s == "brcosa")     ((Shader *) scene)->setupBrCoSa();
     else if (s == "pixelate")   ((Shader *) scene)->setupPixelate();
@@ -120,26 +115,31 @@ void ModifierLayer::select(string &s) {
     else if (s == "wrap")       ((Shader *) scene)->setupWrap();
 }
 
-
-//--------
+//----------------
 void Canvas::setup(int width, int height) {
     this->width = width;
     this->height = height;
 }
 
-//--------
+//----------------
 void Canvas::addCreator(int n) {
     for (int i=0; i<n; i++) {
         CanvasLayer *creator = new CreatorLayer();
-        if (layers.size() > 0)
+        if (layers.size() > 0) {
             creator->setup(width, height, layers[layers.size()-1]);
-        else
+        }
+        else {
             creator->setup(width, height);
+        }
+        creator->setGuiPosition(5+layers.size() * 416, 5);
         layers.push_back(creator);
+
+        string s = "cubes";
+        ((CreatorLayer *) creator)->select(s);
     }
 }
 
-//--------
+//----------------
 void Canvas::addModifier(int n) {
     for (int i=0; i<n; i++) {
         CanvasLayer *modifier = new ModifierLayer();
@@ -147,27 +147,45 @@ void Canvas::addModifier(int n) {
             modifier->setup(width, height, layers[layers.size()-1]);
         else
             modifier->setup(width, height);
+        modifier->setGuiPosition(5+layers.size() * 416, 5);
         layers.push_back(modifier);
     }
 }
 
-//--------
-void Canvas::toggleGuiVisible() {
+//----------------
+void Canvas::addPostProcessingLayer(int n) {
+    for (int i=0; i<n; i++) {
+        CanvasLayer *postLayer = new PostProcessingLayer();
+        if (layers.size() > 0)
+            postLayer->setup(width, height, layers[layers.size()-1]);
+        else
+            postLayer->setup(width, height);
+        postLayer->setGuiPosition(5+layers.size() * 416, 5);
+        layers.push_back(postLayer);
+    }
 }
 
-//--------
+
+//----------------
+void Canvas::toggleGuiVisible() {
+    for (int i=0; i<layers.size(); i++) {
+        layers[i]->toggleVisible();
+    }
+}
+
+//----------------
 void Canvas::update() {
     for (int i=0; i<layers.size(); i++) {
         layers[i]->render();
     }
 }
 
-//--------
+//----------------
 void Canvas::draw(int x, int y) {
     layers[layers.size()-1]->draw(x, y);
 }
 
-//--------
+//----------------
 Canvas::~Canvas() {
     for (int i=0; i<layers.size(); i++) {
         delete layers[i];

@@ -13,6 +13,7 @@ public:
     
 private:
     ofEasyCam cam;
+    ofLight light;
     
     ofxParameter<int> numElements;
     ofxParameter<ofVec3f> size;

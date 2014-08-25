@@ -18,4 +18,9 @@ private:
     Canvas canvas;
     
     bool dispFrameRate = false;
+    
+    ofxPanel gui;
+    
+    ofxParameter<bool> c;
+    bool b;
 };

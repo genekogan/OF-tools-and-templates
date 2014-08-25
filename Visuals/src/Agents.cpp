@@ -32,6 +32,8 @@ void Agents::setup() {
     density = 0.7;
     drawLines = false;
     drawTriangles = true;
+    
+    update();
 }
 
 //---------
