@@ -4,7 +4,6 @@
 //--------
 void Shader::setup() {
     setName("Shader");
-    fbo.allocate(width, height);
 }
 
 //--------
@@ -13,29 +12,34 @@ void Shader::setShader(string vert, string frag) {
     shader.load(vert, frag);
     Scene::setup(width, height);
     setName(fragName[fragName.size()-1]);
-    control.registerParameter("clearFbo", &clearFbo);
-    clearFbo = true;
 }
 
 //--------
-void Shader::update(ofFbo *fboTex){
-    
-    fbo.begin();
-    
-    if (clearFbo) {
-        ofClear(0, 0);
-    }
-    
+void Shader::setTexture(ofFbo *fboTex){
+    this->fboTex = fboTex;
+    hasTexture = true;
+}
+
+//--------
+void Shader::update(){
+
+}
+
+//--------
+void Shader::draw() {
     shader.begin();
     
     shader.setUniform2f("resolution", width, height);
     shader.setUniform1f("time", ofGetElapsedTimef());
-
+    
     for (int i=0; i<shaderParameters.size(); i++) {
         shaderParameters[i]->update(&shader);
     }
     
-    if (fboTex == NULL) {
+    if (hasTexture) {
+        fboTex->draw(0, 0, width, height);
+    }
+    else {
         glBegin(GL_QUADS);
         glTexCoord2f(0, 0);                     glVertex3f(0, 0, 0);
         glTexCoord2f(width, 0);                 glVertex3f(width, 0, 0);
@@ -43,18 +47,8 @@ void Shader::update(ofFbo *fboTex){
         glTexCoord2f(0, height);                glVertex3f(0, height, 0);
         glEnd();
     }
-    else {
-        fboTex->draw(0, 0, width, height);
-    }
     
     shader.end();
-    
-    fbo.end();
-}
-
-//--------
-void Shader::draw() {
-    fbo.draw(0, 0, width, height);
 }
 
 //--------

@@ -4,7 +4,9 @@
 void ofApp::setup(){
     ofSetBackgroundAuto(false);
     
-    canvas.setup(1024, 768, 1, 1);
+    canvas.setup(1024, 768);
+    canvas.addCreator(1);
+    canvas.addModifier(2);
 }
 
 //-----------

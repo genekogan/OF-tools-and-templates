@@ -48,8 +48,8 @@ public:
     void setup();
     void setShader(string vert, string frag);
     
-    void update(ofFbo *fboTex);
-    void update() { update(NULL); }
+    void setTexture(ofFbo *fboTex);
+    void update();
     void draw();
     
     void addParameter(string name, float min, float max);
@@ -97,9 +97,9 @@ public:
     
 private:
     
-    ofShader shader;
-    ofFbo fbo;
     vector<ShaderParameterBase *> shaderParameters;
-    ofxParameter<bool> clearFbo;
+    ofShader shader;
+    ofFbo *fboTex;
+    bool hasTexture;
 
 };

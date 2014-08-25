@@ -61,6 +61,7 @@ public:
     void draw();
     
 private:
+    void managePolarCount();
     void refresh();
     
     vector<PolarEq *> polars;

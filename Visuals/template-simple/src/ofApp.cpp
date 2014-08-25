@@ -4,6 +4,7 @@
 void ofApp::setup(){
     ofSetBackgroundAuto(false);
     autoUpdate = false;
+    
     int w = 1024;
     int h = 768;
     
@@ -71,7 +72,7 @@ void ofApp::setup(){
     
     
     disableAll();
-    shapespace->setActive(true);
+    shader->setActive(true);
 }
 
 //-----------

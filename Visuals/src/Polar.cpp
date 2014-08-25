@@ -112,6 +112,19 @@ void Polar::setup() {
     radNoiseMargin = 0.1;
     is3d = false;
     isRibbon = false;
+    
+    managePolarCount();
+}
+
+//----------
+void Polar::managePolarCount() {
+    cout << "pol size " << polars.size() << " " << nx << " " << ny << endl;
+    while (polars.size() > nx * ny) {
+        polars.erase(polars.begin());
+    }
+    while (polars.size() < nx * ny) {
+        polars.push_back(new PolarEq(&is3d, &isRibbon, &speedRotation));
+    }
 }
 
 //----------
@@ -123,15 +136,10 @@ void Polar::refresh() {
 
 //----------
 void Polar::update() {
+    cout << "olar update "<< endl;
+    managePolarCount();
     
-    while (polars.size() > nx * ny) {
-        polars.erase(polars.begin());
-    }
-    while (polars.size() < nx * ny) {
-        polars.push_back(new PolarEq(&is3d, &isRibbon, &speedRotation));
-    }
-    
-    for (int i=0; i<nx*ny; i++) {
+    for (int i=0; i<polars.size(); i++) {
         polars[i]->setColor(color);
         polars[i]->setLineWidth(lineWidth);
         polars[i]->setNumPoints(numPoints);
@@ -148,12 +156,14 @@ void Polar::update() {
 
 //----------
 void Polar::draw() {
+    managePolarCount();
     for (int i=0; i<nx; i++) {
         for (int j=0; j<ny; j++) {
             float x = ofMap(i+0.5, 0, nx, 0, width);
             float y = ofMap(j+0.5, 0, ny, 0, height);
             ofPushMatrix();
             ofTranslate(x, y);
+            cout << "polar " << (i*ny + j) << endl;
             polars[i*ny + j]->draw();
             ofPopMatrix();
         }

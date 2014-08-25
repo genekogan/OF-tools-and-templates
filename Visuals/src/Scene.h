@@ -16,6 +16,7 @@ public:
         upsideDown = false;
         active = false;
         bgColor.setName("bgColor");
+        toClear.setName("clear");
     }
     
     virtual ~Scene() {
@@ -30,8 +31,10 @@ public:
         this->name = name;
         control.setName(name);
         control.refreshGui();
+        control.registerParameter("clear", &toClear);
         control.registerParameter("bgColor", &bgColor, ofColor(0,0), ofColor(255,255));
         bgColor = ofColor(0, 255);
+        toClear = false;
     }
         
     virtual void setup() { }
@@ -57,11 +60,18 @@ public:
         ofPushMatrix();
         ofPushStyle();
         
+        ofEnableSmoothing();
+        
         ofTranslate(x, y);
         
         if (upsideDown) {
             ofTranslate(width, height);
             ofRotate(180);
+        }
+        
+        if (toClear) {
+            ofClear(0, 0);
+            cout << "toClear " << toClear << " " << ofGetFrameNum()<< endl;
         }
         
         if (bgColor->a > 0) {
@@ -70,9 +80,11 @@ public:
             ofRect(0, 0, width, height);
         }
 
-        ofSetColor(255, 255);
+        ofSetColor(255, 50);
 
         draw();
+        
+        ofDisableSmoothing();
         
         ofPopStyle();
         ofPopMatrix();
@@ -101,6 +113,7 @@ public:
 
     Control control;
     ofxParameter<ofColor> bgColor;
+    ofxParameter<bool> toClear;
     int width, height;
     string name;
     bool upsideDown;
