@@ -7,17 +7,9 @@ void ofApp::setup(){
     canvas.setup(1024, 768);
     canvas.addCreator(1);
     //canvas.addModifier(2);
-    canvas.addPostProcessingLayer(1);
+    //canvas.addPostProcessingLayer(1);
+    canvas.addPostGlitchLayer(1);
     
-    
-    
-    
-    /*
-    gui.setup("hello world");
-    gui.add(c);
-    
-    gui.setPosition(200, 600);
-    */
 }
 
 //-----------
@@ -28,15 +20,12 @@ void ofApp::update(){
         }
     }    
     canvas.update();
-    
-    //cout << c << " and "<< b << endl;
 }
 
 //-----------
 void ofApp::draw() {
+    ofClear(0, 0);
     canvas.draw(0, 0);
-    
-    //gui.draw();
 }
 
 //-----------

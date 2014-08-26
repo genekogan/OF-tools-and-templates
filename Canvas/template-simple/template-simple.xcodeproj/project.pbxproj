@@ -48,7 +48,8 @@
 		B08573B519ABB67500CD4B01 /* VerticalTiltShifPass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B085739719ABB35500CD4B01 /* VerticalTiltShifPass.cpp */; };
 		B08573B619ABB67500CD4B01 /* ZoomBlurPass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B085739919ABB35500CD4B01 /* ZoomBlurPass.cpp */; };
 		B08573B919ABDD1200CD4B01 /* PostProcessor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B08573B719ABDD1200CD4B01 /* PostProcessor.cpp */; };
-		B08573BA19ABDDD300CD4B01 /* PostProcessor.h in Sources */ = {isa = PBXBuildFile; fileRef = B08573B819ABDD1200CD4B01 /* PostProcessor.h */; };
+		B08573C519AC279400CD4B01 /* PostGlitch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B08573BB19ABED9C00CD4B01 /* PostGlitch.cpp */; };
+		B08573C619AC2A3E00CD4B01 /* ofxPostGlitch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B085739D19ABB38100CD4B01 /* ofxPostGlitch.cpp */; };
 		B0CE426419A7F72B0025C47C /* Canvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0CE426219A7F6460025C47C /* Canvas.cpp */; };
 		B0CE426519A7F7630025C47C /* Agents.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0CE424119A7F5DF0025C47C /* Agents.cpp */; };
 		B0CE426619A7F7630025C47C /* Amoeba.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0CE424319A7F5DF0025C47C /* Amoeba.cpp */; };
@@ -208,6 +209,8 @@
 		B085739E19ABB38100CD4B01 /* ofxPostGlitch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxPostGlitch.h; sourceTree = "<group>"; };
 		B08573B719ABDD1200CD4B01 /* PostProcessor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PostProcessor.cpp; sourceTree = "<group>"; };
 		B08573B819ABDD1200CD4B01 /* PostProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostProcessor.h; sourceTree = "<group>"; };
+		B08573BB19ABED9C00CD4B01 /* PostGlitch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PostGlitch.cpp; sourceTree = "<group>"; };
+		B08573BC19ABED9C00CD4B01 /* PostGlitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostGlitch.h; sourceTree = "<group>"; };
 		B0CE424119A7F5DF0025C47C /* Agents.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Agents.cpp; sourceTree = "<group>"; };
 		B0CE424219A7F5DF0025C47C /* Agents.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Agents.h; sourceTree = "<group>"; };
 		B0CE424319A7F5DF0025C47C /* Amoeba.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Amoeba.cpp; sourceTree = "<group>"; };
@@ -638,6 +641,8 @@
 				B0CE426319A7F6460025C47C /* Canvas.h */,
 				B08573B719ABDD1200CD4B01 /* PostProcessor.cpp */,
 				B08573B819ABDD1200CD4B01 /* PostProcessor.h */,
+				B08573BB19ABED9C00CD4B01 /* PostGlitch.cpp */,
+				B08573BC19ABED9C00CD4B01 /* PostGlitch.h */,
 			);
 			name = src;
 			path = ../src;
@@ -844,7 +849,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B08573BA19ABDDD300CD4B01 /* PostProcessor.h in Sources */,
+				B08573C619AC2A3E00CD4B01 /* ofxPostGlitch.cpp in Sources */,
+				B08573C519AC279400CD4B01 /* PostGlitch.cpp in Sources */,
 				B085739F19ABB67500CD4B01 /* BleachBypassPass.cpp in Sources */,
 				B08573A019ABB67500CD4B01 /* BloomPass.cpp in Sources */,
 				B08573A119ABB67500CD4B01 /* ContrastPass.cpp in Sources */,

@@ -165,6 +165,20 @@ void Canvas::addPostProcessingLayer(int n) {
     }
 }
 
+//----------------
+void Canvas::addPostGlitchLayer(int n) {
+    for (int i=0; i<n; i++) {
+        
+        CanvasLayer *postLayer = new PostGlitchLayer();
+        if (layers.size() > 0)
+            postLayer->setup(width, height, layers[layers.size()-1]);
+        else
+            postLayer->setup(width, height);
+        postLayer->setGuiPosition(5+layers.size() * 416, 5);
+        layers.push_back(postLayer);
+    }
+}
+
 
 //----------------
 void Canvas::toggleGuiVisible() {

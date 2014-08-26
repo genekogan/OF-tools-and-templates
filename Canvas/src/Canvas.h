@@ -20,8 +20,6 @@
 
 #include "Control.h"
 
-#include "ofxPostGlitch.h"
-
 
 
 class CanvasLayer
@@ -48,13 +46,11 @@ public:
     virtual void setGuiPosition(int x, int y) {
         this->guiPosition = ofPoint(x, y);
         control.setGuiPosition(x, y);
-        //if (scene != NULL)
         scene->setGuiPosition(x+208, y);
     }
     
     virtual void toggleVisible() {
         control.toggleVisible();
-        //if (scene != NULL)
         scene->toggeVisible();
     }
     
@@ -91,7 +87,7 @@ public:
 };
 
 #include "PostProcessor.h"
-
+#include "PostGlitch.h"
 
 class Canvas
 {
@@ -106,6 +102,7 @@ public:
     void addCreator(int n);
     void addModifier(int n);
     void addPostProcessingLayer(int n);
+    void addPostGlitchLayer(int n);
 
 private:
 

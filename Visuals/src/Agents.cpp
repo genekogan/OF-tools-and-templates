@@ -93,7 +93,7 @@ void Agents::draw(){
     
     // draw lines between all intersecting agents
     if (drawLines) {
-        for (int i=0; i<numAgents; i++) {
+        for (int i=0; i<agents.size(); i++) {
             for (int j=0; j<agents[i].getIntersecting().size(); j++) {
                 Agent *a = agents[i].getIntersecting()[j];
                 float t = (float) ((ofGetFrameNum() + a->tOffset) % cycle) / cycle;
@@ -107,7 +107,7 @@ void Agents::draw(){
     
     // when intersecting exactly with two agents, draw triangle
     if (drawTriangles) {
-        for (int i=0; i<numAgents; i++) {
+        for (int i=0; i<agents.size(); i++) {
             if (agents[i].getIntersecting().size() == 2) {
                 Agent *a1 = agents[i].getIntersecting()[0];
                 Agent *a2 = agents[i].getIntersecting()[1];

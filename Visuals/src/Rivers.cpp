@@ -125,8 +125,8 @@ void Rivers::update(){
     
     vector<Streak *>::iterator streak = streaks.begin();
     while (streak != streaks.end()) {
-        int ix = ofMap((*streak)->pos.x, 0, width, 0, FORCE_RESOLUTION);
-        int iy = ofMap((*streak)->pos.y, 0, height, 0, FORCE_RESOLUTION);
+        int ix = ofClamp(ofMap((*streak)->pos.x, 0, width, 0, FORCE_RESOLUTION), 0, FORCE_RESOLUTION-1);
+        int iy = ofClamp(ofMap((*streak)->pos.y, 0, height, 0, FORCE_RESOLUTION), 0, FORCE_RESOLUTION-1);
         (*streak)->update(force[ix][iy]);
         if (!(*streak)->isActive()) {
             setupStreak(*streak);            

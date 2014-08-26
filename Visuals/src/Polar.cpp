@@ -118,7 +118,6 @@ void Polar::setup() {
 
 //----------
 void Polar::managePolarCount() {
-    cout << "pol size " << polars.size() << " " << nx << " " << ny << endl;
     while (polars.size() > nx * ny) {
         polars.erase(polars.begin());
     }
@@ -136,7 +135,6 @@ void Polar::refresh() {
 
 //----------
 void Polar::update() {
-    cout << "olar update "<< endl;
     managePolarCount();
     
     for (int i=0; i<polars.size(); i++) {
@@ -156,14 +154,12 @@ void Polar::update() {
 
 //----------
 void Polar::draw() {
-    managePolarCount();
     for (int i=0; i<nx; i++) {
         for (int j=0; j<ny; j++) {
             float x = ofMap(i+0.5, 0, nx, 0, width);
             float y = ofMap(j+0.5, 0, ny, 0, height);
             ofPushMatrix();
             ofTranslate(x, y);
-            cout << "polar " << (i*ny + j) << endl;
             polars[i*ny + j]->draw();
             ofPopMatrix();
         }
