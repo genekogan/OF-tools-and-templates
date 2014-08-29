@@ -42,14 +42,14 @@ void Meshy::triangulate() {
         circlePacker.setBounds(0, 0, width, height);
         circlePacker.setMinDist(minDist);
         circlePacker.addPoints(numPoints);
-        triangulator.triangulate(&circlePacker.getPoints());
+        triangulator.triangulate(circlePacker.getPoints());
     }
     else {
         pointGenerator.clear();
         pointGenerator.setBounds(0, 0, width, height);
         pointGenerator.setNumberCandidates(numCandidates);
         pointGenerator.addPoints(numPoints);
-        triangulator.triangulate(&pointGenerator.getPoints());
+        triangulator.triangulate(pointGenerator.getPoints());
     }
 }
 
@@ -63,7 +63,7 @@ void Meshy::update() {
             y = height * ofNoise(20+1.2*i, triNoise * ofGetFrameNum(),    25);
             points.push_back(ofPoint(x, y));
         }
-        triangulator.triangulate(&points);
+        triangulator.triangulate(points);
     }
     triangles = triangulator.getTriangles();
     vertices = triangulator.getVertices();
