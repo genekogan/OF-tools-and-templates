@@ -92,6 +92,7 @@ public:
     void setupNeon();
     void setupPatches();
     void setupPixelRolls();
+    void setupGrayscale();
     void setupThreshold();
     void setupWrap();
     

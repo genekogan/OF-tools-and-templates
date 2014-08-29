@@ -3,18 +3,21 @@
 #include "Canvas.h"
 #include "ofxPostGlitch.h"
 #include "Control.h"
+#include "TimeFunction.h"
 
 
 class PostGlitchLayer : public CanvasLayer {
     ~PostGlitchLayer();
     void setup();
+    
     void setGuiPosition(int x, int y);
     void toggleVisible();
+    void setVisible(bool visible);
     
 private:
     
-    void programChange(bool &b);
-    void buildGui() {}
+    void effectsChange(bool &b);
+    void noiseChange(float &v);
     void render();
     
     ofxPostGlitch post;
@@ -36,6 +39,16 @@ private:
     ofxParameter<bool> crBlueInvert;
     ofxParameter<bool> crRedInvert;
     ofxParameter<bool> crGreenInvert;
+    
+    ofxParameter<bool> customParameters;
+    ofxParameter<float> stepMin, stepMax;
+    ofxParameter<float> delTime;
+    
+    TimeFunction<float> sv0, sv1, sv2, sv3;
+    TimeFunction<float> rand;
+    TimeFunction<float> m0, m1;
+    TimeFunction<float> b0, b1;
+    
 };
 
 

@@ -89,8 +89,7 @@ void CirclePackGenerator::addPoints(int n) {
     vector<ofPoint>::iterator it;
     ofPoint candidate;
     float radius, currMinDist;
-    bool done;
-    
+    bool done;    
     for (int i=0; i<n; i++) {
         done = false;
         while (!done) {
@@ -115,10 +114,10 @@ void CirclePackGenerator::addPoints(int n) {
 }
 
 //-------
-void Triangulator::triangulate(vector<ofPoint> *points) {
+void Triangulator::triangulate(vector<ofPoint> &points) {
     triangulation.reset();
-    for (int i=0; i<points->size(); i++) {
-        triangulation.addPoint(points->at(i));
+    for (int i=0; i<points.size(); i++) {
+        triangulation.addPoint(points[i]);
     }
     triangulation.triangulate();
     triangles = triangulation.getTriangles();

@@ -5,7 +5,7 @@ PolarEq::PolarEq(ofxParameter<bool> *is3d, ofxParameter<bool> *isRibbon, ofxPara
     this->is3d = is3d;
     this->isRibbon = isRibbon;
     this->speedRotation = speedRotation;
-    ribbon = new ofxTwistedRibbon();
+    //ribbon = new ofxTwistedRibbon();
     refresh();
 }
 
@@ -14,30 +14,33 @@ void PolarEq::refresh() {
     numPoints = 16;
     age = (int) ofRandom(100, 800);
     ang = 0;
+    time = 0;
     noiseOffset = ofVec3f(ofRandom(100), ofRandom(100), ofRandom(100));
 }
 
 //----------
 void PolarEq::update() {
-    dAng = ofMap(ofNoise(noiseFactor.x * ofGetFrameNum() + noiseOffset.x, 5), 0, 1, 0, dAngMax);
-    dRad = ofMap(ofNoise(noiseFactor.y * ofGetFrameNum() + noiseOffset.y, 10), 0, 1, -dRadMax, dRadMax);
-    dRate = ofMap(ofNoise(noiseFactor.z * ofGetFrameNum() + noiseOffset.z, 20), 0, 1, -dRateMax, dRateMax);
-    
-    ang  += dAng;
-    rad  += dRad;
-    rate += dRate;
-    
     float r, x, y, z;
-    r = rad * cos(ang * rate);
-    r += radNoiseMargin * ofMap(ofNoise(radNoiseFactor * ofGetFrameNum(), 5), 0, 1, -rad, rad);
+
+    time += delTime;
+    
+    dAng = ofMap(ofNoise(angNoise * time + 5, noiseOffset.x), 0, 1, 0, dAngMax);
+    dRate = ofMap(ofNoise(rateNoise * time + 10, noiseOffset.y), 0, 1, -dRateMax, dRateMax);
+    
+    ang  += (delTime*dAng);
+    rate += (delTime*dRate);
+
+    rad0 = ofMap(ofNoise(radNoise * time, noiseOffset.z), 0, 1, rad-radMargin, rad+radMargin);
+    r = rad0 * cos(rate * ang);
+    
     x = r * cos(ang);
     y = r * sin(ang);
-    z = *is3d ? r * sin(ang+1.0) * cos(ang+2.0) : 0;
-
+    z = *is3d ? r * sin(0.5*ang+1.0) * cos(0.25*ang+2.0) : 0;
+    
     if (*is3d) {
-        rotAngle.x = ofLerp(rotAngle.x, speedRotation->get().x * ofGetFrameNum(), 0.05);
-        rotAngle.y = ofLerp(rotAngle.y, speedRotation->get().y * ofGetFrameNum(), 0.05);
-        rotAngle.z = ofLerp(rotAngle.z, speedRotation->get().z * ofGetFrameNum(), 0.05);
+        rotAngle.x = ofLerp(rotAngle.x, speedRotation->get().x * time, 0.05);
+        rotAngle.y = ofLerp(rotAngle.y, speedRotation->get().y * time, 0.05);
+        rotAngle.z = ofLerp(rotAngle.z, speedRotation->get().z * time, 0.05);
     }
     else {
         rotAngle.x = ofLerp(rotAngle.x, 0, 0.03);
@@ -45,16 +48,15 @@ void PolarEq::update() {
         rotAngle.z = ofLerp(rotAngle.z, 0, 0.03);
     }
     
-
     pts.push_back(ofVec3f(x, y, z));
     while (pts.size() > numPoints) {
         pts.erase(pts.begin());
     }
     if (*isRibbon) {
-        ribbon->length = numPoints;
-        ribbon->color = color;
-        ribbon->thickness = lineWidth;
-        ribbon->update(ofVec3f(x, y, z));
+        ribbon.length = numPoints;
+        ribbon.color = color;
+        ribbon.thickness = lineWidth;
+        ribbon.update(ofVec3f(x, y, z));
     }
 }
 
@@ -69,7 +71,7 @@ void PolarEq::draw() {
     ofRotateZ(rotAngle.z);
 
     if (*isRibbon) {
-        ribbon->draw();
+        ribbon.draw();
     }
     else {
         ofNoFill();
@@ -86,17 +88,18 @@ void Polar::setup() {
     setName("Polar");
     
     control.registerParameter("color", &color, ofColor(0, 0), ofColor(255, 255));
-    control.registerParameter("lineWidth", &lineWidth, 0.0f, 5.0f);
+    control.registerParameter("lineWidth", &lineWidth, 0.0f, 16.0f);
     control.registerParameter("nx", &nx, 1, 12);
     control.registerParameter("ny", &ny, 1, 12);
+    control.registerParameter("delTime", &delTime, 0.0f, 2.0f);
     control.registerParameter("numPoints", &numPoints, 3, 100);
     control.registerParameter("rad", &rad, 0.0f, 500.0f);
-    control.registerParameter("dRadMax", &dRadMax, 0.0f, 0.5f);
-    control.registerParameter("dRateMax", &dRateMax, 0.0f, 0.05f);
-    control.registerParameter("dAngMax", &dAngMax, 0.0f, 0.5f);
-    control.registerParameter("noiseFactor", &noiseFactor, ofVec3f(0,0,0), ofVec3f(0.015,0.015,0.015));
-    control.registerParameter("radNoiseFactor", &radNoiseFactor, 0.0f, 1.0f);
-    control.registerParameter("radNoiseMargin", &radNoiseMargin, 0.0f, 1.0f);
+    control.registerParameter("radMargin", &radMargin, 0.0f, 300.0f);
+    control.registerParameter("dRateMax", &dRateMax, 0.0f, 0.1f);
+    control.registerParameter("dAngMax", &dAngMax, 0.0f, 3.0f);
+    control.registerParameter("angNoise", &angNoise, 0.0f, 0.0015f);
+    control.registerParameter("rateNoise", &rateNoise, 0.0f, 0.0015f);
+    control.registerParameter("radNoise", &radNoise, 0.0f, 0.0015f);
     control.registerParameter("3d", &is3d);
     control.registerParameter("ribbons", &isRibbon);
     control.registerParameter("speedRotation", &speedRotation, ofVec3f(0, 0, 0), ofVec3f(1, 1, 1));
@@ -104,12 +107,17 @@ void Polar::setup() {
     
     nx = 3;
     ny = 3;
+    delTime = 1.0;
     numPoints = 12;
     color = ofColor(255, 255, 255, 150);
     lineWidth = 2;
-    rad = 120;
-    radNoiseFactor = 0.01;
-    radNoiseMargin = 0.1;
+    rad = 125;
+    radMargin = 0;
+    dRateMax = 0.03;
+    dAngMax = 1.0;
+    angNoise = 0.0004;
+    rateNoise = 0.0005;
+    radNoise = 0.0004;
     is3d = false;
     isRibbon = false;
     
@@ -140,14 +148,15 @@ void Polar::update() {
     for (int i=0; i<polars.size(); i++) {
         polars[i]->setColor(color);
         polars[i]->setLineWidth(lineWidth);
+        polars[i]->setDelTime(delTime);
         polars[i]->setNumPoints(numPoints);
         polars[i]->setRad(rad);
-        polars[i]->setDRadMax(dRadMax);
+        polars[i]->setRadMargin(radMargin);
         polars[i]->setDRateMax(dRateMax);
         polars[i]->setDAngMax(dAngMax);
-        polars[i]->setNoiseFactor(noiseFactor);
-        polars[i]->setRadNoiseFactor(radNoiseFactor);
-        polars[i]->setRadNoiseMargin(radNoiseMargin);
+        polars[i]->setAngNoise(angNoise);
+        polars[i]->setRateNoise(rateNoise);
+        polars[i]->setRadNoise(radNoise);
         polars[i]->update();
     }
 }

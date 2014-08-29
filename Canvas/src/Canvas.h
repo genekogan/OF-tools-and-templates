@@ -19,75 +19,10 @@
 #include "Syphon.h"
 
 #include "Control.h"
-
-
-
-class CanvasLayer
-{
-public:
-    ~CanvasLayer() { delete scene; }
-    
-    void setup(int width, int height, CanvasLayer *texLayer) {
-        this->width = width;
-        this->height = height;
-        this->texLayer = texLayer;
-        fbo.allocate(width, height);
-        setup();
-    }
-    
-    void setup(int width, int height) {
-        setup(width, height, NULL);
-    }
-    
-    virtual void setup() {}
-    
-    virtual void render() {}
-    
-    virtual void setGuiPosition(int x, int y) {
-        this->guiPosition = ofPoint(x, y);
-        control.setGuiPosition(x, y);
-        scene->setGuiPosition(x+208, y);
-    }
-    
-    virtual void toggleVisible() {
-        control.toggleVisible();
-        scene->toggeVisible();
-    }
-    
-    void draw(int x, int y) {
-        fbo.draw(x, y);
-    }
-    
-    ofFbo *getFbo() {
-        return &fbo;
-    }
-    
-    Control control;
-    ofFbo fbo;
-    Scene *scene;
-    CanvasLayer *texLayer;
-    ofPoint guiPosition;
-    int width, height;
-    vector<string> choices;
-    
-};
-
-class CreatorLayer : public CanvasLayer {
-public:
-    void setup();
-    void render();
-    void select(string & s);
-};
-
-class ModifierLayer : public CanvasLayer {
-public:
-    void setup();
-    void render();
-    void select(string & s);
-};
-
+#include "Layer.h"
 #include "PostProcessor.h"
 #include "PostGlitch.h"
+
 
 class Canvas
 {
@@ -96,17 +31,23 @@ public:
     void setup(int width, int height);
     void update();
     void draw(int x, int y);
+
+    void addLayer(LayerType type, int numLayers);
+    void addCreator() {addLayer(CANVAS_CREATOR, 1);}
+    void addModifier() {addLayer(CANVAS_MODIFIER, 1);}
+    void addPostProcessor() {addLayer(CANVAS_POST_PROCESSING, 1);}
+    void addPostGlitch() {addLayer(CANVAS_POST_GLITCH, 1);}
     
+    void setupMetaGui();
+    void chooseGui(string &s);
+    void setVisible(bool guiVisible);
     void toggleGuiVisible();
     
-    void addCreator(int n);
-    void addModifier(int n);
-    void addPostProcessingLayer(int n);
-    void addPostGlitchLayer(int n);
-
 private:
 
+    Control metaGui;
+    bool guiVisible;
+    ofPoint guiPosition;
     vector<CanvasLayer *> layers;
     int width, height;
-    
 };

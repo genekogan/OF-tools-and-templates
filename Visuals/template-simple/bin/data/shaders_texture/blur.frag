@@ -4,7 +4,7 @@
 #version 120
 
 uniform sampler2DRect texture;
-uniform int blurSize;       
+uniform float blurSize;       
 //uniform int horizontalPass; 
 // 0 or 1 to indicate vertical or horizontal pass
 uniform float sigma;        // The sigma value for the gaussian function: higher value means more blur
@@ -15,12 +15,13 @@ uniform float sigma;        // The sigma value for the gaussian function: higher
 
 //const vec2 texOffset = vec2(1.0, 1.0);
 uniform vec2 texOffset;
+
 const float PI = 3.14159265;
 const int horizontalPass = 1;
 
 void main() {  
   vec2 p = gl_FragCoord.st;
-  float numBlurPixelsPerSide = float(blurSize / 2); 
+  float numBlurPixelsPerSide = float(blurSize / 2.0); 
   
   // Incremental Gaussian Coefficent Calculation (See GPU Gems 3 pp. 877 - 889)
   vec3 incrementalGaussian;

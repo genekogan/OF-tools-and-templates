@@ -213,9 +213,9 @@ void Shader::setupCurtains(){
 
 void Shader::setupBrCoSa(){
     setShader("shaders_texture/standard.vert", "shaders_texture/brcosa.frag");
-    addParameter("brightness", 0.5, 1.5);
-    addParameter("saturation", 1, 3);
-    addParameter("contrast", -2, 4);
+    addParameter("brightness", 0, 2);
+    addParameter("saturation", -3, 5);
+    addParameter("contrast", -3, 5);
 }
 void Shader::setupPixelate(){
     setShader("shaders_texture/standard.vert", "shaders_texture/pixelate.frag");
@@ -229,7 +229,7 @@ void Shader::setupBlur(){
 	setShader("shaders_texture/standard.vert", "shaders_texture/blur.frag");
 	addParameter("sigma", 0, 10);
 	addParameter("blurSize", 0, 30);
-	addParameter("texOffset", 0.5, 3);
+	addParameter("texOffset", ofVec2f(0.5, 0.5), ofVec2f(3, 3));
 }
 void Shader::setupChannels(){
 	setShader("shaders_texture/standard.vert", "shaders_texture/channels.frag");
@@ -255,6 +255,7 @@ void Shader::setupHalftoneCmyk(){
 void Shader::setupHalftone(){
 	setShader("shaders_texture/standard.vert", "shaders_texture/halftone.frag");
 	addParameter("pixelsPerRow", 2, 100);
+    addParameter("sizeDot", 0, 1);
 }
 void Shader::setupHue(){
 	setShader("shaders_texture/standard.vert", "shaders_texture/hue.frag");
@@ -282,6 +283,9 @@ void Shader::setupPixelRolls(){
 	addParameter("dir", 0, 1);
 	addParameter("gate", 0, 1);
 }
+void Shader::setupGrayscale(){
+	setShader("shaders_texture/standard.vert", "shaders_texture/grayscale.frag");
+}
 void Shader::setupThreshold(){
 	setShader("shaders_texture/standard.vert", "shaders_texture/threshold.frag");
     addParameter("threshold", 0, 1);
@@ -289,5 +293,7 @@ void Shader::setupThreshold(){
 void Shader::setupWrap(){
 	setShader("shaders_texture/standard.vert", "shaders_texture/wrap.frag");
 	addParameter("radius", 0, 2);
-	addParameter("radTwist", 1, 10);
+	addParameter("radTwist", 0, 10);
+    addParameter("angShift", 0, TWO_PI);
+    addParameter("mode", 0, 1);
 }

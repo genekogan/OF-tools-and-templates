@@ -46,7 +46,7 @@ private:
 class Triangulator
 {
 public:
-    void triangulate(vector<ofPoint> *points);
+    void triangulate(vector<ofPoint> &points);
     vector<ITRIANGLE> getTriangles() { return triangles; }
     vector<XYZ> getVertices() { return vertices; }
 private:    

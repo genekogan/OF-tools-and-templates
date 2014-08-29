@@ -14,40 +14,43 @@ public:
     void update();
     void draw();
     
+    void setDelTime(float delTime) { this->delTime = delTime; }
     void setNumPoints(int n) { this->numPoints = n; }
     
     void setColor(ofColor a) { this->color = a; }
     void setLineWidth(float a) { this->lineWidth = a; }
     
     void setRad(float rad) { this->rad = rad; }
-    void setDRadMax(float dRadMax) { this->dRadMax = dRadMax; }
+    void setRadMargin(float radMargin) { this->radMargin = radMargin; }
     void setDRateMax(float dRateMax) { this->dRateMax = dRateMax; }
     void setDAngMax(float dAngMax) { this->dAngMax = dAngMax; }
-    void setRadNoiseFactor(float radNoiseFactor) { this->radNoiseFactor = radNoiseFactor; }
-    void setRadNoiseMargin(float radNoiseMargin) { this->radNoiseMargin = radNoiseMargin; }
-    void setNoiseFactor(ofVec3f noiseFactor) { this->noiseFactor = noiseFactor; }
+
+    void setAngNoise(float angNoise) { this->angNoise = angNoise; }
+    void setRateNoise(float rateNoise) { this->rateNoise = rateNoise; }
+    void setRadNoise(float radNoise) { this->radNoise = radNoise; }
     
 private:
     
+    vector<ofVec3f> pts;
+
     ofColor color;
     float lineWidth;
-    
+
     int numPoints;
-    float ang, rad, rate;
-    float dAng, dRad, dRate;
-    float dAngMax, dRadMax, dRateMax;
-    float radNoiseFactor, radNoiseMargin;
-    ofVec3f noiseFactor;
-    ofVec3f noiseOffset;
-    ofVec3f rotAngle;
-    
-    vector<ofVec3f> pts;
     int age;
+
+    float time, delTime;
+    float rad, rad0, radMargin;
+    float ang, dAng;
+    float rate, dRate;
+    float dAngMax, dRateMax;
+    float angNoise, rateNoise, radNoise;
+    ofVec3f noiseOffset, rotAngle;
     
     ofxParameter<bool> *is3d, *isRibbon;
     ofxParameter<ofVec3f> *speedRotation;
     
-    ofxTwistedRibbon *ribbon;
+    ofxTwistedRibbon ribbon;
     ofEasyCam cam;
 };
 
@@ -67,13 +70,13 @@ private:
     vector<PolarEq *> polars;
     
     ofxParameter<int> nx, ny;
+    ofxParameter<float> delTime;
     ofxParameter<ofColor> color;
     ofxParameter<float> lineWidth;
     ofxParameter<int> numPoints;
-    ofxParameter<float> rad;
-    ofxParameter<float> dRadMax, dRateMax, dAngMax;
-    ofxParameter<float> radNoiseFactor, radNoiseMargin;
-    ofxParameter<ofVec3f> noiseFactor;
+    ofxParameter<float> rad, radMargin;
+    ofxParameter<float> dRateMax, dAngMax;
+    ofxParameter<float> angNoise, rateNoise, radNoise;
     ofxParameter<bool> is3d;
     ofxParameter<bool> isRibbon;
     ofxParameter<ofVec3f> speedRotation;

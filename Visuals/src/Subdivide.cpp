@@ -1,10 +1,13 @@
 #include "Subdivide.h"
 
+
+//----------
 Subdivision::Subdivision(int generation,
                          int x, int y,
                          int width, int height,
                          ofParameter<ofColor> *color,
                          ofParameter<ofColor> *varColor,
+                         ofParameter<int> *circleResolution,
                          ofParameter<bool> *isLerp) {
     this->generation = generation;
     this->x = x;
@@ -13,15 +16,22 @@ Subdivision::Subdivision(int generation,
     this->height = height;
     this->color = color;
     this->varColor = varColor;
+    this->circleResolution = circleResolution;
     this->isLerp = isLerp;
     parent = NULL;
     subdivide();
 }
 
-Subdivision::Subdivision(int generation, Subdivision *parent, bool topleft, ofParameter<bool> *isLerp) {
+//----------
+Subdivision::Subdivision(int generation,
+                         Subdivision *parent,
+                         bool topleft,
+                         ofParameter<int> *circleResolution,
+                         ofParameter<bool> *isLerp) {
     this->generation = generation;
     this->parent = parent;
     this->topleft = topleft;
+    this->circleResolution = circleResolution;
     this->isLerp = isLerp;
     color = new ofParameter<ofColor>();
     varColor = parent->varColor;
@@ -30,15 +40,17 @@ Subdivision::Subdivision(int generation, Subdivision *parent, bool topleft, ofPa
     update();
 }
 
+//----------
 void Subdivision::subdivide() {
     if (generation > 0) {
         ratio = ofRandom(1);
         horizontal = ofRandom(1) < 0.5 ? true : false;
-        child1 = new Subdivision(generation-1, this, true, isLerp);
-        child2 = new Subdivision(generation-1, this, false, isLerp);
+        child1 = new Subdivision(generation-1, this, true, circleResolution, isLerp);
+        child2 = new Subdivision(generation-1, this, false, circleResolution, isLerp);
     }
 }
 
+//----------
 void Subdivision::update() {
     int r, g, b;
     if (parent == NULL) return;
@@ -70,8 +82,13 @@ void Subdivision::update() {
     color->set(ofColor(r, g, b, 255));
 }
 
+//----------
 void Subdivision::draw(DrawStrategy drawStrategy) {
     update();
+    
+    ofSetCircleResolution(*circleResolution);
+    ofEnableSmoothing();
+    
     if (generation == 0) {
         if (drawStrategy == RECTS) {
             drawRect();
@@ -87,8 +104,11 @@ void Subdivision::draw(DrawStrategy drawStrategy) {
         child1->draw(drawStrategy);
         child2->draw(drawStrategy);
     }
+    
+    ofDisableSmoothing();
 }
 
+//----------
 void Subdivision::drawRect() {
     ofSetColor(*color);
     ofFill();
@@ -99,6 +119,7 @@ void Subdivision::drawRect() {
     ofRect(x, y, width, height);
 }
 
+//----------
 void Subdivision::drawDiamond() {
     ofSetColor(*color);
     ofFill();
@@ -119,6 +140,7 @@ void Subdivision::drawDiamond() {
     ofEndShape();
 }
 
+//----------
 void Subdivision::drawCircle() {
     ofSetColor(*color);
     ofFill();
@@ -129,11 +151,13 @@ void Subdivision::drawCircle() {
     ofEllipse(x+width/2, y+height/2, width, height);
 }
 
+//----------
 void Subdivide::setup() {
     setName("Subdivide");
 
     control.registerParameter("color", &color, ofColor(0), ofColor(255));
     control.registerParameter("varColor", &varColor, ofColor(0), ofColor(255));
+    control.registerParameter("circleResolution", &circleResolution, 3, 72);
     control.registerParameter("lerp", &isLerp);
 
     vector<string> drawTypes;
@@ -142,9 +166,10 @@ void Subdivide::setup() {
     drawTypes.push_back("Circles");
     control.registerMenu("draw", this, &Subdivide::setDrawType, drawTypes);
 
-    start = new Subdivision(9, 0, 0, width, height, &color, &varColor, &isLerp);
+    start = new Subdivision(9, 0, 0, width, height, &color, &varColor, &circleResolution, &isLerp);
 }
 
+//----------
 void Subdivide::setDrawType(string & s) {
     if (s=="Rects") {
         drawStrategy = RECTS;
@@ -157,10 +182,12 @@ void Subdivide::setDrawType(string & s) {
     }
 }
 
+//----------
 void Subdivide::update() {
     
 }
 
+//----------
 void Subdivide::draw() {
     start->draw(drawStrategy);
 }

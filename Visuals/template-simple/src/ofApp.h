@@ -29,6 +29,9 @@ public:
     void keyPressed(int key);
     
 private:
+    
+    void setInactiveAll();
+
     Scene *agents, *amoeba, *bubbles, *cubes,
         *debug, *gridfly, *letters, *meshy,
         *movie, *polar, *rivers, *shader,
@@ -36,21 +39,4 @@ private:
     
     bool autoUpdate;
     
-    void disableAll() {
-        agents->setActive(false);
-        amoeba->setActive(false);
-        bubbles->setActive(false);
-        cubes->setActive(false);
-        debug->setActive(false);
-        gridfly->setActive(false);
-        letters->setActive(false);
-        meshy->setActive(false);
-        movie->setActive(false);
-        polar->setActive(false);
-        rivers->setActive(false);
-        shader->setActive(false);
-        shapespace->setActive(false);
-        subdivide->setActive(false);
-        syphon->setActive(false);
-    }
 };

@@ -10,9 +10,11 @@ class PostProcessingLayer : public CanvasLayer
 public:
     ~PostProcessingLayer();
     void setup();
+
     void setGuiPosition(int x, int y);
     void toggleVisible();
-
+    void setVisible(bool visible);
+    
 private:
 
     void programChange(bool &b);
@@ -76,7 +78,6 @@ private:
     void zoomBlurWeightChanged(float &v) {zoomBlur->setWeight(zoomBlurWeight);}
     void zoomBlurClampChanged(float &v) {zoomBlur->setClamp(zoomBlurClamp);}
     
-    
     Control gui;
 
     ofxPostProcessing post;
@@ -101,7 +102,6 @@ private:
     RimHighlightingPass::Ptr rimHighlight;
     SSAOPass::Ptr ssao;
     ZoomBlurPass::Ptr zoomBlur;
-    
     
     /* toggles */
     

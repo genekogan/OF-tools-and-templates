@@ -41,6 +41,7 @@ private:
     }
     
     void update(ofEventArgs &data) {
+        //cout << "update parameter :: " << this->getName() << endl;
         if (frame++ <= numFrames) {
             float t = lerpType==LERP ? frame/numFrames : pow(frame/numFrames, easeCoefficient);
             this->set(startValue*(1.0f-t)+endValue*t);

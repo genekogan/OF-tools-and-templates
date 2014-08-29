@@ -17,7 +17,7 @@ public:
     void wrap();
     void draw();
     void addIntersectingAgent(Agent *other);
-    bool isIntersecting(Agent *other);
+    bool isIntersecting(Agent &other);
     vector<Agent *> getIntersecting();
 
     float rad, baseRad, speed, size;

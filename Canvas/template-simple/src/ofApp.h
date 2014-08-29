@@ -16,7 +16,5 @@ public:
 private:
 
     Canvas canvas;
-    
-    bool dispFrameRate = false;
 
 };

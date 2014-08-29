@@ -1,5 +1,6 @@
 #include "Bubbles.h"
 
+//------------
 void Bubbles::setup() {
     setName("Bubbles");
     
@@ -41,17 +42,19 @@ void Bubbles::setup() {
     bubbleCreator.setup(position, colorMargin, blurLevel, alpha, size, numBubbles);
 }
 
+//------------
 Bubbles::~Bubbles() {
-    cout << "DELETE BUBBS"<<endl;
     for (int i=0; i<position.size(); i++) {
         delete position[i];
     }
 }
 
+//------------
 void Bubbles::fboParametersChanged(int & newMaxPasses) {
     setupBubblesFbo();
 }
 
+//------------
 void Bubbles::setupBubblesFbo() {
     ofPushStyle();
     ofSetCircleResolution(1024);
@@ -71,8 +74,8 @@ void Bubbles::setupBubblesFbo() {
     ofPopStyle();
 }
 
+//------------
 void Bubbles::update() {
-    
     bubbleCreator.setRunning(position.size()<numBubbles);
     
     if (position.size() > numBubbles) {
@@ -107,6 +110,7 @@ void Bubbles::update() {
     time += speed;
 }
 
+//------------
 void Bubbles::draw() {
     ofSetRectMode(OF_RECTMODE_CENTER);
     for (int i=0; i<position.size(); i++) {

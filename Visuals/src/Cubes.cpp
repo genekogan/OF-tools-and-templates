@@ -118,13 +118,8 @@ void Cubes::addNewBox() {
     
     Cube cube;
     cube.setup(ofVec3f(panPosition.x, panPosition.y, 0) + mainPosition.get(),
-               marginPosition.get(),
-               targetSize.get(),
-               marginSize.get(),
-               ang.get(),
-               dAng.get(),
-               newColor,
-               &pan);
+               marginPosition.get(), targetSize.get(), marginSize.get(),
+               ang.get(), dAng.get(), newColor, &pan);
     cubes.push_back(cube);
     
     if (cubes.size() > MAXBOXES)  {
@@ -132,6 +127,15 @@ void Cubes::addNewBox() {
     }
 }
 
+//--------
+void Cubes::resetTimeFunctions() {
+    mainPosition.reset();
+    marginPosition.reset();
+    targetSize.reset();
+    marginSize.reset();
+    ang.reset();
+    dAng.reset();
+}
 
 
 //====== preset 1 ==========//
@@ -209,14 +213,4 @@ void Cubes::preset7() {
 	targetSize.setConstant(ofVec3f(130, 500, 160));
 	ang.setConstant(ofVec3f(45.84, 0, 0));
 	dAng.setConstant(ofVec3f(0, 0, 5.73));
-}
-
-//--------
-void Cubes::resetTimeFunctions() {
-    mainPosition.reset();
-    marginPosition.reset();
-    targetSize.reset();
-    marginSize.reset();
-    ang.reset();
-    dAng.reset();
 }

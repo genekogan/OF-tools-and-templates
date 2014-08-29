@@ -15,8 +15,13 @@ public:
                 int width, int height,
                 ofParameter<ofColor> *color,
                 ofParameter<ofColor> *varColor,
+                ofParameter<int> *circleResolution,
                 ofParameter<bool> *isLerp);
-    Subdivision(int generation, Subdivision *parent, bool topleft, ofParameter<bool> *isLerp);
+    Subdivision(int generation,
+                Subdivision *parent,
+                bool topleft,
+                ofParameter<int> *circleResolution,
+                ofParameter<bool> *isLerp);
     void draw(DrawStrategy drawStrategy);
 
 private:
@@ -38,8 +43,9 @@ private:
     
     ofParameter<ofColor> *color;
     ofParameter<ofColor> *varColor;
-    ofVec3f offset;
+    ofParameter<int> *circleResolution;
     ofParameter<bool> *isLerp;
+    ofVec3f offset;
 };
 
 
@@ -58,6 +64,7 @@ private:
     ofxParameter<int> ndivisions;
     ofxParameter<ofColor> color;
     ofxParameter<ofColor> varColor;
+    ofxParameter<int> circleResolution;
     ofxParameter<bool> isLerp;
     Subdivision *start;
 };

@@ -8,7 +8,7 @@ class Dropdown
 {
 public:
     template<class ListenerClass, typename ListenerMethod>
-	void setup(string name, ofxPanel *gui, ListenerClass * listener, ListenerMethod method){
+	void setup(string name, ofxPanel *gui, ListenerClass * listener, ListenerMethod method) {
         this->gui = gui;
         gui->add(label.setup(name, ""));
 		value.addListener(listener, method);
@@ -30,7 +30,13 @@ public:
             addItem(names[i]);
         }
     }
-    
+
+    ~Dropdown() {
+        for (int i=0; i<togs.size(); i++) {
+            delete togs[i];
+        }
+    }
+
 private:
     
     void update(bool & a) {

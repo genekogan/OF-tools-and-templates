@@ -4,15 +4,15 @@
 #include "Scene.h"
 
 
-
 #define FORCE_RESOLUTION 256
 
 
 class Streak
 {
 public:
-    Streak() { }
-    void setup(float x, float y, int maxAge, float speed, int maxThickness, float strokeAlpha, int width, int height, ofColor color);
+    void setup(float x, float y, int maxAge, float speed,
+               int maxThickness, float strokeAlpha,
+               int width, int height, ofColor color);
     void update(ofPoint vel);
     void draw();
     bool isActive();
@@ -22,7 +22,6 @@ public:
     ofColor color;
     int width, height;
 };
-
 
 
 class Rivers : public Scene
@@ -35,7 +34,7 @@ public:
 private:
     void setupForceField();
     void addNewStreak();
-    void setupStreak(Streak *streak);
+    void setupStreak(Streak &streak);
     
     ofxParameter<int> numStreaks;
     ofxParameter<float> complexity;
@@ -49,7 +48,7 @@ private:
     ofxParameter<ofColor> color;
     ofxParameter<int> colorVar;
     
-    vector<Streak *> streaks;
+    vector<Streak> streaks;
     ofVec2f force[FORCE_RESOLUTION][FORCE_RESOLUTION];
     float noiseSeed;
 };

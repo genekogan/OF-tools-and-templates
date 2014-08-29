@@ -36,6 +36,10 @@ void Amoeba::setup() {
     stroked = true;
     curvedVertices = false;
     lineWidth = 1;
+    cycleFill = 50;
+    cycleStroke = 50;
+    densityStroke = 1;
+    densityFill = 1;
 }
 
 //--------

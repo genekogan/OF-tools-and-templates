@@ -2,17 +2,17 @@
 
 uniform sampler2DRect texture;
 uniform float brt;
-uniform int rad;
+uniform float rad;
 
 //const vec2 texOffset = vec2(1.0, 1.0);
 
 void main(void) {
-  int i = 0;
-  int j = 0;
+  float i = 0.0;
+  float j = 0.0;
   vec4 sum = vec4(0.0);
   
-  for( i=-rad;i<rad;i++) {
-    for( j=-rad;j<rad;j++) {
+  for( i=-rad;i<rad;i+=1.0) {
+    for( j=-rad;j<rad;j+=1.0) {
         sum += texture2DRect( texture, gl_FragCoord.st + vec2(j,i))*brt;
     }
   }

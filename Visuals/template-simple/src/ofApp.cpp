@@ -71,8 +71,8 @@ void ofApp::setup(){
     ((Syphon *) syphon)->setClient("serverName", "appName");
     
     
-    disableAll();
-    shader->setActive(true);
+    setInactiveAll();
+    cubes->setActive(true);
 }
 
 //-----------
@@ -105,21 +105,21 @@ void ofApp::draw() {
 
 //-----------
 void ofApp::keyPressed(int key){
-    if      (key=='q') { disableAll(); agents->setActive(true); }
-    else if (key=='w') { disableAll(); amoeba->setActive(true); }
-    else if (key=='e') { disableAll(); bubbles->setActive(true); }
-    else if (key=='r') { disableAll(); cubes->setActive(true); }
-    else if (key=='t') { disableAll(); debug->setActive(true); }
-    else if (key=='y') { disableAll(); gridfly->setActive(true); }
-    else if (key=='u') { disableAll(); letters->setActive(true); }
-    else if (key=='i') { disableAll(); meshy->setActive(true); }
-    else if (key=='o') { disableAll(); movie->setActive(true); }
-    else if (key=='p') { disableAll(); polar->setActive(true); }
-    else if (key=='a') { disableAll(); rivers->setActive(true); }
-    else if (key=='s') { disableAll(); shader->setActive(true); }
-    else if (key=='d') { disableAll(); shapespace->setActive(true); }
-    else if (key=='f') { disableAll(); subdivide->setActive(true); }
-    else if (key=='g') { disableAll(); syphon->setActive(true); }
+    if      (key=='q') { setInactiveAll(); agents->setActive(true); }
+    else if (key=='w') { setInactiveAll(); amoeba->setActive(true); }
+    else if (key=='e') { setInactiveAll(); bubbles->setActive(true); }
+    else if (key=='r') { setInactiveAll(); cubes->setActive(true); }
+    else if (key=='t') { setInactiveAll(); debug->setActive(true); }
+    else if (key=='y') { setInactiveAll(); gridfly->setActive(true); }
+    else if (key=='u') { setInactiveAll(); letters->setActive(true); }
+    else if (key=='i') { setInactiveAll(); meshy->setActive(true); }
+    else if (key=='o') { setInactiveAll(); movie->setActive(true); }
+    else if (key=='p') { setInactiveAll(); polar->setActive(true); }
+    else if (key=='a') { setInactiveAll(); rivers->setActive(true); }
+    else if (key=='s') { setInactiveAll(); shader->setActive(true); }
+    else if (key=='d') { setInactiveAll(); shapespace->setActive(true); }
+    else if (key=='f') { setInactiveAll(); subdivide->setActive(true); }
+    else if (key=='g') { setInactiveAll(); syphon->setActive(true); }
 
     if (shader->getActive()) {
         if      (key=='`') ((Shader *) shader)->setupBits();
@@ -141,4 +141,23 @@ void ofApp::keyPressed(int key){
         else if (key=='#') ((Shader *) shader)->setupFractalFlower();
         else if (key=='$') ((Shader *) shader)->setupCurtains();
     }
+}
+
+//-----------
+void ofApp::setInactiveAll() {
+    agents->setActive(false);
+    amoeba->setActive(false);
+    bubbles->setActive(false);
+    cubes->setActive(false);
+    debug->setActive(false);
+    gridfly->setActive(false);
+    letters->setActive(false);
+    meshy->setActive(false);
+    movie->setActive(false);
+    polar->setActive(false);
+    rivers->setActive(false);
+    shader->setActive(false);
+    shapespace->setActive(false);
+    subdivide->setActive(false);
+    syphon->setActive(false);
 }

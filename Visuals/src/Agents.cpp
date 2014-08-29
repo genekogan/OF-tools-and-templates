@@ -5,7 +5,7 @@
 void Agents::setup() {
     setName("Agents");
 
-    control.registerParameter("numAgents", &numAgents, 1, 120);
+    control.registerParameter("numAgents", &numAgents, 1, 360);
     control.registerParameter("speed", &speed, -5.0f, 5.0f);
     control.registerParameter("size", &size, 30, 800);
     control.registerParameter("colorLines", &color1, ofColor(0), ofColor(255));
@@ -55,7 +55,7 @@ void Agents::update() {
     }
     for (int i=0; i<numAgents; i++) {
         for (int j=i+1; j<numAgents; j++) {
-            bool intersecting = agents[i].isIntersecting(&agents[j]);
+            bool intersecting = agents[i].isIntersecting(agents[j]);
             if (intersecting) {
                 agents[i].addIntersectingAgent(&agents[j]);
                 agents[j].addIntersectingAgent(&agents[i]);
@@ -161,11 +161,11 @@ void Agent::update() {
 }
 
 //---------
-bool Agent::isIntersecting(Agent *other) {
+bool Agent::isIntersecting(Agent &other) {
     bool isIntersecting = false;
-    if ((pos.x - other->pos.x)*(pos.x - other->pos.x) +
-        (pos.y - other->pos.y)*(pos.y - other->pos.y) <
-        (rad + other->rad)*(rad + other->rad)) {
+    if ((pos.x - other.pos.x)*(pos.x - other.pos.x) +
+        (pos.y - other.pos.y)*(pos.y - other.pos.y) <
+        (rad + other.rad)*(rad + other.rad)) {
         isIntersecting = true;
     }
     return isIntersecting;

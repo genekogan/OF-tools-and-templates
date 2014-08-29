@@ -2,7 +2,9 @@
 
 
 //--------
-void Streak::setup(float x, float y, int maxAge, float speed, int maxThickness, float strokeAlpha, int width, int height, ofColor color){
+void Streak::setup(float x, float y, int maxAge, float speed,
+                   int maxThickness, float strokeAlpha,
+                   int width, int height, ofColor color){
     pos.set(x, y);
     prev.set(x, y);
     age = 0;
@@ -93,7 +95,7 @@ void Rivers::setupForceField() {
 }
 
 //--------
-void Rivers::setupStreak(Streak *streak) {
+void Rivers::setupStreak(Streak &streak) {
     int x = ofRandom(width);
     int y = ofRandom(height);
     int age = ofRandom(minAge, maxAge);
@@ -101,14 +103,14 @@ void Rivers::setupStreak(Streak *streak) {
     ofColor newColor = ofColor(ofClamp(color->r + ofRandom(-colorVar,colorVar), 0, 255),
                                ofClamp(color->g + ofRandom(-colorVar,colorVar), 0, 255),
                                ofClamp(color->b + ofRandom(-colorVar,colorVar), 0, 255));
-    streak->setup(x, y, age, speed,
+    streak.setup(x, y, age, speed,
                  maxThickness, streakAlpha,
                  width, height, newColor);
 }
 
 //--------
 void Rivers::addNewStreak(){
-    Streak *streak = new Streak();
+    Streak streak; // = new Streak();
     setupStreak(streak);
     streaks.push_back(streak);
 }
@@ -123,12 +125,12 @@ void Rivers::update(){
         streaks.pop_back();
     }
     
-    vector<Streak *>::iterator streak = streaks.begin();
+    vector<Streak>::iterator streak = streaks.begin();
     while (streak != streaks.end()) {
-        int ix = ofClamp(ofMap((*streak)->pos.x, 0, width, 0, FORCE_RESOLUTION), 0, FORCE_RESOLUTION-1);
-        int iy = ofClamp(ofMap((*streak)->pos.y, 0, height, 0, FORCE_RESOLUTION), 0, FORCE_RESOLUTION-1);
-        (*streak)->update(force[ix][iy]);
-        if (!(*streak)->isActive()) {
+        int ix = ofClamp(ofMap((*streak).pos.x, 0, width, 0, FORCE_RESOLUTION), 0, FORCE_RESOLUTION-1);
+        int iy = ofClamp(ofMap((*streak).pos.y, 0, height, 0, FORCE_RESOLUTION), 0, FORCE_RESOLUTION-1);
+        (*streak).update(force[ix][iy]);
+        if (!(*streak).isActive()) {
             setupStreak(*streak);            
         }
         streak++;
@@ -137,7 +139,7 @@ void Rivers::update(){
 
 //--------
 void Rivers::draw() {
-    for (vector<Streak *>::iterator it = streaks.begin(); it != streaks.end(); ++it){
-        (*it)->draw();
+    for (vector<Streak>::iterator it = streaks.begin(); it != streaks.end(); ++it){
+        (*it).draw();
     }
 }

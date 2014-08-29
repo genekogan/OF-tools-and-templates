@@ -71,7 +71,6 @@ public:
         
         if (toClear) {
             ofClear(0, 0);
-            cout << "toClear " << toClear << " " << ofGetFrameNum()<< endl;
         }
         
         if (bgColor->a > 0) {
@@ -80,9 +79,9 @@ public:
             ofRect(0, 0, width, height);
         }
 
-        ofSetColor(255, 50);
+        ofSetColor(255, 255);
 
-        draw();
+        draw();     // call draw method of subclass
         
         ofDisableSmoothing();
         
@@ -101,6 +100,10 @@ public:
 
     void setGuiPosition(int x, int y) {
         control.setGuiPosition(x, y);
+    }
+
+    void setVisible(bool visible) {
+        control.setVisible(visible);
     }
     
     void toggeVisible() {

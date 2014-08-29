@@ -25,6 +25,8 @@ void PostProcessingLayer::setup() {
     ssao = post.createPass<SSAOPass>();
     zoomBlur = post.createPass<ZoomBlurPass>();
     
+    control.setName("PostProcessing");
+    control.registerLabel("Effects");
     control.registerParameter("alias", &aliasEnabled);
     control.registerParameter("bloom", &bloomEnabled);
     control.registerParameter("dof", &dofEnabled);
@@ -141,6 +143,12 @@ void PostProcessingLayer::toggleVisible() {
 }
 
 //-----------
+void PostProcessingLayer::setVisible(bool visible) {
+    control.setVisible(visible);
+    gui.setVisible(visible);
+}
+
+//-----------
 void PostProcessingLayer::programChange(bool &b) {
     buildGui();
 }
@@ -169,6 +177,7 @@ void PostProcessingLayer::buildGui() {
     zoomBlur->setEnabled(zoomBlurEnabled);
     
     gui.clearParameters();
+    
     if (alias->getEnabled()) {
         gui.registerLabel("alias");
     }
@@ -298,7 +307,7 @@ void PostProcessingLayer::render() {
 
 //-----------
 PostProcessingLayer::~PostProcessingLayer() {
-    // remove listeners
+    // remove toggle listeners
     aliasEnabled.removeListener(this, &PostProcessingLayer::programChange);
     bloomEnabled.removeListener(this, &PostProcessingLayer::programChange);
     dofEnabled.removeListener(this, &PostProcessingLayer::programChange);
@@ -319,6 +328,7 @@ PostProcessingLayer::~PostProcessingLayer() {
     rimHighlightEnabled.removeListener(this, &PostProcessingLayer::programChange);
     ssaoEnabled.removeListener(this, &PostProcessingLayer::programChange);
     zoomBlurEnabled.removeListener(this, &PostProcessingLayer::programChange);
+    // remove parameter listeners
     dofAperture.removeListener(this, &PostProcessingLayer::dofApertureChanged);
     dofFocus.removeListener(this, &PostProcessingLayer::dofFocusChanged);
     dofMaxBlur.removeListener(this, &PostProcessingLayer::dofMaxBlurChanged);
