@@ -1,35 +1,46 @@
 #include "Kinect.h"
 
 void Kinect::setup(){
+    vector<string> choices;
+    choices.push_back("blobs");
+    choices.push_back("segmentation");
+    control.registerMenu("strategy", this, &Kinect::selectStrategy, choices);
+    
+    control.registerLabel("blobs parameters");
+    control.registerParameter("farThreshold", &farThreshold, 0.0f, 255.0f);
+    control.registerParameter("nearThreshold", &nearThreshold, 0.0f, 255.0f);
+    
+    control.registerLabel("segmentation parameters");
+    control.registerParameter("fade", &fade, 0.0f, 255.0f);
+    control.registerParameter("numDilate", &numDilate, 0, 10);
+    control.registerParameter("numErode", &numErode, 0, 10);
+
+    control.registerLabel("contour parameters");
+    control.registerParameter("minArea", &minArea, 0.0f, 100000.0f);
+    control.registerParameter("maxArea", &maxArea, 2500.0f, 150000.0f);
+    control.registerParameter("threshold", &threshold, 0.0f, 255.0f);
+    control.registerParameter("persistence", &persistence, 0.0f, 100.0f);
+    control.registerParameter("maxDistance", &maxDistance, 0.0f, 100.0f);
+    control.registerParameter("smoothingRate", &smoothingRate, 0.0f, 100.0f);
+    
+    control.registerLabel("output parameters");
+    control.registerParameter("smoothed", &smoothness, 0, 10);
+    control.registerParameter("curved", &curved);
+    control.setName("kinect");
+    
     blobColors[0] = ofColor(255, 0, 0);
     blobColors[1] = ofColor(0, 255, 0);
     blobColors[2] = ofColor(0, 0, 255);
     blobColors[3] = ofColor(255, 255, 0);
     blobColors[4] = ofColor(255, 0, 255);
-    blobColors[5] = ofColor(0, 127, 255);
-    blobColors[6] = ofColor(0, 255, 127);
+    blobColors[5] = ofColor(0, 255, 255);
+    blobColors[6] = ofColor(255, 127, 0);
     blobColors[7] = ofColor(127, 0, 255);
-    blobColors[8] = ofColor(255, 0, 127);
+    blobColors[8] = ofColor(0, 255, 127);
     blobColors[9] = ofColor(127, 255, 0);
-    blobColors[10]= ofColor(255, 127, 0);
-    
-    kinect.setRegistration(true);
-    kinect.init();
-	kinect.open();
-    
-    control.registerParameter("fade", &fade, 0.0f, 255.0f);
-    control.registerParameter("minArea", &minArea, 0.0f, 255.0f);
-    control.registerParameter("maxArea", &maxArea, 0.0f, 255.0f);
-    control.registerParameter("threshold", &threshold, 0.0f, 255.0f);
-    control.registerParameter("persistence", &persistence, 0.0f, 100.0f);
-    control.registerParameter("maxDistance", &maxDistance, 0.0f, 100.0f);
-    control.registerParameter("numDilate", &numDilate, 0, 10);
-    control.registerParameter("numErode", &numErode, 0, 10);
-    control.registerParameter("nearThreshold", &nearThreshold, 0.0f, 255.0f);
-    control.registerParameter("farThreshold", &farThreshold, 0.0f, 255.0f);
-    control.registerParameter("smoothed", &smoothness, 0, 10);
-    control.registerParameter("curved", &curved);
-    
+    blobColors[10]= ofColor(255, 0, 127);
+    blobColors[11]= ofColor(0, 127, 255);
+
     fade = 200;
     minArea = 1000;
     maxArea = 70000;
@@ -42,37 +53,26 @@ void Kinect::setup(){
     farThreshold = 10;
     smoothness = 1;
     curved = false;
+    smoothingRate = 1;
+    
+    kinect.setRegistration(true);
+    kinect.init();
+	kinect.open();
 }
 
-void Kinect::toggleGuiView() {
-    //gui->setVisible(!gui->isVisible());
+//---------
+void Kinect::selectStrategy(string &s) {
+    if      (s=="blobs")        setContourStrategy(BLOBS);
+    else if (s=="segmentation") setContourStrategy(SEGMENTATION);
 }
 
+//---------
 void Kinect::setContourStrategy(ContourStrategy contourStrategy) {
     this->contourStrategy = contourStrategy;
-    /*
     if (contourStrategy == BLOBS) {
         grayImage.allocate(kinect.width, kinect.height);
         grayThreshNear.allocate(kinect.width, kinect.height);
         grayThreshFar.allocate(kinect.width, kinect.height);
-	    
-        // setup gui
-        gui = new ofxUICanvas();
-        gui->setHeight(800);
-        gui->setName("parameters");
-        gui->addLabel("kinect");
-        gui->addSpacer();
-        gui->addSlider("nearThresh", 0, 255, &nearThreshold);
-        gui->addSlider("farThresh", 0, 255, &farThreshold);
-        gui->addLabel("contours");
-        gui->addSpacer();
-        gui->addSlider("minArea", 0, 5000, &minArea);
-        gui->addSlider("maxArea", 15000, 150000, &maxArea);
-        gui->addSlider("threshold", 1, 100, &threshold);
-        gui->addSlider("persistence", 1, 100, &persistence);
-        gui->addSlider("maxDistance", 1, 100, &maxDistance);
-        gui->addIntSlider("smoothness", 1, 12, &smoothness);
-        gui->addToggle("curved", &curved);
     }
     else if (contourStrategy == SEGMENTATION) {
         colorImage.allocate(kinect.width, kinect.height);
@@ -80,38 +80,36 @@ void Kinect::setContourStrategy(ContourStrategy contourStrategy) {
         fboKinect.allocate(kinect.width, kinect.height, GL_RGBA);
         fboEdges.allocate(kinect.width, kinect.height, GL_RGB);
         edgeShader.load("kinect/standard.vert", "kinect/edges.frag");
-        
-        gui = new ofxUICanvas();
-        gui->setHeight(800);
-        gui->setName("parameters");
-        gui->addLabel("kinect");
-        gui->addSpacer();
-        gui->addSlider("fade", 0, 255, &fade);
-        gui->addSlider("minArea", 0, 5000, &minArea);
-        gui->addSlider("maxArea", 5000, 320000, &maxArea);
-        gui->addSlider("threshold", 1, 100, &threshold);
-        gui->addSlider("persistence", 1, 100, &persistence);
-        gui->addSlider("maxDistance", 1, 100, &maxDistance);
-        gui->addIntSlider("numDilate", 0, 8, &numDilate);
-        gui->addIntSlider("numErode", 0, 8, &numErode);
-        gui->addIntSlider("smoothness", 1, 12, &smoothness);
-        gui->addToggle("curved", &curved);
     }
-     */
 }
 
+//---------
+void Kinect::toggleGuiView() {
+    control.toggleVisible();
+}
+
+//---------
 void Kinect::setCalibration(string path){
     kpt.loadCalibration(path);
 }
 
+//---------
 void Kinect::setGuiPosition(int x, int y){
-    //gui->setPosition(x, y);
+    control.setGuiPosition(x, y);
 }
 
-//ContourFinder* Kinect::getContourFinder(){
-//    return &contourFinder; //.getTracker();
-//}
+//---------
+ContourFinder* Kinect::getContourFinder(){
+    return &contourFinder; //.getTracker();
+}
 
+//---------
+RectTracker* Kinect::getContourTracker(){
+    return &contourFinder.getTracker();
+}
+
+
+//---------
 void Kinect::update(){
     kinect.update();
     if(kinect.isFrameNew()) {
@@ -121,11 +119,12 @@ void Kinect::update(){
         else if (contourStrategy == SEGMENTATION) {
             updateSegmentation();
         }
+        updateContours();
     }
 }
 
+//---------
 void Kinect::updateBlobs() {
-    // process kinect depth image
     grayImage.setFromPixels(kinect.getDepthPixels(), kinect.width, kinect.height);
     grayThreshNear = grayImage;
     grayThreshFar = grayImage;
@@ -133,18 +132,9 @@ void Kinect::updateBlobs() {
     grayThreshFar.threshold(farThreshold);
     cvAnd(grayThreshNear.getCvImage(), grayThreshFar.getCvImage(), grayImage.getCvImage(), NULL);
     grayImage.flagImageChanged();
-    
-    // set contour tracker parameters
-    contourFinder.setMinArea(minArea);
-    contourFinder.setMaxArea(maxArea);
-    contourFinder.setThreshold(threshold);
-    contourFinder.getTracker().setPersistence(persistence);
-    contourFinder.getTracker().setMaximumDistance(maxDistance);
-    
-    // determine found contours
-    contourFinder.findContours(grayImage);
 }
 
+//---------
 void Kinect::updateSegmentation() {
     // depth image fade
     fboKinect.begin();
@@ -154,7 +144,7 @@ void Kinect::updateSegmentation() {
     ofDisableAlphaBlending();
     fboKinect.end();
     
-    // edges shader
+    // get Edges
     fboEdges.begin();
     edgeShader.begin();
     fboKinect.draw(0, 0);
@@ -166,28 +156,32 @@ void Kinect::updateSegmentation() {
     grayImage.setFromColorImage(colorImage);
     
     // post-processing
-    for (int i=0; i<numDilate; i++){
-        grayImage.dilate_3x3();
-    }
-    for (int i=0; i<numErode; i++){
-        grayImage.erode_3x3();
-    }
-    grayImage.invert();
-    grayImage.threshold(250);
-    
-    // run through contour finder
+    for (int i=0; i<numDilate; i++) grayImage.dilate_3x3();
+    for (int i=0; i<numErode; i++)  grayImage.erode_3x3();
+    grayImage.threshold(threshold);
+}
+
+//---------
+void Kinect::updateContours() {
     contourFinder.setMinArea(minArea);
     contourFinder.setMaxArea(maxArea);
     contourFinder.setThreshold(threshold);
     contourFinder.getTracker().setPersistence(persistence);
     contourFinder.getTracker().setMaximumDistance(maxDistance);
+    contourFinder.getTracker().setSmoothingRate(smoothingRate);
     contourFinder.findContours(grayImage);
 }
 
-void Kinect::drawDebugBlobs(){
+//---------
+void Kinect::drawDebug(int x, int y, int w, int h){
     ofBackground(0);
-    ofSetColor(255);
+    
     ofPushMatrix();
+    ofTranslate(x, y);
+    ofScale((float) w / 1280.0f, (float) h / 960.0f);
+
+    
+    ofSetColor(255, 255);
     kinect.draw(0, 0);
     ofTranslate(640, 0);
     grayImage.draw(0, 0);
@@ -195,8 +189,8 @@ void Kinect::drawDebugBlobs(){
     contourFinder.draw();
     ofTranslate(640, 0);
     
-	RectTracker& tracker = contourFinder.getTracker();
-	
+    RectTracker& tracker = contourFinder.getTracker();
+    
     for(int i = 0; i < contourFinder.size(); i++)
     {
         // get contour, label, center point, and age of contour
@@ -207,69 +201,9 @@ void Kinect::drawDebugBlobs(){
         vector<cv::Point> fitPoints = contourFinder.getFitQuad(i);
         cv::RotatedRect fitQuad = contourFinder.getFitEllipse(i);
         
-        
         // draw contours
         ofFill();
-        ofSetColor(blobColors[label % 11]);
-        ofBeginShape();
-        for (int j=0; j<points.size(); j++) {
-            ofVertex(points[j].x, points[j].y);
-        }
-        ofEndShape();
-        
-        
-        ofNoFill();
-        ofSetLineWidth(3);
-        
-        // draw approximate contour
-        ofBeginShape();
-        for (int j=0; j<fitPoints.size(); j++) {
-            ofVertex(fitPoints[j].x, fitPoints[j].y);
-        }
-        ofEndShape();
-        
-        // draw rotated bounding rect
-        ofPushMatrix();
-        ofPushStyle();
-        ofSetRectMode(OF_RECTMODE_CENTER);
-        ofSetColor(255);
-        ofTranslate(fitQuad.center.x, fitQuad.center.y);
-        ofRotate(fitQuad.angle);
-        ofRect(0, 0, fitQuad.size.width, fitQuad.size.height);
-        ofPopStyle();
-        ofPopMatrix();
-    }
-    
-    ofPopMatrix();
-}
-
-void Kinect::drawDebugSegmentation(){
-    ofBackground(0);
-    
-    ofPushMatrix();
-    kinect.draw(0, 0);
-    ofTranslate(640, 0);
-    kinect.drawDepth(0, 0);
-    ofTranslate(-640, 480);
-    grayImage.draw(0, 0);
-    ofTranslate(640, 0);
-    grayImage.draw(0, 0);
-    //contourFinder.draw();
-    
-    RectTracker& tracker = contourFinder.getTracker();
-    
-    for(int i = 0; i < contourFinder.size(); i++) {
-        // get contour, label, center point, and age of contour
-        vector<cv::Point> points = contourFinder.getContour(i);
-        int label = contourFinder.getLabel(i);
-        ofPoint center = toOf(contourFinder.getCenter(i));
-        int age = tracker.getAge(label);
-        vector<cv::Point> fitPoints = contourFinder.getFitQuad(i);
-        cv::RotatedRect fitQuad = contourFinder.getFitEllipse(i);
-        
-        // draw contours
-        ofFill();
-        ofSetColor(blobColors[label % 11]);
+        ofSetColor(blobColors[label % 12]);
         ofBeginShape();
         for (int j=0; j<points.size(); j++) {
             ofVertex(points[j].x, points[j].y);
@@ -298,18 +232,11 @@ void Kinect::drawDebugSegmentation(){
         ofPopMatrix();
         
     }
+    
     ofPopMatrix();
 }
 
-void Kinect::drawDebug(){
-    if (contourStrategy == BLOBS) {
-        drawDebugBlobs();
-    }
-    else if (contourStrategy == SEGMENTATION) {
-        drawDebugSegmentation();
-    }
-}
-
+//---------
 void Kinect::drawMask() {
     RectTracker& tracker = contourFinder.getTracker();
     for(int i = 0; i < contourFinder.size(); i++) {
@@ -332,6 +259,12 @@ void Kinect::drawMask() {
     }
 }
 
+//---------
 void Kinect::close() {
     kinect.close();
+}
+
+//---------
+Kinect::~Kinect() {
+    close();
 }

@@ -8,7 +8,6 @@
 #include "ofxOpenCv.h"
 
 
-
 using namespace ofxCv;
 using namespace cv;
 
@@ -18,30 +17,37 @@ enum ContourStrategy { BLOBS, SEGMENTATION };
 class Kinect
 {
 public:
+    ~Kinect();
     void                    setup();
     void                    close();
+    
     void                    setGuiPosition(int x, int y);
     void                    toggleGuiView();
+
     void                    setCalibration(string path);
+    
     void                    setContourStrategy(ContourStrategy contourStrategy);
-    //    ContourFinder*          getContourFinder();
+    ContourFinder*          getContourFinder();
+    RectTracker*            getContourTracker();
     
     void                    update();
     void                    draw();
-    void                    drawDebug();
+    
+    void                    drawDebug(int x, int y, int w=1280, int h=960);
     void                    drawMask();
     
 private:
+    
+    void                    selectStrategy(string &s);
+
     void                    updateSegmentation();
     void                    updateBlobs();
-    void                    drawDebugSegmentation();
-    void                    drawDebugBlobs();
+    void                    updateContours();
+    
+    /* data */
     
     ofxKinect               kinect;
     ofxKinectProjectorToolkit kpt;
-
-    
-//    ofxUICanvas             *gui;
     
 	ofxCvColorImage         colorImage;
 	ofxCvGrayscaleImage     grayImage;
@@ -50,12 +56,15 @@ private:
     
     ContourStrategy         contourStrategy;
     ContourFinder           contourFinder;
-    ofColor                 blobColors[11];
+    ofColor                 blobColors[12];
 
     ofShader                edgeShader;
     ofFbo                   fboKinect, fboEdges;
     ofPixels                pixels;
 
+    
+    /* parameters */
+    
     Control                 control;
 
     ofxParameter<float>     fade;
@@ -70,4 +79,5 @@ private:
     ofxParameter<float>     farThreshold;
     ofxParameter<int>       smoothness;
     ofxParameter<bool>      curved;
+    ofxParameter<float>     smoothingRate;
 };
