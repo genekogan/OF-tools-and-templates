@@ -9,7 +9,8 @@ enum LayerType {
     CANVAS_CREATOR,
     CANVAS_MODIFIER,
     CANVAS_POST_PROCESSING,
-    CANVAS_POST_GLITCH };
+    CANVAS_POST_GLITCH,
+    CANVAS_POST_FX };
 
 
 class CanvasLayer

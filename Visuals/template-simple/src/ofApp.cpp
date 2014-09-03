@@ -72,7 +72,7 @@ void ofApp::setup(){
     
     
     setInactiveAll();
-    cubes->setActive(true);
+    subdivide->setActive(true);
 }
 
 //-----------

@@ -100,7 +100,7 @@ void Kinect::setGuiPosition(int x, int y){
 
 //---------
 ContourFinder* Kinect::getContourFinder(){
-    return &contourFinder; //.getTracker();
+    return &contourFinder;
 }
 
 //---------
@@ -174,12 +174,10 @@ void Kinect::updateContours() {
 
 //---------
 void Kinect::drawDebug(int x, int y, int w, int h){
-    ofBackground(0);
-    
     ofPushMatrix();
+
     ofTranslate(x, y);
     ofScale((float) w / 1280.0f, (float) h / 960.0f);
-
     
     ofSetColor(255, 255);
     kinect.draw(0, 0);
@@ -230,25 +228,58 @@ void Kinect::drawDebug(int x, int y, int w, int h){
         ofRect(0, 0, fitQuad.size.width, fitQuad.size.height);
         ofPopStyle();
         ofPopMatrix();
-        
     }
     
     ofPopMatrix();
 }
 
 //---------
-void Kinect::drawMask() {
+void Kinect::drawMask(ofBaseDraws &tex, bool useCalibration) {
+    beginMask(tex.getWidth(), tex.getHeight(), useCalibration);
+    tex.draw(0, 0);
+    endMask();
+}
+
+//---------
+void Kinect::beginMask(int w, int h, bool useCalibration) {
+    if (w != kmask.getWidth() || h != kmask.getHeight()) {
+        kmask.setup(w, h, KMask::LUMINANCE);
+    }
+    
+    // draw mask
+    kmask.beginMask();
+    if (useCalibration) {
+        drawCalibratedContours(kmask.getWidth(), kmask.getHeight());
+    }
+    else {
+        grayImage.draw(0, 0, kmask.getWidth(), kmask.getHeight());
+    }
+    kmask.endMask();
+    
+    // begin drawing texture
+    kmask.begin();
+}
+
+//---------
+void Kinect::endMask() {
+    kmask.end();
+    kmask.draw();
+}
+
+//---------
+void Kinect::drawCalibratedContours(int width, int height) {
+    ofFill();
+    ofSetColor(255);
+
     RectTracker& tracker = contourFinder.getTracker();
     for(int i = 0; i < contourFinder.size(); i++) {
         vector<cv::Point> points = contourFinder.getContour(i);
         ofBeginShape();
-        ofFill();
-        ofSetColor(255);
         for (int j=0; j<points.size(); j+=smoothness) {
             ofVec3f wp = kinect.getWorldCoordinateAt(points[j].x, points[j].y);
             ofVec2f pp = kpt.getProjectedPoint(wp);
-            ofPoint mp(ofMap(pp.x, 0, 1, 0, ofGetWidth()),
-                       ofMap(pp.y, 0, 1, 0, ofGetHeight()));
+            ofPoint mp(ofMap(pp.x, 0, 1, 0, width),
+                       ofMap(pp.y, 0, 1, 0, height));
             if (curved) {
                 ofCurveVertex(mp.x, mp.y);
             } else {

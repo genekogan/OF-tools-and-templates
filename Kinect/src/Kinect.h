@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "Control.h"
+#include "Mask.h"
 #include "ofxKinect.h"
 #include "ofxKinectProjectorToolkit.h"
 #include "ofxCv.h"
@@ -34,7 +35,14 @@ public:
     void                    draw();
     
     void                    drawDebug(int x, int y, int w=1280, int h=960);
-    void                    drawMask();
+
+    
+    void                    drawMask(ofBaseDraws &tex, bool useCalibration=false);
+    void                    beginMask(int w, int h, bool useCalibration=false);
+    void                    endMask();
+    
+    
+    void                    drawCalibratedContours(int width, int height);
     
 private:
     
@@ -44,6 +52,8 @@ private:
     void                    updateBlobs();
     void                    updateContours();
     
+    
+
     /* data */
     
     ofxKinect               kinect;
@@ -62,6 +72,7 @@ private:
     ofFbo                   fboKinect, fboEdges;
     ofPixels                pixels;
 
+    KMask                   kmask;
     
     /* parameters */
     

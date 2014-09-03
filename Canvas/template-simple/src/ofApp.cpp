@@ -6,6 +6,7 @@ void ofApp::setup(){
     
     canvas.setup(1024, 768);
     canvas.addLayer(CANVAS_CREATOR, 1);
+    canvas.addLayer(CANVAS_POST_FX, 1);
 }
 
 //-----------

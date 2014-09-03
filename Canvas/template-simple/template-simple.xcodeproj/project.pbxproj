@@ -67,6 +67,8 @@
 		B0CE427119A7F7630025C47C /* ShapeSpace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0CE425A19A7F5DF0025C47C /* ShapeSpace.cpp */; };
 		B0CE427219A7F7630025C47C /* Subdivide.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0CE425C19A7F5DF0025C47C /* Subdivide.cpp */; };
 		B0CE427319A7F7630025C47C /* Syphon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0CE425E19A7F5DF0025C47C /* Syphon.cpp */; };
+		B0FDB72719B66F320006C5DB /* PostFx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0FDB72519B66F320006C5DB /* PostFx.cpp */; };
+		B0FDB72819B671940006C5DB /* ofxFXObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0FDB71719B66F140006C5DB /* ofxFXObject.cpp */; };
 		B266578FC55D23BFEBC042E7 /* ofxGuiGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECF8674C7975F1063C5E30CA /* ofxGuiGroup.cpp */; };
 		B56FE57CC35806596D38118C /* ofxSliderGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 802251BAF1B35B1D67B32FD0 /* ofxSliderGroup.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
@@ -247,6 +249,44 @@
 		B0CE425F19A7F5DF0025C47C /* Syphon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Syphon.h; sourceTree = "<group>"; };
 		B0CE426219A7F6460025C47C /* Canvas.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Canvas.cpp; sourceTree = "<group>"; };
 		B0CE426319A7F6460025C47C /* Canvas.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Canvas.h; sourceTree = "<group>"; };
+		B0FDB6FD19B66F140006C5DB /* ofxBlend.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxBlend.h; sourceTree = "<group>"; };
+		B0FDB6FE19B66F140006C5DB /* ofxClone.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxClone.h; sourceTree = "<group>"; };
+		B0FDB6FF19B66F140006C5DB /* ofxMask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxMask.h; sourceTree = "<group>"; };
+		B0FDB70019B66F140006C5DB /* ofxMultiTexture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxMultiTexture.h; sourceTree = "<group>"; };
+		B0FDB70219B66F140006C5DB /* ofxBarrelChromaAb.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxBarrelChromaAb.h; sourceTree = "<group>"; };
+		B0FDB70319B66F140006C5DB /* ofxBloom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxBloom.h; sourceTree = "<group>"; };
+		B0FDB70419B66F140006C5DB /* ofxBlur.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxBlur.h; sourceTree = "<group>"; };
+		B0FDB70519B66F140006C5DB /* ofxBokeh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxBokeh.h; sourceTree = "<group>"; };
+		B0FDB70619B66F140006C5DB /* ofxChromaAb.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxChromaAb.h; sourceTree = "<group>"; };
+		B0FDB70719B66F140006C5DB /* ofxChromaGlitch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxChromaGlitch.h; sourceTree = "<group>"; };
+		B0FDB70819B66F140006C5DB /* ofxContrast.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxContrast.h; sourceTree = "<group>"; };
+		B0FDB70919B66F140006C5DB /* ofxGaussianBlur.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxGaussianBlur.h; sourceTree = "<group>"; };
+		B0FDB70A19B66F140006C5DB /* ofxGlow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxGlow.h; sourceTree = "<group>"; };
+		B0FDB70B19B66F140006C5DB /* ofxGrayscale.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxGrayscale.h; sourceTree = "<group>"; };
+		B0FDB70C19B66F140006C5DB /* ofxInverse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxInverse.h; sourceTree = "<group>"; };
+		B0FDB70D19B66F140006C5DB /* ofxLUT.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxLUT.h; sourceTree = "<group>"; };
+		B0FDB70E19B66F140006C5DB /* ofxMedian.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxMedian.h; sourceTree = "<group>"; };
+		B0FDB70F19B66F140006C5DB /* ofxOldTv.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxOldTv.h; sourceTree = "<group>"; };
+		B0FDB71119B66F140006C5DB /* ofxFBM.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxFBM.h; sourceTree = "<group>"; };
+		B0FDB71219B66F140006C5DB /* ofxFire.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxFire.h; sourceTree = "<group>"; };
+		B0FDB71319B66F140006C5DB /* ofxGrayScott.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxGrayScott.h; sourceTree = "<group>"; };
+		B0FDB71419B66F140006C5DB /* ofxNoise.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxNoise.h; sourceTree = "<group>"; };
+		B0FDB71519B66F140006C5DB /* ofxTint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxTint.h; sourceTree = "<group>"; };
+		B0FDB71619B66F140006C5DB /* ofxFX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxFX.h; sourceTree = "<group>"; };
+		B0FDB71719B66F140006C5DB /* ofxFXObject.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxFXObject.cpp; sourceTree = "<group>"; };
+		B0FDB71819B66F140006C5DB /* ofxFXObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxFXObject.h; sourceTree = "<group>"; };
+		B0FDB71919B66F140006C5DB /* ofxSwapBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxSwapBuffer.h; sourceTree = "<group>"; };
+		B0FDB71B19B66F140006C5DB /* ofxAbsDiff.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxAbsDiff.h; sourceTree = "<group>"; };
+		B0FDB71C19B66F140006C5DB /* ofxBounce.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxBounce.h; sourceTree = "<group>"; };
+		B0FDB71D19B66F140006C5DB /* ofxDisplacePixels.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxDisplacePixels.h; sourceTree = "<group>"; };
+		B0FDB71E19B66F140006C5DB /* ofxEdgeDetect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxEdgeDetect.h; sourceTree = "<group>"; };
+		B0FDB71F19B66F140006C5DB /* ofxFlow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxFlow.h; sourceTree = "<group>"; };
+		B0FDB72019B66F140006C5DB /* ofxNormals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxNormals.h; sourceTree = "<group>"; };
+		B0FDB72119B66F140006C5DB /* ofxRipples.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxRipples.h; sourceTree = "<group>"; };
+		B0FDB72219B66F140006C5DB /* ofxSubstract.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxSubstract.h; sourceTree = "<group>"; };
+		B0FDB72319B66F140006C5DB /* ofxThreshold.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxThreshold.h; sourceTree = "<group>"; };
+		B0FDB72519B66F320006C5DB /* PostFx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PostFx.cpp; sourceTree = "<group>"; };
+		B0FDB72619B66F320006C5DB /* PostFx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostFx.h; sourceTree = "<group>"; };
 		B87C60311EC1FE841C1ECD89 /* ofxLabel.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxLabel.h; path = ../../../addons/ofxGui/src/ofxLabel.h; sourceTree = SOURCE_ROOT; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		BBE3E908E4BB3468853C50ED /* ofxDelaunay.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxDelaunay.cpp; path = ../../../addons/ofxDelaunay/src/ofxDelaunay.cpp; sourceTree = SOURCE_ROOT; };
@@ -648,9 +688,95 @@
 				B08573B819ABDD1200CD4B01 /* PostProcessor.h */,
 				B08573BB19ABED9C00CD4B01 /* PostGlitch.cpp */,
 				B08573BC19ABED9C00CD4B01 /* PostGlitch.h */,
+				B0FDB72519B66F320006C5DB /* PostFx.cpp */,
+				B0FDB72619B66F320006C5DB /* PostFx.h */,
 			);
 			name = src;
 			path = ../src;
+			sourceTree = "<group>";
+		};
+		B0FDB6FA19B66ECE0006C5DB /* ofxFx */ = {
+			isa = PBXGroup;
+			children = (
+				B0FDB6FB19B66F140006C5DB /* src */,
+			);
+			name = ofxFx;
+			sourceTree = "<group>";
+		};
+		B0FDB6FB19B66F140006C5DB /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B0FDB6FC19B66F140006C5DB /* composers */,
+				B0FDB70119B66F140006C5DB /* filters */,
+				B0FDB71019B66F140006C5DB /* generative */,
+				B0FDB71619B66F140006C5DB /* ofxFX.h */,
+				B0FDB71719B66F140006C5DB /* ofxFXObject.cpp */,
+				B0FDB71819B66F140006C5DB /* ofxFXObject.h */,
+				B0FDB71919B66F140006C5DB /* ofxSwapBuffer.h */,
+				B0FDB71A19B66F140006C5DB /* operations */,
+			);
+			name = src;
+			path = ../../../addons/ofxFX/src;
+			sourceTree = "<group>";
+		};
+		B0FDB6FC19B66F140006C5DB /* composers */ = {
+			isa = PBXGroup;
+			children = (
+				B0FDB6FD19B66F140006C5DB /* ofxBlend.h */,
+				B0FDB6FE19B66F140006C5DB /* ofxClone.h */,
+				B0FDB6FF19B66F140006C5DB /* ofxMask.h */,
+				B0FDB70019B66F140006C5DB /* ofxMultiTexture.h */,
+			);
+			path = composers;
+			sourceTree = "<group>";
+		};
+		B0FDB70119B66F140006C5DB /* filters */ = {
+			isa = PBXGroup;
+			children = (
+				B0FDB70219B66F140006C5DB /* ofxBarrelChromaAb.h */,
+				B0FDB70319B66F140006C5DB /* ofxBloom.h */,
+				B0FDB70419B66F140006C5DB /* ofxBlur.h */,
+				B0FDB70519B66F140006C5DB /* ofxBokeh.h */,
+				B0FDB70619B66F140006C5DB /* ofxChromaAb.h */,
+				B0FDB70719B66F140006C5DB /* ofxChromaGlitch.h */,
+				B0FDB70819B66F140006C5DB /* ofxContrast.h */,
+				B0FDB70919B66F140006C5DB /* ofxGaussianBlur.h */,
+				B0FDB70A19B66F140006C5DB /* ofxGlow.h */,
+				B0FDB70B19B66F140006C5DB /* ofxGrayscale.h */,
+				B0FDB70C19B66F140006C5DB /* ofxInverse.h */,
+				B0FDB70D19B66F140006C5DB /* ofxLUT.h */,
+				B0FDB70E19B66F140006C5DB /* ofxMedian.h */,
+				B0FDB70F19B66F140006C5DB /* ofxOldTv.h */,
+			);
+			path = filters;
+			sourceTree = "<group>";
+		};
+		B0FDB71019B66F140006C5DB /* generative */ = {
+			isa = PBXGroup;
+			children = (
+				B0FDB71119B66F140006C5DB /* ofxFBM.h */,
+				B0FDB71219B66F140006C5DB /* ofxFire.h */,
+				B0FDB71319B66F140006C5DB /* ofxGrayScott.h */,
+				B0FDB71419B66F140006C5DB /* ofxNoise.h */,
+				B0FDB71519B66F140006C5DB /* ofxTint.h */,
+			);
+			path = generative;
+			sourceTree = "<group>";
+		};
+		B0FDB71A19B66F140006C5DB /* operations */ = {
+			isa = PBXGroup;
+			children = (
+				B0FDB71B19B66F140006C5DB /* ofxAbsDiff.h */,
+				B0FDB71C19B66F140006C5DB /* ofxBounce.h */,
+				B0FDB71D19B66F140006C5DB /* ofxDisplacePixels.h */,
+				B0FDB71E19B66F140006C5DB /* ofxEdgeDetect.h */,
+				B0FDB71F19B66F140006C5DB /* ofxFlow.h */,
+				B0FDB72019B66F140006C5DB /* ofxNormals.h */,
+				B0FDB72119B66F140006C5DB /* ofxRipples.h */,
+				B0FDB72219B66F140006C5DB /* ofxSubstract.h */,
+				B0FDB72319B66F140006C5DB /* ofxThreshold.h */,
+			);
+			path = operations;
 			sourceTree = "<group>";
 		};
 		BA7CA251A8C3541F18ECFFC2 /* src */ = {
@@ -671,6 +797,7 @@
 				B07ECFB819A667FF001A868A /* Algorithms */,
 				B085739B19ABB37500CD4B01 /* ofxPostGlitch */,
 				B085736819ABB34200CD4B01 /* ofxPostProcessing */,
+				B0FDB6FA19B66ECE0006C5DB /* ofxFx */,
 				D2C886FA54EB72B7FEB7FB8C /* ofxBlurShader */,
 				5A296432AD6765AD9158F813 /* ofxDelaunay */,
 				480A780D8D0308AE4A368801 /* ofxGui */,
@@ -854,6 +981,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0FDB72819B671940006C5DB /* ofxFXObject.cpp in Sources */,
 				B08573C619AC2A3E00CD4B01 /* ofxPostGlitch.cpp in Sources */,
 				B08573C519AC279400CD4B01 /* PostGlitch.cpp in Sources */,
 				B085739F19ABB67500CD4B01 /* BleachBypassPass.cpp in Sources */,
@@ -913,6 +1041,7 @@
 				837220E80EB56CD44AD27F2A /* ofxSlider.cpp in Sources */,
 				B56FE57CC35806596D38118C /* ofxSliderGroup.cpp in Sources */,
 				1CD33E884D9E3358252E82A1 /* ofxToggle.cpp in Sources */,
+				B0FDB72719B66F320006C5DB /* PostFx.cpp in Sources */,
 				B07ECFB519A6678B001A868A /* SyphonNameboundClient.m in Sources */,
 				1F558B76FB3412843DDAA031 /* ofxSyphonClient.mm in Sources */,
 				8D60C222CBD3F869382832E9 /* ofxSyphonServer.mm in Sources */,
@@ -1082,6 +1211,12 @@
 					../../../addons/ofxTwistedRibbon/src,
 					../../../addons/ofxPostGlitch/src,
 					../../../addons/ofxPostProcessing/src,
+					../../../addons/ofxFX/libs,
+					../../../addons/ofxFX/src,
+					../../../addons/ofxFX/src/composers,
+					../../../addons/ofxFX/src/filters,
+					../../../addons/ofxFX/src/generative,
+					../../../addons/ofxFX/src/operations,
 				);
 				ICON = "$(ICON_NAME_DEBUG)";
 				ICON_FILE = "$(ICON_FILE_PATH)$(ICON)";
@@ -1182,6 +1317,12 @@
 					../../../addons/ofxTwistedRibbon/src,
 					../../../addons/ofxPostGlitch/src,
 					../../../addons/ofxPostProcessing/src,
+					../../../addons/ofxFX/libs,
+					../../../addons/ofxFX/src,
+					../../../addons/ofxFX/src/composers,
+					../../../addons/ofxFX/src/filters,
+					../../../addons/ofxFX/src/generative,
+					../../../addons/ofxFX/src/operations,
 				);
 				ICON = "$(ICON_NAME_RELEASE)";
 				ICON_FILE = "$(ICON_FILE_PATH)$(ICON)";

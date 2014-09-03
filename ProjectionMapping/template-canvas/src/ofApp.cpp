@@ -7,6 +7,7 @@ void ofApp::setup(){
     
     canvas1.setup(800, 600);
     canvas1.addLayer(CANVAS_CREATOR, 1);
+    canvas1.addLayer(CANVAS_POST_FX, 1);
     
     canvas2.setup(800, 600);
     canvas2.addLayer(CANVAS_CREATOR, 1);

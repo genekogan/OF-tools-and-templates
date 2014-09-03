@@ -22,6 +22,7 @@
 #include "Layer.h"
 #include "PostProcessor.h"
 #include "PostGlitch.h"
+#include "PostFx.h"
 
 
 class Canvas
@@ -37,6 +38,7 @@ public:
     void addModifier() {addLayer(CANVAS_MODIFIER, 1);}
     void addPostProcessor() {addLayer(CANVAS_POST_PROCESSING, 1);}
     void addPostGlitch() {addLayer(CANVAS_POST_GLITCH, 1);}
+    void addPostFx() {addLayer(CANVAS_POST_FX, 1);}
     
     void setupMetaGui();
     void chooseGui(string &s);

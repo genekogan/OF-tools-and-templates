@@ -18,13 +18,14 @@ void Canvas::setupMetaGui() {
     }
     metaGui.clearParameters();
     metaGui.setName("choose view");
-    metaGui.setGuiPosition(ofGetWidth()-205, ofGetHeight() - 158 - 19*layers.size());
+    metaGui.setGuiPosition(ofGetWidth()-205, ofGetHeight() - 175 - 19*layers.size());
     metaGui.registerMenu("choos view", this, &Canvas::chooseGui, choices);
     metaGui.registerLabel("add layer");
     metaGui.registerEvent(" +creator", this, &Canvas::addCreator);
     metaGui.registerEvent(" +modifier", this, &Canvas::addModifier);
     metaGui.registerEvent(" +postProcessor", this, &Canvas::addPostProcessor);
     metaGui.registerEvent(" +postGlitch", this, &Canvas::addPostGlitch);
+    metaGui.registerEvent(" +postFx", this, &Canvas::addPostFx);
 }
 
 //----------------
@@ -55,6 +56,7 @@ void Canvas::addLayer(LayerType type, int numLayers) {
         else if (type == CANVAS_MODIFIER)        layer = new ModifierLayer();
         else if (type == CANVAS_POST_PROCESSING) layer = new PostProcessingLayer();
         else if (type == CANVAS_POST_GLITCH)     layer = new PostGlitchLayer();
+        else if (type == CANVAS_POST_FX)         layer = new PostFxLayer();
         if (layers.size() > 0)
             layer->setup(width, height, layers[layers.size()-1]);
         else

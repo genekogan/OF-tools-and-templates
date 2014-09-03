@@ -267,6 +267,7 @@
 		AF32EEE2A36AAAD543E5D3E3 /* matrix_conj_trans.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = matrix_conj_trans.h; path = ../../../addons/ofxKinectProjectorToolkit/libs/dlib/matrix/matrix_conj_trans.h; sourceTree = SOURCE_ROOT; };
 		AF9A155219FEDFA6E95454EA /* gpu.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = gpu.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/gpu/gpu.hpp; sourceTree = SOURCE_ROOT; };
 		B047FF96258DC01792B272DB /* ETF.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ETF.cpp; path = ../../../addons/ofxCv/libs/CLD/src/ETF.cpp; sourceTree = SOURCE_ROOT; };
+		B095393A19B6D78E00E59659 /* Mask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Mask.h; sourceTree = "<group>"; };
 		B096C20E19B0DEE8005E2E93 /* Kinect.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Kinect.cpp; sourceTree = "<group>"; };
 		B096C20F19B0DEE8005E2E93 /* Kinect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Kinect.h; sourceTree = "<group>"; };
 		B096C21119B0DEF4005E2E93 /* Control.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Control.h; sourceTree = "<group>"; };
@@ -905,6 +906,7 @@
 		B096C20D19B0DEE8005E2E93 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				B095393A19B6D78E00E59659 /* Mask.h */,
 				B096C20E19B0DEE8005E2E93 /* Kinect.cpp */,
 				B096C20F19B0DEE8005E2E93 /* Kinect.h */,
 			);
