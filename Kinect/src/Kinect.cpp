@@ -5,6 +5,8 @@ void Kinect::setup(){
     choices.push_back("blobs");
     choices.push_back("segmentation");
     control.registerMenu("strategy", this, &Kinect::selectStrategy, choices);
+    control.registerParameter("track blobs", &trackingBlobs);
+    control.registerParameter("track keypoints", &trackingKeypoints);
     
     control.registerLabel("blobs parameters");
     control.registerParameter("farThreshold", &farThreshold, 0.0f, 255.0f);
@@ -113,13 +115,18 @@ RectTracker* Kinect::getContourTracker(){
 void Kinect::update(){
     kinect.update();
     if(kinect.isFrameNew()) {
-        if (contourStrategy == BLOBS) {
-            updateBlobs();
+        if (trackingBlobs) {
+            if (contourStrategy == BLOBS) {
+                updateBlobs();
+            }
+            else if (contourStrategy == SEGMENTATION) {
+                updateSegmentation();
+            }
+            updateContours();
         }
-        else if (contourStrategy == SEGMENTATION) {
-            updateSegmentation();
+        if (trackingKeypoints) {
+            flow.calcOpticalFlow(kinect.getDepthPixelsRef());
         }
-        updateContours();
     }
 }
 
@@ -181,6 +188,9 @@ void Kinect::drawDebug(int x, int y, int w, int h){
     
     ofSetColor(255, 255);
     kinect.draw(0, 0);
+    if (trackingKeypoints) {
+        flow.draw();
+    }
     ofTranslate(640, 0);
     grayImage.draw(0, 0);
     ofTranslate(-640, 480);
@@ -267,10 +277,29 @@ void Kinect::endMask() {
 }
 
 //---------
+void Kinect::setKeypointROI(ofPoint topLeft, ofPoint bottomRight) {
+    rect.set(topLeft, bottomRight.x-topLeft.x, bottomRight.y-topLeft.y);
+	vector<KeyPoint> keypoints;
+	vector<KeyPoint> keypointsInside;
+	vector<cv::Point2f> featuresToTrack;
+    copyGray(kinect, kinectGray);
+	FAST(kinectGray, keypoints,2);
+	for(int i=0;i<keypoints.size();i++){
+		if(rect.inside(toOf(keypoints[i].pt))){
+			keypointsInside.push_back(keypoints[i]);
+		}
+	}
+#if CV_MAJOR_VERSION>=2 && (CV_MINOR_VERSION>4 || (CV_MINOR_VERSION==4 && CV_SUBMINOR_VERSION>=1))
+	KeyPointsFilter::retainBest(keypointsInside,30);
+#endif
+	KeyPoint::convert(keypointsInside,featuresToTrack);
+	flow.setFeaturesToTrack(featuresToTrack);
+}
+
+//---------
 void Kinect::drawCalibratedContours(int width, int height) {
     ofFill();
     ofSetColor(255);
-
     RectTracker& tracker = contourFinder.getTracker();
     for(int i = 0; i < contourFinder.size(); i++) {
         vector<cv::Point> points = contourFinder.getContour(i);

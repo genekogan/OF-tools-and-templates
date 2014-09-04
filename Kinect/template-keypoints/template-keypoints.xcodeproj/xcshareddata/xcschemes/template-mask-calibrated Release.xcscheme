@@ -16,8 +16,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
                BuildableName = "template-mask-calibrated.app"
-               BlueprintName = "template-mask-calibrated"
-               ReferencedContainer = "container:template-mask-calibrated.xcodeproj">
+               BlueprintName = "template-keypoints"
+               ReferencedContainer = "container:template-keypoints.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -34,8 +34,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
             BuildableName = "template-mask-calibrated.app"
-            BlueprintName = "template-mask-calibrated"
-            ReferencedContainer = "container:template-mask-calibrated.xcodeproj">
+            BlueprintName = "template-keypoints"
+            ReferencedContainer = "container:template-keypoints.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -53,8 +53,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
             BuildableName = "template-mask-calibrated.app"
-            BlueprintName = "template-mask-calibrated"
-            ReferencedContainer = "container:template-mask-calibrated.xcodeproj">
+            BlueprintName = "template-keypoints"
+            ReferencedContainer = "container:template-keypoints.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -71,8 +71,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
             BuildableName = "template-mask-calibrated.app"
-            BlueprintName = "template-mask-calibrated"
-            ReferencedContainer = "container:template-mask-calibrated.xcodeproj">
+            BlueprintName = "template-keypoints"
+            ReferencedContainer = "container:template-keypoints.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
