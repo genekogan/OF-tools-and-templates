@@ -3,6 +3,7 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     kinect.setup();
+    kinect.setTrackingBlobs(true);
     
     fbo.allocate(1024, 768);
     fbo.begin();

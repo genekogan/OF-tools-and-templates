@@ -33,18 +33,18 @@ public:
     void update();
     void draw(int x, int y);
 
-    void addLayer(LayerType type, int numLayers);
-    void addCreator() {addLayer(CANVAS_CREATOR, 1);}
-    void addModifier() {addLayer(CANVAS_MODIFIER, 1);}
-    void addPostProcessor() {addLayer(CANVAS_POST_PROCESSING, 1);}
-    void addPostGlitch() {addLayer(CANVAS_POST_GLITCH, 1);}
-    void addPostFx() {addLayer(CANVAS_POST_FX, 1);}
+    CanvasLayer* addLayer(LayerType type);
+    void addCreator() {addLayer(CANVAS_CREATOR);}
+    void addModifier() {addLayer(CANVAS_MODIFIER);}
+    void addPostProcessor() {addLayer(CANVAS_POST_PROCESSING);}
+    void addPostGlitch() {addLayer(CANVAS_POST_GLITCH);}
+    void addPostFx() {addLayer(CANVAS_POST_FX);}
     
     void setupMetaGui();
     void chooseGui(string &s);
     void setVisible(bool guiVisible);
     void toggleGuiVisible();
-    
+
 private:
 
     Control metaGui;

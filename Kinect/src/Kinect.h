@@ -26,7 +26,7 @@ public:
     void                    setTrackingKeypoints(bool t) {trackingKeypoints = t;}
     
     void                    setGuiPosition(int x, int y);
-    void                    toggleGuiView();
+    void                    toggleGuiVisible();
 
     void                    setCalibration(string path);
     

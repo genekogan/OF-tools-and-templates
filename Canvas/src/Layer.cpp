@@ -55,29 +55,34 @@ void ModifierLayer::setup() {
 void CreatorLayer::select(string &s) {
     if (settingUp)  return;
     
-    delete scene;
-    if      (s == "debug")      scene = new DebugScreen();
-    else if (s == "agents")     scene = new Agents();
-    else if (s == "amoeba")     scene = new Amoeba();
-    else if (s == "bubbles")    scene = new Bubbles();
-    else if (s == "cubes")      scene = new Cubes();
-    else if (s == "gridfly")    scene = new GridFly();
-    else if (s == "letters")    scene = new Letters();
-    else if (s == "meshy")      scene = new Meshy();
-    else if (s == "movie")      scene = new MoviePlayer();
-    else if (s == "polar")      scene = new Polar();
-    else if (s == "rivers")     scene = new Rivers();
-    else if (s == "shader")     scene = new Shader();
-    else if (s == "shapespace") scene = new ShapeSpace();
-    else if (s == "subdivide")  scene = new Subdivide();
-    else if (s == "syphon")     scene = new Syphon();
+    if      (s == "debug")      setScene(new DebugScreen());
+    else if (s == "agents")     setScene(new Agents());
+    else if (s == "amoeba")     setScene(new Amoeba());
+    else if (s == "bubbles")    setScene(new Bubbles());
+    else if (s == "cubes")      setScene(new Cubes());
+    else if (s == "gridfly")    setScene(new GridFly());
+    else if (s == "letters")    setScene(new Letters());
+    else if (s == "meshy")      setScene(new Meshy());
+    else if (s == "movie")      setScene(new MoviePlayer());
+    else if (s == "polar")      setScene(new Polar());
+    else if (s == "rivers")     setScene(new Rivers());
+    else if (s == "shader")     setScene(new Shader());
+    else if (s == "shapespace") setScene(new ShapeSpace());
+    else if (s == "subdivide")  setScene(new Subdivide());
+    else if (s == "syphon")     setScene(new Syphon());
     
-    scene->setup(width, height);
-    scene->setGuiPosition(guiPosition.x+208, guiPosition.y);
     if (s == "shader") {
         setupGui(true);
         ((Shader *) scene)->setupBlobby();
     }
+}
+
+//----------------
+void CreatorLayer::setScene(Scene *newScene) {
+    delete scene;
+    scene = newScene;
+    scene->setup(width, height);
+    scene->setGuiPosition(guiPosition.x+208, guiPosition.y);
 }
 
 //----------------

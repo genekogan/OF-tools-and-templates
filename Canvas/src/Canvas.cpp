@@ -49,21 +49,20 @@ void Canvas::chooseGui(string &s) {
 }
 
 //----------------
-void Canvas::addLayer(LayerType type, int numLayers) {
-    for (int i=0; i<numLayers; i++) {
-        CanvasLayer *layer;
-        if      (type == CANVAS_CREATOR)         layer = new CreatorLayer();
-        else if (type == CANVAS_MODIFIER)        layer = new ModifierLayer();
-        else if (type == CANVAS_POST_PROCESSING) layer = new PostProcessingLayer();
-        else if (type == CANVAS_POST_GLITCH)     layer = new PostGlitchLayer();
-        else if (type == CANVAS_POST_FX)         layer = new PostFxLayer();
-        if (layers.size() > 0)
-            layer->setup(width, height, layers[layers.size()-1]);
-        else
-            layer->setup(width, height);
-        layers.push_back(layer);
-    }
+CanvasLayer* Canvas::addLayer(LayerType type) {
+    CanvasLayer *layer;
+    if      (type == CANVAS_CREATOR)         layer = new CreatorLayer();
+    else if (type == CANVAS_MODIFIER)        layer = new ModifierLayer();
+    else if (type == CANVAS_POST_PROCESSING) layer = new PostProcessingLayer();
+    else if (type == CANVAS_POST_GLITCH)     layer = new PostGlitchLayer();
+    else if (type == CANVAS_POST_FX)         layer = new PostFxLayer();
+    if (layers.size() > 0)
+        layer->setup(width, height, layers[layers.size()-1]);
+    else
+        layer->setup(width, height);
+    layers.push_back(layer);
     setupMetaGui();
+    return layer;
 }
 
 //----------------

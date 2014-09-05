@@ -74,6 +74,8 @@ public:
     void render();
     void select(string & s);
     void selectShader(string & s);
+    void setScene(Scene *newScene);    
+    
 private:
     void setupGui(bool isShader);
     bool settingUp;
@@ -90,4 +92,5 @@ public:
 
 #include "PostProcessor.h"
 #include "PostGlitch.h"
+#include "PostFx.h"
 

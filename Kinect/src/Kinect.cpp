@@ -86,7 +86,7 @@ void Kinect::setContourStrategy(ContourStrategy contourStrategy) {
 }
 
 //---------
-void Kinect::toggleGuiView() {
+void Kinect::toggleGuiVisible() {
     control.toggleVisible();
 }
 
@@ -218,10 +218,9 @@ void Kinect::drawDebug(int x, int y, int w, int h){
         }
         ofEndShape();
         
+        // draw approximate contour
         ofNoFill();
         ofSetLineWidth(3);
-        
-        // draw approximate contour
         ofBeginShape();
         for (int j=0; j<fitPoints.size(); j++) {
             ofVertex(fitPoints[j].x, fitPoints[j].y);
