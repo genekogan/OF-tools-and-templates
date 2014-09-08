@@ -13,7 +13,17 @@ void CreatorLayer::setup() {
 //----------------
 void CreatorLayer::setupGui(bool isShader) {
     settingUp = true;
-    
+    setupChoices();
+    control.clearParameters();
+    control.registerMenu("select scene", this, &CreatorLayer::selectScene, choices);
+    if (isShader) {
+        control.registerMenu("Select shader", this, &CreatorLayer::selectShader, shaders);
+    }
+    settingUp = false;
+}
+
+//----------------
+void CreatorLayer::setupChoices() {
     string vj[] = {"debug", "agents", "amoeba", "bubbles",
         "cubes", "gridfly", "letters", "meshy", "movie", "polar",
         "rivers", "shader", "shapespace", "subdivide", "syphon"};
@@ -23,38 +33,41 @@ void CreatorLayer::setupGui(bool isShader) {
         "noisy", "ikeda", "rain", "sinewave", "sinewave_exp", "wave",
         "fractal_scope", "fractal_flower", "curtains"};
     
-    vector<string> choices(vj, vj + sizeof(vj) / sizeof(vj[0]));
-    vector<string> shaders(mods, mods + sizeof(mods) / sizeof(mods[0]));
-    
-    control.clearParameters();
-    control.registerMenu("select scene", this, &CreatorLayer::select, choices);
-    if (isShader) {
-        control.registerMenu("Select shader", this, &CreatorLayer::selectShader, shaders);
-    }
-    settingUp = false;
+    choices = vector<string>(vj, vj + sizeof(vj) / sizeof(vj[0]));
+    shaders = vector<string>(mods, mods + sizeof(mods) / sizeof(mods[0]));
 }
 
 //----------------
 void ModifierLayer::setup() {
-    string mods[] = {"brcosa", "pixelate", "bilateral", "blur",
-        "channels", "deform", "edges", "cmyk", "halftone",
-        "hue", "invert", "neon", "patches", "pixelrolls",
-        "grayscale", "threshold", "wrap" };
-    vector<string> choices(mods, mods + sizeof(mods) / sizeof(mods[0]));
-    
+    setupChoices();
     scene = new Shader();
     ((Shader *) scene)->setupBrCoSa();
     control.setName("Modifier");
-    control.registerMenu("select scene", this, &ModifierLayer::select, choices);
+    control.registerMenu("select scene", this, &ModifierLayer::selectScene, choices);
     if (texLayer != NULL) {
         ((Shader *) scene)->setTexture(texLayer->getFbo());
     }
 }
 
+void ModifierLayer::setupChoices() {
+    string mods[] = {"brcosa", "pixelate", "bilateral", "blur",
+        "channels", "deform", "edges", "cmyk", "halftone",
+        "hue", "invert", "neon", "patches", "pixelrolls",
+        "grayscale", "threshold", "wrap" };
+    choices = vector<string>(mods, mods + sizeof(mods) / sizeof(mods[0]));
+}
+
 //----------------
-void CreatorLayer::select(string &s) {
+void CreatorLayer::selectScene(string &s) {
     if (settingUp)  return;
-    
+    setupScene(s);
+    if (s == "shader") {
+        ((Shader *) scene)->setupBlobby();
+    }
+}
+
+//----------------
+void CreatorLayer::setupScene(string s) {
     if      (s == "debug")      setScene(new DebugScreen());
     else if (s == "agents")     setScene(new Agents());
     else if (s == "amoeba")     setScene(new Amoeba());
@@ -66,29 +79,33 @@ void CreatorLayer::select(string &s) {
     else if (s == "movie")      setScene(new MoviePlayer());
     else if (s == "polar")      setScene(new Polar());
     else if (s == "rivers")     setScene(new Rivers());
-    else if (s == "shader")     setScene(new Shader());
+    else if (s == "shader")     setScene(new Shader(), true);
     else if (s == "shapespace") setScene(new ShapeSpace());
     else if (s == "subdivide")  setScene(new Subdivide());
     else if (s == "syphon")     setScene(new Syphon());
-    
-    if (s == "shader") {
-        setupGui(true);
-        ((Shader *) scene)->setupBlobby();
-    }
 }
 
 //----------------
-void CreatorLayer::setScene(Scene *newScene) {
+void CreatorLayer::setScene(Scene *newScene, bool redrawGui) {
     delete scene;
     scene = newScene;
     scene->setup(width, height);
     scene->setGuiPosition(guiPosition.x+208, guiPosition.y);
+    if (redrawGui)  setupGui(true);
 }
 
 //----------------
 void CreatorLayer::selectShader(string &s) {
     if (settingUp)  return;
-    
+    setupShader(s);
+    if (texLayer != NULL) {
+        ((Shader *) scene)->setTexture(texLayer->getFbo());
+    }
+}
+
+//----------------
+void CreatorLayer::setupShader(string s) {
+    cout << "old setup "<<endl;
     if 		(s == "blobby")         ((Shader *) scene)->setupBlobby();
     else if (s == "bits")           ((Shader *) scene)->setupBits();
     else if (s == "bits_exp")       ((Shader *) scene)->setupBitsExperimental();
@@ -107,14 +124,15 @@ void CreatorLayer::selectShader(string &s) {
     else if (s == "fractal_scope")  ((Shader *) scene)->setupFractalScope();
     else if (s == "fractal_flower") ((Shader *) scene)->setupFractalFlower();
     else if (s == "curtains")       ((Shader *) scene)->setupCurtains();
-    
-    if (texLayer != NULL) {
-        ((Shader *) scene)->setTexture(texLayer->getFbo());
-    }
 }
 
 //----------------
-void ModifierLayer::select(string &s) {
+void ModifierLayer::selectScene(string &s) {
+    setupScene(s);
+}
+
+//----------------
+void ModifierLayer::setupScene(string s) {
     if      (s == "brcosa")     ((Shader *) scene)->setupBrCoSa();
     else if (s == "pixelate")   ((Shader *) scene)->setupPixelate();
     else if (s == "bilateral")  ((Shader *) scene)->setupBilateralFilter();
@@ -133,6 +151,7 @@ void ModifierLayer::select(string &s) {
     else if (s == "threshold")  ((Shader *) scene)->setupThreshold();
     else if (s == "wrap")       ((Shader *) scene)->setupWrap();
 }
+
 
 //----------------
 void CreatorLayer::render() {

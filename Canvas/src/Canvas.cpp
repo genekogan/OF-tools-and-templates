@@ -49,6 +49,17 @@ void Canvas::chooseGui(string &s) {
 }
 
 //----------------
+void Canvas::addLayer(CanvasLayer *newLayer) {
+    if (layers.size() > 0)
+        newLayer->setup(width, height, layers[layers.size()-1]);
+    else
+        newLayer->setup(width, height);
+    layers.push_back(newLayer);
+    setupMetaGui();
+    
+}
+
+//----------------
 CanvasLayer* Canvas::addLayer(LayerType type) {
     CanvasLayer *layer;
     if      (type == CANVAS_CREATOR)         layer = new CreatorLayer();

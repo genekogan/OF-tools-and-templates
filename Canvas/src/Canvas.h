@@ -32,8 +32,10 @@ public:
     void setup(int width, int height);
     void update();
     void draw(int x, int y);
-
+    
     CanvasLayer* addLayer(LayerType type);
+    void addLayer(CanvasLayer *layer);
+    
     void addCreator() {addLayer(CANVAS_CREATOR);}
     void addModifier() {addLayer(CANVAS_MODIFIER);}
     void addPostProcessor() {addLayer(CANVAS_POST_PROCESSING);}
@@ -44,9 +46,9 @@ public:
     void chooseGui(string &s);
     void setVisible(bool guiVisible);
     void toggleGuiVisible();
-
+    
 private:
-
+    
     Control metaGui;
     bool guiVisible;
     ofPoint guiPosition;

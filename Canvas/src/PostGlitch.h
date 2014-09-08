@@ -7,6 +7,7 @@
 
 
 class PostGlitchLayer : public CanvasLayer {
+public:
     ~PostGlitchLayer();
     void setup();
     

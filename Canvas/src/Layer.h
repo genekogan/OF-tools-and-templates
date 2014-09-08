@@ -16,7 +16,9 @@ enum LayerType {
 class CanvasLayer
 {
 public:
-    ~CanvasLayer() { delete scene; }
+    ~CanvasLayer() {
+        delete scene;
+    }
     
     void setup(int width, int height, CanvasLayer *texLayer) {
         this->width = width;
@@ -72,9 +74,17 @@ class CreatorLayer : public CanvasLayer {
 public:
     void setup();
     void render();
-    void select(string & s);
+
+    void setScene(Scene *newScene, bool redrawGui=false);
+    
+    void selectScene(string & s);
     void selectShader(string & s);
-    void setScene(Scene *newScene);    
+    
+    virtual void setupScene(string s);
+    virtual void setupShader(string s);
+    virtual void setupChoices();
+    
+    vector<string> choices, shaders;
     
 private:
     void setupGui(bool isShader);
@@ -86,7 +96,12 @@ class ModifierLayer : public CanvasLayer {
 public:
     void setup();
     void render();
-    void select(string & s);
+    void selectScene(string & s);
+    
+    virtual void setupChoices();
+    virtual void setupScene(string s);
+    
+    vector<string> choices;
 };
 
 
