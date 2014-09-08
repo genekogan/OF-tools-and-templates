@@ -5,9 +5,8 @@ void ofApp::setup(){
     ofSetBackgroundAuto(false);
     
     canvas.setup(1024, 768);
-    creator = canvas.addLayer(CANVAS_CREATOR);
-
-    ((CreatorLayer *) creator)->setScene(new MyCustomScene());
+    canvas.addLayer(new CustomCreatorLayer());
+    canvas.addLayer(new CustomModifierLayer());
 }
 
 //-----------
