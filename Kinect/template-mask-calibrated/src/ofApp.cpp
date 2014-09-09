@@ -7,8 +7,6 @@ void ofApp::setup(){
     kinect.setTrackingBlobs(true);
     
     gfx.setup("render", ofGetScreenWidth(), 0, 1280, 800, true);
-    
-    fbo.allocate(gfx.getWidth(), gfx.getHeight());
 }
 
 //--------------------------------------------------------------
@@ -19,9 +17,10 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     
-    //kinect.drawDebug(0, 0);
+    kinect.drawDebug(0, 0);
     
-    fbo.begin();
+    gfx.begin();
+    
     ofClear(0, 0);
     kinect.beginMask(gfx.getWidth(), gfx.getHeight(), true);
     for (int i=0; i<200; i++) {
@@ -30,12 +29,7 @@ void ofApp::draw(){
         ofEllipse(ofRandom(1024), ofRandom(768), ofRandom(200), ofRandom(200));
     }
     kinect.endMask();
-    fbo.end();
-    
-    
-    gfx.begin();
-    ofClear(0, 0);
-    fbo.draw(0, 0);
+
     gfx.end();
     
 }

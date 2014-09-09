@@ -47,7 +47,6 @@ public:
     
     template <typename T>
     void registerParameter(string name, ofxParameter<T> *parameter, T min, T max) {
-        //parameter->set(name, (min+max)*0.5, min, max);
         parameter->setName(name);
         parameter->setMin(min);
         parameter->setMax(max);

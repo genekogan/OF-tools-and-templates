@@ -23,6 +23,5 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
     
     Kinect kinect;
-    ofFbo fbo;
     ofxSecondWindow gfx;		
 };

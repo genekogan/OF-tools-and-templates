@@ -10,6 +10,10 @@ void ofApp::setup(){
     control.registerParameter("resolution", &resolution, 3, 30);
     control.registerParameter("filled", &filled);
     
+    radius = 100;
+    color = ofColor(0, 255, 0);
+    position = ofVec2f(200, 200);
+    resolution = 16;
     filled = true;
 }
 

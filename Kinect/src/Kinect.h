@@ -31,10 +31,10 @@ public:
     void                    setCalibration(string path);
     
     void                    setContourStrategy(ContourStrategy contourStrategy);
-    ContourFinder*          getContourFinder();
-    RectTracker*            getContourTracker();
+    ContourFinder&          getContourFinder();
+    RectTracker&            getContourTracker();
     
-    void                    update();
+    bool                    update();
     void                    draw();
     
     void                    drawDebug(int x, int y, int w=1280, int h=960);
@@ -44,7 +44,8 @@ public:
     void                    endMask();
     
     void                    drawCalibratedContours(int width, int height);
-
+    ofVec2f                 getCalibratedPoint(ofVec2f depthPoint);
+    
     void                    setKeypointROI(ofPoint topLeft, ofPoint bottomRight);
     
 private:

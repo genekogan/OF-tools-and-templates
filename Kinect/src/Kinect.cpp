@@ -101,18 +101,17 @@ void Kinect::setGuiPosition(int x, int y){
 }
 
 //---------
-ContourFinder* Kinect::getContourFinder(){
-    return &contourFinder;
+ContourFinder& Kinect::getContourFinder(){
+    return contourFinder;
 }
 
 //---------
-RectTracker* Kinect::getContourTracker(){
-    return &contourFinder.getTracker();
+RectTracker& Kinect::getContourTracker(){
+    return contourFinder.getTracker();
 }
 
-
 //---------
-void Kinect::update(){
+bool Kinect::update(){
     kinect.update();
     if(kinect.isFrameNew()) {
         if (trackingBlobs) {
@@ -127,6 +126,10 @@ void Kinect::update(){
         if (trackingKeypoints) {
             flow.calcOpticalFlow(kinect.getDepthPixelsRef());
         }
+        return true;
+    }
+    else {
+        return false;
     }
 }
 
@@ -316,6 +319,13 @@ void Kinect::drawCalibratedContours(int width, int height) {
         }
         ofEndShape();
     }
+}
+
+//---------
+ofVec2f Kinect::getCalibratedPoint(ofVec2f depthPoint) {
+    ofVec3f worldPoint = kinect.getWorldCoordinateAt(depthPoint.x, depthPoint.y);
+    ofVec2f projectedPoint = kpt.getProjectedPoint(worldPoint);
+    return projectedPoint;
 }
 
 //---------
