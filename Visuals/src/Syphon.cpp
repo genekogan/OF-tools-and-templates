@@ -15,7 +15,6 @@ void Syphon::setClient(string serverName, string appName) {
 
 //--------
 void Syphon::update() {
-
 }
 
 //--------

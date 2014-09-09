@@ -37,8 +37,12 @@ public:
     bool                    update();
     void                    draw();
     
+    ofVec3f                 getWorldCoordinateAt(int x, int y);
+    
     void                    drawDebug(int x, int y, int w=1280, int h=960);
-
+    void                    drawDepth(int x, int y, int w=640, int h=480);
+    void                    drawRgb(int x, int y, int w=640, int h=480);
+    
     void                    drawMask(ofBaseDraws &tex, bool useCalibration=false);
     void                    beginMask(int w, int h, bool useCalibration=false);
     void                    endMask();

@@ -111,6 +111,11 @@ RectTracker& Kinect::getContourTracker(){
 }
 
 //---------
+ofVec3f Kinect::getWorldCoordinateAt(int x, int y) {
+    return kinect.getWorldCoordinateAt(x, y);
+}
+
+//---------
 bool Kinect::update(){
     kinect.update();
     if(kinect.isFrameNew()) {
@@ -180,6 +185,16 @@ void Kinect::updateContours() {
     contourFinder.getTracker().setMaximumDistance(maxDistance);
     contourFinder.getTracker().setSmoothingRate(smoothingRate);
     contourFinder.findContours(grayImage);
+}
+
+//---------
+void Kinect::drawDepth(int x, int y, int w, int h){
+    kinect.drawDepth(x, y, w, h);
+}
+
+//---------
+void Kinect::drawRgb(int x, int y, int w, int h){
+    kinect.draw(x, y, w, h);
 }
 
 //---------
