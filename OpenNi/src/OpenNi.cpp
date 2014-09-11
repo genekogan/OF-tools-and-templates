@@ -18,15 +18,6 @@ void OpenNi::setup(){
     openNIDevice.setUsePointCloudsAllUsers(true);
     openNIDevice.setPointCloudDrawSizeAllUsers(2); // size of each 'point' in the point cloud
     openNIDevice.setPointCloudResolutionAllUsers(2); // resolution of the mesh created for the point cloud eg., this will use every second depth pixel
-    
-    // you can alternatively create a 'base' user class
-    //    ofxOpenNIUser user;
-    //    user.setUseMaskTexture(true);
-    //    user.setUsePointCloud(true);
-    //    user.setPointCloudDrawSize(2);
-    //    user.setPointCloudResolution(2);
-    //    openNIDevice.setBaseUserClass(user);    
-    verdana.loadFont(ofToDataPath("verdana.ttf"), 24);
 }
 
 //-------
@@ -94,7 +85,7 @@ void OpenNi::draw(){
     ofSetColor(0, 255, 0);
     string msg = " MILLIS: " + ofToString(ofGetElapsedTimeMillis()) + " FPS: " + ofToString(ofGetFrameRate()) + " Device FPS: " + ofToString(openNIDevice.getFrameRate());
     
-    verdana.drawString(msg, 20, openNIDevice.getNumDevices() * 480 - 20);
+    ofDrawBitmapString(msg, 20, openNIDevice.getNumDevices() * 480 - 20);
 }
 
 void OpenNi::close() {

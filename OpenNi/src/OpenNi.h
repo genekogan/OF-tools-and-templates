@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxOpenNi.h"
+#include "Control.h"
 
 
 class OpenNi
@@ -16,6 +17,5 @@ private:
     void userEvent(ofxOpenNIUserEvent & event);
     
 	ofxOpenNI openNIDevice;
-    ofTrueTypeFont verdana;
     Control control;
 };
