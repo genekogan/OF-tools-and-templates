@@ -1,4 +1,0 @@
-ofxOpenCv
-ofxCv
-ofxFaceTracker
-ofxOpenNI
