@@ -22,6 +22,7 @@ class ofApp : public ofBaseApp{
 
     Learn learn;
     
-    ofxParameter<float> myVal;
+    ofxParameter<float> inputParam;
+    ofxParameter<float> outputParam;
 };
 

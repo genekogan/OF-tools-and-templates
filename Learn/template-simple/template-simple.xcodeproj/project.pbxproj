@@ -56,9 +56,7 @@
 		ADE7C2AFC51E3F7E5E389026 /* ofxUISortableList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5613D5D24B00D8AD909F7E6A /* ofxUISortableList.cpp */; };
 		AE281BEBF3A00F1FC37F3DA0 /* ofxUIWaveform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9345327AA463407B3DADBADE /* ofxUIWaveform.cpp */; };
 		B0006D3C19C0F30D005282C0 /* ofxLearn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0006D3A19C0F30D005282C0 /* ofxLearn.cpp */; };
-		B0006D6419C0F573005282C0 /* Inputs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0006D5A19C0F56C005282C0 /* Inputs.cpp */; };
 		B0006D6519C0F573005282C0 /* Learn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0006D5C19C0F56C005282C0 /* Learn.cpp */; };
-		B0006D6619C0F573005282C0 /* Outputs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0006D5E19C0F56C005282C0 /* Outputs.cpp */; };
 		B0006D6719C0F573005282C0 /* LearnParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0006D6019C0F56C005282C0 /* LearnParameter.cpp */; };
 		B0006D6819C0F573005282C0 /* Presets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0006D6219C0F56C005282C0 /* Presets.cpp */; };
 		B266578FC55D23BFEBC042E7 /* ofxGuiGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECF8674C7975F1063C5E30CA /* ofxGuiGroup.cpp */; };
@@ -240,12 +238,8 @@
 		AEFCF7E549ACA862C022AD40 /* ofxUIDefines.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxUIDefines.h; path = ../../../addons/ofxUI/src/ofxUIDefines.h; sourceTree = SOURCE_ROOT; };
 		B0006D3A19C0F30D005282C0 /* ofxLearn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxLearn.cpp; path = ../../../addons/ofxLearn/src/ofxLearn.cpp; sourceTree = "<group>"; };
 		B0006D3B19C0F30D005282C0 /* ofxLearn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxLearn.h; path = ../../../addons/ofxLearn/src/ofxLearn.h; sourceTree = "<group>"; };
-		B0006D5A19C0F56C005282C0 /* Inputs.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Inputs.cpp; sourceTree = "<group>"; };
-		B0006D5B19C0F56C005282C0 /* Inputs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Inputs.h; sourceTree = "<group>"; };
 		B0006D5C19C0F56C005282C0 /* Learn.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Learn.cpp; sourceTree = "<group>"; };
 		B0006D5D19C0F56C005282C0 /* Learn.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Learn.h; sourceTree = "<group>"; };
-		B0006D5E19C0F56C005282C0 /* Outputs.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Outputs.cpp; sourceTree = "<group>"; };
-		B0006D5F19C0F56C005282C0 /* Outputs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Outputs.h; sourceTree = "<group>"; };
 		B0006D6019C0F56C005282C0 /* LearnParameter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LearnParameter.cpp; sourceTree = "<group>"; };
 		B0006D6119C0F56C005282C0 /* LearnParameter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LearnParameter.h; sourceTree = "<group>"; };
 		B0006D6219C0F56C005282C0 /* Presets.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Presets.cpp; sourceTree = "<group>"; };
@@ -494,12 +488,8 @@
 		B0006D5919C0F56C005282C0 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				B0006D5A19C0F56C005282C0 /* Inputs.cpp */,
-				B0006D5B19C0F56C005282C0 /* Inputs.h */,
 				B0006D5C19C0F56C005282C0 /* Learn.cpp */,
 				B0006D5D19C0F56C005282C0 /* Learn.h */,
-				B0006D5E19C0F56C005282C0 /* Outputs.cpp */,
-				B0006D5F19C0F56C005282C0 /* Outputs.h */,
 				B0006D6019C0F56C005282C0 /* LearnParameter.cpp */,
 				B0006D6119C0F56C005282C0 /* LearnParameter.h */,
 				B0006D6219C0F56C005282C0 /* Presets.cpp */,
@@ -869,9 +859,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0006D6419C0F573005282C0 /* Inputs.cpp in Sources */,
 				B0006D6519C0F573005282C0 /* Learn.cpp in Sources */,
-				B0006D6619C0F573005282C0 /* Outputs.cpp in Sources */,
 				B0006D6719C0F573005282C0 /* LearnParameter.cpp in Sources */,
 				B0006D6819C0F573005282C0 /* Presets.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,

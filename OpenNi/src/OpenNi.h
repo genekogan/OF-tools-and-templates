@@ -16,6 +16,15 @@ public:
 private:
     void userEvent(ofxOpenNIUserEvent & event);
     
-	ofxOpenNI openNIDevice;
+	ofxOpenNI kinect;
     Control control;
+    
+    vector<string> jointNames;
+    vector<ofPoint *> joints;
+    ofPoint jointTorso, jointNeck, jointHead,
+        jointLeftShoulder, jointLeftElbow, jointLeftHand,
+        jointRightShoulder, jointRightElbow, jointRightHand,
+        jointLeftHip, jointLeftKnee, jointLeftFoot,
+        jointRightHip, jointRightKnee, jointRightFoot;
+
 };
