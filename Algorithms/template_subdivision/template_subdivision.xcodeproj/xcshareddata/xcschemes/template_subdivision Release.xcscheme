@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-               BuildableName = "template-syphon.app"
-               BlueprintName = "template-syphon"
-               ReferencedContainer = "container:template-syphon.xcodeproj">
+               BuildableName = "template_subdivision.app"
+               BlueprintName = "template_subdivision"
+               ReferencedContainer = "container:template_subdivision.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-            BuildableName = "template-syphon.app"
-            BlueprintName = "template-syphon"
-            ReferencedContainer = "container:template-syphon.xcodeproj">
+            BuildableName = "template_subdivision.app"
+            BlueprintName = "template_subdivision"
+            ReferencedContainer = "container:template_subdivision.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -52,9 +52,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-            BuildableName = "template-syphon.app"
-            BlueprintName = "template-syphon"
-            ReferencedContainer = "container:template-syphon.xcodeproj">
+            BuildableName = "template_subdivision.app"
+            BlueprintName = "template_subdivision"
+            ReferencedContainer = "container:template_subdivision.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -70,9 +70,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-            BuildableName = "template-syphon.app"
-            BlueprintName = "template-syphon"
-            ReferencedContainer = "container:template-syphon.xcodeproj">
+            BuildableName = "template_subdivision.app"
+            BlueprintName = "template_subdivision"
+            ReferencedContainer = "container:template_subdivision.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -41,6 +41,9 @@ public:
     float getValue() { return value; }
     float& getValueRef() { return value; }
     
+    void setMin(float min) { this->min = min; }
+    void setMax(float max) { this->max = max; }
+    
     float getMin() { return min; }
     float getMax() { return max; }
     
@@ -63,8 +66,7 @@ private:
 class InputParameter : public LearnParameter
 {
 public:
-    InputParameter(string name, float min, float max) : LearnParameter(name, min, max) {
-    }
+    InputParameter(string name, float min, float max) : LearnParameter(name, min, max) {}
     
     InputParameter(ofxParameter<float> *parameter) : LearnParameter(parameter) {
         parameter->addListener(this, &InputParameter::parameterChanged);
@@ -80,16 +82,64 @@ public:
 class OutputParameter : public LearnParameter
 {
 public:
-    OutputParameter(string name, float min, float max) : LearnParameter(name, min, max) {
+    OutputParameter(string name, float min, float max) : LearnParameter(name, min, max) {}
+
+    OutputParameter(ofxParameter<float> *parameter) : LearnParameter(parameter) {}
+    
+    void setRecording(bool recording) {
+        this->recording = recording;
     }
-    OutputParameter(ofxParameter<float> *parameter) : LearnParameter(parameter) {
+    bool getRecording() { return recording; }
+    bool& getRecordingRef() { return recording; }
+
+    void addInput(InputParameter *input) {
+        inputs.push_back(input);
     }
 
-    int getNumExamples() { return 5; }
-    bool& getRecordingRef() { return isRecording; }
-
+    void clearInputs() {
+        inputs.clear();
+    }
+    
+    void addTrainingInstance() {
+        learn.addTrainingInstance(grabFeatureVector(), getValue());
+    }
+    
+    void predict() {
+        setValue(learn.predict(grabFeatureVector()));
+    }
+    
+    void clearTrainingExamples() {
+        learn.clearTrainingInstances();
+    }
+    
+    void trainClassifierFast() {
+        learn.trainClassifier(FAST);
+        trained = true;
+    }
+    
+    void trainClassifierAccurate() {
+        learn.trainClassifier(ACCURATE);
+        trained = true;
+    }
+    
+    bool getTrained() {
+        return trained;
+    }
+    
+    int getNumExamples() {
+        return learn.getNumberTrainingInstances();
+    }
+    
 private:
+    vector<double> grabFeatureVector() {
+        vector<double> instance;
+        for (int i=0; i<inputs.size(); i++)
+            instance.push_back(inputs[i]->getValue());
+        return instance;
+    }
+
     ofxLearn learn;
-    bool isRecording;
+    vector<InputParameter *> inputs;
+    bool recording, predicting, trained;
 };
 
