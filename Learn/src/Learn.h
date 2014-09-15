@@ -7,6 +7,20 @@
 #include "Presets.h"
 
 
+/*
+ to-do:
+ ------
+ 
+  - spreadsheet
+  - select inputs
+  - learn routine
+  - preset saving
+  ----
+  - remove all listeners, pointers
+ 
+*/
+
+
 
 class Learn
 {
@@ -22,19 +36,22 @@ public:
     void addOutput(string name, float min, float max);
     
 private:
+    void buildGuiInputOutput();
     void buildGuiMenu();
     void buildGuiInputs();
     void buildGuiOutputs();
     void buildGuiPreview();
+    void buildGuiInputSelector(int idx);
     
     void guiTrainEvent(ofxUIEventArgs &e);
     void guiPresetsEvent(ofxUIEventArgs &e);
     void guiInputsEvent(ofxUIEventArgs &e);
     void guiOutputsEvent(ofxUIEventArgs &e);
+    void guiInputSelectorEvent(ofxUIEventArgs &e);
     
     void startRecording();
     void recordInstance();
-
+    void trainClassifiers(string trainStrategy);
     void setPredictingMode(bool predicting);
     
     vector<InputParameter *> inputs;
@@ -42,11 +59,15 @@ private:
     
     ofxUIScrollableCanvas *guiI;
     ofxUIScrollableCanvas *guiO;
-    ofxUIScrollableCanvas *guiIP, *guiOP;
-    ofxUICanvas *guiTrain, *guiPresets;
+    ofxUIScrollableCanvas *guiIP;
+    ofxUIScrollableCanvas *guiOP;
+    ofxUICanvas *guiTrain;
+    ofxUICanvas *guiPresets;
+    ofxUICanvas *guiInputSelector;
     
     float startTime, trainCountdown, trainDuration;
     int instanceRate, framesPerInstance;
     bool recording, predicting;
-    bool inputsVisible;
+    bool inputsVisible, dataVisible;
+    int idxSelectedOutput;
 };

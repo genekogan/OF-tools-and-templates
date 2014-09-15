@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "Parameter.h"
 #include "ofxLearn.h"
+#include "ofxSpreadsheet.h"
 
 
 enum LearnType  { PARAMETER, OSC, MIDI, MANTA, KINECT };
@@ -82,18 +83,28 @@ public:
 class OutputParameter : public LearnParameter
 {
 public:
-    OutputParameter(string name, float min, float max) : LearnParameter(name, min, max) {}
+    OutputParameter(string name, float min, float max) : LearnParameter(name, min, max) {
+        data.setup(560, 480);
+    }
 
-    OutputParameter(ofxParameter<float> *parameter) : LearnParameter(parameter) {}
+    OutputParameter(ofxParameter<float> *parameter) : LearnParameter(parameter) {
+        data.setup(560, 480);
+    }
     
     void setRecording(bool recording) {
         this->recording = recording;
     }
+
     bool getRecording() { return recording; }
+
     bool& getRecordingRef() { return recording; }
 
     void addInput(InputParameter *input) {
         inputs.push_back(input);
+        vector<string> header;
+        for (int i=0; i<inputs.size(); i++)
+            header.push_back(inputs[i]->getName());
+        data.setHeaders(header);
     }
 
     void clearInputs() {
@@ -101,11 +112,11 @@ public:
     }
     
     void addTrainingInstance() {
-        learn.addTrainingInstance(grabFeatureVector(), getValue());
+        data.addEntry(grabFeatureVector<float>());
     }
     
     void predict() {
-        setValue(learn.predict(grabFeatureVector()));
+        setValue(learn.predict(grabFeatureVector<double>()));
     }
     
     void clearTrainingExamples() {
@@ -127,12 +138,23 @@ public:
     }
     
     int getNumExamples() {
-        return learn.getNumberTrainingInstances();
+        return data.getNumberOfEntries();
     }
     
+    vector<InputParameter *> & getInputs() {
+        return inputs;
+    }
+    
+    void drawSpreadsheet(int x, int y) {
+        data.draw(x, y);
+    }
+    
+    
 private:
-    vector<double> grabFeatureVector() {
-        vector<double> instance;
+    
+    template <typename T>
+    vector<T> grabFeatureVector() {
+        vector<T> instance;
         for (int i=0; i<inputs.size(); i++)
             instance.push_back(inputs[i]->getValue());
         return instance;
@@ -140,6 +162,7 @@ private:
 
     ofxLearn learn;
     vector<InputParameter *> inputs;
+    ofxSpreadsheet data;
     bool recording, predicting, trained;
 };
 

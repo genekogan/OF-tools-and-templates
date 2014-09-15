@@ -8,34 +8,11 @@ void Learn::setup(){
     instanceRate = 15;
     inputsVisible = true;
 
-    guiI = new ofxUIScrollableCanvas(5, 144, 500, 400);
-    guiI->setDrawOutlineHighLight(true);
-    guiI->setScrollableDirections(false, true);
-    guiI->setFont("AndaleMono.ttf");
-    guiI->setVisible(inputsVisible);
-    ofAddListener(guiI->newGUIEvent, this, &Learn::guiInputsEvent);
-
-    guiO = new ofxUIScrollableCanvas(5, 144, 500, 400);
-    guiO->setDrawOutlineHighLight(true);
-    guiO->setScrollableDirections(false, true);
-    guiO->setFont("AndaleMono.ttf");
-    guiO->setVisible(!inputsVisible);
-    ofAddListener(guiO->newGUIEvent, this, &Learn::guiOutputsEvent);
-
-    /* preview guis */
-    guiIP = new ofxUIScrollableCanvas(5, 144, 305, 400);
-    guiIP->setDrawOutlineHighLight(true);
-    guiIP->setScrollableDirections(false, true);
-    guiIP->setFont("AndaleMono.ttf");
-    guiIP->setVisible(false);
-    guiOP = new ofxUIScrollableCanvas(340, 144, 305, 400);
-    guiOP->setDrawOutlineHighLight(true);
-    guiOP->setScrollableDirections(false, true);
-    guiOP->setFont("AndaleMono.ttf");
-    guiOP->setVisible(false);
-
+    buildGuiInputOutput();
     buildGuiMenu();
+    
     startTime = -(trainDuration + trainCountdown);
+    idxSelectedOutput = -1;
 }
 
 //-------
@@ -89,6 +66,92 @@ void Learn::update(){
 
 //-------
 void Learn::draw(){
+    if (dataVisible) {
+        outputs[idxSelectedOutput]->drawSpreadsheet(550, 144);
+    }
+}
+
+//-------
+void Learn::startRecording() {
+    startTime = ofGetElapsedTimef();
+    framesPerInstance = ofGetFrameRate() / (float) instanceRate;
+}
+
+//-------
+void Learn::recordInstance() {
+    for (int i=0; i<outputs.size(); i++) {
+        if (!outputs[i]->getRecording())    continue;
+        outputs[i]->addTrainingInstance();
+        ((ofxUILabelButton *) guiO->getWidget("numExamples_"+ofToString(i)))->setLabelText(ofToString(outputs[i]->getNumExamples())+" examples");
+    }
+}
+
+//-------
+void Learn::trainClassifiers(string trainStrategy) {
+    for (int i=0; i<outputs.size(); i++) {
+        if (outputs[i]->getNumExamples() == 0)  continue;
+        if (trainStrategy == "fast") {
+            outputs[i]->trainClassifierFast();
+        }
+        else if (trainStrategy == "accurate") {
+            outputs[i]->trainClassifierAccurate();
+        }
+    }
+    ((ofxUIToggle *) guiPresets->getWidget("predict"))->setValue(true);
+    recording = false;
+    predicting = true;
+}
+
+//-------
+void Learn::setPredictingMode(bool predicting) {
+    this->predicting = predicting;
+    guiI->setVisible(!predicting);
+    guiO->setVisible(!predicting);
+    guiIP->setVisible(predicting);
+    guiOP->setVisible(predicting);
+    if (!predicting) {
+        guiI->setVisible(inputsVisible);
+        guiO->setVisible(!inputsVisible);
+    }
+}
+
+//-------
+void Learn::buildGuiInputOutput() {
+    /* inputs */
+    guiI = new ofxUIScrollableCanvas(5, 144, 500, 400);
+    guiI->setDrawOutlineHighLight(true);
+    guiI->setScrollableDirections(false, true);
+    guiI->setFont("AndaleMono.ttf");
+    guiI->setVisible(inputsVisible);
+    
+    /* outputs */
+    guiO = new ofxUIScrollableCanvas(5, 144, 480, 400);
+    guiO->setDrawOutlineHighLight(true);
+    guiO->setScrollableDirections(false, true);
+    guiO->setFont("AndaleMono.ttf");
+    guiO->setVisible(!inputsVisible);
+    
+    /* preview guis */
+    guiIP = new ofxUIScrollableCanvas(5, 144, 305, 400);
+    guiIP->setDrawOutlineHighLight(true);
+    guiIP->setScrollableDirections(false, true);
+    guiIP->setFont("AndaleMono.ttf");
+    guiIP->setVisible(false);
+    guiOP = new ofxUIScrollableCanvas(340, 144, 305, 400);
+    guiOP->setDrawOutlineHighLight(true);
+    guiOP->setScrollableDirections(false, true);
+    guiOP->setFont("AndaleMono.ttf");
+    guiOP->setVisible(false);
+    
+    /* input selector gui */
+    guiInputSelector = new ofxUICanvas(530, 144, 180, 400);
+    guiInputSelector->addButton("name", false);
+    guiInputSelector->setVisible(false);
+    
+    /* listeners */
+    ofAddListener(guiI->newGUIEvent, this, &Learn::guiInputsEvent);
+    ofAddListener(guiO->newGUIEvent, this, &Learn::guiOutputsEvent);
+    ofAddListener(guiInputSelector->newGUIEvent, this, &Learn::guiInputSelectorEvent);
 }
 
 //-------
@@ -120,6 +183,7 @@ void Learn::buildGuiInputs() {
         }
         else if (inputs[i]->getType() == MANTA) {
             // pad #
+
         }
         else if (inputs[i]->getType() == KINECT) {
             // joint selection
@@ -137,7 +201,7 @@ void Learn::buildGuiInputs() {
 void Learn::buildGuiOutputs() {
     guiO->clearWidgets();
     guiO->addLabel("Outputs");
-    guiO->addSpacer(500, 2)->setPadding(20);
+    guiO->addSpacer(480, 2)->setPadding(12);
     for (int i=0; i<outputs.size(); i++) {
         guiO->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
         guiO->addSlider(outputs[i]->getName(),
@@ -147,9 +211,9 @@ void Learn::buildGuiOutputs() {
                         150.0f, 10.0f)->setLabelVisible(true);
         guiO->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
         guiO->addLabel("min");
-        guiO->addTextInput("min"+ofToString(i), ofToString(outputs[i]->getMin()), 45.0f, 20.0f)->setAutoClear(false);
+        guiO->addTextInput("min_"+ofToString(i), ofToString(outputs[i]->getMin()), 45.0f, 20.0f)->setAutoClear(false);
         guiO->addLabel("max");
-        guiO->addTextInput("max"+ofToString(i), ofToString(outputs[i]->getMax()), 45.0f, 20.0f)->setAutoClear(false);
+        guiO->addTextInput("max_"+ofToString(i), ofToString(outputs[i]->getMax()), 45.0f, 20.0f)->setAutoClear(false);
 
         if (outputs[i]->getType() == PARAMETER) {
         }
@@ -159,21 +223,14 @@ void Learn::buildGuiOutputs() {
         }
         
         guiO->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-        vector<string> inputLabels;
-        for (int i=0; i<inputs.size(); i++) {
-            inputLabels.push_back(inputs[i]->getName());
-        }
-        guiO->addDropDownList("inputs_"+ofToString(i), inputLabels, 150.0f)->setAllowMultiple(true);;
-        
+        guiO->addLabelButton("inputs_"+ofToString(i), false, 100.0f)->setLabelText("inputs");
         guiO->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-        guiO->addTextInput("numExamples"+ofToString(i), ofToString(outputs[i]->getNumExamples())+" examples", 100.0f);
+        guiO->addLabelButton("numExamples_"+ofToString(i), false, 100.0f)->setLabelText(ofToString(outputs[i]->getNumExamples())+" examples");
         guiO->addButton("clear_"+ofToString(i), false);
         guiO->addToggle("record_"+ofToString(i), &outputs[i]->getRecordingRef());
-        
         guiO->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-        guiO->addSpacer(500, 1)->setPadding(8);
+        guiO->addSpacer(480, 1)->setPadding(8);
     }
-    guiO->addSpacer(0, inputs.size()*12)->setPadding(8);
     guiO->autoSizeToFitWidgets();
     
     buildGuiPreview();
@@ -193,7 +250,6 @@ void Learn::buildGuiPreview() {
         guiIP->addSpacer(300, 1)->setPadding(8);
     }
     guiIP->autoSizeToFitWidgets();
-
     guiOP->clearWidgets();
     guiOP->addLabel("Outputs");
     guiOP->addSpacer(300, 2)->setPadding(12);
@@ -244,31 +300,30 @@ void Learn::buildGuiMenu() {
 }
 
 //-------
-void Learn::startRecording() {
-    startTime = ofGetElapsedTimef();
-    framesPerInstance = ofGetFrameRate() / (float) instanceRate;
-}
-
-//-------
-void Learn::recordInstance() {
-    for (int i=0; i<outputs.size(); i++) {
-        if (!outputs[i]->getRecording())    continue;
-        outputs[i]->addTrainingInstance();
-        ((ofxUITextInput *) guiO->getWidget("numExamples"+ofToString(i)))->setTextString(ofToString(outputs[i]->getNumExamples())+" examples");
+void Learn::buildGuiInputSelector(int idx) {
+    idxSelectedOutput = idx;
+    guiInputSelector->clearWidgets();
+    
+    vector<string> inputLabels;
+    for (int i=0; i<inputs.size(); i++) {
+        inputLabels.push_back(inputs[i]->getName());
     }
-}
+    ofxUIDropDownList *dropDown = guiInputSelector->addDropDownList("select inputs", inputLabels, 150.0f);
+    dropDown->setAutoClose(false);
+    dropDown->setAllowMultiple(true);
+    dropDown->open();
 
-//-------
-void Learn::setPredictingMode(bool predicting) {
-    this->predicting = predicting;
-    guiI->setVisible(!predicting);
-    guiO->setVisible(!predicting);
-    guiIP->setVisible(predicting);
-    guiOP->setVisible(predicting);
-    if (!predicting) {
-        guiI->setVisible(inputsVisible);
-        guiO->setVisible(!inputsVisible);
+    vector<InputParameter *> inputs = outputs[idxSelectedOutput]->getInputs();
+    vector<ofxUILabelToggle *> toggles = dropDown->getToggles();
+    for (int i=0; i<toggles.size(); i++) {
+        string inputName = toggles[i]->getName();
+        for (int j=0; j<inputs.size(); j++) {
+            if (inputName == inputs[j]->getName()) {
+                toggles[i]->setValue(true);
+            }
+        }
     }
+    guiInputSelector->autoSizeToFitWidgets();
 }
 
 //-------
@@ -294,20 +349,56 @@ void Learn::guiInputsEvent(ofxUIEventArgs &e){
 //-------
 void Learn::guiOutputsEvent(ofxUIEventArgs &e){
     for (int i=0; i<outputs.size(); i++) {
-        if (e.getName() == "clear_"+ofToString(i)) {
+        if (e.getName() == "min_"+ofToString(i)) {
+            float min = ofToFloat(((ofxUITextInput *) guiO->getWidget("min_"+ofToString(i)))->getTextString());
+            outputs[i]->setMin(min);
+            ((ofxUISlider *) guiO->getWidget(outputs[i]->getName()))->setMin(min);
+        }
+        else if (e.getName() == "max_"+ofToString(i)) {
+            float max = ofToFloat(((ofxUITextInput *) guiO->getWidget("max_"+ofToString(i)))->getTextString());
+            outputs[i]->setMax(max);
+            ((ofxUISlider *) guiO->getWidget(outputs[i]->getName()))->setMax(max);
+        }
+        else if (e.getName() == "numExamples_"+ofToString(i)) {
+            if (e.getButton()->getValue() == 1) return;
+            if (i == idxSelectedOutput && dataVisible) {
+                dataVisible = false;
+            }
+            else {
+                guiInputSelector->setVisible(false);
+                dataVisible = true;
+                idxSelectedOutput = i;
+            }
+        }
+        else if (e.getName() == "inputs_"+ofToString(i)) {
+            if (e.getButton()->getValue() == 1) return;
+            if (i == idxSelectedOutput && guiInputSelector->isVisible()) {
+                guiInputSelector->setVisible(false);
+            }
+            else {
+                buildGuiInputSelector(i);
+                guiInputSelector->setVisible(true);
+                dataVisible = false;
+            }
+        }
+        else if (e.getName() == "clear_"+ofToString(i)) {
             outputs[i]->clearTrainingExamples();
         }
         else if (e.getName() == "record_"+ofToString(i)) {
             // done
         }
-        else if (e.getParentName() == "inputs_"+ofToString(i)) {
-            outputs[i]->clearInputs();
-            ofxUIDropDownList *dropDown = (ofxUIDropDownList *) guiO->getWidget("inputs_"+ofToString(i));
-            vector<ofxUILabelToggle *> toggles = dropDown->getToggles();
-            for (int j=0; j<toggles.size(); j++) {
-                if (toggles[j]->getValue()) {
-                    outputs[i]->addInput(inputs[j]);
-                }
+    }
+}
+
+//-------
+void Learn::guiInputSelectorEvent(ofxUIEventArgs &e){
+    if (e.getParentName() == "select inputs") {
+        outputs[idxSelectedOutput]->clearInputs();
+        ofxUIDropDownList *dropDown = (ofxUIDropDownList *) guiInputSelector->getWidget("select inputs");
+        vector<ofxUILabelToggle *> toggles = dropDown->getToggles();
+        for (int j=0; j<toggles.size(); j++) {
+            if (toggles[j]->getValue()) {
+                outputs[idxSelectedOutput]->addInput(inputs[j]);
             }
         }
     }
@@ -320,16 +411,7 @@ void Learn::guiTrainEvent(ofxUIEventArgs &e) {
     }
     else if (e.getName() == "fast" || e.getName() == "recording") {
         if (e.getButton()->getValue() == 1) return;
-        for (int i=0; i<outputs.size(); i++) {
-            if (outputs[i]->getNumExamples() == 0)  continue;
-            if (e.getName() == "fast")
-                outputs[i]->trainClassifierFast();
-            else if (e.getName() == "accurate")
-                outputs[i]->trainClassifierAccurate();
-        }
-        ((ofxUIToggle *) guiPresets->getWidget("predict"))->setValue(true);
-        recording = false;
-        predicting = true;
+        trainClassifiers(e.getName());
     }
 }
 
@@ -342,11 +424,11 @@ void Learn::guiPresetsEvent(ofxUIEventArgs &e) {
     }
     else if (e.getName() == "save") {
         if (e.getButton()->getValue() == 1) return;
-        cout << "save " << endl;
-    }
-    else if (e.getName() == "touchOsc") {
-        if (e.getButton()->getValue() == 1) return;
-        //outputs.sendControlOSCLayout();
+        /*
+         
+         SAVING ROUTINE
+         
+         */
     }
     else if (e.getName() == "predict") {
         setPredictingMode(e.getButton()->getValue());
@@ -356,7 +438,20 @@ void Learn::guiPresetsEvent(ofxUIEventArgs &e) {
         ofFileDialogResult loadFile = ofSystemLoadDialog("load presets file");
         if (loadFile.bSuccess){
             //presets.load(loadFile.filePath);
+            /*
+             
+             LOADING ROUTINE
+             
+             */
         }
+    }
+    else if (e.getName() == "touchOsc") {
+        if (e.getButton()->getValue() == 1) return;
+        /*
+         
+         UPLOAD TOUCH OSC
+         
+         */
     }
 }
 

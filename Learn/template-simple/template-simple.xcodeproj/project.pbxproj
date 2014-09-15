@@ -59,6 +59,7 @@
 		B0006D6519C0F573005282C0 /* Learn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0006D5C19C0F56C005282C0 /* Learn.cpp */; };
 		B0006D6719C0F573005282C0 /* LearnParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0006D6019C0F56C005282C0 /* LearnParameter.cpp */; };
 		B0006D6819C0F573005282C0 /* Presets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0006D6219C0F56C005282C0 /* Presets.cpp */; };
+		B03315B419C77D64002A8434 /* ofxSpreadsheet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B03315B219C77D64002A8434 /* ofxSpreadsheet.cpp */; };
 		B266578FC55D23BFEBC042E7 /* ofxGuiGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECF8674C7975F1063C5E30CA /* ofxGuiGroup.cpp */; };
 		B56FE57CC35806596D38118C /* ofxSliderGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 802251BAF1B35B1D67B32FD0 /* ofxSliderGroup.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
@@ -247,6 +248,8 @@
 		B0006D7019C10A0F005282C0 /* Control.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Control.h; sourceTree = "<group>"; };
 		B0006D7119C10A0F005282C0 /* Dropdown.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Dropdown.h; sourceTree = "<group>"; };
 		B0006D7219C10A0F005282C0 /* Parameter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Parameter.h; sourceTree = "<group>"; };
+		B03315B219C77D64002A8434 /* ofxSpreadsheet.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxSpreadsheet.cpp; sourceTree = "<group>"; };
+		B03315B319C77D64002A8434 /* ofxSpreadsheet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxSpreadsheet.h; sourceTree = "<group>"; };
 		B21E7E5F548EEA92F368040B /* tinyxml.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = tinyxml.h; path = ../../../addons/ofxXmlSettings/libs/tinyxml.h; sourceTree = SOURCE_ROOT; };
 		B31C608870ECEB2490A93736 /* ofxOscParameterSync.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOscParameterSync.h; path = ../../../addons/ofxOsc/src/ofxOscParameterSync.h; sourceTree = SOURCE_ROOT; };
 		B3CA0202B1A3B6D8920C2B15 /* ofxUIButton.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxUIButton.h; path = ../../../addons/ofxUI/src/ofxUIButton.h; sourceTree = SOURCE_ROOT; };
@@ -518,6 +521,24 @@
 			path = ../../Control/src;
 			sourceTree = "<group>";
 		};
+		B03315B019C77D64002A8434 /* ofxSpreadsheet */ = {
+			isa = PBXGroup;
+			children = (
+				B03315B119C77D64002A8434 /* src */,
+			);
+			name = ofxSpreadsheet;
+			sourceTree = "<group>";
+		};
+		B03315B119C77D64002A8434 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B03315B219C77D64002A8434 /* ofxSpreadsheet.cpp */,
+				B03315B319C77D64002A8434 /* ofxSpreadsheet.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxSpreadsheet/src;
+			sourceTree = "<group>";
+		};
 		BA6760AC87647DD61A92BD41 /* win32 */ = {
 			isa = PBXGroup;
 			children = (
@@ -533,6 +554,7 @@
 				B0006D6E19C10A07005282C0 /* Control */,
 				B0006D5819C0F563005282C0 /* Learn */,
 				B0006D3819C0F2F2005282C0 /* ofxLearn */,
+				B03315B019C77D64002A8434 /* ofxSpreadsheet */,
 				480A780D8D0308AE4A368801 /* ofxGui */,
 				E6053AB7FEC63D5F83825B88 /* ofxOsc */,
 				1F4FB5C423662B96ADFDCC0B /* ofxXmlSettings */,
@@ -859,6 +881,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B03315B419C77D64002A8434 /* ofxSpreadsheet.cpp in Sources */,
 				B0006D6519C0F573005282C0 /* Learn.cpp in Sources */,
 				B0006D6719C0F573005282C0 /* LearnParameter.cpp in Sources */,
 				B0006D6819C0F573005282C0 /* Presets.cpp in Sources */,
@@ -1144,6 +1167,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_52)",
 				);
 				PRODUCT_NAME = "template-simpleDebug";
+				USER_HEADER_SEARCH_PATHS = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1247,6 +1271,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
 				);
 				PRODUCT_NAME = "template-simple";
+				USER_HEADER_SEARCH_PATHS = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
