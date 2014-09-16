@@ -84,13 +84,18 @@ class OutputParameter : public LearnParameter
 {
 public:
     OutputParameter(string name, float min, float max) : LearnParameter(name, min, max) {
-        data.setup(560, 480);
+        setupSpreadsheet(480, 480);
     }
 
     OutputParameter(ofxParameter<float> *parameter) : LearnParameter(parameter) {
-        data.setup(560, 480);
+        setupSpreadsheet(480, 480);
     }
-    
+
+    void setupSpreadsheet(int width, int height) {
+        data.setup(width, height);
+        data.highlightColumn(0);
+    }
+
     void setRecording(bool recording) {
         this->recording = recording;
     }
@@ -102,6 +107,7 @@ public:
     void addInput(InputParameter *input) {
         inputs.push_back(input);
         vector<string> header;
+        header.push_back(getName());
         for (int i=0; i<inputs.size(); i++)
             header.push_back(inputs[i]->getName());
         data.setHeaders(header);
@@ -112,23 +118,25 @@ public:
     }
     
     void addTrainingInstance() {
-        data.addEntry(grabFeatureVector<float>());
+        data.addEntry(grabLabelFeatureVector<float>());
     }
     
     void predict() {
-        setValue(learn.predict(grabFeatureVector<double>()));
+        setValue(learn.predict(grabLabelFeatureVector<double>()));
     }
     
     void clearTrainingExamples() {
-        learn.clearTrainingInstances();
+        data.clear();
     }
     
     void trainClassifierFast() {
+        addSpreadsheetDataToLearn();
         learn.trainClassifier(FAST);
         trained = true;
     }
     
     void trainClassifierAccurate() {
+        addSpreadsheetDataToLearn();
         learn.trainClassifier(ACCURATE);
         trained = true;
     }
@@ -153,13 +161,26 @@ public:
 private:
     
     template <typename T>
-    vector<T> grabFeatureVector() {
+    vector<T> grabLabelFeatureVector() {
         vector<T> instance;
+        instance.push_back((T) getValue());
         for (int i=0; i<inputs.size(); i++)
             instance.push_back(inputs[i]->getValue());
         return instance;
     }
 
+    void addSpreadsheetDataToLearn() {
+        vector<vector<float> > entries = data.getEntries();
+        for (int i=0; i<entries.size(); i++) {
+            double label = (double) entries[i][0];
+            vector<double> instance;
+            for (int j=1; j<entries[i].size(); j++) {
+                instance.push_back((double) entries[i][j]);
+            }
+            learn.addTrainingInstance(instance, label);
+        }
+    }
+    
     ofxLearn learn;
     vector<InputParameter *> inputs;
     ofxSpreadsheet data;

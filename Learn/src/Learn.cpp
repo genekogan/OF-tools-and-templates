@@ -2,7 +2,7 @@
 
 
 //-------
-void Learn::setup(){
+Learn::Learn(){
     trainDuration = 2;
     trainCountdown = 2;
     instanceRate = 15;
@@ -45,17 +45,24 @@ void Learn::addOutput(string name, float min, float max) {
 
 //-------
 void Learn::update(){
-    float elapsed = ofGetElapsedTimef() - startTime;
-    if (elapsed < trainCountdown) {
-    }
-    else if (elapsed < trainCountdown + trainDuration) {
-        if (ofGetFrameNum() % framesPerInstance == 0)
-            recordInstance();
-    }
-    else {
-        ((ofxUIToggle *) guiTrain->getWidget("record"))->setValue(false);
+    /* recording procedure */
+    if (recording) {
+        float elapsed = ofGetElapsedTimef() - startTime;
+        if (elapsed < trainCountdown) {
+            // some countdown signal?
+        }
+        else if (elapsed < trainCountdown + trainDuration) {
+            if (ofGetFrameNum() % framesPerInstance == 0) {
+                recordInstance();
+            }
+        }
+        else if (elapsed > trainCountdown + trainDuration) {
+            ((ofxUIToggle *) guiTrain->getWidget("record"))->setValue(false);
+            recording = false;
+        }
     }
     
+    /* prediction procedure */
     if (predicting) {
         for (int i=0; i<outputs.size(); i++) {
             if (outputs[i]->getTrained())
@@ -67,7 +74,7 @@ void Learn::update(){
 //-------
 void Learn::draw(){
     if (dataVisible) {
-        outputs[idxSelectedOutput]->drawSpreadsheet(550, 144);
+        outputs[idxSelectedOutput]->drawSpreadsheet(520, 145);
     }
 }
 
@@ -75,6 +82,7 @@ void Learn::draw(){
 void Learn::startRecording() {
     startTime = ofGetElapsedTimef();
     framesPerInstance = ofGetFrameRate() / (float) instanceRate;
+    recording = true;
 }
 
 //-------
@@ -97,7 +105,7 @@ void Learn::trainClassifiers(string trainStrategy) {
             outputs[i]->trainClassifierAccurate();
         }
     }
-    ((ofxUIToggle *) guiPresets->getWidget("predict"))->setValue(true);
+    ((ofxUIToggle *) guiMenu->getWidget("predicting"))->setValue(true);
     recording = false;
     predicting = true;
 }
@@ -105,13 +113,14 @@ void Learn::trainClassifiers(string trainStrategy) {
 //-------
 void Learn::setPredictingMode(bool predicting) {
     this->predicting = predicting;
-    guiI->setVisible(!predicting);
-    guiO->setVisible(!predicting);
-    guiIP->setVisible(predicting);
-    guiOP->setVisible(predicting);
-    if (!predicting) {
-        guiI->setVisible(inputsVisible);
-        guiO->setVisible(!inputsVisible);
+    if (predicting) {
+        guiI->setVisible(false);
+        guiO->setVisible(false);
+        guiIP->setVisible(true);
+        guiOP->setVisible(true);
+        ((ofxUIToggle *) guiMenu->getWidget("inputs"))->setValue(false);
+        ((ofxUIToggle *) guiMenu->getWidget("outputs"))->setValue(false);
+        ((ofxUIToggle *) guiMenu->getWidget("preview"))->setValue(true);
     }
 }
 
@@ -125,7 +134,7 @@ void Learn::buildGuiInputOutput() {
     guiI->setVisible(inputsVisible);
     
     /* outputs */
-    guiO = new ofxUIScrollableCanvas(5, 144, 480, 400);
+    guiO = new ofxUIScrollableCanvas(5, 144, 500, 400);
     guiO->setDrawOutlineHighLight(true);
     guiO->setScrollableDirections(false, true);
     guiO->setFont("AndaleMono.ttf");
@@ -157,7 +166,10 @@ void Learn::buildGuiInputOutput() {
 //-------
 void Learn::buildGuiInputs() {
     guiI->clearWidgets();
-    guiI->addLabel("Inputs");
+    guiI->addLabel("Inputs")->setPadding(100);
+    guiI->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
+    guiI->addButton("touchOSC", false);
+    guiI->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
     guiI->addSpacer(480, 2)->setPadding(12);
     for (int i=0; i<inputs.size(); i++) {
         guiI->addSlider(inputs[i]->getName(),
@@ -200,7 +212,10 @@ void Learn::buildGuiInputs() {
 //-------
 void Learn::buildGuiOutputs() {
     guiO->clearWidgets();
-    guiO->addLabel("Outputs");
+    guiO->addLabel("Outputs")->setPadding(100);
+    guiO->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
+    guiO->addButton("touchOSC", false);
+    guiO->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
     guiO->addSpacer(480, 2)->setPadding(12);
     for (int i=0; i<outputs.size(); i++) {
         guiO->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
@@ -226,8 +241,8 @@ void Learn::buildGuiOutputs() {
         guiO->addLabelButton("inputs_"+ofToString(i), false, 100.0f)->setLabelText("inputs");
         guiO->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
         guiO->addLabelButton("numExamples_"+ofToString(i), false, 100.0f)->setLabelText(ofToString(outputs[i]->getNumExamples())+" examples");
-        guiO->addButton("clear_"+ofToString(i), false);
-        guiO->addToggle("record_"+ofToString(i), &outputs[i]->getRecordingRef());
+        guiO->addLabelButton("clear_"+ofToString(i), false, 60.0f)->setLabelText("clear");
+        guiO->addToggle("record", &outputs[i]->getRecordingRef());
         guiO->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
         guiO->addSpacer(480, 1)->setPadding(8);
     }
@@ -266,36 +281,45 @@ void Learn::buildGuiPreview() {
 
 //-------
 void Learn::buildGuiMenu() {
-    guiPresets = new ofxUICanvas(5, 5, 340, 135);
-    guiPresets->setDrawOutlineHighLight(true);
-    guiPresets->setFont("AndaleMono.ttf");
-    guiPresets->setGlobalButtonDimension(56);
-    guiPresets->setPadding(6);
-    guiPresets->addLabel("Menu")->setColorFill(ofxUIColor(50, 200, 50));
-    guiPresets->addSpacer();
-    guiPresets->addToggle("view", &inputsVisible)->setLabelPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    guiPresets->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiPresets->addToggle("predict", &predicting)->setLabelPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    guiPresets->addButton("touchOsc", false)->setLabelPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    guiPresets->addButton("save", false)->setLabelPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    guiPresets->addButton("load", false)->setLabelPosition(OFX_UI_WIDGET_POSITION_DOWN);
+    guiMenu = new ofxUICanvas(5, 5, 390, 135);
+    guiMenu->setDrawOutlineHighLight(true);
+    guiMenu->setFont("AndaleMono.ttf");
+    guiMenu->setGlobalButtonDimension(18);
+    guiMenu->setPadding(8);
+    guiMenu->addLabel("Menu")->setColorFill(ofxUIColor(50, 200, 50));
+    guiMenu->addSpacer();
+    
+    vector<string> names;
+    names.push_back("inputs");
+    names.push_back("outputs");
+    names.push_back("preview");
+    guiMenu->setPadding(5);
+    guiMenu->addRadio("view", names);
+    ((ofxUIToggle *) guiMenu->getWidget("inputs"))->setValue(true);
 
-    guiTrain = new ofxUICanvas(350, 5, 360, 135);
+    guiMenu->setPadding(8);
+    guiMenu->setGlobalButtonDimension(56);
+    guiMenu->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
+    guiMenu->addButton("load", false)->setLabelPosition(OFX_UI_WIDGET_POSITION_DOWN);
+    guiMenu->addButton("save", false)->setLabelPosition(OFX_UI_WIDGET_POSITION_DOWN);
+    guiMenu->addToggle("predicting", &predicting)->setLabelPosition(OFX_UI_WIDGET_POSITION_DOWN);
+    
+    guiTrain = new ofxUICanvas(400, 5, 360, 135);
     guiTrain->setDrawOutlineHighLight(true);
     guiTrain->setFont("AndaleMono.ttf");
     guiTrain->setGlobalButtonDimension(56);
-    guiTrain->setPadding(6);
+    guiTrain->setPadding(8);
     guiTrain->addLabel("Train")->setColorFill(ofxUIColor(50, 200, 50));
     guiTrain->addSpacer();
     guiTrain->addToggle("record", false)->setLabelPosition(OFX_UI_WIDGET_POSITION_DOWN);
     guiTrain->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
     guiTrain->addButton("fast", false)->setLabelPosition(OFX_UI_WIDGET_POSITION_DOWN);
     guiTrain->addButton("accurate", false)->setLabelPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    guiTrain->addWidgetEastOf(new ofxUISlider("countdown", 0.0, 5.0, &trainCountdown, 120.0f, 8.0f), "accurate");
-    guiTrain->addWidgetSouthOf(new ofxUISlider("duration", 0.0, 5.0, &trainDuration, 120.0f, 8.0f), "countdown");
-    guiTrain->addWidgetSouthOf(new ofxUIIntSlider("instanceRate", 1, 30, &instanceRate, 120.0f, 8.0f), "duration");
+    guiTrain->addWidgetEastOf(new ofxUISlider("countdown", 0.0, 5.0, &trainCountdown, 120.0f, 8.0f), "accurate")->setPadding(2);
+    guiTrain->addWidgetSouthOf(new ofxUISlider("duration", 0.0, 5.0, &trainDuration, 120.0f, 8.0f), "countdown")->setPadding(2);
+    guiTrain->addWidgetSouthOf(new ofxUIIntSlider("instanceRate", 1, 30, &instanceRate, 120.0f, 8.0f), "duration")->setPadding(2);
 
-    ofAddListener(guiPresets->newGUIEvent, this, &Learn::guiPresetsEvent);
+    ofAddListener(guiMenu->newGUIEvent, this, &Learn::guiMenuEvent);
     ofAddListener(guiTrain->newGUIEvent, this, &Learn::guiTrainEvent);
 }
 
@@ -344,6 +368,10 @@ void Learn::guiInputsEvent(ofxUIEventArgs &e){
             inputs[i]->setAddress(((ofxUITextInput *) guiI->getWidget("oscAddress_"+ofToString(i)))->getTextString());
         }
     }
+    if (e.getName() == "touchOSC") {
+        if (e.getButton()->getValue() == 1) return;
+        cout << "TOUCH OSC" << endl;
+    }
 }
 
 //-------
@@ -382,11 +410,17 @@ void Learn::guiOutputsEvent(ofxUIEventArgs &e){
             }
         }
         else if (e.getName() == "clear_"+ofToString(i)) {
+            if (e.getButton()->getValue() == 1) return;
             outputs[i]->clearTrainingExamples();
+            ((ofxUILabelButton *) guiO->getWidget("numExamples_"+ofToString(i)))->setLabelText("0 examples");
         }
         else if (e.getName() == "record_"+ofToString(i)) {
             // done
         }
+    }
+    if (e.getName() == "touchOSC") {
+        if (e.getButton()->getValue() == 1) return;
+        cout << "TOUCH OSC" << endl;
     }
 }
 
@@ -416,12 +450,34 @@ void Learn::guiTrainEvent(ofxUIEventArgs &e) {
 }
 
 //-------
-void Learn::guiPresetsEvent(ofxUIEventArgs &e) {
+void Learn::guiMenuEvent(ofxUIEventArgs &e) {
     if (e.getName() == "view") {
         if (predicting) return;
         guiI->setVisible(inputsVisible);
         guiO->setVisible(!inputsVisible);
     }
+    
+    
+    if (e.getName() == "inputs") {
+        guiI->setVisible(true);
+        guiO->setVisible(false);
+        guiIP->setVisible(false);
+        guiOP->setVisible(false);
+    }
+    else if (e.getName() == "outputs") {
+        guiI->setVisible(false);
+        guiO->setVisible(true);
+        guiIP->setVisible(false);
+        guiOP->setVisible(false);
+    }
+    else if (e.getName() == "preview") {
+        guiI->setVisible(false);
+        guiO->setVisible(false);
+        guiIP->setVisible(true);
+        guiOP->setVisible(true);
+    }
+    
+    
     else if (e.getName() == "save") {
         if (e.getButton()->getValue() == 1) return;
         /*
@@ -430,7 +486,7 @@ void Learn::guiPresetsEvent(ofxUIEventArgs &e) {
          
          */
     }
-    else if (e.getName() == "predict") {
+    else if (e.getName() == "predicting") {
         setPredictingMode(e.getButton()->getValue());
     }
     else if (e.getName() == "load") {
@@ -445,13 +501,21 @@ void Learn::guiPresetsEvent(ofxUIEventArgs &e) {
              */
         }
     }
-    else if (e.getName() == "touchOsc") {
-        if (e.getButton()->getValue() == 1) return;
-        /*
-         
-         UPLOAD TOUCH OSC
-         
-         */
-    }
 }
 
+//-------
+Learn::~Learn(){
+    for (int i=0; i<inputs.size(); i++) {
+        delete inputs[i];
+    }
+    for (int i=0; i<outputs.size(); i++) {
+        delete outputs[i];
+    }
+    delete guiI;
+    delete guiO;
+    delete guiIP;
+    delete guiOP;
+    delete guiTrain;
+    delete guiMenu;
+    delete guiInputSelector;
+}

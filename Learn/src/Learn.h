@@ -7,25 +7,12 @@
 #include "Presets.h"
 
 
-/*
- to-do:
- ------
- 
-  - spreadsheet
-  - select inputs
-  - learn routine
-  - preset saving
-  ----
-  - remove all listeners, pointers
- 
-*/
-
-
 
 class Learn
 {
 public:
-    void setup();
+    Learn();
+    ~Learn();
     void update();
     void draw();
     
@@ -44,7 +31,7 @@ private:
     void buildGuiInputSelector(int idx);
     
     void guiTrainEvent(ofxUIEventArgs &e);
-    void guiPresetsEvent(ofxUIEventArgs &e);
+    void guiMenuEvent(ofxUIEventArgs &e);
     void guiInputsEvent(ofxUIEventArgs &e);
     void guiOutputsEvent(ofxUIEventArgs &e);
     void guiInputSelectorEvent(ofxUIEventArgs &e);
@@ -62,7 +49,7 @@ private:
     ofxUIScrollableCanvas *guiIP;
     ofxUIScrollableCanvas *guiOP;
     ofxUICanvas *guiTrain;
-    ofxUICanvas *guiPresets;
+    ofxUICanvas *guiMenu;
     ofxUICanvas *guiInputSelector;
     
     float startTime, trainCountdown, trainDuration;
