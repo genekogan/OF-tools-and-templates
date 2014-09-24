@@ -1,160 +1,109 @@
 #pragma once
 
+#include "ofMain.h"
+#include "ofxUI.h"
 #include "Parameter.h"
-#include "Dropdown.h"
-#include "ofxGui.h"
+#include "OscManager.h"
 
 
 class Control
 {
 public:
+    ~Control();
+    
     Control() {
-        ofAddListener(ofEvents().draw, this, &Control::draw);
-        visible = true;
-        gui.setup(name);
-        guiPresets.setup(name+" presets");
-        setupGui();
-        guiType = GUI_PARAMETERS;
-    }
-    
-    ~Control() {
-        ofRemoveListener(ofEvents().draw, this, &Control::draw);
-    }
-    
-    string getName() {
-        return name;
+        gui = new ofxUICanvas("control");
+        ofAddListener(gui->newGUIEvent, this, &Control::guiEvent);
     }
     
     void setName(string name) {
         this->name = name;
-        gui.setName(name);
-        guiPresets.setName(name+" presets");
-    }
-
-    void clearParameters() {
-        gui.clear();
-        guiPresets.clear();
-    }
-
-    void savePreset() {
-        string namePreset = ofSystemTextBoxDialog("preset name?");
-        gui.saveToFile(ofToString("presets/"+name+"/"+namePreset+".xml"));
     }
     
-    void loadPreset(string &name) {
-        gui.loadFromFile("presets/"+name);
-    }
-    
-    template <typename T>
-    void registerParameter(string name, ofxParameter<T> *parameter, T min, T max) {
-        parameter->setName(name);
-        parameter->setMin(min);
-        parameter->setMax(max);
-        gui.add(*parameter);
-    }
-    
-    template <typename T>
-    void registerParameter(string name, ofxParameter<T> *parameter) {
-        parameter->set(name, *parameter);
-        gui.add(*parameter);
-    }
-
-    template <typename L, typename M>
-    void registerMenu(string name, L listenerClass, M listenerMethod, vector<string> choices) {
-        Dropdown *menu = new Dropdown();
-        menu->setup(name, &gui, listenerClass, listenerMethod);
-        menu->addItems(choices);
-    }
-    
-    template <typename L, typename M>
-    void registerEvent(string name, L listenerClass, M listenerMethod) {
-        ofxButton *button = new ofxButton();
-        button->setup(name);
-        button->addListener(listenerClass, listenerMethod);
-        gui.add(button);
-    }
-    
-    void registerLabel(string name) {
-        ofxLabel *label = new ofxLabel();
-        label->setup(name);
-        gui.add(label);
-    }
-
     void setGuiPosition(int x, int y) {
-        gui.setPosition(x, y);
-        guiPresets.setPosition(x, y);
-    }
-
-    bool getVisible() {
-        return visible;
+        gui->setPosition(x, y);
     }
     
-    void setVisible(bool b) {
-        visible = b;
+    void setVisible(bool visible) {
+        this->visible = visible;
+        gui->setVisible(visible);
     }
     
     void toggleVisible() {
-        visible = !visible;
+        setVisible(!visible);
     }
     
-    void refreshGui() {
-        clearParameters();
-        setVisible(true);
+    void clearParameters();
+
+    vector<ParameterBase *> & getParameters() {
+        return parameters;
+    }
+    
+    template <typename T> void addParameter(string name, T *value, T min, T max) {
+        ParameterBase *parameter = new Parameter<T>(name, value, min, max);
+        parameters.push_back(parameter);
         setupGui();
     }
-
+    
+    template <typename T> void addParameter(string name, T *value) {
+        ParameterBase *parameter = new Parameter<T>(name, value);
+        parameters.push_back(parameter);
+        setupGui();
+    }
+    
+    template <typename ListenerClass, typename ListenerMethod>
+    void addEvent(string name, ListenerClass *listener, ListenerMethod method) {
+        events[name] = new ofEvent<bool>();
+        ofAddListener(*events[name], listener, method);
+        setupGui();
+    }
+    
+    template <typename ListenerClass, typename ListenerMethod>
+    void addMenu(string name, vector<string> items, ListenerClass *listener, ListenerMethod method) {
+        menus[name] = items;
+        menuEvents[name] = new ofEvent<string>();
+        ofAddListener(*menuEvents[name], listener, method);
+        setupGui();
+    }
+    
+    void addColor(string name, ofColor *value) {
+        ofVec4f *vec = new ofVec4f(value->r, value->g, value->b, value->a);
+        GuiColorVecPair *color = new GuiColorVecPair();
+        color->color = value;
+        color->vec = vec;
+        colors[name] = color;
+        ParameterBase *parameter = new Parameter<ofVec4f>(name, vec, ofVec4f(0, 0, 0, 0), ofVec4f(255, 255, 255, 255));
+        parameters.push_back(parameter);
+        setupGui();
+    }
+    
 private:
     
-    enum GuiType { GUI_PARAMETERS, GUI_PRESETS };
+    struct GuiColorVecPair {
+        ofColor *color;
+        ofVec4f *vec;
+        void update() {color->set(vec->x, vec->y, vec->z, vec->w);}
+    };
     
-    void setupGui() {
-        ofxButton *switchGui1 = new ofxButton();
-        ofxButton *switchGui2 = new ofxButton();
-        switchGui1->setup("view presets");
-        switchGui2->setup("view parameters");
-        switchGui1->addListener(this, &Control::toggleGui);
-        switchGui2->addListener(this, &Control::toggleGui);
-        
-        ofxButton *saveButton = new ofxButton();
-        saveButton->setup("save preset");
-        saveButton->addListener(this, &Control::savePreset);
-        
-        gui.add(switchGui1);
-        guiPresets.add(switchGui2);
-        guiPresets.add(saveButton);
-        cout <<ofToDataPath("presets/"+name+"/") << endl;
-        ofDirectory dir(ofToDataPath("presets/"+name+"/"));
-        dir.allowExt("xml");
-        dir.listDir();
-        vector<string> filenames;
-        for(int i = 0; i < dir.numFiles(); i++) {
-            filenames.push_back(dir.getName(i));
-        }
-
-        Dropdown *menu = new Dropdown();
-        menu->setup(name, &guiPresets, this, &Control::loadPreset);
-        menu->addItems(filenames);
-    }
+    void guiEvent(ofxUIEventArgs &e);
+    void setupGui();
     
-    void toggleGui() {
-        guiType = guiType==GUI_PARAMETERS ? GUI_PRESETS : GUI_PARAMETERS;
-    }
+    void addParameterToGui(string name, bool *t);
+    void addParameterToGui(string name, string *t);
+    void addParameterToGui(string name, int min, int max, int *value);
+    void addParameterToGui(string name, float min, float max, float *value);
+    void addParameterToGui(string name, ofVec2f min, ofVec2f max, ofVec2f *value);
+    void addParameterToGui(string name, ofVec3f min, ofVec3f max, ofVec3f *value);
+    void addParameterToGui(string name, ofVec4f min, ofVec4f max, ofVec4f *value);
     
-    void draw(ofEventArgs &data) {
-        if (visible) {
-            if (guiType == GUI_PARAMETERS) {
-                gui.draw();
-            }
-            else if (guiType == GUI_PRESETS) {
-                guiPresets.draw();
-            }
-        }
-    }
+    ofxUICanvas *gui;
     
-    ofxPanel gui;
-    ofxPanel guiPresets;
     string name;
     bool visible;
-    GuiType guiType;
+    
+    vector<ParameterBase *> parameters;
+    map<string, ofEvent<bool>*> events;
+    map<string, vector<string> > menus;
+    map<string, ofEvent<string>*> menuEvents;
+    map<string, GuiColorVecPair*> colors;
 };
-
