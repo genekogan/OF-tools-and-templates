@@ -10,12 +10,12 @@ struct ShaderParameterBase {
 
 template<typename T>
 struct ShaderParameter : public ShaderParameterBase {
-    ShaderParameter(ofxParameter<T> *val) {
-        value = val;
-        name = value->getName();
+    ShaderParameter(string name, T *value) {
+        this->name = name;
+        this->value = value;
     }
     void update(ofShader *shader);
-    ofParameter<T> *value;
+    T *value;
     string name;
 };
 
@@ -29,15 +29,15 @@ void ShaderParameter<float>::update(ofShader *shader) {
 }
 template<> inline
 void ShaderParameter<ofVec2f>::update(ofShader *shader) {
-    shader->setUniform2f(name, value->get().x, value->get().y);
+    shader->setUniform2f(name, value->x, value->y);
 }
 template<> inline
 void ShaderParameter<ofVec3f>::update(ofShader *shader) {
-    shader->setUniform3f(name, value->get().x, value->get().y, value->get().z);
+    shader->setUniform3f(name, value->x, value->y, value->z);
 }
 template<> inline
 void ShaderParameter<ofColor>::update(ofShader *shader) {
-    shader->setUniform3f(name, value->get().r / 255.0, value->get().g / 255.0, value->get().b / 255.0);
+    shader->setUniform3f(name, value->r / 255.0, value->g / 255.0, value->b / 255.0);
 }
 
 

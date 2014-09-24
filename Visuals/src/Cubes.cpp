@@ -2,7 +2,7 @@
 
 
 //---------
-void Cube::setup(ofVec3f mainPosition, ofVec3f marginPosition, ofVec3f targetSize, ofVec3f marginSize, ofVec3f ang, ofVec3f dAng, ofColor color, ofxParameter<ofVec3f> *pan) {
+void Cube::setup(ofVec3f mainPosition, ofVec3f marginPosition, ofVec3f targetSize, ofVec3f marginSize, ofVec3f ang, ofVec3f dAng, ofColor color, ofVec3f *pan) {
     this->mainPosition = mainPosition;
     this->marginPosition = marginPosition;
     wPosition = ofVec3f(0.04, 0.04, 0.04);
@@ -20,7 +20,7 @@ void Cube::setup(ofVec3f mainPosition, ofVec3f marginPosition, ofVec3f targetSiz
 
 //---------
 void Cube::draw() {
-    mainPosition += pan->get();
+    mainPosition += *pan;
     
     // update position
     ofVec3f mp = ofVec3f(marginPosition.x * sin(wPosition.x * ofGetFrameNum() + offsetP.x),
@@ -65,18 +65,18 @@ void Cube::draw() {
 void Cubes::setup() {
     setName("Cubes");
     
-    control.registerParameter("newBoxRate", &newBoxRate, 1, 10);
-    control.registerParameter("pan", &pan, ofVec3f(-20, -20, -20), ofVec3f(20, 20, 20));
-    control.registerParameter("translation", &translation, ofVec2f(0, 0), ofVec2f(width, height));
-    control.registerParameter("color", &color, ofColor(0, 0), ofColor(255, 255));
-    control.registerParameter("colorVar", &colorVar, 0, 200);
-    control.registerEvent("preset1", this, &Cubes::preset1);
-    control.registerEvent("preset2", this, &Cubes::preset2);
-    control.registerEvent("preset3", this, &Cubes::preset3);
-    control.registerEvent("preset4", this, &Cubes::preset4);
-    control.registerEvent("preset5", this, &Cubes::preset5);
-    control.registerEvent("preset6", this, &Cubes::preset6);
-    control.registerEvent("preset7", this, &Cubes::preset7);
+    control.addParameter("newBoxRate", &newBoxRate, 1, 10);
+    control.addParameter("pan", &pan, ofVec3f(-20, -20, -20), ofVec3f(20, 20, 20));
+    control.addParameter("translation", &translation, ofVec2f(0, 0), ofVec2f(width, height));
+    control.addColor("color", &color);
+    control.addParameter("colorVar", &colorVar, 0, 200);
+    control.addEvent("preset1", this, &Cubes::preset1);
+    control.addEvent("preset2", this, &Cubes::preset2);
+    control.addEvent("preset3", this, &Cubes::preset3);
+    control.addEvent("preset4", this, &Cubes::preset4);
+    control.addEvent("preset5", this, &Cubes::preset5);
+    control.addEvent("preset6", this, &Cubes::preset6);
+    control.addEvent("preset7", this, &Cubes::preset7);
     
     newBoxRate = 3;
     pan = ofVec3f(-8, -3, 0);
@@ -84,13 +84,14 @@ void Cubes::setup() {
     color = ofColor(255, 0, 0, 80);
     colorVar = 10;
     
-    preset1();
+    bool b;
+    preset1(b);
 }
 
 //---------
 void Cubes::update() {
-    translation.set(ofVec2f(ofLerp(translation->x, ofGetMouseY(), 0.01),
-                            ofLerp(translation->y, ofGetMouseX(), 0.01)));
+    translation.set(ofVec2f(ofLerp(translation.x, ofGetMouseY(), 0.01),
+                            ofLerp(translation.y, ofGetMouseX(), 0.01)));
     
     if (ofGetFrameNum() % newBoxRate == 0) {
         addNewBox();
@@ -102,7 +103,7 @@ void Cubes::draw() {
     ofRotateX(ofMap(ofNoise(0.002*ofGetFrameNum()+5), 0, 1, -0.5, 0.5));
     ofRotateY(ofMap(ofNoise(0.002*ofGetFrameNum()+15), 0, 1, -0.5, 0.5));
     ofRotateZ(ofMap(ofNoise(0.002*ofGetFrameNum()+25), 0, 1, -0.5, 0.5));
-    ofTranslate(width/2, translation->x, translation->y);
+    ofTranslate(width/2, translation.x, translation.y);
     
     for (int i=0; i<cubes.size(); i++) {
         cubes[i].draw();
@@ -111,10 +112,10 @@ void Cubes::draw() {
 
 //---------
 void Cubes::addNewBox() {
-    ofColor newColor = ofColor(ofClamp(color->r + ofRandom(-colorVar,colorVar), 0, 255),
-                               ofClamp(color->g + ofRandom(-colorVar,colorVar), 0, 255),
-                               ofClamp(color->b + ofRandom(-colorVar,colorVar), 0, 255),
-                               ofClamp(color->a + ofRandom(-colorVar,colorVar), 0, 255));
+    ofColor newColor = ofColor(ofClamp(color.r + ofRandom(-colorVar,colorVar), 0, 255),
+                               ofClamp(color.g + ofRandom(-colorVar,colorVar), 0, 255),
+                               ofClamp(color.b + ofRandom(-colorVar,colorVar), 0, 255),
+                               ofClamp(color.a + ofRandom(-colorVar,colorVar), 0, 255));
     
     Cube cube;
     cube.setup(ofVec3f(panPosition.x, panPosition.y, 0) + mainPosition.get(),
@@ -139,7 +140,7 @@ void Cubes::resetTimeFunctions() {
 
 
 //====== preset 1 ==========//
-void Cubes::preset1() {
+void Cubes::preset1(bool &b) {
     resetTimeFunctions();
 	mainPosition.setConstant(ofVec3f(1200, 0, 0));
 	mainPosition.setFunctionRandom(ofVec3f(0, 0, -1000), ofVec3f(0, 600, -900));
@@ -147,7 +148,7 @@ void Cubes::preset1() {
 }
 
 //====== preset 2 ==========//
-void Cubes::preset2() {
+void Cubes::preset2(bool &b) {
     resetTimeFunctions();
 	mainPosition.setConstant(ofVec3f(1200, 0, 0));
 	mainPosition.setFunctionRandom(ofVec3f(0, 0, -1000), ofVec3f(0, 0, -900));
@@ -157,7 +158,7 @@ void Cubes::preset2() {
 }
 
 //====== preset 3 ==========//
-void Cubes::preset3() {
+void Cubes::preset3(bool &b) {
     resetTimeFunctions();
 	mainPosition.setConstant(ofVec3f(1200, 0, 0));
 	mainPosition.setFunctionRandom(ofVec3f(0, 0, -1000), ofVec3f(0, 0, -900));
@@ -167,7 +168,7 @@ void Cubes::preset3() {
 }
 
 //====== preset 4 ==========//
-void Cubes::preset4() {
+void Cubes::preset4(bool &b) {
     resetTimeFunctions();
 	mainPosition.setConstant(ofVec3f(1200, 300, 0));
 	mainPosition.setFunctionRandom(ofVec3f(0, 0, -1000), ofVec3f(0, 0, -900));
@@ -179,7 +180,7 @@ void Cubes::preset4() {
 }
 
 //====== preset 5 ==========//
-void Cubes::preset5() {
+void Cubes::preset5(bool &b) {
     resetTimeFunctions();
 	mainPosition.setConstant(ofVec3f(1200, 300, 0));
 	mainPosition.setFunctionRandom(ofVec3f(0, 0, -1000), ofVec3f(0, 0, -900));
@@ -192,7 +193,7 @@ void Cubes::preset5() {
 }
 
 //====== preset 6 ==========//
-void Cubes::preset6() {
+void Cubes::preset6(bool &b) {
     resetTimeFunctions();
 	mainPosition.setConstant(ofVec3f(1200, 0, 0));
 	mainPosition.setFunctionSine(ofVec3f(0, -200, -850), ofVec3f(0, 200, -450), ofVec3f(0, 0.1, 0.1));
@@ -204,7 +205,7 @@ void Cubes::preset6() {
 }
 
 //====== preset 7 ==========//
-void Cubes::preset7() {
+void Cubes::preset7(bool &b) {
     resetTimeFunctions();
 	mainPosition.setConstant(ofVec3f(1200, 300, 0));
 	mainPosition.setFunctionRandom(ofVec3f(0, 0, -1000), ofVec3f(0, 0, -900));

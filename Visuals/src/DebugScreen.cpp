@@ -16,15 +16,13 @@ void DebugScreen::setup() {
     gradientModes.push_back("Linear");
     gradientModes.push_back("Bar");
 
-    color1.addListener(this, &DebugScreen::changedColor);
-    color2.addListener(this, &DebugScreen::changedColor);
-
-    control.registerMenu("mode", this, &DebugScreen::setType, debugModes);
-    control.registerParameter("color1", &color1, ofColor(0, 0), ofColor(255, 255));
-    control.registerParameter("color2", &color2, ofColor(0, 0), ofColor(255, 255));
-    control.registerParameter("numRects", &numRects, 1, 100);
-    control.registerParameter("speed", &speed, 0, 100);
-    control.registerMenu("gradient type", this, &DebugScreen::setupGradient, gradientModes);
+    control.addMenu("mode", debugModes, this, &DebugScreen::setType);
+    control.addColor("color1", &color1);
+    control.addColor("color2", &color2);
+    control.addParameter("numRects", &numRects, 1, 100);
+    control.addParameter("speed", &speed, 0, 100);
+    control.addMenu("gradient type", gradientModes, this, &DebugScreen::setupGradient);
+    control.addEvent("refresh", this, &DebugScreen::refresh);
     
     color1 = ofColor(ofRandom(255), ofRandom(255), ofRandom(255), 255);
     color2 = ofColor(ofRandom(255), ofRandom(255), ofRandom(255), 255);
@@ -121,7 +119,7 @@ void DebugScreen::drawGradient() {
 }
 
 //--------
-void DebugScreen::changedColor(ofColor & c) {
+void DebugScreen::refresh(bool & b) {
     if (type == GRADIENT) {
         setupGradient((string &) gradientMode);
     }

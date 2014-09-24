@@ -14,7 +14,7 @@ public:
     
 private:
     
-    void triangulate();
+    void triangulate(bool &b);
     
     CirclePackGenerator circlePacker;
     EvenPointsGenerator pointGenerator;
@@ -24,18 +24,18 @@ private:
     vector<XYZ> vertices;
     vector<ofPoint> points;
     
-    ofxParameter<bool> realtime;
-    ofxParameter<bool> circles;
-    ofxParameter<bool> filled;
-    ofxParameter<int> numCandidates;
-    ofxParameter<int> numPoints;
-    ofxParameter<float> minDist;
-    ofxParameter<float> margin;
-    ofxParameter<float> triNoise;
-    ofxParameter<float> colorNoise;
-    ofxParameter<ofColor> color;
-    ofxParameter<ofColor> varColor;
-    ofxParameter<float> lineWidth;
+    bool realtime;
+    bool circles;
+    bool filled;
+    int numCandidates;
+    int numPoints;
+    float minDist;
+    float margin;
+    float triNoise;
+    float colorNoise;
+    ofColor color;
+    ofColor varColor;
+    float lineWidth;
 };
 
 

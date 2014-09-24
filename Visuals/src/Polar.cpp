@@ -1,7 +1,7 @@
 #include "Polar.h"
 
 //----------
-PolarEq::PolarEq(ofxParameter<bool> *is3d, ofxParameter<bool> *isRibbon, ofxParameter<ofVec3f> *speedRotation) {
+PolarEq::PolarEq(bool *is3d, bool *isRibbon, ofVec3f *speedRotation) {
     this->is3d = is3d;
     this->isRibbon = isRibbon;
     this->speedRotation = speedRotation;
@@ -38,9 +38,9 @@ void PolarEq::update() {
     z = *is3d ? r * sin(0.5*ang+1.0) * cos(0.25*ang+2.0) : 0;
     
     if (*is3d) {
-        rotAngle.x = ofLerp(rotAngle.x, speedRotation->get().x * time, 0.05);
-        rotAngle.y = ofLerp(rotAngle.y, speedRotation->get().y * time, 0.05);
-        rotAngle.z = ofLerp(rotAngle.z, speedRotation->get().z * time, 0.05);
+        rotAngle.x = ofLerp(rotAngle.x, speedRotation->x * time, 0.05);
+        rotAngle.y = ofLerp(rotAngle.y, speedRotation->y * time, 0.05);
+        rotAngle.z = ofLerp(rotAngle.z, speedRotation->z * time, 0.05);
     }
     else {
         rotAngle.x = ofLerp(rotAngle.x, 0, 0.03);
@@ -87,23 +87,23 @@ void PolarEq::draw() {
 void Polar::setup() {
     setName("Polar");
     
-    control.registerParameter("color", &color, ofColor(0, 0), ofColor(255, 255));
-    control.registerParameter("lineWidth", &lineWidth, 0.0f, 16.0f);
-    control.registerParameter("nx", &nx, 1, 12);
-    control.registerParameter("ny", &ny, 1, 12);
-    control.registerParameter("delTime", &delTime, 0.0f, 2.0f);
-    control.registerParameter("numPoints", &numPoints, 3, 100);
-    control.registerParameter("rad", &rad, 0.0f, 500.0f);
-    control.registerParameter("radMargin", &radMargin, 0.0f, 300.0f);
-    control.registerParameter("dRateMax", &dRateMax, 0.0f, 0.1f);
-    control.registerParameter("dAngMax", &dAngMax, 0.0f, 3.0f);
-    control.registerParameter("angNoise", &angNoise, 0.0f, 0.0015f);
-    control.registerParameter("rateNoise", &rateNoise, 0.0f, 0.0015f);
-    control.registerParameter("radNoise", &radNoise, 0.0f, 0.0015f);
-    control.registerParameter("3d", &is3d);
-    control.registerParameter("ribbons", &isRibbon);
-    control.registerParameter("speedRotation", &speedRotation, ofVec3f(0, 0, 0), ofVec3f(1, 1, 1));
-    control.registerEvent("refresh", this, &Polar::refresh);
+    control.addColor("color", &color);
+    control.addParameter("lineWidth", &lineWidth, 0.0f, 16.0f);
+    control.addParameter("nx", &nx, 1, 12);
+    control.addParameter("ny", &ny, 1, 12);
+    control.addParameter("delTime", &delTime, 0.0f, 2.0f);
+    control.addParameter("numPoints", &numPoints, 3, 100);
+    control.addParameter("rad", &rad, 0.0f, 500.0f);
+    control.addParameter("radMargin", &radMargin, 0.0f, 300.0f);
+    control.addParameter("dRateMax", &dRateMax, 0.0f, 0.1f);
+    control.addParameter("dAngMax", &dAngMax, 0.0f, 3.0f);
+    control.addParameter("angNoise", &angNoise, 0.0f, 0.0015f);
+    control.addParameter("rateNoise", &rateNoise, 0.0f, 0.0015f);
+    control.addParameter("radNoise", &radNoise, 0.0f, 0.0015f);
+    control.addParameter("3d", &is3d);
+    control.addParameter("ribbons", &isRibbon);
+    control.addParameter("speedRotation", &speedRotation, ofVec3f(0, 0, 0), ofVec3f(1, 1, 1));
+    control.addEvent("refresh", this, &Polar::refresh);
     
     nx = 3;
     ny = 3;
@@ -135,7 +135,7 @@ void Polar::managePolarCount() {
 }
 
 //----------
-void Polar::refresh() {
+void Polar::refresh(bool &b) {
     for (int i=0; i<polars.size(); i++) {
         polars[i]->refresh();
     }

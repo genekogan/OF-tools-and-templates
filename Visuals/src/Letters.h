@@ -12,18 +12,19 @@ public:
     void draw();
 
 private:
-    ofxParameter<int> nrows;
-    ofxParameter<int> ncols;
-    ofxParameter<ofVec2f> letterRange;
-    ofxParameter<int> rate;
-    ofxParameter<float> density;
-    ofxParameter<ofColor> color;
-    ofxParameter<ofVec2f> rateNoise;
-    ofxParameter<float> rateNoiseTime;
-    ofxParameter<ofVec2f> letterNoise;
-    ofxParameter<float> letterNoiseTime;
-    ofxParameter<bool> noisyLetters;
-    ofxParameter<bool> chinese;
+    int nrows;
+    int ncols;
+    ofVec2f letterRange;
+    int rate;
+    float density;
+    ofColor color;
+    ofVec2f rateNoise;
+    float rateNoiseTime;
+    ofVec2f letterNoise;
+    float letterNoiseTime;
+    bool noisyLetters;
+    bool chinese;
+    
     vector<char> chars;
     vector<int> charsC;
     ofTrueTypeFont font, fontC;

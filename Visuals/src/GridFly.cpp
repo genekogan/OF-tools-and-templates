@@ -5,15 +5,15 @@
 void GridFly::setup(){
     setName("GridFly");
     
-    control.registerParameter("nx", &nx, 10, 400);
-    control.registerParameter("ny", &ny, 10, 400);
-    control.registerParameter("length", &length, ofVec2f(100,100), ofVec2f(4000,4000));
-    control.registerParameter("margin", &margin, 0.0f, 1000.0f);
-    control.registerParameter("noiseFactor", &noiseFactor, ofVec2f(0, 0), ofVec2f(0.01, 0.01));
-    control.registerParameter("speed", &speed, 0.0f, 100.0f);
-    control.registerParameter("angle", &angle, 0.0f, 360.0f);
-    control.registerParameter("axis", &axis, ofVec3f(0, -1, -1), ofVec3f(1, 1, 1));
-    control.registerParameter("color", &color, ofColor(0, 0), ofColor(255, 255));
+    control.addParameter("nx", &nx, 10, 400);
+    control.addParameter("ny", &ny, 10, 400);
+    control.addParameter("length", &length, ofVec2f(100,100), ofVec2f(4000,4000));
+    control.addParameter("margin", &margin, 0.0f, 1000.0f);
+    control.addParameter("noiseFactor", &noiseFactor, ofVec2f(0, 0), ofVec2f(0.01, 0.01));
+    control.addParameter("speed", &speed, 0.0f, 100.0f);
+    control.addParameter("angle", &angle, 0.0f, 360.0f);
+    control.addParameter("axis", &axis, ofVec3f(0, -1, -1), ofVec3f(1, 1, 1));
+    control.addColor("color", &color);
     
     nx = 100;
     ny = 100;
@@ -30,8 +30,8 @@ void GridFly::setup(){
         addRow();
         y++;
     }
-    minY = -length.get().y;
-    dy = length.get().y / ny;
+    minY = -length.y;
+    dy = length.y / ny;
     y = 0;
 }
 
@@ -40,7 +40,7 @@ void GridFly::update(){
     Z += speed;
     
     cam.resetTransform();
-    cam.rotate(angle, axis.get().x, axis.get().y, axis.get().z);
+    cam.rotate(angle, axis.x, axis.y, axis.z);
     cam.setPosition(camPosition.x, Z, camPosition.y);
     
     if (vertices->size() > nx*ny*6) {
@@ -58,15 +58,15 @@ void GridFly::update(){
 void GridFly::addRow() {
     for (int x=0; x<nx; x++) {
         
-        float x1 = ofMap(x, 0, nx, -0.5*length.get().x, 0.5*length.get().x);
-        float x2 = ofMap(x+1, 0, nx, -0.5*length.get().x, 0.5*length.get().x);
-        float y1 = ofMap(y, 0, ny, -length.get().y, 0);
-        float y2 = ofMap(y+1, 0, ny, -length.get().y, 0);
+        float x1 = ofMap(x, 0, nx, -0.5*length.x, 0.5*length.x);
+        float x2 = ofMap(x+1, 0, nx, -0.5*length.x, 0.5*length.x);
+        float y1 = ofMap(y, 0, ny, -length.y, 0);
+        float y2 = ofMap(y+1, 0, ny, -length.y, 0);
         
-        float z11 = -margin * (-1.0 + 2.0*ofNoise(noiseFactor.get().x * x1, noiseFactor.get().y * y1));
-        float z12 = -margin * (-1.0 + 2.0*ofNoise(noiseFactor.get().x * x1, noiseFactor.get().y * y2));
-        float z21 = -margin * (-1.0 + 2.0*ofNoise(noiseFactor.get().x * x2, noiseFactor.get().y * y1));
-        float z22 = -margin * (-1.0 + 2.0*ofNoise(noiseFactor.get().x * x2, noiseFactor.get().y * y2));
+        float z11 = -margin * (-1.0 + 2.0*ofNoise(noiseFactor.x * x1, noiseFactor.y * y1));
+        float z12 = -margin * (-1.0 + 2.0*ofNoise(noiseFactor.x * x1, noiseFactor.y * y2));
+        float z21 = -margin * (-1.0 + 2.0*ofNoise(noiseFactor.x * x2, noiseFactor.y * y1));
+        float z22 = -margin * (-1.0 + 2.0*ofNoise(noiseFactor.x * x2, noiseFactor.y * y2));
         
         mesh.addVertex(ofVec3f(x1, y1, z11));
         mesh.addVertex(ofVec3f(x2, y1, z21));

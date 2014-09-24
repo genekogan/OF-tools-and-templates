@@ -5,10 +5,10 @@
 Subdivision::Subdivision(int generation,
                          int x, int y,
                          int width, int height,
-                         ofParameter<ofColor> *color,
-                         ofParameter<ofColor> *varColor,
-                         ofParameter<int> *circleResolution,
-                         ofParameter<bool> *isLerp) {
+                         ofColor *color,
+                         ofColor *varColor,
+                         int *circleResolution,
+                         bool *isLerp) {
     this->generation = generation;
     this->x = x;
     this->y = y;
@@ -26,14 +26,14 @@ Subdivision::Subdivision(int generation,
 Subdivision::Subdivision(int generation,
                          Subdivision *parent,
                          bool topleft,
-                         ofParameter<int> *circleResolution,
-                         ofParameter<bool> *isLerp) {
+                         int *circleResolution,
+                         bool *isLerp) {
     this->generation = generation;
     this->parent = parent;
     this->topleft = topleft;
     this->circleResolution = circleResolution;
     this->isLerp = isLerp;
-    color = new ofParameter<ofColor>();
+    color = new ofColor();
     varColor = parent->varColor;
     offset = ofVec3f(ofRandom(-1, 1), ofRandom(-1, 1), ofRandom(-1, 1));
     subdivide();
@@ -67,17 +67,17 @@ void Subdivision::update() {
         height = parent->height * (topleft ? parent->ratio : 1.0-parent->ratio);
     }
     if (*isLerp) {
-        r = ofClamp(ofLerp(color->get().r, parent->color->get().r +
-                           varColor->get().r * 0.2 * offset.x, 0.2), 0, 255);
-        g = ofClamp(ofLerp(color->get().g, parent->color->get().g +
-                           varColor->get().g * 0.2 * offset.y, 0.2), 0, 255);
-        b = ofClamp(ofLerp(color->get().b, parent->color->get().b +
-                           varColor->get().b * 0.2 * offset.z, 0.2), 0, 255);
+        r = ofClamp(ofLerp(color->r, parent->color->r +
+                           varColor->r * 0.2 * offset.x, 0.2), 0, 255);
+        g = ofClamp(ofLerp(color->g, parent->color->g +
+                           varColor->g * 0.2 * offset.y, 0.2), 0, 255);
+        b = ofClamp(ofLerp(color->b, parent->color->b +
+                           varColor->b * 0.2 * offset.z, 0.2), 0, 255);
     }
     else {
-        r = parent->color->get().r + varColor->get().r * offset.x;
-        g = parent->color->get().g + varColor->get().g * offset.y;
-        b = parent->color->get().b + varColor->get().b * offset.z;
+        r = parent->color->r + varColor->r * offset.x;
+        g = parent->color->g + varColor->g * offset.y;
+        b = parent->color->b + varColor->b * offset.z;
     }
     color->set(ofColor(r, g, b, 255));
 }
@@ -155,16 +155,16 @@ void Subdivision::drawCircle() {
 void Subdivide::setup() {
     setName("Subdivide");
 
-    control.registerParameter("color", &color, ofColor(0), ofColor(255));
-    control.registerParameter("varColor", &varColor, ofColor(0), ofColor(255));
-    control.registerParameter("circleResolution", &circleResolution, 3, 72);
-    control.registerParameter("lerp", &isLerp);
+    control.addColor("color", &color);
+    control.addColor("varColor", &varColor);
+    control.addParameter("circleResolution", &circleResolution, 3, 72);
+    control.addParameter("lerp", &isLerp);
 
     vector<string> drawTypes;
     drawTypes.push_back("Rects");
     drawTypes.push_back("Diamonds");
     drawTypes.push_back("Circles");
-    control.registerMenu("draw", this, &Subdivide::setDrawType, drawTypes);
+    control.addMenu("draw", drawTypes, this, &Subdivide::setDrawType);
 
     start = new Subdivision(9, 0, 0, width, height, &color, &varColor, &circleResolution, &isLerp);
 }

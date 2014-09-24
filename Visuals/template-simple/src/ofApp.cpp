@@ -72,7 +72,7 @@ void ofApp::setup(){
     
     
     setInactiveAll();
-    subdivide->setActive(true);
+    agents->setActive(true);
 }
 
 //-----------

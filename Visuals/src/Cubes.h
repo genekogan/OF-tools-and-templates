@@ -8,7 +8,7 @@
 class Cube
 {
 public:
-    void setup(ofVec3f mainPosition, ofVec3f marginPosition, ofVec3f targetSize, ofVec3f marginSize, ofVec3f ang, ofVec3f dAng, ofColor color, ofxParameter<ofVec3f> *pan);
+    void setup(ofVec3f mainPosition, ofVec3f marginPosition, ofVec3f targetSize, ofVec3f marginSize, ofVec3f ang, ofVec3f dAng, ofColor color, ofVec3f *pan);
     void draw();
     
 private:
@@ -17,7 +17,7 @@ private:
     ofVec3f ang, dAng;
     ofVec3f offsetP, offsetS;
     ofColor color;
-    ofxParameter<ofVec3f> *pan;
+    ofVec3f *pan;
 };
 
 
@@ -28,13 +28,13 @@ public:
     void update();
     void draw();
     
-    void preset1();
-    void preset2();
-    void preset3();
-    void preset4();
-    void preset5();
-    void preset6();
-    void preset7();
+    void preset1(bool &b);
+    void preset2(bool &b);
+    void preset3(bool &b);
+    void preset4(bool &b);
+    void preset5(bool &b);
+    void preset6(bool &b);
+    void preset7(bool &b);
 
 private:
     void resetTimeFunctions();
@@ -48,10 +48,10 @@ private:
     TimeFunction<ofVec3f> targetSize, marginSize;
     TimeFunction<ofVec3f> ang, dAng;
     
-    ofxParameter<ofVec2f> translation;
-    ofxParameter<ofVec3f> pan;
-    ofxParameter<int> newBoxRate;
-    ofxParameter<ofColor> color;
-    ofxParameter<int> colorVar;
+    ofVec2f translation;
+    ofVec3f pan;
+    int newBoxRate;
+    ofColor color;
+    int colorVar;
 };
 

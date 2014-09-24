@@ -10,18 +10,18 @@ const char * Letters::alphanum = {
 void Letters::setup() {
     setName("Letters");
 
-    control.registerParameter("rows", &nrows, 2, 200);
-    control.registerParameter("cols", &ncols, 2, 200);
-    control.registerParameter("letterRange", &letterRange, ofVec2f(0, 0), ofVec2f(1,1));
-    control.registerParameter("color", &color, ofColor(0), ofColor(255));
-    control.registerParameter("rate", &rate, 1, 10);
-    control.registerParameter("density", &density, 0.0f, 1.0f);
-    control.registerParameter("rateNoise", &rateNoise, ofVec2f(0, 0), ofVec2f(0.1, 0.1));
-    control.registerParameter("rateNoiseTime", &rateNoiseTime, 0.0f, 1.0f);
-    control.registerParameter("letterNoise", &letterNoise, ofVec2f(0, 0), ofVec2f(0.1, 0.1));
-    control.registerParameter("letterNoiseTime", &letterNoiseTime, 0.0f, 1.0f);
-    control.registerParameter("noisyLetters", &noisyLetters);
-    control.registerParameter("chinese", &chinese);
+    control.addParameter("rows", &nrows, 2, 200);
+    control.addParameter("cols", &ncols, 2, 200);
+    control.addParameter("letterRange", &letterRange, ofVec2f(0, 0), ofVec2f(1,1));
+    control.addColor("color", &color);
+    control.addParameter("rate", &rate, 1, 10);
+    control.addParameter("density", &density, 0.0f, 1.0f);
+    control.addParameter("rateNoise", &rateNoise, ofVec2f(0, 0), ofVec2f(0.1, 0.1));
+    control.addParameter("rateNoiseTime", &rateNoiseTime, 0.0f, 1.0f);
+    control.addParameter("letterNoise", &letterNoise, ofVec2f(0, 0), ofVec2f(0.1, 0.1));
+    control.addParameter("letterNoiseTime", &letterNoiseTime, 0.0f, 1.0f);
+    control.addParameter("noisyLetters", &noisyLetters);
+    control.addParameter("chinese", &chinese);
     
     nrows = 30;
     ncols = 40;
@@ -52,15 +52,15 @@ void Letters::update() {
         float noiseX;
         for (int i=0; i<ncols; i++) {
             for (int j=0; j<nrows; j++) {
-                if (ofNoise(rateNoise->x*i, rateNoise->y*j, rateNoiseTime * ofGetFrameNum()) < density) {
+                if (ofNoise(rateNoise.x*i, rateNoise.y*j, rateNoiseTime * ofGetFrameNum()) < density) {
                     if (noisyLetters) {
-                        noiseX = ofNoise(letterNoise->x*i, letterNoiseTime * ofGetFrameNum(), letterNoise->y*j);
-                        chars[idx] = alphanum [ (int) ofMap(noiseX, 0, 1, 81*letterRange->x, 81*letterRange->y) ];
-                        charsC[idx] = 38 + (int) ofMap(noiseX, 0, 1, 86 * letterRange->x, 86 * letterRange->y);
+                        noiseX = ofNoise(letterNoise.x*i, letterNoiseTime * ofGetFrameNum(), letterNoise.y*j);
+                        chars[idx] = alphanum [ (int) ofMap(noiseX, 0, 1, 81*letterRange.x, 81*letterRange.y) ];
+                        charsC[idx] = 38 + (int) ofMap(noiseX, 0, 1, 86 * letterRange.x, 86 * letterRange.y);
                     }
                     else {
-                        chars[idx] = alphanum[ (int) ofRandom(81 * letterRange->x, 81 * letterRange->y) ];
-                        charsC[idx] = 38 + (int) ofRandom(86 * letterRange->x, 86 * letterRange->y);
+                        chars[idx] = alphanum[ (int) ofRandom(81 * letterRange.x, 81 * letterRange.y) ];
+                        charsC[idx] = 38 + (int) ofRandom(86 * letterRange.x, 86 * letterRange.y);
                     }
                 }
                 idx++;

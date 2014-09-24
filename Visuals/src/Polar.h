@@ -8,7 +8,7 @@
 class PolarEq
 {
 public:
-    PolarEq(ofxParameter<bool> *is3d, ofxParameter<bool> *isRibbon, ofxParameter<ofVec3f> *speedRotation);
+    PolarEq(bool *is3d, bool *isRibbon, ofVec3f *speedRotation);
     
     void refresh();
     void update();
@@ -47,8 +47,8 @@ private:
     float angNoise, rateNoise, radNoise;
     ofVec3f noiseOffset, rotAngle;
     
-    ofxParameter<bool> *is3d, *isRibbon;
-    ofxParameter<ofVec3f> *speedRotation;
+    bool *is3d, *isRibbon;
+    ofVec3f *speedRotation;
     
     ofxTwistedRibbon ribbon;
     ofEasyCam cam;
@@ -65,19 +65,19 @@ public:
     
 private:
     void managePolarCount();
-    void refresh();
+    void refresh(bool &b);
     
     vector<PolarEq *> polars;
     
-    ofxParameter<int> nx, ny;
-    ofxParameter<float> delTime;
-    ofxParameter<ofColor> color;
-    ofxParameter<float> lineWidth;
-    ofxParameter<int> numPoints;
-    ofxParameter<float> rad, radMargin;
-    ofxParameter<float> dRateMax, dAngMax;
-    ofxParameter<float> angNoise, rateNoise, radNoise;
-    ofxParameter<bool> is3d;
-    ofxParameter<bool> isRibbon;
-    ofxParameter<ofVec3f> speedRotation;
+    int nx, ny;
+    float delTime;
+    ofColor color;
+    float lineWidth;
+    int numPoints;
+    float rad, radMargin;
+    float dRateMax, dAngMax;
+    float angNoise, rateNoise, radNoise;
+    bool is3d;
+    bool isRibbon;
+    ofVec3f speedRotation;
 };

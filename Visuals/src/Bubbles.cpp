@@ -4,19 +4,19 @@
 void Bubbles::setup() {
     setName("Bubbles");
     
-    control.registerParameter("speed", &speed, 0.0f, 0.1f);
-    control.registerParameter("numBubbles", &numBubbles, 1, 2048);
-    control.registerParameter("maxSizeInitial", &maxSizeInitial, 100, 1000);
-    control.registerParameter("maxSize", &maxSize, 10, 800);
-    control.registerParameter("baseColor", &baseColor, ofColor(0), ofColor(255));
-    control.registerParameter("varColor", &varColor, ofVec3f(0,0,0), ofVec3f(255,255,255));
-    control.registerParameter("position_NoiseMargin", &positionNoiseMargin, ofVec2f(0, 0), ofVec2f(300, 300));
-    control.registerParameter("position_NoiseFactor", &positionNoiseFactor, ofVec2f(0, 0), ofVec2f(0.1, 0.1));
-    control.registerParameter("position_SineMargin", &positionSineMargin, ofVec2f(0, 0), ofVec2f(300, 300));
-    control.registerParameter("position_SineFreq", &positionSineFreq, ofVec2f(0, 0), ofVec2f(0.1, 0.1));
-    control.registerParameter("position_TimeConstant", &positionTimeConstant, ofVec2f(-10, -10), ofVec2f(10, 10));
-    control.registerParameter("maxPasses", &maxPasses, 3, 50);
-    control.registerParameter("blurAmt", &blurAmt, 0, 20);
+    control.addParameter("speed", &speed, 0.0f, 0.1f);
+    control.addParameter("numBubbles", &numBubbles, 1, 2048);
+    control.addParameter("maxSizeInitial", &maxSizeInitial, 100, 1000);
+    control.addParameter("maxSize", &maxSize, 10, 800);
+    control.addColor("baseColor", &baseColor);
+    control.addParameter("varColor", &varColor, ofVec3f(0,0,0), ofVec3f(255,255,255));
+    control.addParameter("position_NoiseMargin", &positionNoiseMargin, ofVec2f(0, 0), ofVec2f(300, 300));
+    control.addParameter("position_NoiseFactor", &positionNoiseFactor, ofVec2f(0, 0), ofVec2f(0.1, 0.1));
+    control.addParameter("position_SineMargin", &positionSineMargin, ofVec2f(0, 0), ofVec2f(300, 300));
+    control.addParameter("position_SineFreq", &positionSineFreq, ofVec2f(0, 0), ofVec2f(0.1, 0.1));
+    control.addParameter("position_TimeConstant", &positionTimeConstant, ofVec2f(-10, -10), ofVec2f(10, 10));
+    control.addParameter("maxPasses", &maxPasses, 3, 50);
+    control.addParameter("blurAmt", &blurAmt, 0, 20);
     
     speed = 0.091;
     numBubbles = 600;
@@ -32,9 +32,16 @@ void Bubbles::setup() {
     maxPasses = 30;
     blurAmt = 7;
     
+    
+    // NEEDS TO BE FIXED
+    
+    
+    /*
     maxPasses.addListener(this, &Bubbles::fboParametersChanged);
     blurAmt.addListener(this, &Bubbles::fboParametersChanged);
     maxSizeInitial.addListener(this, &Bubbles::fboParametersChanged);
+    */
+    
     
     setupBubblesFbo();
     time = 0;
@@ -101,8 +108,8 @@ void Bubbles::update() {
         position[i]->setSineMax(positionSineMargin);
         position[i]->setSineFreq(positionSineFreq);
         position[i]->setTimeCoefficient(ofVec2f(
-            positionTimeConstant->x * (0.5 + 0.5*ofNoise(i, 10)),
-            positionTimeConstant->y * (0.5 + 0.5*ofNoise(i, 20))));
+            positionTimeConstant.x * (0.5 + 0.5*ofNoise(i, 10)),
+            positionTimeConstant.y * (0.5 + 0.5*ofNoise(i, 20))));
         position[i]->setDelTime(speed*10.0);
         position[i]->update();
     }
@@ -114,9 +121,9 @@ void Bubbles::update() {
 void Bubbles::draw() {
     ofSetRectMode(OF_RECTMODE_CENTER);
     for (int i=0; i<position.size(); i++) {
-        ofSetColor(baseColor->r + colorMargin[i].x * varColor->x,
-                   baseColor->g + colorMargin[i].y * varColor->y,
-                   baseColor->b + colorMargin[i].z * varColor->z,
+        ofSetColor(baseColor.r + colorMargin[i].x * varColor.x,
+                   baseColor.g + colorMargin[i].y * varColor.y,
+                   baseColor.b + colorMargin[i].z * varColor.z,
                    alpha[i]);
         int idx = (int) (blurAmt * blurLevel[i]);
         

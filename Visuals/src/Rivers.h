@@ -32,21 +32,21 @@ public:
     void draw();
 
 private:
-    void setupForceField();
+    void setupForceField(bool &b);
     void addNewStreak();
     void setupStreak(Streak &streak);
     
-    ofxParameter<int> numStreaks;
-    ofxParameter<float> complexity;
-    ofxParameter<float> baseSpeed;
-    ofxParameter<float> speedVar;
-    ofxParameter<int> minAge;
-    ofxParameter<int> maxAge;
-    ofxParameter<int> refreshAlpha;
-    ofxParameter<int> streakAlpha;
-    ofxParameter<float> maxThickness;
-    ofxParameter<ofColor> color;
-    ofxParameter<int> colorVar;
+    int numStreaks;
+    float complexity;
+    float baseSpeed;
+    float speedVar;
+    int minAge;
+    int maxAge;
+    int refreshAlpha;
+    int streakAlpha;
+    float maxThickness;
+    ofColor color;
+    int colorVar;
     
     vector<Streak> streaks;
     ofVec2f force[FORCE_RESOLUTION][FORCE_RESOLUTION];

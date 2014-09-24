@@ -15,11 +15,11 @@ private:
     ofEasyCam cam;
     ofLight light;
     
-    ofxParameter<int> numElements;
-    ofxParameter<ofVec3f> size;
-    ofxParameter<ofVec3f> noiseSpeed;
-    ofxParameter<ofColor> color;
-    ofxParameter<ofColor> colorVar;
+    int numElements;
+    ofVec3f size;
+    ofVec3f noiseSpeed;
+    ofColor color;
+    ofColor colorVar;
 };
 
 

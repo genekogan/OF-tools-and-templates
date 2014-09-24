@@ -1,9 +1,10 @@
 #include "ofApp.h"
 
 //--------------------------------------------------------------
-void ofApp::setup(){
+void ofApp::setup(){    
     shader = new Shader();
     ((Scene *) shader)->setup(1024, 768);
+    ((Scene *) shader)->setActive(true);
     
     shader->setShader("shaders_color/standard.vert",
                       "shaders_color/blobby.frag");
@@ -12,7 +13,6 @@ void ofApp::setup(){
     shader->addParameter("speed", 0, 2);
     shader->addParameter("density", 0, 40);
     shader->addParameter("zoomout", 0, 200);
-
 }
 
 //--------------------------------------------------------------

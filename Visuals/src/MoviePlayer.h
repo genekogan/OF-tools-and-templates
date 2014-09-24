@@ -11,15 +11,17 @@ public:
     void setup();
     void update();
     void draw();
-    
+
 private:
-    void jumpBack();
-    void jumpRandom();
+    void play(bool &b);
+    void jumpBack(bool &b);
+    void jumpRandom(bool &b);
     
     ofVideoPlayer player;
     int w, h;
-    ofxParameter<float> speed;
+    float speed;
     float oldSpeed;
+    bool playing;
 };
 
 

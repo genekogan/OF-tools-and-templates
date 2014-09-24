@@ -2,34 +2,24 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+
+    learn.setupGui();
+    learn.setupOsc();
     
-    inputParam.set("inputParam", 2.0, 2.0, 5.0);
-    outputParam.set("outputParam", 10.0, 10.0, 100.0);
+    learn.addInput("input1", &myVal, 5, 8);
+    learn.addInput("in2", -30, 30);
+    learn.addInput("in3", 100, 200);
+    
+    learn.addOutput("output1", 20, 50);
 
-    /* inputs */
-    learn.addInput("hello", 1, 5);  // add OSC param
-    learn.addInput(&inputParam);    // add ofxParam param
-    learn.addInput("bybbe", 1, 5);
-    learn.addInput("g", 1, 5);
-    learn.addInput("world", 1, 5);
-    learn.addInput("gbegin", 1, 5);
-    learn.addInput("gend", 1, 5);
-
-    /* outputs */
-    learn.addOutput("this", 10, 20);
-    learn.addOutput("that", 1, 10);
-    learn.addOutput("other", 1, 10);
-    learn.addOutput(&outputParam);
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
     learn.update();
     
-    inputParam = ofMap(mouseX, 0, ofGetWidth(), 2, 5);
-    
-    ofEllipse(ofMap(outputParam, outputParam.getMin(), outputParam.getMax(), 0, ofGetWidth()), 10, 10, 10);
+    //cout << myVal << endl;
 }
 
 //--------------------------------------------------------------
@@ -39,7 +29,8 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-
+    if (key=='g')
+        learn.toggleVisible();
 }
 
 //--------------------------------------------------------------

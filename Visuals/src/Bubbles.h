@@ -9,13 +9,12 @@
 class BubbleCreator : public ofThread
 {
 public:
-
     void setup(vector<TimeFunction<ofVec2f> *> &position,
                vector<ofVec3f> &colorMargin,
                vector<float> &blurLevel,
                vector<float> &alpha,
                vector<float> &size,
-               ofxParameter<int> &numBubbles) {
+               int &numBubbles) {
         this->position = &position;
         this->colorMargin = &colorMargin;
         this->blurLevel = &blurLevel;
@@ -33,7 +32,7 @@ public:
     void threadedFunction() {
         while(isThreadRunning()) {
             if(lock()) {
-                while (position->size() < numBubbles->get()) {
+                while (position->size() < *numBubbles) {
                     TimeFunction<ofVec2f> *newPosition = new TimeFunction<ofVec2f>(false);
                     newPosition->setConstant(ofVec2f(ofRandom(ofGetWidth()), ofRandom(ofGetHeight())));
                     position->push_back(newPosition);
@@ -54,8 +53,7 @@ protected:
     vector<float> *blurLevel;
     vector<float> *alpha;
     vector<float> *size;
-    ofxParameter<int> *numBubbles;
-
+    int *numBubbles;
 };
 
 
@@ -77,19 +75,19 @@ private:
     vector<ofFbo> bubbleFbo;
 
     // main parameters
-    ofxParameter<float> speed;
-    ofxParameter<int> numBubbles;
-    ofxParameter<int> maxSizeInitial;
-    ofxParameter<int> maxSize;
-    ofxParameter<ofColor> baseColor;
-    ofxParameter<ofVec3f> varColor;
-    ofxParameter<ofVec2f> positionNoiseMargin;
-    ofxParameter<ofVec2f> positionNoiseFactor;
-    ofxParameter<ofVec2f> positionSineMargin;
-    ofxParameter<ofVec2f> positionSineFreq;
-    ofxParameter<ofVec2f> positionTimeConstant;
-    ofxParameter<int> maxPasses;
-    ofxParameter<int> blurAmt;
+    float speed;
+    int numBubbles;
+    int maxSizeInitial;
+    int maxSize;
+    ofColor baseColor;
+    ofVec3f varColor;
+    ofVec2f positionNoiseMargin;
+    ofVec2f positionNoiseFactor;
+    ofVec2f positionSineMargin;
+    ofVec2f positionSineFreq;
+    ofVec2f positionTimeConstant;
+    int maxPasses;
+    int blurAmt;
     
     // for each bubble
     vector<TimeFunction<ofVec2f> *> position;

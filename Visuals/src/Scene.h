@@ -15,11 +15,9 @@ public:
         name = "Scene";
         upsideDown = false;
         active = false;
-        bgColor.setName("bgColor");
-        toClear.setName("clear");
     }
     
-    virtual ~Scene() {
+    ~Scene() {
         ofRemoveListener(ofEvents().update, this, &Scene::update);
     }
 
@@ -29,11 +27,11 @@ public:
     
     void setName(string name) {
         this->name = name;
+        bgColor = ofColor(0, 0, 0, 255);
         control.setName(name);
-        control.refreshGui();
-        control.registerParameter("clear", &toClear);
-        control.registerParameter("bgColor", &bgColor, ofColor(0,0), ofColor(255,255));
-        bgColor = ofColor(0, 255);
+        control.clearParameters();
+        control.addParameter("clear", &toClear);
+        control.addColor("bgColor", &bgColor);
         toClear = false;
     }
         
@@ -73,7 +71,7 @@ public:
             ofClear(0, 0);
         }
         
-        if (bgColor->a > 0) {
+        if (bgColor.a > 0) {
             ofFill();
             ofSetColor(bgColor);
             ofRect(0, 0, width, height);
@@ -115,10 +113,11 @@ public:
     }
 
     Control control;
-    ofxParameter<ofColor> bgColor;
-    ofxParameter<bool> toClear;
-    int width, height;
     string name;
+    int width, height;
+    
+    ofColor bgColor;
+    bool toClear;
     bool upsideDown;
     bool active;
 };

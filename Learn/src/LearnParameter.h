@@ -1,189 +1,118 @@
 #pragma once
 
 #include "ofMain.h"
-#include "Parameter.h"
 #include "ofxLearn.h"
 #include "ofxSpreadsheet.h"
+#include "Control.h"
 
 
-enum LearnType  { PARAMETER, OSC, MIDI, MANTA, KINECT };
 
-
-class LearnParameter
+//-----------
+class LearnParameter : public Parameter<float>
 {
 public:
-    LearnParameter(string name, float min, float max) {
-        this->type = OSC;
-        this->name = name;
-        this->min = min;
-        this->max = max;
-        value = (min + max) * 0.5;
-        address = "osc/"+name;
+    LearnParameter(string name, float *value, float min=0, float max=1);
+    ~LearnParameter();
+    
+    virtual void setVisible(bool visible){
+        this->visible = visible;
+        gui->setVisible(visible);
     }
     
-    LearnParameter(ofxParameter<float> *parameter) {
-        this->type = PARAMETER;
-        this->parameter = parameter;
-        this->name = parameter->getName();
-        this->min = parameter->getMin();
-        this->max = parameter->getMax();
-        this->value = parameter->get();
-    }
-    
-    LearnType getType() { return type; }
-    
-    string getName() { return name; }
-    void setName(string name) { this->name = name; }
-    
-    void setAddress(string address) { this->address = address; }
-    string getAddress() { return address; }
-    
-    void setValue(float value) { this->value = value; }
-    float getValue() { return value; }
-    float& getValueRef() { return value; }
-    
-    void setMin(float min) { this->min = min; }
-    void setMax(float max) { this->max = max; }
-    
-    float getMin() { return min; }
-    float getMax() { return max; }
-    
-private:
-    LearnType type;
-    
-    string name;
-    string address;
-    
-    float min;
-    float max;
-    float value;
+    void setGuiPosition(int x, int y) {gui->setPosition(x, y);}
+    bool isVisible() {return visible;}
 
-    ofxParameter<float> *parameter;
+    template<typename ListenerClass, typename ListenerMethod>
+    void addParameterChangeListener(ListenerClass *listener, ListenerMethod method) {
+        ofAddListener(parameterChangeEvent, listener, method);
+    }
+    
+    template<typename ListenerClass, typename ListenerMethod>
+    void addParameterDeletedListener(ListenerClass *listener, ListenerMethod method) {
+        ofAddListener(parameterDeletedEvent, listener, method);
+    }
+    
+protected:
+    
+    virtual void setupGui() { }
+    void guiEvent(ofxUIEventArgs &e);
+
+    ofxUICanvas *gui;
+    ofxUISlider *guiValue;
+    ofxUITextInput *guiValueText, *guiMin, *guiMax, *guiOsc, *guiName;
+    bool visible;
+    
+    ofEvent<LearnParameter> parameterChangeEvent, parameterDeletedEvent;
 };
 
 
 
-
-class InputParameter : public LearnParameter
+//-----------
+class LearnInputParameter : public LearnParameter
 {
 public:
-    InputParameter(string name, float min, float max) : LearnParameter(name, min, max) {}
-    
-    InputParameter(ofxParameter<float> *parameter) : LearnParameter(parameter) {
-        parameter->addListener(this, &InputParameter::parameterChanged);
-    }
-    
-    void parameterChanged(float &v) {
-        setValue(v);
-    }
-
+    LearnInputParameter(string name, float *value, float min=0, float max=1);
+protected:
+    void setupGui();
+    void guiEvent(ofxUIEventArgs &e);
 };
 
 
-class OutputParameter : public LearnParameter
+
+//-----------
+class LearnOutputParameter : public LearnParameter
 {
 public:
-    OutputParameter(string name, float min, float max) : LearnParameter(name, min, max) {
-        setupSpreadsheet(480, 480);
-    }
+    ~LearnOutputParameter();
+    LearnOutputParameter(string name, float *value, float min=0, float max=1);
+    
+    virtual void draw();
 
-    OutputParameter(ofxParameter<float> *parameter) : LearnParameter(parameter) {
-        setupSpreadsheet(480, 480);
-    }
+    void setInputParameters(vector<LearnInputParameter *> &allInputs);
+    void setupHeaders();
 
-    void setupSpreadsheet(int width, int height) {
-        data.setup(width, height);
-        data.highlightColumn(0);
-    }
+    void addInstance();
+    void clearInstances();
+    int getNumInstances() {return data.getNumberOfEntries();}
+    int getNumInputs() {return activeInputs.size();}
+    
+    void setVisible(bool visible);
+    void setGuiPosition(int x, int y);
+    void setupGui();
+    void setupGuiInputSelector();
 
-    void setRecording(bool recording) {
-        this->recording = recording;
-    }
-
-    bool getRecording() { return recording; }
-
-    bool& getRecordingRef() { return recording; }
-
-    void addInput(InputParameter *input) {
-        inputs.push_back(input);
-        vector<string> header;
-        header.push_back(getName());
-        for (int i=0; i<inputs.size(); i++)
-            header.push_back(inputs[i]->getName());
-        data.setHeaders(header);
-    }
-
-    void clearInputs() {
-        inputs.clear();
-    }
+    bool getRecording() {return record;}
+    bool getTrained() {return trained;}
     
-    void addTrainingInstance() {
-        data.addEntry(grabLabelFeatureVector<float>());
-    }
+    void trainClassifierFast();
+    void trainClassifierAccurate();
+    void predict();
     
-    void predict() {
-        setValue(learn.predict(grabLabelFeatureVector<double>()));
-    }
+protected:
     
-    void clearTrainingExamples() {
-        data.clear();
-    }
-    
-    void trainClassifierFast() {
-        addSpreadsheetDataToLearn();
-        learn.trainClassifier(FAST);
-        trained = true;
-    }
-    
-    void trainClassifierAccurate() {
-        addSpreadsheetDataToLearn();
-        learn.trainClassifier(ACCURATE);
-        trained = true;
-    }
-    
-    bool getTrained() {
-        return trained;
-    }
-    
-    int getNumExamples() {
-        return data.getNumberOfEntries();
-    }
-    
-    vector<InputParameter *> & getInputs() {
-        return inputs;
-    }
-    
-    void drawSpreadsheet(int x, int y) {
-        data.draw(x, y);
-    }
-    
-    
-private:
-    
-    template <typename T>
-    vector<T> grabLabelFeatureVector() {
+    template <typename T> vector<T> grabFeatureVector(bool labelFirst) {
         vector<T> instance;
-        instance.push_back((T) getValue());
-        for (int i=0; i<inputs.size(); i++)
-            instance.push_back(inputs[i]->getValue());
+        if (labelFirst) instance.push_back((T) get());
+        for (int i=0; i<activeInputs.size(); i++) {
+            instance.push_back(activeInputs[i]->get());
+        }
         return instance;
     }
-
-    void addSpreadsheetDataToLearn() {
-        vector<vector<float> > entries = data.getEntries();
-        for (int i=0; i<entries.size(); i++) {
-            double label = (double) entries[i][0];
-            vector<double> instance;
-            for (int j=1; j<entries[i].size(); j++) {
-                instance.push_back((double) entries[i][j]);
-            }
-            learn.addTrainingInstance(instance, label);
-        }
-    }
     
+    void addSpreadsheetDataToLearn();
+    
+    void guiEvent(ofxUIEventArgs &e);
+    void guiInputSelectEvent(ofxUIEventArgs &e);
+
+    ofxUICanvas *guiInputSelect;
+    ofxUIDropDownList *selector;
+    ofxUILabelToggle *guiInputs, *guiExamples;
+
     ofxLearn learn;
-    vector<InputParameter *> inputs;
+    vector<LearnInputParameter *> allInputs, activeInputs;
     ofxSpreadsheet data;
-    bool recording, predicting, trained;
+    
+    bool record, trained;
+    bool viewExamples, viewInputs;
 };
 

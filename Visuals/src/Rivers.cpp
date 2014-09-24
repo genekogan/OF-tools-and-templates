@@ -48,18 +48,18 @@ bool Streak::isActive() {
 void Rivers::setup(){
     setName("Rivers");
 
-    control.registerParameter("numStreaks", &numStreaks, 1, 60000);
-    control.registerParameter("complexity", &complexity, 0.001f, 0.1f);
-    control.registerParameter("baseSpeed", &baseSpeed, -5.0f, 5.0f);
-    control.registerParameter("speedVar", &speedVar, 0.0f, 1.0f);
-    control.registerParameter("maxAge", &minAge, 0, 900);
-    control.registerParameter("maxAge", &maxAge, 1, 1000);
-    control.registerParameter("refreshAlpha", &refreshAlpha, 0, 255);
-    control.registerParameter("streakAlpha", &streakAlpha, 0, 255);
-    control.registerParameter("maxThickness", &maxThickness, 0.1f, 36.0f);
-    control.registerParameter("color", &color, ofColor(0), ofColor(255));
-    control.registerParameter("colorVar", &colorVar, 0, 200);
-    control.registerEvent("refresh", this, &Rivers::setupForceField);
+    control.addParameter("numStreaks", &numStreaks, 1, 60000);
+    control.addParameter("complexity", &complexity, 0.001f, 0.1f);
+    control.addParameter("baseSpeed", &baseSpeed, -5.0f, 5.0f);
+    control.addParameter("speedVar", &speedVar, 0.0f, 1.0f);
+    control.addParameter("maxAge", &minAge, 0, 900);
+    control.addParameter("maxAge", &maxAge, 1, 1000);
+    control.addParameter("refreshAlpha", &refreshAlpha, 0, 255);
+    control.addParameter("streakAlpha", &streakAlpha, 0, 255);
+    control.addParameter("maxThickness", &maxThickness, 0.1f, 36.0f);
+    control.addColor("color", &color);
+    control.addParameter("colorVar", &colorVar, 0, 200);
+    control.addEvent("refresh", this, &Rivers::setupForceField);
     
     numStreaks = 1500;
     complexity = 0.01;
@@ -73,14 +73,15 @@ void Rivers::setup(){
     color = ofColor(255);
     colorVar = 10;
     
-    setupForceField();
+    bool b;
+    setupForceField(b);
     for (int i=0; i<numStreaks; i++) {
         addNewStreak();
     }
 }
 
 //--------
-void Rivers::setupForceField() {
+void Rivers::setupForceField(bool &b) {
     noiseSeed = ofRandom(100);
     float nx, ny;
     for (int i=0; i<FORCE_RESOLUTION; i++) {
@@ -100,9 +101,9 @@ void Rivers::setupStreak(Streak &streak) {
     int y = ofRandom(height);
     int age = ofRandom(minAge, maxAge);
     float speed = ofRandom(1.0-speedVar, 1.0+speedVar) * baseSpeed;
-    ofColor newColor = ofColor(ofClamp(color->r + ofRandom(-colorVar,colorVar), 0, 255),
-                               ofClamp(color->g + ofRandom(-colorVar,colorVar), 0, 255),
-                               ofClamp(color->b + ofRandom(-colorVar,colorVar), 0, 255));
+    ofColor newColor = ofColor(ofClamp(color.r + ofRandom(-colorVar,colorVar), 0, 255),
+                               ofClamp(color.g + ofRandom(-colorVar,colorVar), 0, 255),
+                               ofClamp(color.b + ofRandom(-colorVar,colorVar), 0, 255));
     streak.setup(x, y, age, speed,
                  maxThickness, streakAlpha,
                  width, height, newColor);

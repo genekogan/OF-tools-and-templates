@@ -20,15 +20,15 @@ private:
     float minY, dy, y, Z;
     ofPoint camPosition = ofPoint(0, 100);
     
-    ofxParameter<int> nx;
-    ofxParameter<int> ny;
-    ofxParameter<ofVec2f> length;
-    ofxParameter<float> margin;
-    ofxParameter<ofVec2f> noiseFactor;
-    ofxParameter<float> speed;
-    ofxParameter<float> angle;
-    ofxParameter<ofVec3f> axis;
-    ofxParameter<ofColor> color;
+    int nx;
+    int ny;
+    ofVec2f length;
+    float margin;
+    ofVec2f noiseFactor;
+    float speed;
+    float angle;
+    ofVec3f axis;
+    ofColor color;
 
 };
 

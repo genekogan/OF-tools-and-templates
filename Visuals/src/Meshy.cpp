@@ -5,19 +5,19 @@
 void Meshy::setup() {
     setName("Meshy");
  
-    control.registerParameter("realtime", &realtime);
-    control.registerParameter("circles", &circles);
-    control.registerParameter("filled", &filled);
-    control.registerParameter("numCandidates", &numCandidates, 1, 50);
-    control.registerParameter("numPoints", &numPoints, 10, 3000);
-    control.registerParameter("minDist", &minDist, 0.0f, 500.0f);
-    control.registerParameter("margin", &margin, 0.0f, 60.0f);
-    control.registerParameter("triNoise", &triNoise, 0.0f, 0.01f);
-    control.registerParameter("colorNoise", &colorNoise, 0.0f, 0.01f);
-    control.registerParameter("color", &color, ofColor(0,0), ofColor(255,255));
-    control.registerParameter("varColor", &varColor, ofColor(0), ofColor(255));
-    control.registerParameter("lineWidth", &lineWidth, 0.0f, 5.0f);
-    control.registerEvent("triangulate", this, &Meshy::triangulate);
+    control.addParameter("realtime", &realtime);
+    control.addParameter("circles", &circles);
+    control.addParameter("filled", &filled);
+    control.addParameter("numCandidates", &numCandidates, 1, 50);
+    control.addParameter("numPoints", &numPoints, 10, 3000);
+    control.addParameter("minDist", &minDist, 0.0f, 500.0f);
+    control.addParameter("margin", &margin, 0.0f, 60.0f);
+    control.addParameter("triNoise", &triNoise, 0.0f, 0.01f);
+    control.addParameter("colorNoise", &colorNoise, 0.0f, 0.01f);
+    control.addColor("color", &color);
+    control.addColor("varColor", &varColor);
+    control.addParameter("lineWidth", &lineWidth, 0.0f, 5.0f);
+    control.addEvent("triangulate", this, &Meshy::triangulate);
     
     realtime = true;
     circles = true;
@@ -30,13 +30,13 @@ void Meshy::setup() {
     margin = 8;
     triNoise = 0.01;
     colorNoise = 0.001;
-    
-    triangulate();
+ 
+    bool b;
+    triangulate(b);
 }
 
 //--------
-void Meshy::triangulate() {
-
+void Meshy::triangulate(bool &b) {
     if (circles) {
         circlePacker.clear();
         circlePacker.setBounds(0, 0, width, height);
@@ -86,10 +86,10 @@ void Meshy::draw() {
                                       ofSignedNoise(colorNoise * ofGetFrameNum(), i, 70));
 
         
-        ofSetColor(color->r + colorMargin.x * varColor->r,
-                   color->g + colorMargin.y * varColor->g,
-                   color->b + colorMargin.z * varColor->b,
-                   color->a);
+        ofSetColor(color.r + colorMargin.x * varColor.r,
+                   color.g + colorMargin.y * varColor.g,
+                   color.b + colorMargin.z * varColor.b,
+                   color.a);
 
         if (filled) {
             ofFill();

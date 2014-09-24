@@ -17,22 +17,22 @@ private:
     
     float time;
     
-    ofxParameter<int> numVertices;
-    ofxParameter<ofVec2f> radRange;
-    ofxParameter<ofVec2f> center;
-    ofxParameter<float> speed;
-    ofxParameter<float> noiseFactor;
-    ofxParameter<float> noiseRegion;
-    ofxParameter<float> offset;
-    ofxParameter<ofColor> colorFill;
-    ofxParameter<ofColor> colorStroke;
-    ofxParameter<float> lineWidth;
-    ofxParameter<bool> filled;
-    ofxParameter<bool> stroked;
-    ofxParameter<bool> curvedVertices;
-    ofxParameter<int> cycleStroke;
-    ofxParameter<float> densityStroke;
-    ofxParameter<int> cycleFill;
-    ofxParameter<float> densityFill;
+    int numVertices;
+    ofVec2f radRange;
+    ofVec2f center;
+    float speed;
+    float noiseFactor;
+    float noiseRegion;
+    float offset;
+    ofColor colorFill;
+    ofColor colorStroke;
+    float lineWidth;
+    bool filled;
+    bool stroked;
+    bool curvedVertices;
+    int cycleStroke;
+    float densityStroke;
+    int cycleFill;
+    float densityFill;
 
 };

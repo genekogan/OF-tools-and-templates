@@ -2,9 +2,8 @@
 
 #include "ofMain.h"
 #include "ofxUI.h"
-#include "ofxLearn.h"
 #include "LearnParameter.h"
-#include "Presets.h"
+#include "Control.h"
 
 
 
@@ -12,49 +11,56 @@ class Learn
 {
 public:
     Learn();
-    ~Learn();
     void update();
     void draw();
     
-    void addInput(ofxParameter<float> *parameter);
+    void setupOscInputs(int port=-1);
+    void setupOscOutputs(string host="", int port=-1);
+    void setupGui();
+    
+    virtual void addInput(string name, float *value, float min, float max);
+    virtual void addOutput(string name, float *value, float min, float max);
     void addInput(string name, float min, float max);
-
-    void addOutput(ofxParameter<float> *parameter);
     void addOutput(string name, float min, float max);
     
-private:
-    void buildGuiInputOutput();
-    void buildGuiMenu();
-    void buildGuiInputs();
-    void buildGuiOutputs();
-    void buildGuiPreview();
-    void buildGuiInputSelector(int idx);
+    void setVisible(bool visible);
+    void setGuiInputsVisible(bool visible);
+    void setGuiOutputsVisible(bool visible);
+    void toggleVisible() {setVisible(!visible);}
     
-    void guiTrainEvent(ofxUIEventArgs &e);
-    void guiMenuEvent(ofxUIEventArgs &e);
-    void guiInputsEvent(ofxUIEventArgs &e);
-    void guiOutputsEvent(ofxUIEventArgs &e);
-    void guiInputSelectorEvent(ofxUIEventArgs &e);
+    void inputParameterChanged(LearnParameter & input);
+    void inputParameterDeleted(LearnParameter & input);
+    void outputParameterChanged(LearnParameter & output);
+    void outputParameterDeleted(LearnParameter & output);
+
+    virtual void resetInputs();
     
+protected:
+
+    void setupTouchOsc();
+    
+    void gui1Event(ofxUIEventArgs &e);
+    void gui2Event(ofxUIEventArgs &e);
+    void gui3Event(ofxUIEventArgs &e);
+
     void startRecording();
     void recordInstance();
     void trainClassifiers(string trainStrategy);
     void setPredictingMode(bool predicting);
     
-    vector<InputParameter *> inputs;
-    vector<OutputParameter *> outputs;
+    vector<LearnInputParameter *> inputs;
+    vector<LearnOutputParameter *> outputs;
     
-    ofxUIScrollableCanvas *guiI;
-    ofxUIScrollableCanvas *guiO;
-    ofxUIScrollableCanvas *guiIP;
-    ofxUIScrollableCanvas *guiOP;
-    ofxUICanvas *guiTrain;
-    ofxUICanvas *guiMenu;
-    ofxUICanvas *guiInputSelector;
+    OscManager oscManager;
+    bool oscActive;
+    string oscOutputHost;
+    int oscOutputPort, oscInputPort;
+    
+    ofxUICanvas *gui1, *gui2, *gui3;
+    bool visible;
     
     float startTime, trainCountdown, trainDuration;
     int instanceRate, framesPerInstance;
-    bool recording, predicting;
-    bool inputsVisible, dataVisible;
-    int idxSelectedOutput;
+    bool inRecording, countingDown, recording, predicting;
+    int newInputCounter, newOutputCounter;
 };

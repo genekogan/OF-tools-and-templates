@@ -21,14 +21,14 @@ private:
 
     void setType(string & s);
     void setupGradient(string &gradientType);
-    void changedColor(ofColor & c);
+    void refresh(bool & b);
     
     ofVboMesh gradientMesh;
     DebugType type = GRADIENT;
     string gradientMode;
     
-    ofxParameter<ofColor> color1;
-    ofxParameter<ofColor> color2;
-    ofxParameter<int> numRects;
-    ofxParameter<int> speed;
+    ofColor color1;
+    ofColor color2;
+    int numRects;
+    int speed;
 };

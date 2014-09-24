@@ -45,18 +45,18 @@ protected:
 
     vector<Agent> agents;
     
-    ofxParameter<int> numAgents;
-    ofxParameter<bool> wrapping;
-    ofxParameter<bool> debug;
-    ofxParameter<float> speed;
-    ofxParameter<int> size;
-    ofxParameter<ofColor> color1;
-    ofxParameter<ofColor> color2;
-    ofxParameter<int> fillAlpha;
-    ofxParameter<int> strokeAlpha;
-    ofxParameter<int> cycle;
-    ofxParameter<float> density;
-    ofxParameter<bool> drawLines;
-    ofxParameter<bool> drawTriangles;
-    
+    int numAgents;
+    bool wrapping;
+    bool debug;
+    float speed;
+    int size;
+    ofColor color1;
+    ofColor color2;
+    int fillAlpha;
+    int strokeAlpha;
+    int cycle;
+    float density;
+    bool drawLines;
+    bool drawTriangles;
+  
 };

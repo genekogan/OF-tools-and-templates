@@ -53,34 +53,31 @@ void Shader::draw() {
 
 //--------
 void Shader::addParameter(string name, float min, float max){
-    ofxParameter<float> *var = new ofxParameter<float>();
-    control.registerParameter(name, var, min, max);
-    var->set((min+max)*0.5);
-    shaderParameters.push_back(new ShaderParameter<float>(var));
+    float *var = new float();
+    control.addParameter(name, var, min, max);
+    *var = (min+max)*0.5;
+    shaderParameters.push_back(new ShaderParameter<float>(name, var));
 }
 
 //--------
 void Shader::addParameter(string name, ofVec2f min, ofVec2f max) {
-    ofxParameter<ofVec2f> *var = new ofxParameter<ofVec2f>();
-    control.registerParameter(name, var, min, max);
-    var->set((min+max)*0.5);
-    shaderParameters.push_back(new ShaderParameter<ofVec2f>(var));
+    ofVec2f *var = new ofVec2f((min+max)*0.5);
+    control.addParameter(name, var, min, max);
+    shaderParameters.push_back(new ShaderParameter<ofVec2f>(name, var));
 }
 
 //--------
 void Shader::addParameter(string name, ofVec3f min, ofVec3f max){
-    ofxParameter<ofVec3f> *var = new ofxParameter<ofVec3f>();
-    control.registerParameter(name, var, min, max);
-    var->set((min+max)*0.5);
-    shaderParameters.push_back(new ShaderParameter<ofVec3f>(var));
+    ofVec3f *var = new ofVec3f((min+max)*0.5);
+    control.addParameter(name, var, min, max);
+    shaderParameters.push_back(new ShaderParameter<ofVec3f>(name, var));
 }
 
 //--------
 void Shader::addParameter(string name, ofColor min, ofColor max){
-    ofxParameter<ofColor> *var = new ofxParameter<ofColor>();
-    control.registerParameter(name, var, min, max);
-    var->set((min+max)*0.5);
-    shaderParameters.push_back(new ShaderParameter<ofColor>(var));
+    ofColor *var = new ofColor((min+max)*0.5);
+    control.addColor(name, var);
+    shaderParameters.push_back(new ShaderParameter<ofColor>(name, var));
 }
 
 
