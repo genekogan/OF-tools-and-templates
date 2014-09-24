@@ -3,53 +3,86 @@
 #include "ofMain.h"
 
 
-template <typename ParameterType>
-class ofxParameter : public ofParameter<ParameterType>
+class ParameterBase
 {
 public:
-    using ofParameter<ParameterType>::operator=;
+    enum Type { BOOL, INT, FLOAT, VEC2F, VEC3F, VEC4F, STRING };
     
-    ofxParameter<ParameterType>() {
-        ofAddListener(ofEvents().update, this, &ofxParameter::update);
-        frame = 1.0;
-        numFrames = 0;
+    virtual ~ParameterBase() {}
+    
+    string getName() {return name; }
+    string getOscAddress() {return oscAddress; }
+    Type getType()   {return type;}
+
+    void setName(string name) {this->name = name; }
+    void setOscAddress(string oscAddress) {this->oscAddress = oscAddress; }
+    template<class T> void setType();
+
+    template<class T> void setMin(T min);
+    template<class T> void setMax(T max);
+
+    template<class T> T* getReference();
+    template<class T> T getMin();
+    template<class T> T getMax();
+
+    string name;
+    string oscAddress;
+    Type type;
+};
+
+
+template <typename T>
+class Parameter : public ParameterBase
+{
+public:
+    Parameter(string name, T *val) {
+        this->name = name;
+        this->oscAddress = "/"+name;
+        setType<T>();
+        value = val;
     }
     
-    ~ofxParameter() {
-        ofRemoveListener(ofEvents().update, this, &ofxParameter::update);
+    Parameter(string name, T *val, T min, T max) : minValue(min), maxValue(max) {
+        this->name = name;
+        this->oscAddress = "/"+name;
+        setType<T>();
+        value = val;
     }
     
-    void lerpTo(ParameterType goToValue, int numFrames) {
-        setInterpolation(goToValue, numFrames, LERP);
-    }
+    const T get() const {return *value;}
+    T* getReference() {return value;}
+    T getMin() {return minValue;}
+    T getMax() {return maxValue;}
     
-    void easeTo(ParameterType goToValue, int numFrames, float easeCoefficient=0.65) {
-        this->easeCoefficient = easeCoefficient;
-        setInterpolation(goToValue, numFrames, EASE);
-    }
+    void set(const T& rhs) {*value=rhs;}
+    void setMin(T min) {minValue=min;}
+    void setMax(T max) {maxValue=max;}
     
 private:
-    
-    enum LerpType { LERP, EASE };
-    
-    void setInterpolation(ParameterType endValue, int numFrames, LerpType lerpType) {
-        this->endValue = endValue;
-        this->numFrames = numFrames;
-        this->lerpType = lerpType;
-        startValue = this->get();
-        frame = 0.0;
-    }
-    
-    void update(ofEventArgs &data) {
-        if (frame++ <= numFrames) {
-            float t = lerpType==LERP ? frame/numFrames : pow(frame/numFrames, easeCoefficient);
-            this->set(startValue*(1.0f-t)+endValue*t);
-        }
-    }
-    
-    ParameterType startValue, endValue;
-    float frame;
-    int numFrames;
-    LerpType lerpType;
-    float easeCoefficient;
+    T *value;
+    T minValue, maxValue;
 };
+
+
+template<class T> T ParameterBase::getMin()
+{ return dynamic_cast<Parameter<T>&>(*this).getMin(); }
+template<class T> T ParameterBase::getMax()
+{ return dynamic_cast<Parameter<T>&>(*this).getMax(); }
+template<class T> T* ParameterBase::getReference()
+{ return dynamic_cast<Parameter<T>&>(*this).getReference(); }
+template<class T> void ParameterBase::setMin(T min)
+{ return dynamic_cast<Parameter<T>&>(*this).setMin(); }
+template<class T> void ParameterBase::setMax(T max)
+{ return dynamic_cast<Parameter<T>&>(*this).setMax(); }
+
+
+template<class T> void ParameterBase::setType() { }
+template<> inline void ParameterBase::setType<bool>() { type = BOOL; }
+template<> inline void ParameterBase::setType<int>() { type = INT; }
+template<> inline void ParameterBase::setType<float>() { type = FLOAT; }
+template<> inline void ParameterBase::setType<ofVec2f>() { type = VEC2F; }
+template<> inline void ParameterBase::setType<ofVec3f>() { type = VEC3F; }
+template<> inline void ParameterBase::setType<ofVec4f>() { type = VEC4F; }
+template<> inline void ParameterBase::setType<string>() { type = STRING; }
+
+
