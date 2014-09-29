@@ -3,7 +3,7 @@
 #include "ofMain.h"
 #include "Canvas.h"
 
-#include "CustomElements.h"
+#include "CustomCanvas.h"
 
 
 class ofApp : public ofBaseApp

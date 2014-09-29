@@ -7,6 +7,7 @@
 class ShapeSpace : public Scene
 {
 public:
+    ~ShapeSpace();
     void setup();
     void update();
     void draw();

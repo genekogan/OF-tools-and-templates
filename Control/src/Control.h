@@ -13,19 +13,29 @@ public:
     
     Control() {
         gui = new ofxUICanvas("control");
+        setWidth(150);
+        spacing = gui->getWidgetSpacing();
         ofAddListener(gui->newGUIEvent, this, &Control::guiEvent);
+        headerSelected = false;
     }
     
     void setName(string name) {
         this->name = name;
     }
     
+    void setWidth(int width) {
+        this->width = width;
+        gui->setWidth(width);
+    }
+
     void setGuiPosition(int x, int y) {
         gui->setPosition(x, y);
     }
     
     void setVisible(bool visible) {
         this->visible = visible;
+        if (visible)    gui->enable();
+        else            gui->disable();
         gui->setVisible(visible);
     }
     
@@ -40,20 +50,20 @@ public:
     }
     
     template <typename T> void addParameter(string name, T *value, T min, T max) {
-        ParameterBase *parameter = new Parameter<T>(name, value, min, max);
+        ParameterBase *parameter = new Parameter<T>(name, *value, min, max);
         parameters.push_back(parameter);
         setupGui();
     }
     
     template <typename T> void addParameter(string name, T *value) {
-        ParameterBase *parameter = new Parameter<T>(name, value);
+        ParameterBase *parameter = new Parameter<T>(name, *value);
         parameters.push_back(parameter);
         setupGui();
     }
     
     template <typename ListenerClass, typename ListenerMethod>
     void addEvent(string name, ListenerClass *listener, ListenerMethod method) {
-        events[name] = new ofEvent<bool>();
+        events[name] = new ofEvent<string>();
         ofAddListener(*events[name], listener, method);
         setupGui();
     }
@@ -72,10 +82,14 @@ public:
         color->color = value;
         color->vec = vec;
         colors[name] = color;
-        ParameterBase *parameter = new Parameter<ofVec4f>(name, vec, ofVec4f(0, 0, 0, 0), ofVec4f(255, 255, 255, 255));
+        ParameterBase *parameter = new Parameter<ofVec4f>(name, *vec, ofVec4f(0, 0, 0, 0), ofVec4f(255, 255, 255, 255));
         parameters.push_back(parameter);
         setupGui();
     }
+    
+    string getName() {return name;}
+
+    bool headerSelected;
     
 private:
     
@@ -97,12 +111,12 @@ private:
     void addParameterToGui(string name, ofVec4f min, ofVec4f max, ofVec4f *value);
     
     ofxUICanvas *gui;
-    
     string name;
     bool visible;
+    int width, spacing;
     
     vector<ParameterBase *> parameters;
-    map<string, ofEvent<bool>*> events;
+    map<string, ofEvent<string>*> events;
     map<string, vector<string> > menus;
     map<string, ofEvent<string>*> menuEvents;
     map<string, GuiColorVecPair*> colors;

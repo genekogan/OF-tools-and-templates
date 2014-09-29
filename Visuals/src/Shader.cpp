@@ -16,8 +16,10 @@ void Shader::setShader(string vert, string frag) {
 
 //--------
 void Shader::setTexture(ofFbo *fboTex){
-    this->fboTex = fboTex;
-    hasTexture = true;
+    if (fboTex != NULL) {
+        this->fboTex = fboTex;
+        hasTexture = true;
+    }
 }
 
 //--------

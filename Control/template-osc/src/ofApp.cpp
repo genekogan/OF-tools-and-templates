@@ -4,6 +4,7 @@
 void ofApp::setup(){
     
     /* setup ofxUI layout */
+    control.setName("control");
     control.addParameter("position", &position, ofVec2f(0, 0), ofVec2f(ofGetWidth(), ofGetHeight()));
     control.addParameter("radius", &radius, 20.0f, 200.0f);
     control.addParameter("filled", &filled);

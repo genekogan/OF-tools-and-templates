@@ -21,7 +21,7 @@ private:
 
     void setType(string & s);
     void setupGradient(string &gradientType);
-    void refresh(bool & b);
+    void refresh(string &s);
     
     ofVboMesh gradientMesh;
     DebugType type = GRADIENT;

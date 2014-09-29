@@ -86,3 +86,9 @@ void GridFly::draw(){
     mesh.drawWireframe();
     cam.end();
 }
+
+//-------
+GridFly::~GridFly(){
+    cam.disableMouseMiddleButton();
+    cam.disableMouseInput();
+}

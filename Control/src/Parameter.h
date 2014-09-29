@@ -35,18 +35,18 @@ template <typename T>
 class Parameter : public ParameterBase
 {
 public:
-    Parameter(string name, T *val) {
+    Parameter(string name, T &val) {
         this->name = name;
         this->oscAddress = "/"+name;
         setType<T>();
-        value = val;
+        value = &val;
     }
     
-    Parameter(string name, T *val, T min, T max) : minValue(min), maxValue(max) {
+    Parameter(string name, T &val, T min, T max) : minValue(min), maxValue(max) {
         this->name = name;
         this->oscAddress = "/"+name;
         setType<T>();
-        value = val;
+        value = &val;
     }
     
     const T get() const {return *value;}

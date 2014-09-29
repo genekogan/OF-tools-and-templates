@@ -15,8 +15,8 @@ public:
     void keyPressed(int key);
     
 private:
-
+    
     Canvas canvas;
     ofxSecondWindow window;
-
+    
 };

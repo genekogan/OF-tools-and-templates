@@ -14,13 +14,16 @@ public:
                vector<float> &blurLevel,
                vector<float> &alpha,
                vector<float> &size,
-               int &numBubbles) {
+               int &numBubbles,
+               int width, int height) {
         this->position = &position;
         this->colorMargin = &colorMargin;
         this->blurLevel = &blurLevel;
         this->alpha = &alpha;
         this->size = &size;
         this->numBubbles = &numBubbles;
+        this->width = width;
+        this->height = height;
     }
     
     void setRunning(bool b) {
@@ -34,7 +37,7 @@ public:
             if(lock()) {
                 while (position->size() < *numBubbles) {
                     TimeFunction<ofVec2f> *newPosition = new TimeFunction<ofVec2f>(false);
-                    newPosition->setConstant(ofVec2f(ofRandom(ofGetWidth()), ofRandom(ofGetHeight())));
+                    newPosition->setConstant(ofVec2f(ofRandom(width), ofRandom(height)));
                     position->push_back(newPosition);
                     blurLevel->push_back(ofRandom(1));
                     alpha->push_back(0);
@@ -54,6 +57,7 @@ protected:
     vector<float> *alpha;
     vector<float> *size;
     int *numBubbles;
+    int width, height;
 };
 
 

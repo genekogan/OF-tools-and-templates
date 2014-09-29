@@ -32,7 +32,7 @@ public:
     void draw();
 
 private:
-    void setupForceField(bool &b);
+    void setupForceField(string &s);
     void addNewStreak();
     void setupStreak(Streak &streak);
     

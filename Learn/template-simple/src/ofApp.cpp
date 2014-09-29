@@ -2,24 +2,22 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-
-    learn.setupGui();
-    learn.setupOsc();
     
+    learn.setupGui();
+    learn.setupOscOutputs("localhost", 1234);
+
     learn.addInput("input1", &myVal, 5, 8);
     learn.addInput("in2", -30, 30);
     learn.addInput("in3", 100, 200);
     
     learn.addOutput("output1", 20, 50);
-
-    
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
     learn.update();
     
-    //cout << myVal << endl;
+    myVal = ofMap(ofGetMouseX(), 0, ofGetWidth(), 5, 8);
 }
 
 //--------------------------------------------------------------

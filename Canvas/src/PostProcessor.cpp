@@ -26,363 +26,311 @@ void PostProcessingLayer::setup() {
     zoomBlur = post.createPass<ZoomBlurPass>();
     
     control.setName("PostProcessing");
-    control.registerLabel("Effects");
-    control.registerParameter("alias", &aliasEnabled);
-    control.registerParameter("bloom", &bloomEnabled);
-    control.registerParameter("dof", &dofEnabled);
-    control.registerParameter("kaleidoscope", &kaleidoscopeEnabled);
-    control.registerParameter("noiseWarp", &noiseWarpEnabled);
-    control.registerParameter("pixelate", &pixelateEnabled);
-    control.registerParameter("edges", &edgesEnabled);
-    control.registerParameter("vTiltShift", &vTiltShiftEnabled);
-    control.registerParameter("hTiltShift", &hTiltShiftEnabled);
-    control.registerParameter("godRay", &godRayEnabled);
-    control.registerParameter("toon", &toonEnabled);
-    control.registerParameter("bleachBypass", &bleachBypassEnabled);
-    control.registerParameter("contrast", &contrastEnabled);
-    control.registerParameter("convolve", &convolveEnabled);
-    control.registerParameter("fakeSSS", &fakeSSSEnabled);
-    control.registerParameter("limbDarken", &limbDarkenEnabled);
-    control.registerParameter("shift", &shiftEnabled);
-    control.registerParameter("rimHighlight", &rimHighlightEnabled);
-    control.registerParameter("ssao", &ssaoEnabled);
-    control.registerParameter("zoomBlur", &zoomBlurEnabled);
+    control.addParameter("alias", &aliasEnabled);
+    control.addParameter("bloom", &bloomEnabled);
+    control.addParameter("dof", &dofEnabled);
+    control.addParameter("kaleidoscope", &kaleidoscopeEnabled);
+    control.addParameter("noiseWarp", &noiseWarpEnabled);
+    control.addParameter("pixelate", &pixelateEnabled);
+    control.addParameter("edges", &edgesEnabled);
+    control.addParameter("vTiltShift", &vTiltShiftEnabled);
+    control.addParameter("hTiltShift", &hTiltShiftEnabled);
+    control.addParameter("godRay", &godRayEnabled);
+    control.addParameter("toon", &toonEnabled);
+    control.addParameter("bleachBypass", &bleachBypassEnabled);
+    control.addParameter("contrast", &contrastEnabled);
+    control.addParameter("convolve", &convolveEnabled);
+    control.addParameter("fakeSSS", &fakeSSSEnabled);
+    control.addParameter("limbDarken", &limbDarkenEnabled);
+    control.addParameter("shift", &shiftEnabled);
+    control.addParameter("rimHighlight", &rimHighlightEnabled);
+    control.addParameter("ssao", &ssaoEnabled);
+    control.addParameter("zoomBlur", &zoomBlurEnabled);
     
-    aliasEnabled.addListener(this, &PostProcessingLayer::programChange);
-    bloomEnabled.addListener(this, &PostProcessingLayer::programChange);
-    dofEnabled.addListener(this, &PostProcessingLayer::programChange);
-    kaleidoscopeEnabled.addListener(this, &PostProcessingLayer::programChange);
-    noiseWarpEnabled.addListener(this, &PostProcessingLayer::programChange);
-    pixelateEnabled.addListener(this, &PostProcessingLayer::programChange);
-    edgesEnabled.addListener(this, &PostProcessingLayer::programChange);
-    vTiltShiftEnabled.addListener(this, &PostProcessingLayer::programChange);
-    hTiltShiftEnabled.addListener(this, &PostProcessingLayer::programChange);
-    godRayEnabled.addListener(this, &PostProcessingLayer::programChange);
-    toonEnabled.addListener(this, &PostProcessingLayer::programChange);
-    bleachBypassEnabled.addListener(this, &PostProcessingLayer::programChange);
-    contrastEnabled.addListener(this, &PostProcessingLayer::programChange);
-    convolveEnabled.addListener(this, &PostProcessingLayer::programChange);
-    fakeSSSEnabled.addListener(this, &PostProcessingLayer::programChange);
-    limbDarkenEnabled.addListener(this, &PostProcessingLayer::programChange);
-    shiftEnabled.addListener(this, &PostProcessingLayer::programChange);
-    rimHighlightEnabled.addListener(this, &PostProcessingLayer::programChange);
-    ssaoEnabled.addListener(this, &PostProcessingLayer::programChange);
-    zoomBlurEnabled.addListener(this, &PostProcessingLayer::programChange);
-    
-    dofAperture.addListener(this, &PostProcessingLayer::dofApertureChanged);
-    dofFocus.addListener(this, &PostProcessingLayer::dofFocusChanged);
-    dofMaxBlur.addListener(this, &PostProcessingLayer::dofMaxBlurChanged);
-    kaleidoscopeSegments.addListener(this, &PostProcessingLayer::kaleidoscopeSegmentsChanged);
-    noiseWarpAmplitude.addListener(this, &PostProcessingLayer::noiseWarpAmplitudeChanged);
-    noiseWarpFrequency.addListener(this, &PostProcessingLayer::noiseWarpFrequencyChanged);
-    noiseWarpSpeed.addListener(this, &PostProcessingLayer::noiseWarpSpeedChanged);
-    pixelateResolution.addListener(this, &PostProcessingLayer::pixelateResolutionChanged);
-    edgesHue.addListener(this, &PostProcessingLayer::edgesHueChanged);
-    edgesSaturation.addListener(this, &PostProcessingLayer::edgesSaturationChanged);
-    vTiltShiftV.addListener(this, &PostProcessingLayer::vTiltShiftVChanged);
-    vTiltShiftR.addListener(this, &PostProcessingLayer::vTiltShiftRChanged);
-    hTiltShiftH.addListener(this, &PostProcessingLayer::hTiltShiftHChanged);
-    hTiltShiftR.addListener(this, &PostProcessingLayer::hTiltShiftRChanged);
-    godRayLightDirDOTviewDir.addListener(this, &PostProcessingLayer::godRayLightDirDOTviewDirChanged);
-    godRayLightPoisitonOnScreen.addListener(this, &PostProcessingLayer::godRayLightPoisitonOnScreenChanged);
-    toonSpecularColor.addListener(this, &PostProcessingLayer::toonSpecularColorChanged);
-    toonShinyness.addListener(this, &PostProcessingLayer::toonShinynessChanged);
-    toonLevel.addListener(this, &PostProcessingLayer::toonLevelChanged);
-    toonEnableSpecular.addListener(this, &PostProcessingLayer::toonEnableSpecularChanged);
-    toonEdgeThreshold.addListener(this, &PostProcessingLayer::toonEdgeThresholdChanged);
-    toonDiffuseColor.addListener(this, &PostProcessingLayer::toonDiffuseColorChanged);
-    toonAmbientColor.addListener(this, &PostProcessingLayer::toonAmbientColorChanged);
-    bleachBypassOpacity.addListener(this, &PostProcessingLayer::bleachBypassOpacityChanged);
-    contrastBrightness.addListener(this, &PostProcessingLayer::contrastBrightnessChanged);
-    contrastContrast.addListener(this, &PostProcessingLayer::contrastContrastChanged);
-    fakeSSSAttenuationOffset.addListener(this, &PostProcessingLayer::fakeSSSAttenuationOffsetChanged);
-    fakeSSSBaseColor.addListener(this, &PostProcessingLayer::fakeSSSBaseColorChanged);
-    fakeSSSExtinctionCoefficient.addListener(this, &PostProcessingLayer::fakeSSSExtinctionCoefficientChanged);
-    fakeSSSLightColor.addListener(this, &PostProcessingLayer::fakeSSSLightColorChanged);
-    fakeSSSLightPosition.addListener(this, &PostProcessingLayer::fakeSSSLightPositionChanged);
-    fakeSSSMaterialThickness.addListener(this, &PostProcessingLayer::fakeSSSMaterialThicknessChanged);
-    fakeSSSRimScale.addListener(this, &PostProcessingLayer::fakeSSSRimScaleChanged);
-    fakeSSSSpecular.addListener(this, &PostProcessingLayer::fakeSSSSpecularChanged);
-    fakeSSSSpecularColor.addListener(this, &PostProcessingLayer::fakeSSSSpecularColorChanged);
-    limbDarkenBrightness.addListener(this, &PostProcessingLayer::limbDarkenBrightnessChanged);
-    limbDarkenEndColor.addListener(this, &PostProcessingLayer::limbDarkenEndColorChanged);
-    limbDarkenRadialScale.addListener(this, &PostProcessingLayer::limbDarkenRadialScaleChanged);
-    limbDarkenStartColor.addListener(this, &PostProcessingLayer::limbDarkenStartColorChanged);
-    shiftAmount.addListener(this, &PostProcessingLayer::shiftAmountChanged);
-    shiftAngle.addListener(this, &PostProcessingLayer::shiftAngleChanged);
-    ssaoCameraNear.addListener(this, &PostProcessingLayer::ssaoCameraNearChanged);
-    ssaoCameraFar.addListener(this, &PostProcessingLayer::ssaoCameraFarChanged);
-    ssaoFogNear.addListener(this, &PostProcessingLayer::ssaoFogNearChanged);
-    ssaoFogFar.addListener(this, &PostProcessingLayer::ssaoFogFarChanged);
-    ssaoFogEnabled.addListener(this, &PostProcessingLayer::ssaoFogEnabledChanged);
-    ssaoOnlyAO.addListener(this, &PostProcessingLayer::ssaoOnlyAOChanged);
-    ssaoAoClamp.addListener(this, &PostProcessingLayer::ssaoAoClampChanged);
-    ssaoLumInfluence.addListener(this, &PostProcessingLayer::ssaoLumInfluenceChanged);
-    zoomBlurCenterX.addListener(this, &PostProcessingLayer::zoomBlurCenterXChanged);
-    zoomBlurCenterY.addListener(this, &PostProcessingLayer::zoomBlurCenterYChanged);
-    zoomBlurExposure.addListener(this, &PostProcessingLayer::zoomBlurExposureChanged);
-    zoomBlurDecay.addListener(this, &PostProcessingLayer::zoomBlurDecayChanged);
-    zoomBlurDensity.addListener(this, &PostProcessingLayer::zoomBlurDensityChanged);
-    zoomBlurWeight.addListener(this, &PostProcessingLayer::zoomBlurWeightChanged);
-    zoomBlurClamp.addListener(this, &PostProcessingLayer::zoomBlurClampChanged);
+    aliasEnabled = false;
+    bloomEnabled = false;
+    dofEnabled = false;
+    kaleidoscopeEnabled = false;
+    noiseWarpEnabled = false;
+    pixelateEnabled = false;
+    edgesEnabled = false;
+    vTiltShiftEnabled = false;
+    hTiltShiftEnabled = false;
+    godRayEnabled = false;
+    toonEnabled = false;
+    bleachBypassEnabled = false;
+    contrastEnabled = false;
+    convolveEnabled = false;
+    fakeSSSEnabled = false;
+    limbDarkenEnabled = false;
+    shiftEnabled = false;
+    rimHighlightEnabled = false;
+    ssaoEnabled = false;
+    zoomBlurEnabled = false;
 
-    buildGui();
+    setupParameterGui();
 }
 
 //-----------
-void PostProcessingLayer::setGuiPosition(int x, int y) {
-    this->guiPosition = ofPoint(x, y);
-    control.setGuiPosition(x, y);
-    gui.setGuiPosition(x+208, y);
-}
-
-//-----------
-void PostProcessingLayer::toggleVisible() {
-    control.toggleVisible();
-    gui.toggleVisible();
-}
-
-//-----------
-void PostProcessingLayer::setVisible(bool visible) {
-    control.setVisible(visible);
-    gui.setVisible(visible);
-}
-
-//-----------
-void PostProcessingLayer::programChange(bool &b) {
-    buildGui();
-}
-
-//-----------
-void PostProcessingLayer::buildGui() {
-    alias->setEnabled(aliasEnabled);
-    bloom->setEnabled(bloomEnabled);
-    dof->setEnabled(dofEnabled);
-    kaleidoscope->setEnabled(kaleidoscopeEnabled);
-    noiseWarp->setEnabled(noiseWarpEnabled);
-    pixelate->setEnabled(pixelateEnabled);
-    edges->setEnabled(edgesEnabled);
-    vTiltShift->setEnabled(vTiltShiftEnabled);
-    hTiltShift->setEnabled(hTiltShiftEnabled);
-    godRay->setEnabled(godRayEnabled);
-    toon->setEnabled(toonEnabled);
-    bleachBypass->setEnabled(bleachBypassEnabled);
-    contrast->setEnabled(contrastEnabled);
-    convolve->setEnabled(convolveEnabled);
-    fakeSSS->setEnabled(fakeSSSEnabled);
-    limbDarken->setEnabled(limbDarkenEnabled);
-    shift->setEnabled(shiftEnabled);
-    rimHighlight->setEnabled(rimHighlightEnabled);
-    ssao->setEnabled(ssaoEnabled);
-    zoomBlur->setEnabled(zoomBlurEnabled);
-    
+void PostProcessingLayer::setupParameterGui() {
     gui.clearParameters();
-    
+    gui.setName("parameters");
     if (alias->getEnabled()) {
-        gui.registerLabel("alias");
+        //gui.registerLabel("alias");
     }
     if (bloom->getEnabled()) {
-        gui.registerLabel("bloom");
+        //gui.registerLabel("bloom");
     }
     if (dof->getEnabled()) {
-        gui.registerLabel("dof");
-        gui.registerParameter("aperture", &dofAperture, 0.0f, 1.0f);
-        gui.registerParameter("focus", &dofFocus, 0.95f, 1.0f);
-        gui.registerParameter("maxBlur", &dofMaxBlur, 0.0f, 1.0f);
+        //gui.registerLabel("dof");
+        gui.addParameter("aperture", &dofAperture, 0.0f, 1.0f);
+        gui.addParameter("focus", &dofFocus, 0.95f, 1.0f);
+        gui.addParameter("maxBlur", &dofMaxBlur, 0.0f, 1.0f);
     }
     if (kaleidoscope->getEnabled()) {
-        gui.registerLabel("kaleidoscope");
-        gui.registerParameter("segments", &kaleidoscopeSegments, 0.0f, 16.0f);
+        //gui.registerLabel("kaleidoscope");
+        gui.addParameter("segments", &kaleidoscopeSegments, 0.0f, 16.0f);
     }
     if (noiseWarp->getEnabled()) {
-        gui.registerLabel("noiseWarp");
-        gui.registerParameter("amplitude", &noiseWarpAmplitude, 0.0f, 1.0f);
-        gui.registerParameter("frequency", &noiseWarpFrequency, 0.0f, 1.0f);
-        gui.registerParameter("speed", &noiseWarpSpeed, 0.0f, 1.0f);
+        //gui.registerLabel("noiseWarp");
+        gui.addParameter("amplitude", &noiseWarpAmplitude, 0.0f, 1.0f);
+        gui.addParameter("frequency", &noiseWarpFrequency, 0.0f, 1.0f);
+        gui.addParameter("speed", &noiseWarpSpeed, 0.0f, 1.0f);
     }
     if (pixelate->getEnabled()) {
-        gui.registerLabel("pixelate");
-        gui.registerParameter("resolution", &pixelateResolution, ofVec2f(0, 0), ofVec2f(100, 100));
+        //gui.registerLabel("pixelate");
+        gui.addParameter("resolution", &pixelateResolution, ofVec2f(0, 0), ofVec2f(100, 100));
     }
     if (edges->getEnabled()) {
-        gui.registerLabel("edges");
-        gui.registerParameter("hue", &edgesHue, 0.0f, 1.0f);
-        gui.registerParameter("saturation", &edgesSaturation, 0.0f, 1.0f);
+        //gui.registerLabel("edges");
+        gui.addParameter("hue", &edgesHue, 0.0f, 1.0f);
+        gui.addParameter("saturation", &edgesSaturation, 0.0f, 1.0f);
     }
     if (vTiltShift->getEnabled()) {
-        gui.registerLabel("vTiltShift");
-        gui.registerParameter("V", &vTiltShiftV, 0.0f, 1.0f);
-        gui.registerParameter("R", &vTiltShiftR, 0.0f, 1.0f);
+        //gui.registerLabel("vTiltShift");
+        gui.addParameter("V", &vTiltShiftV, 0.0f, 1.0f);
+        gui.addParameter("R", &vTiltShiftR, 0.0f, 1.0f);
     }
     if (hTiltShift->getEnabled()) {
-        gui.registerLabel("hTiltShift");
-        gui.registerParameter("H", &hTiltShiftH, 0.0f, 0.1f);
-        gui.registerParameter("R", &hTiltShiftR, 0.0f, 0.1f);
+        //gui.registerLabel("hTiltShift");
+        gui.addParameter("H", &hTiltShiftH, 0.0f, 0.1f);
+        gui.addParameter("R", &hTiltShiftR, 0.0f, 0.1f);
     }
     if (godRay->getEnabled()) {
-        gui.registerLabel("godRay");
-        gui.registerParameter("lightDirDOTviewDir", &godRayLightDirDOTviewDir, 0.0f, 1.0f);
-        gui.registerParameter("lightPoisitonOnScreen", &godRayLightPoisitonOnScreen, ofVec3f(-1, -1, -1), ofVec3f(1, 1, 1));
+        //gui.registerLabel("godRay");
+        gui.addParameter("lightDirDOTviewDir", &godRayLightDirDOTviewDir, 0.0f, 1.0f);
+        gui.addParameter("lightPoisitonOnScreen", &godRayLightPoisitonOnScreen, ofVec3f(-1, -1, -1), ofVec3f(1, 1, 1));
     }
     if (toon->getEnabled()) {
-        gui.registerLabel("toon");
-        gui.registerParameter("specularColor", &toonSpecularColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1));
-        gui.registerParameter("shinyness", &toonShinyness, 0.0f, 1.0f);
-        gui.registerParameter("level", &toonLevel, 0.0f, 1.0f);
-        gui.registerParameter("enableSpecular", &toonEnableSpecular);
-        gui.registerParameter("edgeThreshold", &toonEdgeThreshold, 0.0f, 1.0f);
-        gui.registerParameter("diffuseColor", &toonDiffuseColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1));
-        gui.registerParameter("ambientColor", &toonAmbientColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1));
+        //gui.registerLabel("toon");
+        gui.addParameter("specularColor", &toonSpecularColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1));
+        gui.addParameter("shinyness", &toonShinyness, 0.0f, 1.0f);
+        gui.addParameter("level", &toonLevel, 0.0f, 1.0f);
+        gui.addParameter("enableSpecular", &toonEnableSpecular);
+        gui.addParameter("edgeThreshold", &toonEdgeThreshold, 0.0f, 1.0f);
+        gui.addParameter("diffuseColor", &toonDiffuseColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1));
+        gui.addParameter("ambientColor", &toonAmbientColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1));
     }
     if (bleachBypass->getEnabled()) {
-        gui.registerLabel("bleachBypass");
-        gui.registerParameter("bypassOpacity", &bleachBypassOpacity, 0.0f, 1.0f);
+        //gui.registerLabel("bleachBypass");
+        gui.addParameter("bypassOpacity", &bleachBypassOpacity, 0.0f, 1.0f);
     }
     if (contrast->getEnabled()) {
-        gui.registerLabel("contrast");
-        gui.registerParameter("brightness", &contrastBrightness, 0.0f, 1.0f);
-        gui.registerParameter("contrast", &contrastContrast, 0.0f, 1.0f);
+        //gui.registerLabel("contrast");
+        gui.addParameter("brightness", &contrastBrightness, 0.0f, 1.0f);
+        gui.addParameter("contrast", &contrastContrast, 0.0f, 1.0f);
     }
     if (convolve->getEnabled()) {
-        gui.registerLabel("convolve");
+        //gui.registerLabel("convolve");
     }
     if (fakeSSS->getEnabled()) {
-        gui.registerLabel("fakeSSS");
-        gui.registerParameter("attenuationOffset", &fakeSSSAttenuationOffset, 0.0f, 1.0f);
-        gui.registerParameter("baseColor", &fakeSSSBaseColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1));
-        gui.registerParameter("extinctionCoefficient", &fakeSSSExtinctionCoefficient, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1));
-        gui.registerParameter("lightColor", &fakeSSSLightColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1));
-        gui.registerParameter("lightPosition", &fakeSSSLightPosition, ofPoint(0, 0), ofPoint(1, 1));
-        gui.registerParameter("materialThickness", &fakeSSSMaterialThickness, 0.0f, 1.0f);
-        gui.registerParameter("rimScale", &fakeSSSRimScale, 0.0f, 1.0f);
-        gui.registerParameter("specular", &fakeSSSSpecular, 0.0f, 1.0f);
-        gui.registerParameter("specularColor", &fakeSSSSpecularColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1));
+        //gui.registerLabel("fakeSSS");
+        gui.addParameter("attenuationOffset", &fakeSSSAttenuationOffset, 0.0f, 1.0f);
+        gui.addParameter("baseColor", &fakeSSSBaseColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1));
+        gui.addParameter("extinctionCoefficient", &fakeSSSExtinctionCoefficient, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1));
+        gui.addParameter("lightColor", &fakeSSSLightColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1));
+        gui.addParameter("lightPosition", &fakeSSSLightPosition, ofPoint(0, 0), ofPoint(1, 1));
+        gui.addParameter("materialThickness", &fakeSSSMaterialThickness, 0.0f, 1.0f);
+        gui.addParameter("rimScale", &fakeSSSRimScale, 0.0f, 1.0f);
+        gui.addParameter("specular", &fakeSSSSpecular, 0.0f, 1.0f);
+        gui.addParameter("specularColor", &fakeSSSSpecularColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1));
     }
     if (limbDarken->getEnabled()) {
-        gui.registerLabel("limbDarken");
-        gui.registerParameter("brightness", &limbDarkenBrightness, 0.0f, 1.0f);
-        gui.registerParameter("endColor", &limbDarkenEndColor, ofVec3f(0, 0, 0), ofVec3f(1, 1, 1));
-        gui.registerParameter("radialScale", &limbDarkenRadialScale, 0.0f, 1.0f);
-        gui.registerParameter("startColor", &limbDarkenStartColor, ofVec3f(0, 0, 0), ofVec3f(1, 1, 1));
+        //gui.registerLabel("limbDarken");
+        gui.addParameter("brightness", &limbDarkenBrightness, 0.0f, 1.0f);
+        gui.addParameter("endColor", &limbDarkenEndColor, ofVec3f(0, 0, 0), ofVec3f(1, 1, 1));
+        gui.addParameter("radialScale", &limbDarkenRadialScale, 0.0f, 1.0f);
+        gui.addParameter("startColor", &limbDarkenStartColor, ofVec3f(0, 0, 0), ofVec3f(1, 1, 1));
     }
     if (shift->getEnabled()) {
-        gui.registerLabel("shift");
-        gui.registerParameter("amount", &shiftAmount, 0.0f, 1.0f);
-        gui.registerParameter("angle", &shiftAngle, 0.0f, 1.0f);
+        //gui.registerLabel("shift");
+        gui.addParameter("amount", &shiftAmount, 0.0f, 1.0f);
+        gui.addParameter("angle", &shiftAngle, 0.0f, 1.0f);
     }
     if (rimHighlight->getEnabled()) {
-        gui.registerLabel("rimHighlight");
+        //gui.registerLabel("rimHighlight");
     }
     if (ssao->getEnabled()) {
-        gui.registerLabel("ssao");
-        gui.registerParameter("cameraNear", &ssaoCameraNear, 0.0f, 1.0f);
-        gui.registerParameter("cameraFar", &ssaoCameraFar, 0.0f, 1.0f);
-        gui.registerParameter("fogNear", &ssaoFogNear, 0.0f, 1.0f);
-        gui.registerParameter("fogFar", &ssaoFogFar, 0.0f, 1.0f);
-        gui.registerParameter("fogEnabled", &ssaoFogEnabled);
-        gui.registerParameter("onlyAO", &ssaoOnlyAO);
-        gui.registerParameter("aoClamp", &ssaoAoClamp, 0.0f, 1.0f);
-        gui.registerParameter("lumInfluence", &ssaoLumInfluence, 0.0f, 1.0f);
+        //gui.registerLabel("ssao");
+        gui.addParameter("cameraNear", &ssaoCameraNear, 0.0f, 1.0f);
+        gui.addParameter("cameraFar", &ssaoCameraFar, 0.0f, 1.0f);
+        gui.addParameter("fogNear", &ssaoFogNear, 0.0f, 1.0f);
+        gui.addParameter("fogFar", &ssaoFogFar, 0.0f, 1.0f);
+        gui.addParameter("fogEnabled", &ssaoFogEnabled);
+        gui.addParameter("onlyAO", &ssaoOnlyAO);
+        gui.addParameter("aoClamp", &ssaoAoClamp, 0.0f, 1.0f);
+        gui.addParameter("lumInfluence", &ssaoLumInfluence, 0.0f, 1.0f);
     }
     if (zoomBlur->getEnabled()) {
-        gui.registerLabel("zoomBlur");
-        gui.registerParameter("centerX", &zoomBlurCenterX, 0.0f, 1.0f);
-        gui.registerParameter("centerY", &zoomBlurCenterY, 0.0f, 1.0f);
-        gui.registerParameter("exposure", &zoomBlurExposure, 0.0f, 1.0f);
-        gui.registerParameter("decay", &zoomBlurDecay, 0.0f, 1.0f);
-        gui.registerParameter("density", &zoomBlurDensity, 0.0f, 1.0f);
-        gui.registerParameter("weight", &zoomBlurWeight, 0.0f, 1.0f);
-        gui.registerParameter("clamp", &zoomBlurClamp, 0.0f, 1.0f);
+        //gui.registerLabel("zoomBlur");
+        gui.addParameter("centerX", &zoomBlurCenterX, 0.0f, 1.0f);
+        gui.addParameter("centerY", &zoomBlurCenterY, 0.0f, 1.0f);
+        gui.addParameter("exposure", &zoomBlurExposure, 0.0f, 1.0f);
+        gui.addParameter("decay", &zoomBlurDecay, 0.0f, 1.0f);
+        gui.addParameter("density", &zoomBlurDensity, 0.0f, 1.0f);
+        gui.addParameter("weight", &zoomBlurWeight, 0.0f, 1.0f);
+        gui.addParameter("clamp", &zoomBlurClamp, 0.0f, 1.0f);
+    }
+    gui.setVisible(false);
+}
+
+//-----------
+void PostProcessingLayer::checkEffectActive(shared_ptr<RenderPass> pass, bool isEnabled) {
+    bool wasEnabled = pass->getEnabled();
+    pass->setEnabled(isEnabled);
+    if (wasEnabled != isEnabled) {
+        setupParameterGui();
+    }
+}
+
+//-----------
+void PostProcessingLayer::update() {
+    checkEffectActive(alias, aliasEnabled);
+    checkEffectActive(bloom, bloomEnabled);
+    checkEffectActive(dof, dofEnabled);
+    checkEffectActive(kaleidoscope, kaleidoscopeEnabled);
+    checkEffectActive(noiseWarp, noiseWarpEnabled);
+    checkEffectActive(pixelate, pixelateEnabled);
+    checkEffectActive(edges, edgesEnabled);
+    checkEffectActive(vTiltShift, vTiltShiftEnabled);
+    checkEffectActive(hTiltShift, hTiltShiftEnabled);
+    checkEffectActive(godRay, godRayEnabled);
+    checkEffectActive(toon, toonEnabled);
+    checkEffectActive(bleachBypass, bleachBypassEnabled);
+    checkEffectActive(contrast, contrastEnabled);
+    checkEffectActive(convolve, convolveEnabled);
+    checkEffectActive(fakeSSS, fakeSSSEnabled);
+    checkEffectActive(limbDarken, limbDarkenEnabled);
+    checkEffectActive(shift, shiftEnabled);
+    checkEffectActive(rimHighlight, rimHighlightEnabled);
+    checkEffectActive(ssao, ssaoEnabled);
+    checkEffectActive(zoomBlur, zoomBlurEnabled);
+    
+    if (alias->getEnabled()) {
+    }
+    if (bloom->getEnabled()) {
+    }
+    if (dof->getEnabled()) {
+        dof->setAperture(dofAperture);
+        dof->setFocus(dofFocus);
+        dof->setMaxBlur(dofMaxBlur);
+    }
+    if (kaleidoscope->getEnabled()) {
+        kaleidoscope->setSegments(kaleidoscopeSegments);
+    }
+    if (noiseWarp->getEnabled()) {
+        noiseWarp->setAmplitude(noiseWarpAmplitude);
+        noiseWarp->setFrequency(noiseWarpFrequency);
+        noiseWarp->setSpeed(noiseWarpSpeed);
+    }
+    if (pixelate->getEnabled()) {
+        pixelate->setResolution(pixelateResolution);
+    }
+    if (edges->getEnabled()) {
+        edges->setHue(edgesHue);
+        edges->setSaturation(edgesSaturation);
+    }
+    if (vTiltShift->getEnabled()) {
+        vTiltShift->setV(vTiltShiftV);
+        vTiltShift->setR(vTiltShiftR);
+    }
+    if (hTiltShift->getEnabled()) {
+        hTiltShift->setH(hTiltShiftH);
+        hTiltShift->setR(hTiltShiftR);
+    }
+    if (godRay->getEnabled()) {
+        godRay->setLightDirDOTviewDir(godRayLightDirDOTviewDir);
+        godRay->setLightPositionOnScreen(godRayLightPoisitonOnScreen);
+    }
+    if (toon->getEnabled()) {
+        toon->setSpecularColor(toonSpecularColor);
+        toon->setShinyness(toonShinyness);
+        toon->setLevel(toonLevel);
+        toon->setEnableSpecular(toonEnableSpecular);
+        toon->setEdgeThreshold(toonEdgeThreshold);
+        toon->setDiffuseColor(toonDiffuseColor);
+        toon->setAmbientColor(toonAmbientColor);
+    }
+    if (bleachBypass->getEnabled()) {
+        bleachBypass->setOpacity(bleachBypassOpacity);
+    }
+    if (contrast->getEnabled()) {
+        contrast->setBrightness(contrastBrightness);
+        contrast->setContrast(contrastContrast);
+    }
+    if (convolve->getEnabled()) {
+    }
+    if (fakeSSS->getEnabled()) {
+        fakeSSS->setAttenuationOffset(fakeSSSAttenuationOffset);
+        fakeSSS->setBaseColor(fakeSSSBaseColor);
+        fakeSSS->setExtinctionCoefficient(fakeSSSExtinctionCoefficient);
+        fakeSSS->setLightColor(fakeSSSLightColor);
+        fakeSSS->setLightPosition(fakeSSSLightPosition);
+        fakeSSS->setMaterialThickness(fakeSSSMaterialThickness);
+        fakeSSS->setRimScale(fakeSSSRimScale);
+        fakeSSS->setSpecular(fakeSSSSpecular);
+        fakeSSS->setSpecularColor(fakeSSSSpecularColor);
+    }
+    if (limbDarken->getEnabled()) {
+        limbDarken->setBrightness(limbDarkenBrightness);
+        limbDarken->setEndColor(limbDarkenEndColor);
+        limbDarken->setRadialScale(limbDarkenRadialScale);
+        limbDarken->setStartColor(limbDarkenStartColor);
+    }
+    if (shift->getEnabled()) {
+        shift->setAmount(shiftAmount);
+        shift->setAngle(shiftAngle);
+    }
+    if (rimHighlight->getEnabled()) {
+    }
+    if (ssao->getEnabled()) {
+        ssao->setCameraNear(ssaoCameraNear);
+        ssao->setCameraFar(ssaoCameraFar);
+        ssao->setFogNear(ssaoFogNear);
+        ssao->setFogFar(ssaoFogFar);
+        ssao->setFogEnabled(ssaoFogEnabled);
+        ssao->setOnlyAO(ssaoOnlyAO);
+        ssao->setAoClamp(ssaoAoClamp);
+        ssao->setLumInfluence(ssaoLumInfluence);
+    }
+    if (zoomBlur->getEnabled()) {
+        zoomBlur->setCenterX(zoomBlurCenterX);
+        zoomBlur->setCenterY(zoomBlurCenterY);
+        zoomBlur->setExposure(zoomBlurExposure);
+        zoomBlur->setDecay(zoomBlurDecay);
+        zoomBlur->setDensity(zoomBlurDensity);
+        zoomBlur->setWeight(zoomBlurWeight);
+        zoomBlur->setClamp(zoomBlurClamp);
     }
 }
 
 //-----------
 void PostProcessingLayer::render() {
+    update();
+    
     fbo.begin();
         post.begin();
             texLayer->draw(0, 0);
         post.end();
     fbo.end();
-}
-
-//-----------
-PostProcessingLayer::~PostProcessingLayer() {
-    // remove toggle listeners
-    aliasEnabled.removeListener(this, &PostProcessingLayer::programChange);
-    bloomEnabled.removeListener(this, &PostProcessingLayer::programChange);
-    dofEnabled.removeListener(this, &PostProcessingLayer::programChange);
-    kaleidoscopeEnabled.removeListener(this, &PostProcessingLayer::programChange);
-    noiseWarpEnabled.removeListener(this, &PostProcessingLayer::programChange);
-    pixelateEnabled.removeListener(this, &PostProcessingLayer::programChange);
-    edgesEnabled.removeListener(this, &PostProcessingLayer::programChange);
-    vTiltShiftEnabled.removeListener(this, &PostProcessingLayer::programChange);
-    hTiltShiftEnabled.removeListener(this, &PostProcessingLayer::programChange);
-    godRayEnabled.removeListener(this, &PostProcessingLayer::programChange);
-    toonEnabled.removeListener(this, &PostProcessingLayer::programChange);
-    bleachBypassEnabled.removeListener(this, &PostProcessingLayer::programChange);
-    contrastEnabled.removeListener(this, &PostProcessingLayer::programChange);
-    convolveEnabled.removeListener(this, &PostProcessingLayer::programChange);
-    fakeSSSEnabled.removeListener(this, &PostProcessingLayer::programChange);
-    limbDarkenEnabled.removeListener(this, &PostProcessingLayer::programChange);
-    shiftEnabled.removeListener(this, &PostProcessingLayer::programChange);
-    rimHighlightEnabled.removeListener(this, &PostProcessingLayer::programChange);
-    ssaoEnabled.removeListener(this, &PostProcessingLayer::programChange);
-    zoomBlurEnabled.removeListener(this, &PostProcessingLayer::programChange);
-    // remove parameter listeners
-    dofAperture.removeListener(this, &PostProcessingLayer::dofApertureChanged);
-    dofFocus.removeListener(this, &PostProcessingLayer::dofFocusChanged);
-    dofMaxBlur.removeListener(this, &PostProcessingLayer::dofMaxBlurChanged);
-    kaleidoscopeSegments.removeListener(this, &PostProcessingLayer::kaleidoscopeSegmentsChanged);
-    noiseWarpAmplitude.removeListener(this, &PostProcessingLayer::noiseWarpAmplitudeChanged);
-    noiseWarpFrequency.removeListener(this, &PostProcessingLayer::noiseWarpFrequencyChanged);
-    noiseWarpSpeed.removeListener(this, &PostProcessingLayer::noiseWarpSpeedChanged);
-    pixelateResolution.removeListener(this, &PostProcessingLayer::pixelateResolutionChanged);
-    edgesHue.removeListener(this, &PostProcessingLayer::edgesHueChanged);
-    edgesSaturation.removeListener(this, &PostProcessingLayer::edgesSaturationChanged);
-    vTiltShiftV.removeListener(this, &PostProcessingLayer::vTiltShiftVChanged);
-    vTiltShiftR.removeListener(this, &PostProcessingLayer::vTiltShiftRChanged);
-    hTiltShiftH.removeListener(this, &PostProcessingLayer::hTiltShiftHChanged);
-    hTiltShiftR.removeListener(this, &PostProcessingLayer::hTiltShiftRChanged);
-    godRayLightDirDOTviewDir.removeListener(this, &PostProcessingLayer::godRayLightDirDOTviewDirChanged);
-    godRayLightPoisitonOnScreen.removeListener(this, &PostProcessingLayer::godRayLightPoisitonOnScreenChanged);
-    toonSpecularColor.removeListener(this, &PostProcessingLayer::toonSpecularColorChanged);
-    toonShinyness.removeListener(this, &PostProcessingLayer::toonShinynessChanged);
-    toonLevel.removeListener(this, &PostProcessingLayer::toonLevelChanged);
-    toonEnableSpecular.removeListener(this, &PostProcessingLayer::toonEnableSpecularChanged);
-    toonEdgeThreshold.removeListener(this, &PostProcessingLayer::toonEdgeThresholdChanged);
-    toonDiffuseColor.removeListener(this, &PostProcessingLayer::toonDiffuseColorChanged);
-    toonAmbientColor.removeListener(this, &PostProcessingLayer::toonAmbientColorChanged);
-    bleachBypassOpacity.removeListener(this, &PostProcessingLayer::bleachBypassOpacityChanged);
-    contrastBrightness.removeListener(this, &PostProcessingLayer::contrastBrightnessChanged);
-    contrastContrast.removeListener(this, &PostProcessingLayer::contrastContrastChanged);
-    fakeSSSAttenuationOffset.removeListener(this, &PostProcessingLayer::fakeSSSAttenuationOffsetChanged);
-    fakeSSSBaseColor.removeListener(this, &PostProcessingLayer::fakeSSSBaseColorChanged);
-    fakeSSSExtinctionCoefficient.removeListener(this, &PostProcessingLayer::fakeSSSExtinctionCoefficientChanged);
-    fakeSSSLightColor.removeListener(this, &PostProcessingLayer::fakeSSSLightColorChanged);
-    fakeSSSLightPosition.removeListener(this, &PostProcessingLayer::fakeSSSLightPositionChanged);
-    fakeSSSMaterialThickness.removeListener(this, &PostProcessingLayer::fakeSSSMaterialThicknessChanged);
-    fakeSSSRimScale.removeListener(this, &PostProcessingLayer::fakeSSSRimScaleChanged);
-    fakeSSSSpecular.removeListener(this, &PostProcessingLayer::fakeSSSSpecularChanged);
-    fakeSSSSpecularColor.removeListener(this, &PostProcessingLayer::fakeSSSSpecularColorChanged);
-    limbDarkenBrightness.removeListener(this, &PostProcessingLayer::limbDarkenBrightnessChanged);
-    limbDarkenEndColor.removeListener(this, &PostProcessingLayer::limbDarkenEndColorChanged);
-    limbDarkenRadialScale.removeListener(this, &PostProcessingLayer::limbDarkenRadialScaleChanged);
-    limbDarkenStartColor.removeListener(this, &PostProcessingLayer::limbDarkenStartColorChanged);
-    shiftAmount.removeListener(this, &PostProcessingLayer::shiftAmountChanged);
-    shiftAngle.removeListener(this, &PostProcessingLayer::shiftAngleChanged);
-    ssaoCameraNear.removeListener(this, &PostProcessingLayer::ssaoCameraNearChanged);
-    ssaoCameraFar.removeListener(this, &PostProcessingLayer::ssaoCameraFarChanged);
-    ssaoFogNear.removeListener(this, &PostProcessingLayer::ssaoFogNearChanged);
-    ssaoFogFar.removeListener(this, &PostProcessingLayer::ssaoFogFarChanged);
-    ssaoFogEnabled.removeListener(this, &PostProcessingLayer::ssaoFogEnabledChanged);
-    ssaoOnlyAO.removeListener(this, &PostProcessingLayer::ssaoOnlyAOChanged);
-    ssaoAoClamp.removeListener(this, &PostProcessingLayer::ssaoAoClampChanged);
-    ssaoLumInfluence.removeListener(this, &PostProcessingLayer::ssaoLumInfluenceChanged);
-    zoomBlurCenterX.removeListener(this, &PostProcessingLayer::zoomBlurCenterXChanged);
-    zoomBlurCenterY.removeListener(this, &PostProcessingLayer::zoomBlurCenterYChanged);
-    zoomBlurExposure.removeListener(this, &PostProcessingLayer::zoomBlurExposureChanged);
-    zoomBlurDecay.removeListener(this, &PostProcessingLayer::zoomBlurDecayChanged);
-    zoomBlurDensity.removeListener(this, &PostProcessingLayer::zoomBlurDensityChanged);
-    zoomBlurWeight.removeListener(this, &PostProcessingLayer::zoomBlurWeightChanged);
-    zoomBlurClamp.removeListener(this, &PostProcessingLayer::zoomBlurClampChanged);
 }

@@ -46,11 +46,12 @@ void Bubbles::setup() {
     setupBubblesFbo();
     time = 0;
     
-    bubbleCreator.setup(position, colorMargin, blurLevel, alpha, size, numBubbles);
+    bubbleCreator.setup(position, colorMargin, blurLevel, alpha, size, numBubbles, width, height);
 }
 
 //------------
 Bubbles::~Bubbles() {
+    cout << "kill bub"<<endl;
     for (int i=0; i<position.size(); i++) {
         delete position[i];
     }

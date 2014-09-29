@@ -10,5 +10,5 @@ public:
     void load(string path);
     
     
-    static void generateTouchOscLayout(vector<OutputParameter *> &parameters);
+//    static void generateTouchOscLayout(vector<OutputParameter *> &parameters);
 };

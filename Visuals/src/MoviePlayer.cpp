@@ -12,31 +12,30 @@ void MoviePlayer::setup() {
     
     speed = 1.0f;
     oldSpeed = speed;
+}
+
+//--------
+void MoviePlayer::play(string &s) {
+    playing = true;
+    player.loadMovie("/Users/Gene/media/sinuses.mov");
+    player.play();
     
     /*
-    w = width;
-    h = player.getHeight() * w / player.getWidth();
+     w = width;
+     h = player.getHeight() * w / player.getWidth();
      */
     
     h = height;
     w = player.getWidth() * h / player.getHeight();
-
 }
 
 //--------
-void MoviePlayer::play(bool &b) {
-    playing = true;
-    player.loadMovie("/Users/Gene/Media/sinuses.mov");
-    player.play();
-}
-
-//--------
-void MoviePlayer::jumpBack(bool &b) {
+void MoviePlayer::jumpBack(string &s) {
     player.setFrame(player.getCurrentFrame()-15);
 }
 
 //--------
-void MoviePlayer::jumpRandom(bool &b) {
+void MoviePlayer::jumpRandom(string &s) {
     player.setFrame(ofRandom(player.getTotalNumFrames()));  
 }
 

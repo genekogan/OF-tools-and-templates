@@ -5,6 +5,7 @@
 class GridFly : public Scene
 {
 public:
+    ~GridFly();
     void setup();
     void update();
     void draw();

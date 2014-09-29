@@ -4,9 +4,10 @@
 void ofApp::setup(){
     ofSetBackgroundAuto(false);
     
-    window.setup("projection", ofGetScreenWidth(), 0, 1280, 800, true);
-
+    window.setup("projection", 400, 0, 1280, 800, false);
+    
     canvas.setup(window.getWidth(), window.getHeight());
+    
     canvas.addLayer(CANVAS_CREATOR);
     canvas.addLayer(CANVAS_POST_FX);
 }

@@ -158,6 +158,9 @@ void Learn::setVisible(bool visible) {
     for (int i=0; i<outputs.size(); i++) {
         outputs[i]->setVisible(visible);
     }
+    gui1->setVisible(visible);
+    gui2->setVisible(visible);
+    gui3->setVisible(visible);
 }
 
 //-------

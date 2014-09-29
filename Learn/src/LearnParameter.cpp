@@ -4,7 +4,7 @@
 //===========================================
 //  CONSTRUCTORS AND DESTRUCTORS
 
-LearnParameter::LearnParameter(string name, float *value, float min, float max) : Parameter<float>(name, value, min, max) {
+LearnParameter::LearnParameter(string name, float *value, float min, float max) : Parameter<float>(name, *value, min, max) {
     *value = 0.5 * (min + max);
     gui = new ofxUICanvas(name);
 }

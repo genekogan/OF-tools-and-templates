@@ -1,25 +1,37 @@
 #include "Layer.h"
 
 
-
 //----------------
 void CreatorLayer::setup() {
-    setupGui(false);
-    scene = new DebugScreen();
-    scene->setup(width, height);
+    setupChoices();
     control.setName("Creator");
+    control.clearParameters();
+    control.addMenu("select scene", choices, this, &CreatorLayer::selectScene);
+    guiPosition = ofPoint(5, 5);
+    setupCreators();
 }
 
 //----------------
-void CreatorLayer::setupGui(bool isShader) {
-    settingUp = true;
-    setupChoices();
-    control.clearParameters();
-    control.registerMenu("select scene", this, &CreatorLayer::selectScene, choices);
-    if (isShader) {
-        control.registerMenu("Select shader", this, &CreatorLayer::selectShader, shaders);
-    }
-    settingUp = false;
+void CreatorLayer::setupCreators() {
+    agents = new Agents();
+    amoeba = new Amoeba();
+    bubbles = new Bubbles();
+    cubes = new Cubes();
+    debug = new DebugScreen();
+    gridfly = new GridFly();
+    letters = new Letters();
+    meshy = new Meshy();
+    movie = new MoviePlayer();
+    polar = new Polar();
+    rivers = new Rivers();
+    shader = new Shader();
+    shapespace = new ShapeSpace();
+    subdivide = new Subdivide();
+    syphon = new Syphon();
+
+    scene = debug;
+    string s = "debug";
+    selectScene(s);
 }
 
 //----------------
@@ -43,69 +55,64 @@ void ModifierLayer::setup() {
     scene = new Shader();
     ((Shader *) scene)->setupBrCoSa();
     control.setName("Modifier");
-    control.registerMenu("select scene", this, &ModifierLayer::selectScene, choices);
+    control.addMenu("select scene", choices, this, &ModifierLayer::selectScene);
     if (texLayer != NULL) {
         ((Shader *) scene)->setTexture(texLayer->getFbo());
     }
 }
 
-void ModifierLayer::setupChoices() {
-    string mods[] = {"brcosa", "pixelate", "bilateral", "blur",
-        "channels", "deform", "edges", "cmyk", "halftone",
-        "hue", "invert", "neon", "patches", "pixelrolls",
-        "grayscale", "threshold", "wrap" };
-    choices = vector<string>(mods, mods + sizeof(mods) / sizeof(mods[0]));
+//----------------
+void ModifierLayer::setTexLayer(CanvasLayer *texLayer) {
+    this->texLayer = texLayer;
+    if (texLayer != NULL) {
+        ((Shader *) scene)->setTexture(texLayer->getFbo());
+    }
 }
 
 //----------------
 void CreatorLayer::selectScene(string &s) {
-    if (settingUp)  return;
+    scene->setActive(false);
     setupScene(s);
-    if (s == "shader") {
-        ((Shader *) scene)->setupBlobby();
-    }
-}
-
-//----------------
-void CreatorLayer::setupScene(string s) {
-    if      (s == "debug")      setScene(new DebugScreen());
-    else if (s == "agents")     setScene(new Agents());
-    else if (s == "amoeba")     setScene(new Amoeba());
-    else if (s == "bubbles")    setScene(new Bubbles());
-    else if (s == "cubes")      setScene(new Cubes());
-    else if (s == "gridfly")    setScene(new GridFly());
-    else if (s == "letters")    setScene(new Letters());
-    else if (s == "meshy")      setScene(new Meshy());
-    else if (s == "movie")      setScene(new MoviePlayer());
-    else if (s == "polar")      setScene(new Polar());
-    else if (s == "rivers")     setScene(new Rivers());
-    else if (s == "shader")     setScene(new Shader(), true);
-    else if (s == "shapespace") setScene(new ShapeSpace());
-    else if (s == "subdivide")  setScene(new Subdivide());
-    else if (s == "syphon")     setScene(new Syphon());
-}
-
-//----------------
-void CreatorLayer::setScene(Scene *newScene, bool redrawGui) {
-    delete scene;
-    scene = newScene;
     scene->setup(width, height);
-    scene->setGuiPosition(guiPosition.x+208, guiPosition.y);
-    if (redrawGui)  setupGui(true);
+    scene->setActive(true);
+    control.setVisible(false);
+    scene->setGuiPosition(guiPosition.x, guiPosition.y);
+    if (s == "shader") {
+        string sh = "blobby";
+        selectShader(sh);
+    }
 }
 
 //----------------
 void CreatorLayer::selectShader(string &s) {
-    if (settingUp)  return;
     setupShader(s);
     if (texLayer != NULL) {
         ((Shader *) scene)->setTexture(texLayer->getFbo());
     }
+    scene->getControl().addMenu("Select shader", shaders, this, &CreatorLayer::selectShader);
+}
+
+//----------------
+void CreatorLayer::setupScene(string s) {
+    if      (s == "debug")      scene = debug;
+    else if (s == "agents")     scene = agents;
+    else if (s == "amoeba")     scene = amoeba;
+    else if (s == "bubbles")    scene = bubbles;
+    else if (s == "cubes")      scene = cubes;
+    else if (s == "gridfly")    scene = gridfly;
+    else if (s == "letters")    scene = letters;
+    else if (s == "meshy")      scene = meshy;
+    else if (s == "movie")      scene = movie;
+    else if (s == "polar")      scene = polar;
+    else if (s == "rivers")     scene = rivers;
+    else if (s == "shader")     scene = shader;
+    else if (s == "shapespace") scene = shapespace;
+    else if (s == "subdivide")  scene = subdivide;
+    else if (s == "syphon")     scene = syphon;
 }
 
 //----------------
 void CreatorLayer::setupShader(string s) {
-    cout << "old setup "<<endl;
     if 		(s == "blobby")         ((Shader *) scene)->setupBlobby();
     else if (s == "bits")           ((Shader *) scene)->setupBits();
     else if (s == "bits_exp")       ((Shader *) scene)->setupBitsExperimental();
@@ -127,8 +134,20 @@ void CreatorLayer::setupShader(string s) {
 }
 
 //----------------
+void ModifierLayer::setupChoices() {
+    string mods[] = {"brcosa", "pixelate", "bilateral", "blur",
+        "channels", "deform", "edges", "cmyk", "halftone",
+        "hue", "invert", "neon", "patches", "pixelrolls",
+        "grayscale", "threshold", "wrap" };
+    choices = vector<string>(mods, mods + sizeof(mods) / sizeof(mods[0]));
+}
+
+//----------------
 void ModifierLayer::selectScene(string &s) {
     setupScene(s);
+    control.setVisible(false);
+    scene->setActive(true);
+    scene->setGuiPosition(guiPosition.x, guiPosition.y);
 }
 
 //----------------
@@ -151,7 +170,6 @@ void ModifierLayer::setupScene(string s) {
     else if (s == "threshold")  ((Shader *) scene)->setupThreshold();
     else if (s == "wrap")       ((Shader *) scene)->setupWrap();
 }
-
 
 //----------------
 void CreatorLayer::render() {

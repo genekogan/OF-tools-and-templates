@@ -119,7 +119,7 @@ void DebugScreen::drawGradient() {
 }
 
 //--------
-void DebugScreen::refresh(bool & b) {
+void DebugScreen::refresh(string &s) {
     if (type == GRADIENT) {
         setupGradient((string &) gradientMode);
     }

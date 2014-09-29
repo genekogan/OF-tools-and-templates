@@ -31,12 +31,12 @@ void Meshy::setup() {
     triNoise = 0.01;
     colorNoise = 0.001;
  
-    bool b;
-    triangulate(b);
+    string s;
+    triangulate(s);
 }
 
 //--------
-void Meshy::triangulate(bool &b) {
+void Meshy::triangulate(string &s) {
     if (circles) {
         circlePacker.clear();
         circlePacker.setBounds(0, 0, width, height);

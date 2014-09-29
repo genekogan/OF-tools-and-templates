@@ -2,7 +2,24 @@
 
 #include "ofMain.h"
 #include "Control.h"
+
 #include "Scene.h"
+
+#include "Agents.h"
+#include "Amoeba.h"
+#include "Bubbles.h"
+#include "Cubes.h"
+#include "DebugScreen.h"
+#include "GridFly.h"
+#include "Letters.h"
+#include "Meshy.h"
+#include "MoviePlayer.h"
+#include "Polar.h"
+#include "Rivers.h"
+#include "Shader.h"
+#include "ShapeSpace.h"
+#include "Subdivide.h"
+#include "Syphon.h"
 
 
 enum LayerType {
@@ -13,14 +30,13 @@ enum LayerType {
     CANVAS_POST_FX };
 
 
+//----------------
 class CanvasLayer
 {
 public:
-    ~CanvasLayer() {
-        delete scene;
-    }
+    ~CanvasLayer() {delete scene;}
     
-    void setup(int width, int height, CanvasLayer *texLayer) {
+    void setup(int width, int height, CanvasLayer *texLayer=NULL) {
         this->width = width;
         this->height = height;
         this->texLayer = texLayer;
@@ -28,18 +44,22 @@ public:
         setup();
     }
     
-    void setup(int width, int height) {
-        setup(width, height, NULL);
+    virtual void setTexLayer(CanvasLayer *texLayer=NULL) {
+        this->texLayer = texLayer;
     }
     
     virtual void setup() {}
     
     virtual void render() {}
     
+    void draw(int x, int y) {
+        fbo.draw(x, y);
+    }
+    
     virtual void setGuiPosition(int x, int y) {
         this->guiPosition = ofPoint(x, y);
         control.setGuiPosition(x, y);
-        scene->setGuiPosition(x+208, y);
+        scene->setGuiPosition(x, y);
     }
     
     virtual void toggleVisible() {
@@ -49,16 +69,24 @@ public:
     
     virtual void setVisible(bool visible) {
         control.setVisible(visible);
-        scene->setVisible(visible);
+        scene->setVisible(false);
     }
     
-    void draw(int x, int y) {
-        fbo.draw(x, y);
+    virtual void checkGuiCalls() {
+        if (scene->getControl().headerSelected) {
+            scene->getControl().headerSelected = false;
+            control.setVisible(true);
+            scene->setVisible(false);
+        }
+        else if (control.headerSelected) {
+            control.headerSelected = false;
+            control.setVisible(false);
+            scene->setVisible(true);
+        }
     }
     
-    ofFbo *getFbo() {
-        return &fbo;
-    }
+    string getName() {return control.getName();}
+    ofFbo *getFbo() {return &fbo;}
     
     Control control;
     ofFbo fbo;
@@ -66,43 +94,44 @@ public:
     CanvasLayer *texLayer;
     ofPoint guiPosition;
     int width, height;
-    vector<string> choices;
+    vector<string> choices, shaders;
 };
 
 
+//----------------
 class CreatorLayer : public CanvasLayer {
 public:
     void setup();
     void render();
+    void selectScene(string &s);
+    void selectShader(string &s);
 
-    void setScene(Scene *newScene, bool redrawGui=false);
-    
-    void selectScene(string & s);
-    void selectShader(string & s);
-    
+private:
+    virtual void setupCreators();
+    virtual void setupChoices();
     virtual void setupScene(string s);
     virtual void setupShader(string s);
-    virtual void setupChoices();
-    
-    vector<string> choices, shaders;
-    
-private:
-    void setupGui(bool isShader);
-    bool settingUp;
+
+    Scene *agents, *amoeba, *bubbles, *cubes,
+          *debug, *gridfly, *letters, *meshy,
+          *movie, *polar, *rivers, *shader,
+          *shapespace, *subdivide, *syphon;
 };
 
 
+//----------------
 class ModifierLayer : public CanvasLayer {
 public:
     void setup();
+    void setTexLayer(CanvasLayer *texLayer=NULL);
     void render();
-    void selectScene(string & s);
-    
+    void selectScene(string &s);
+
+private:
     virtual void setupChoices();
     virtual void setupScene(string s);
-    
-    vector<string> choices;
 };
+
 
 
 #include "PostProcessor.h"

@@ -8,6 +8,7 @@
 class PolarEq
 {
 public:
+    ~PolarEq();
     PolarEq(bool *is3d, bool *isRibbon, ofVec3f *speedRotation);
     
     void refresh();
@@ -59,13 +60,14 @@ private:
 class Polar : public Scene
 {
 public:
+    ~Polar();
     void setup();
     void update();
     void draw();
     
 private:
     void managePolarCount();
-    void refresh(bool &b);
+    void refresh(string &s);
     
     vector<PolarEq *> polars;
     

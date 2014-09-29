@@ -14,7 +14,7 @@ public:
     
 private:
     
-    void triangulate(bool &b);
+    void triangulate(string &s);
     
     CirclePackGenerator circlePacker;
     EvenPointsGenerator pointGenerator;

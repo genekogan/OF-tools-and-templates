@@ -45,3 +45,8 @@ void ShapeSpace::draw() {
     cam.end();
 }
 
+//-------
+ShapeSpace::~ShapeSpace(){
+    cam.disableMouseMiddleButton();
+    cam.disableMouseInput();
+}

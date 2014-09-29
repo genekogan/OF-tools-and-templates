@@ -20,8 +20,8 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     
-    void event1(bool & b);
-    void event2(bool & b);
+    void event1(string & s);
+    void event2(string & s);
     void menuEvent1(string & s);
     void menuEvent2(string & s);
     

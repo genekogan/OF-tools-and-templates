@@ -4,7 +4,8 @@
 //-------
 void Control::setupGui() {
     gui->clearWidgets();
-    gui->addLabel(name);
+    gui->setWidth(width);
+    gui->addLabelButton("controlHeader", false)->setLabelText(name);
     gui->addSpacer();
     
     /* add parameters */
@@ -52,11 +53,15 @@ void Control::setupGui() {
     
     /* add menus */
     for (map<string,vector<string> >::iterator it=menus.begin(); it!=menus.end(); ++it){
-        gui->addDropDownList(it->first, it->second);
+        ofxUIDropDownList *menu = gui->addDropDownList(it->first, it->second);
+        menu->setAutoClose(false);
+        //menu->setAllowMultiple(true);
+        menu->open();
+        menu->setPadding(1);
     }
     
     /* add events */
-    for (map<string,ofEvent<bool>*>::iterator it=events.begin(); it!=events.end(); ++it){
+    for (map<string,ofEvent<string>*>::iterator it=events.begin(); it!=events.end(); ++it){
         gui->addButton(it->first, false);
     }
 
@@ -66,6 +71,7 @@ void Control::setupGui() {
         gui->getWidget(it->first+"->x")->setColorFill(*colors[it->first]->color);
         gui->getWidget(it->first+"->y")->setColorFill(*colors[it->first]->color);
         gui->getWidget(it->first+"->z")->setColorFill(*colors[it->first]->color);
+        gui->getWidget(it->first+"->w")->setColorFill(*colors[it->first]->color);
     }
 
     gui->autoSizeToFitWidgets();
@@ -81,8 +87,15 @@ void Control::guiEvent(ofxUIEventArgs &e) {
     
     /* event notification */
     else if (events[e.getName()] != 0) {
-        bool state = e.getButton()->getValue();
+        if (e.getButton()->getValue() == 1) return;
+        string state = e.getName();
         ofNotifyEvent(*events[e.getName()], state, this);
+    }
+    
+    /* label callback */
+    else if (e.getName() == "controlHeader") {
+        if (e.getButton()->getValue() == 1) return;
+        headerSelected = true;
     }
     
     /* color change */
@@ -93,11 +106,11 @@ void Control::guiEvent(ofxUIEventArgs &e) {
             gui->getWidget(colorName+"->x")->setColorFill(*colors[colorName]->color);
             gui->getWidget(colorName+"->y")->setColorFill(*colors[colorName]->color);
             gui->getWidget(colorName+"->z")->setColorFill(*colors[colorName]->color);
-            gui->getWidget(colorName+"->w")->setColorFill(ofColor(colors[colorName]->color->a));
+            gui->getWidget(colorName+"->w")->setColorFill(*colors[colorName]->color);
             gui->getWidget(colorName+"->x")->setColorFillHighlight(*colors[colorName]->color);
             gui->getWidget(colorName+"->y")->setColorFillHighlight(*colors[colorName]->color);
             gui->getWidget(colorName+"->z")->setColorFillHighlight(*colors[colorName]->color);
-            gui->getWidget(colorName+"->w")->setColorFillHighlight(ofColor(colors[colorName]->color->a));
+            gui->getWidget(colorName+"->w")->setColorFillHighlight(*colors[colorName]->color);
         }
     }
 }
@@ -120,28 +133,34 @@ void Control::addParameterToGui(string name, float min, float max, float *t) {
 //-------
 void Control::addParameterToGui(string name, ofVec2f min, ofVec2f max, ofVec2f *t) {
     gui->addSpacer();
+    gui->setWidgetSpacing(0.1);
     gui->addMinimalSlider(name+"->x", min.x, max.x, &t->x);
-    gui->addMinimalSlider(name+"->y", min.y, max.y, &t->y);
+    gui->addMinimalSlider(name+"->y", min.y, max.y, &t->y)->setLabelVisible(false);
     gui->addSpacer();
+    gui->setWidgetSpacing(spacing);
 }
 
 //-------
 void Control::addParameterToGui(string name, ofVec3f min, ofVec3f max, ofVec3f *t) {
     gui->addSpacer();
+    gui->setWidgetSpacing(0.1);
     gui->addMinimalSlider(name+"->x", min.x, max.x, &t->x);
-    gui->addMinimalSlider(name+"->y", min.y, max.y, &t->y);
-    gui->addMinimalSlider(name+"->z", min.z, max.z, &t->z);
+    gui->addMinimalSlider(name+"->y", min.y, max.y, &t->y)->setLabelVisible(false);
+    gui->addMinimalSlider(name+"->z", min.z, max.z, &t->z)->setLabelVisible(false);
     gui->addSpacer();
+    gui->setWidgetSpacing(spacing);
 }
 
 //-------
 void Control::addParameterToGui(string name, ofVec4f min, ofVec4f max, ofVec4f *t) {
     gui->addSpacer();
+    gui->setWidgetSpacing(0.1);
     gui->addMinimalSlider(name+"->x", min.x, max.x, &t->x);
-    gui->addMinimalSlider(name+"->y", min.y, max.y, &t->y);
-    gui->addMinimalSlider(name+"->z", min.z, max.z, &t->z);
-    gui->addMinimalSlider(name+"->w", min.w, max.w, &t->w);
+    gui->addMinimalSlider(name+"->y", min.y, max.y, &t->y)->setLabelVisible(false);
+    gui->addMinimalSlider(name+"->z", min.z, max.z, &t->z)->setLabelVisible(false);
+    gui->addMinimalSlider(name+"->w", min.w, max.w, &t->w)->setLabelVisible(false);
     gui->addSpacer();
+    gui->setWidgetSpacing(spacing);
 }
 
 //-------
@@ -157,7 +176,7 @@ void Control::clearParameters() {
     for (map<string, ofEvent<string>*>::iterator it=menuEvents.begin(); it!=menuEvents.end(); ++it){
         delete it->second;
     }
-    for (map<string, ofEvent<bool>*>::iterator it=events.begin(); it!=events.end(); ++it){
+    for (map<string, ofEvent<string>*>::iterator it=events.begin(); it!=events.end(); ++it){
         delete it->second;
     }
     for (int i=0; i<parameters.size(); i++) {
@@ -173,6 +192,8 @@ void Control::clearParameters() {
 //-------
 Control::~Control() {
     ofRemoveListener(gui->newGUIEvent, this, &Control::guiEvent);
+    gui->removeWidgets();
+    gui->disable();
     clearParameters();
     delete gui;
 }

@@ -7,26 +7,13 @@ void Canvas::setup(int width, int height) {
     this->height = height;
     guiVisible = true;
     guiPosition = ofPoint(5, 5);
-    setupGui();
-}
 
-//----------------
-void Canvas::setupGui() {
-    control.clearParameters();
-    control.setName("manage layers");
+    control.setName("add layer");
     control.addEvent(" +creator", this, &Canvas::addCreator);
-    if (layers.size() > 0) {
-        control.addEvent(" +modifier", this, &Canvas::addModifier);
-        control.addEvent(" +postProcessor", this, &Canvas::addPostProcessor);
-        control.addEvent(" +postGlitch", this, &Canvas::addPostGlitch);
-        control.addEvent(" +postFx", this, &Canvas::addPostFx);
-    }
-    for (int i=0; i<layers.size(); i++) {
-        control.addEvent(" -layer "+ofToString(i)+" ("+layers[i]->getName()+")", this, &Canvas::setDeleteLayer);
-        layers[i]->setGuiPosition(guiPosition.x+170*i, guiPosition.y);
-        if (i>0) layers[i]->setTexLayer(layers[i-1]);
-    }
-    control.setGuiPosition(guiPosition.x+170*layers.size(), guiPosition.y);
+    control.addEvent(" +modifier", this, &Canvas::addModifier);
+    control.addEvent(" +postProcessor", this, &Canvas::addPostProcessor);
+    control.addEvent(" +postGlitch", this, &Canvas::addPostGlitch);
+    control.addEvent(" +postFx", this, &Canvas::addPostFx);
 }
 
 //----------------
@@ -36,7 +23,6 @@ void Canvas::addLayer(CanvasLayer *newLayer) {
     else
         newLayer->setup(width, height);
     layers.push_back(newLayer);
-    setupGui();
 }
 
 //----------------
@@ -51,8 +37,9 @@ CanvasLayer* Canvas::addLayer(LayerType type) {
         layer->setup(width, height, layers[layers.size()-1]);
     else
         layer->setup(width, height);
+    layer->setGuiPosition(guiPosition.x+170*layers.size(), guiPosition.y);
+    control.setGuiPosition(guiPosition.x+170*(layers.size()+1), guiPosition.y);
     layers.push_back(layer);
-    setupGui();
     return layer;
 }
 
@@ -72,41 +59,34 @@ void Canvas::toggleGuiVisible() {
 
 //----------------
 void Canvas::update() {
-    if (toDeleteLayer) {
-        deleteLayer();
-        return;
-    }
+    //cout << " begin update " << ofGetFrameNum() << endl;
+      //  cout << "render " << i << " :: " << layers[i]->scene->getName() << endl;
+      //  layers[i]->render();
+        //cout << "chkgui " << i << " :: " << layers[i]->scene->getName() << endl;
+        //cout << "done__ " << i << " :: " << layers[i]->scene->getName() << endl;
+    //cout << " end update "<< ofGetFrameNum() << endl;
     for (int i=0; i<layers.size(); i++) {
-        layers[i]->checkGuiCalls();
         layers[i]->render();
     }
+
+    
+    
+
 }
 
 //----------------
 void Canvas::draw(int x, int y) {
-    if (layers.size() == 0) return;
     layers[layers.size()-1]->draw(x, y);
-}
+    
+    for (int i=0; i<layers.size(); i++) {
+        layers[i]->checkGuiCalls();
+    }
 
-//----------------
-void Canvas::setDeleteLayer(string &s) {
-    idxLayer = ofToInt(ofToString(s[8]));
-    toDeleteLayer = true;
-}
-
-//----------------
-void Canvas::deleteLayer() {
-    CanvasLayer *layerToDelete = layers[idxLayer];
-    layers.erase(layers.begin()+idxLayer);
-    setupGui();
-    delete layerToDelete;
-    toDeleteLayer = false;
 }
 
 //----------------
 Canvas::~Canvas() {
     for (int i=0; i<layers.size(); i++) {
-        delete layers[i];
+        //delete layers[i];
     }
-    layers.clear();
 }

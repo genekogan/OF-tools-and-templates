@@ -3,7 +3,7 @@
 void Presets::load(string path) {
     cout << "load" << endl;
 }
-
+/*
 void Presets::generateTouchOscLayout(vector<OutputParameter *> &parameters) {
     vector<OutputParameter *> oscParameters;
     for (int i=0; i<parameters.size(); i++) {
@@ -28,3 +28,4 @@ void Presets::generateTouchOscLayout(vector<OutputParameter *> &parameters) {
     
     touchOsc.save("myTouchOscLayout");
 }
+*/

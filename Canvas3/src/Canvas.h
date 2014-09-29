@@ -21,28 +21,20 @@ public:
     CanvasLayer* addLayer(LayerType type);
     void addLayer(CanvasLayer *layer);
     
-    void addCreator(string &s) {addLayer(CANVAS_CREATOR);}
-    void addModifier(string &s) {addLayer(CANVAS_MODIFIER);}
-    void addPostProcessor(string &s) {addLayer(CANVAS_POST_PROCESSING);}
-    void addPostGlitch(string &s) {addLayer(CANVAS_POST_GLITCH);}
-    void addPostFx(string &s) {addLayer(CANVAS_POST_FX);}
+    void addCreator(bool &b) {addLayer(CANVAS_CREATOR);}
+    void addModifier(bool &b) {addLayer(CANVAS_MODIFIER);}    
+    void addPostProcessor(bool &b) {addLayer(CANVAS_POST_PROCESSING);}
+    void addPostGlitch(bool &b) {addLayer(CANVAS_POST_GLITCH);}
+    void addPostFx(bool &b) {addLayer(CANVAS_POST_FX);}
     
     void setVisible(bool guiVisible);
     void toggleGuiVisible();
-
-private:
-    void setupGui();
     
-    void setDeleteLayer(string &s);
-    void deleteLayer();
+private:
     
     Control control;
     bool guiVisible;
     ofPoint guiPosition;
     vector<CanvasLayer *> layers;
     int width, height;
-
-    int idxLayer;
-    bool toDeleteLayer;
-
 };

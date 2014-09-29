@@ -7,26 +7,48 @@ void Canvas::setup(int width, int height) {
     this->height = height;
     guiVisible = true;
     guiPosition = ofPoint(5, 5);
-    setupGui();
 }
 
 //----------------
-void Canvas::setupGui() {
-    control.clearParameters();
-    control.setName("manage layers");
-    control.addEvent(" +creator", this, &Canvas::addCreator);
-    if (layers.size() > 0) {
-        control.addEvent(" +modifier", this, &Canvas::addModifier);
-        control.addEvent(" +postProcessor", this, &Canvas::addPostProcessor);
-        control.addEvent(" +postGlitch", this, &Canvas::addPostGlitch);
-        control.addEvent(" +postFx", this, &Canvas::addPostFx);
-    }
+void Canvas::setupMetaGui() {
+    vector<string> choices;
+    choices.push_back("all layers");
     for (int i=0; i<layers.size(); i++) {
-        control.addEvent(" -layer "+ofToString(i)+" ("+layers[i]->getName()+")", this, &Canvas::setDeleteLayer);
-        layers[i]->setGuiPosition(guiPosition.x+170*i, guiPosition.y);
-        if (i>0) layers[i]->setTexLayer(layers[i-1]);
+        choices.push_back("layer "+ofToString(i));
     }
-    control.setGuiPosition(guiPosition.x+170*layers.size(), guiPosition.y);
+    metaGui.clearParameters();
+    metaGui.setName("choose view");
+    metaGui.setGuiPosition(ofGetWidth()-205, ofGetHeight() - 175 - 19*layers.size());
+    metaGui.addMenu("choose view", choices, this, &Canvas::chooseGui);
+//    metaGui.registerLabel("add layer");
+    metaGui.addEvent(" +creator", this, &Canvas::addCreator);
+    metaGui.addEvent(" +modifier", this, &Canvas::addModifier);
+    metaGui.addEvent(" +postProcessor", this, &Canvas::addPostProcessor);
+    metaGui.addEvent(" +postGlitch", this, &Canvas::addPostGlitch);
+    metaGui.addEvent(" +postFx", this, &Canvas::addPostFx);
+    
+    string s = "all layers";
+    chooseGui(s);
+}
+
+//----------------
+void Canvas::chooseGui(string &s) {
+    if (s=="all layers") {
+        for (int i=0; i<layers.size(); i++) {
+            layers[i]->setVisible(true);
+            layers[i]->setGuiPosition(guiPosition.x+415*i, guiPosition.y);
+        }
+    }
+    else {
+        int idx = ofToInt(ofToString(s[6]));
+        for (int i=0; i<layers.size(); i++) {
+            layers[i]->setVisible(i==idx);
+            if (i==idx) {
+                layers[i]->setGuiPosition(guiPosition.x, guiPosition.y);
+            }
+        }
+        guiVisible = true;
+    }
 }
 
 //----------------
@@ -36,7 +58,7 @@ void Canvas::addLayer(CanvasLayer *newLayer) {
     else
         newLayer->setup(width, height);
     layers.push_back(newLayer);
-    setupGui();
+    setupMetaGui();
 }
 
 //----------------
@@ -52,7 +74,7 @@ CanvasLayer* Canvas::addLayer(LayerType type) {
     else
         layer->setup(width, height);
     layers.push_back(layer);
-    setupGui();
+    setupMetaGui();
     return layer;
 }
 
@@ -62,7 +84,7 @@ void Canvas::setVisible(bool guiVisible) {
     for (int i=0; i<layers.size(); i++) {
         layers[i]->setVisible(guiVisible);
     }
-    control.setVisible(guiVisible);
+    metaGui.setVisible(guiVisible);
 }
 
 //----------------
@@ -72,35 +94,14 @@ void Canvas::toggleGuiVisible() {
 
 //----------------
 void Canvas::update() {
-    if (toDeleteLayer) {
-        deleteLayer();
-        return;
-    }
     for (int i=0; i<layers.size(); i++) {
-        layers[i]->checkGuiCalls();
         layers[i]->render();
     }
 }
 
 //----------------
 void Canvas::draw(int x, int y) {
-    if (layers.size() == 0) return;
     layers[layers.size()-1]->draw(x, y);
-}
-
-//----------------
-void Canvas::setDeleteLayer(string &s) {
-    idxLayer = ofToInt(ofToString(s[8]));
-    toDeleteLayer = true;
-}
-
-//----------------
-void Canvas::deleteLayer() {
-    CanvasLayer *layerToDelete = layers[idxLayer];
-    layers.erase(layers.begin()+idxLayer);
-    setupGui();
-    delete layerToDelete;
-    toDeleteLayer = false;
 }
 
 //----------------
@@ -108,5 +109,4 @@ Canvas::~Canvas() {
     for (int i=0; i<layers.size(); i++) {
         delete layers[i];
     }
-    layers.clear();
 }

@@ -27,7 +27,7 @@ public:
     
     void setName(string name) {
         this->name = name;
-        bgColor = ofColor(0, 0, 0, 255);
+        bgColor.set(0, 0, 0, 255);
         control.setName(name);
         control.clearParameters();
         control.addParameter("clear", &toClear);
@@ -111,11 +111,14 @@ public:
     void setUpsideDown(bool upsideDown) {
         this->upsideDown = upsideDown;
     }
+    
+    Control & getControl() {
+        return control;
+    }
 
     Control control;
     string name;
     int width, height;
-    
     ofColor bgColor;
     bool toClear;
     bool upsideDown;

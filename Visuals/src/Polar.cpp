@@ -135,7 +135,7 @@ void Polar::managePolarCount() {
 }
 
 //----------
-void Polar::refresh(bool &b) {
+void Polar::refresh(string &s) {
     for (int i=0; i<polars.size(); i++) {
         polars[i]->refresh();
     }
@@ -144,7 +144,6 @@ void Polar::refresh(bool &b) {
 //----------
 void Polar::update() {
     managePolarCount();
-    
     for (int i=0; i<polars.size(); i++) {
         polars[i]->setColor(color);
         polars[i]->setLineWidth(lineWidth);
@@ -169,9 +168,22 @@ void Polar::draw() {
             float y = ofMap(j+0.5, 0, ny, 0, height);
             ofPushMatrix();
             ofTranslate(x, y);
-            polars[i*ny + j]->draw();
+            polars[ofClamp(i*ny + j, 0, polars.size())]->draw();
             ofPopMatrix();
         }
     }
 }
 
+//-------
+PolarEq::~PolarEq(){
+    cam.disableMouseMiddleButton();
+    cam.disableMouseInput();
+}
+
+//-------
+Polar::~Polar(){
+    for (int i=0; i<polars.size(); i++) {
+        delete polars[i];
+    }
+    polars.clear();
+}

@@ -6,51 +6,30 @@ void PostGlitchLayer::setup() {
     post.setup(texLayer->getFbo());
     
     control.setName("PostGlitch");
-    control.registerLabel("Glitch effects");
-    control.registerParameter("convergence", &convergence);
-    control.registerParameter("glow", &glow);
-    control.registerParameter("shaker", &shaker);
-    control.registerParameter("cutslider", &cutslider);
-    control.registerParameter("twist", &twist);
-    control.registerParameter("outline", &outline);
-    control.registerParameter("noise", &noise);
-    control.registerParameter("slitscan", &slitscan);
-    control.registerParameter("swell", &swell);
-    control.registerParameter("invert", &invert);
-    control.registerParameter("crHighContrast", &crHighContrast);
-    control.registerParameter("crBlueRaise", &crBlueRaise);
-    control.registerParameter("crRedRaise", &crRedRaise);
-    control.registerParameter("crGreenRaise", &crGreenRaise);
-    control.registerParameter("crBlueInvert", &crBlueInvert);
-    control.registerParameter("crRedInvert", &crRedInvert);
-    control.registerParameter("crGreenInvert", &crGreenInvert);
-    
-    control.registerLabel("Parameterization");
-    control.registerParameter("customParameters", &customParameters);
-    control.registerParameter("delTime", &delTime, 0.0f, 2.0f);
-    control.registerParameter("stepMin", &stepMin, 2.0f, 100.0f);
-    control.registerParameter("stepMax", &stepMax, 10.0f, 160.0f);
 
-    convergence.addListener(this, &PostGlitchLayer::effectsChange);
-    glow.addListener(this, &PostGlitchLayer::effectsChange);
-    shaker.addListener(this, &PostGlitchLayer::effectsChange);
-    cutslider.addListener(this, &PostGlitchLayer::effectsChange);
-    twist.addListener(this, &PostGlitchLayer::effectsChange);
-    outline.addListener(this, &PostGlitchLayer::effectsChange);
-    noise.addListener(this, &PostGlitchLayer::effectsChange);
-    slitscan.addListener(this, &PostGlitchLayer::effectsChange);
-    swell.addListener(this, &PostGlitchLayer::effectsChange);
-    invert.addListener(this, &PostGlitchLayer::effectsChange);
-    crHighContrast.addListener(this, &PostGlitchLayer::effectsChange);
-    crBlueRaise.addListener(this, &PostGlitchLayer::effectsChange);
-    crRedRaise.addListener(this, &PostGlitchLayer::effectsChange);
-    crGreenRaise.addListener(this, &PostGlitchLayer::effectsChange);
-    crBlueInvert.addListener(this, &PostGlitchLayer::effectsChange);
-    crRedInvert.addListener(this, &PostGlitchLayer::effectsChange);
-    crGreenInvert.addListener(this, &PostGlitchLayer::effectsChange);
+    control.addParameter("convergence", &convergence);
+    control.addParameter("glow", &glow);
+    control.addParameter("shaker", &shaker);
+    control.addParameter("cutslider", &cutslider);
+    control.addParameter("twist", &twist);
+    control.addParameter("outline", &outline);
+    control.addParameter("noise", &noise);
+    control.addParameter("slitscan", &slitscan);
+    control.addParameter("swell", &swell);
+    control.addParameter("invert", &invert);
+    control.addParameter("crHighContrast", &crHighContrast);
+    control.addParameter("crBlueRaise", &crBlueRaise);
+    control.addParameter("crRedRaise", &crRedRaise);
+    control.addParameter("crGreenRaise", &crGreenRaise);
+    control.addParameter("crBlueInvert", &crBlueInvert);
+    control.addParameter("crRedInvert", &crRedInvert);
+    control.addParameter("crGreenInvert", &crGreenInvert);
     
-    delTime.addListener(this, &PostGlitchLayer::noiseChange);
-    
+    control.addParameter("customParameters", &customParameters);
+    control.addParameter("delTime", &delTime, 0.0f, 2.0f);
+    control.addParameter("stepMin", &stepMin, 2.0f, 100.0f);
+    control.addParameter("stepMax", &stepMax, 10.0f, 160.0f);
+
     convergence = false;
     glow = false;
     shaker = false;
@@ -86,7 +65,13 @@ void PostGlitchLayer::setup() {
 }
 
 //-----------
-void PostGlitchLayer::effectsChange(bool &b) {
+void PostGlitchLayer::setTexLayer(CanvasLayer *texLayer) {
+    this->texLayer = texLayer;
+    post.setFbo(texLayer->getFbo());
+}
+
+//-----------
+void PostGlitchLayer::updateEffects() {
     post.setFx(OFXPOSTGLITCH_CONVERGENCE, convergence);
     post.setFx(OFXPOSTGLITCH_GLOW, glow);
     post.setFx(OFXPOSTGLITCH_SHAKER, shaker);
@@ -107,7 +92,7 @@ void PostGlitchLayer::effectsChange(bool &b) {
 }
 
 //-----------
-void PostGlitchLayer::noiseChange(float &v) {
+void PostGlitchLayer::noiseChange() {
     sv0.setDelTime(delTime);
     sv1.setDelTime(delTime);
     sv2.setDelTime(delTime);
@@ -117,6 +102,7 @@ void PostGlitchLayer::noiseChange(float &v) {
     m1.setDelTime(delTime);
     b0.setDelTime(delTime);
     b1.setDelTime(delTime);
+    pDelTime = delTime;
 }
 
 //-----------
@@ -137,6 +123,10 @@ void PostGlitchLayer::setVisible(bool visible) {
 
 //-----------
 void PostGlitchLayer::render() {
+    updateEffects();
+    if (delTime != pDelTime)
+        noiseChange();
+    
     if (customParameters) {
         post.setShaderParameters((int) ofRandom(stepMin, stepMax),
                                  sv0.get(), sv1.get(), sv2.get(), sv3.get(),
@@ -148,27 +138,4 @@ void PostGlitchLayer::render() {
     post.generateFx();
     
     fbo = *texLayer->getFbo();
-}
-
-//----------
-PostGlitchLayer::~PostGlitchLayer() {
-    convergence.removeListener(this, &PostGlitchLayer::effectsChange);
-    glow.removeListener(this, &PostGlitchLayer::effectsChange);
-    shaker.removeListener(this, &PostGlitchLayer::effectsChange);
-    cutslider.removeListener(this, &PostGlitchLayer::effectsChange);
-    twist.removeListener(this, &PostGlitchLayer::effectsChange);
-    outline.removeListener(this, &PostGlitchLayer::effectsChange);
-    noise.removeListener(this, &PostGlitchLayer::effectsChange);
-    slitscan.removeListener(this, &PostGlitchLayer::effectsChange);
-    swell.removeListener(this, &PostGlitchLayer::effectsChange);
-    invert.removeListener(this, &PostGlitchLayer::effectsChange);
-    crHighContrast.removeListener(this, &PostGlitchLayer::effectsChange);
-    crBlueRaise.removeListener(this, &PostGlitchLayer::effectsChange);
-    crRedRaise.removeListener(this, &PostGlitchLayer::effectsChange);
-    crGreenRaise.removeListener(this, &PostGlitchLayer::effectsChange);
-    crBlueInvert.removeListener(this, &PostGlitchLayer::effectsChange);
-    crRedInvert.removeListener(this, &PostGlitchLayer::effectsChange);
-    crGreenInvert.removeListener(this, &PostGlitchLayer::effectsChange);
-    
-    delTime.removeListener(this, &PostGlitchLayer::noiseChange);
 }

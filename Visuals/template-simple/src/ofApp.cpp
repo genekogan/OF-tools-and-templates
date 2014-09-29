@@ -70,7 +70,6 @@ void ofApp::setup(){
     syphon->setup(w, h);
     ((Syphon *) syphon)->setClient("serverName", "appName");
     
-    
     setInactiveAll();
     agents->setActive(true);
 }

@@ -10,7 +10,6 @@
 #include "ofxLUT.h"
 #include "ofxMultiTexture.h"
 #include "ofxGlow.h"
-#include "ofxContrast.h"
 #include "ofxMedian.h"
 #include "ofxInverse.h"
 #include "ofxOldTv.h"
@@ -22,19 +21,21 @@
 
 class PostFxLayer : public CanvasLayer{
     void setup();
-    
-    void setGuiPosition(int x, int y);
-    void toggleVisible();
-    void setVisible(bool visible);
-    
-private:
-    
-    void buildGui();
-    void chooseFx(string &s);
-    void chooseLut(string &s);
     void render();
 
-    Control gui;
+private:    
+    void chooseFx(string &s);
+    void chooseLut(string &s);
+
+    void checkGuiCalls() {}
+
+    void setGuiPosition(int x, int y) {
+        this->guiPosition = ofPoint(x, y);
+        control.setGuiPosition(x, y);
+    }
+    
+    void toggleVisible() {control.toggleVisible();}
+    void setVisible(bool visible) {control.setVisible(visible);}
     
     string selection;
     ofDirectory dir;
@@ -45,7 +46,6 @@ private:
     ofxBokeh bokeh;
     ofxGlow glow;
     ofxBlur blur;
-    ofxContrast contrast;
     ofxMedian median;
     ofxOldTv oldtv;
     ofxInverse inverse;
@@ -54,10 +54,7 @@ private:
     ofxChromaGlitch chromaGlitch;
     ofxGrayscale grayscale;
     
-    ofxParameter<float> gaussianBlurRadius;
-    ofxParameter<float> bokehRadius;
-    ofxParameter<float> glowRadius;
-    ofxParameter<float> blurFade;
+    float radius, fade;
 };
 
 

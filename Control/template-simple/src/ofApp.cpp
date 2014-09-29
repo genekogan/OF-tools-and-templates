@@ -3,6 +3,7 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
 
+    control.setName("hello world");
     control.addParameter("position", &position, ofVec2f(0, 0), ofVec2f(1280, 720));
     control.addParameter("radius", &radius, 20.0f, 200.0f);
     control.addParameter("filled", &filled);
@@ -43,13 +44,13 @@ void ofApp::update(){
 }
 
 //---------
-void ofApp::event1(bool & b) {
-    cout<<"event 1 happened : "<<ofToString(b)<<endl;
+void ofApp::event1(string & s) {
+    cout<<"event: ("+s+") happened"<<endl;
 }
 
 //---------
-void ofApp::event2(bool & b) {
-    cout<<"event 2 happened : "<<ofToString(b)<<endl;
+void ofApp::event2(string & s) {
+    cout<<"event: ("+s+") happened"<<endl;
 }
 
 //---------

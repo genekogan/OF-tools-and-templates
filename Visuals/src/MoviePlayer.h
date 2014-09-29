@@ -13,9 +13,9 @@ public:
     void draw();
 
 private:
-    void play(bool &b);
-    void jumpBack(bool &b);
-    void jumpRandom(bool &b);
+    void play(string &s);
+    void jumpBack(string &s);
+    void jumpRandom(string &s);
     
     ofVideoPlayer player;
     int w, h;

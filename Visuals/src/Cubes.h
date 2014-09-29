@@ -28,13 +28,13 @@ public:
     void update();
     void draw();
     
-    void preset1(bool &b);
-    void preset2(bool &b);
-    void preset3(bool &b);
-    void preset4(bool &b);
-    void preset5(bool &b);
-    void preset6(bool &b);
-    void preset7(bool &b);
+    void preset1(string &s);
+    void preset2(string &s);
+    void preset3(string &s);
+    void preset4(string &s);
+    void preset5(string &s);
+    void preset6(string &s);
+    void preset7(string &s);
 
 private:
     void resetTimeFunctions();

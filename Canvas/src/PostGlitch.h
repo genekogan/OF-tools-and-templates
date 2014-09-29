@@ -8,42 +8,42 @@
 
 class PostGlitchLayer : public CanvasLayer {
 public:
-    ~PostGlitchLayer();
     void setup();
+    void setTexLayer(CanvasLayer *texLayer=NULL);
+    void render();
     
+private:
     void setGuiPosition(int x, int y);
     void toggleVisible();
     void setVisible(bool visible);
-    
-private:
-    
-    void effectsChange(bool &b);
-    void noiseChange(float &v);
-    void render();
+
+    void checkGuiCalls(){}
+    void updateEffects();
+    void noiseChange();
     
     ofxPostGlitch post;
     
-    ofxParameter<bool> convergence;
-    ofxParameter<bool> glow;
-    ofxParameter<bool> shaker;
-    ofxParameter<bool> cutslider;
-    ofxParameter<bool> twist;
-    ofxParameter<bool> outline;
-    ofxParameter<bool> noise;
-    ofxParameter<bool> slitscan;
-    ofxParameter<bool> swell;
-    ofxParameter<bool> invert;
-    ofxParameter<bool> crHighContrast;
-    ofxParameter<bool> crBlueRaise;
-    ofxParameter<bool> crRedRaise;
-    ofxParameter<bool> crGreenRaise;
-    ofxParameter<bool> crBlueInvert;
-    ofxParameter<bool> crRedInvert;
-    ofxParameter<bool> crGreenInvert;
+    bool convergence;
+    bool glow;
+    bool shaker;
+    bool cutslider;
+    bool twist;
+    bool outline;
+    bool noise;
+    bool slitscan;
+    bool swell;
+    bool invert;
+    bool crHighContrast;
+    bool crBlueRaise;
+    bool crRedRaise;
+    bool crGreenRaise;
+    bool crBlueInvert;
+    bool crRedInvert;
+    bool crGreenInvert;
     
-    ofxParameter<bool> customParameters;
-    ofxParameter<float> stepMin, stepMax;
-    ofxParameter<float> delTime;
+    bool customParameters;
+    float stepMin, stepMax;
+    float delTime, pDelTime;
     
     TimeFunction<float> sv0, sv1, sv2, sv3;
     TimeFunction<float> rand;

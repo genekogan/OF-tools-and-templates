@@ -84,8 +84,8 @@ void Cubes::setup() {
     color = ofColor(255, 0, 0, 80);
     colorVar = 10;
     
-    bool b;
-    preset1(b);
+    string s;
+    preset1(s);
 }
 
 //---------
@@ -140,7 +140,7 @@ void Cubes::resetTimeFunctions() {
 
 
 //====== preset 1 ==========//
-void Cubes::preset1(bool &b) {
+void Cubes::preset1(string &s) {
     resetTimeFunctions();
 	mainPosition.setConstant(ofVec3f(1200, 0, 0));
 	mainPosition.setFunctionRandom(ofVec3f(0, 0, -1000), ofVec3f(0, 600, -900));
@@ -148,7 +148,7 @@ void Cubes::preset1(bool &b) {
 }
 
 //====== preset 2 ==========//
-void Cubes::preset2(bool &b) {
+void Cubes::preset2(string &s) {
     resetTimeFunctions();
 	mainPosition.setConstant(ofVec3f(1200, 0, 0));
 	mainPosition.setFunctionRandom(ofVec3f(0, 0, -1000), ofVec3f(0, 0, -900));
@@ -158,7 +158,7 @@ void Cubes::preset2(bool &b) {
 }
 
 //====== preset 3 ==========//
-void Cubes::preset3(bool &b) {
+void Cubes::preset3(string &s) {
     resetTimeFunctions();
 	mainPosition.setConstant(ofVec3f(1200, 0, 0));
 	mainPosition.setFunctionRandom(ofVec3f(0, 0, -1000), ofVec3f(0, 0, -900));
@@ -168,7 +168,7 @@ void Cubes::preset3(bool &b) {
 }
 
 //====== preset 4 ==========//
-void Cubes::preset4(bool &b) {
+void Cubes::preset4(string &s) {
     resetTimeFunctions();
 	mainPosition.setConstant(ofVec3f(1200, 300, 0));
 	mainPosition.setFunctionRandom(ofVec3f(0, 0, -1000), ofVec3f(0, 0, -900));
@@ -180,7 +180,7 @@ void Cubes::preset4(bool &b) {
 }
 
 //====== preset 5 ==========//
-void Cubes::preset5(bool &b) {
+void Cubes::preset5(string &s) {
     resetTimeFunctions();
 	mainPosition.setConstant(ofVec3f(1200, 300, 0));
 	mainPosition.setFunctionRandom(ofVec3f(0, 0, -1000), ofVec3f(0, 0, -900));
@@ -193,7 +193,7 @@ void Cubes::preset5(bool &b) {
 }
 
 //====== preset 6 ==========//
-void Cubes::preset6(bool &b) {
+void Cubes::preset6(string &s) {
     resetTimeFunctions();
 	mainPosition.setConstant(ofVec3f(1200, 0, 0));
 	mainPosition.setFunctionSine(ofVec3f(0, -200, -850), ofVec3f(0, 200, -450), ofVec3f(0, 0.1, 0.1));
@@ -205,7 +205,7 @@ void Cubes::preset6(bool &b) {
 }
 
 //====== preset 7 ==========//
-void Cubes::preset7(bool &b) {
+void Cubes::preset7(string &s) {
     resetTimeFunctions();
 	mainPosition.setConstant(ofVec3f(1200, 300, 0));
 	mainPosition.setFunctionRandom(ofVec3f(0, 0, -1000), ofVec3f(0, 0, -900));

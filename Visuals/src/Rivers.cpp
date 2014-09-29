@@ -73,15 +73,15 @@ void Rivers::setup(){
     color = ofColor(255);
     colorVar = 10;
     
-    bool b;
-    setupForceField(b);
+    string s;
+    setupForceField(s);
     for (int i=0; i<numStreaks; i++) {
         addNewStreak();
     }
 }
 
 //--------
-void Rivers::setupForceField(bool &b) {
+void Rivers::setupForceField(string &s) {
     noiseSeed = ofRandom(100);
     float nx, ny;
     for (int i=0; i<FORCE_RESOLUTION; i++) {
