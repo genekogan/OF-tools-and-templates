@@ -88,21 +88,21 @@ private:
     
     /* parameters */
     Control                 control;
-    ofxParameter<bool>      trackingBlobs;
-    ofxParameter<bool>      trackingKeypoints;
+    bool                    trackingBlobs;
+    bool                    trackingKeypoints;
     
-    ofxParameter<float>     fade;
-    ofxParameter<float>     minArea;
-    ofxParameter<float>     maxArea;
-    ofxParameter<float>     threshold;
-    ofxParameter<float>     persistence;
-    ofxParameter<float>     maxDistance;
-    ofxParameter<int>       numDilate;
-    ofxParameter<int>       numErode;
-    ofxParameter<float>     nearThreshold;
-    ofxParameter<float>     farThreshold;
-    ofxParameter<int>       smoothness;
-    ofxParameter<bool>      curved;
-    ofxParameter<float>     smoothingRate;
+    float                   fade;
+    float                   minArea;
+    float                   maxArea;
+    float                   threshold;
+    float                   persistence;
+    float                   maxDistance;
+    int                     numDilate;
+    int                     numErode;
+    float                   nearThreshold;
+    float                   farThreshold;
+    int                     smoothness;
+    bool                    curved;
+    float                   smoothingRate;
     
 };

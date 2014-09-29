@@ -1,33 +1,36 @@
 #include "Kinect.h"
 
 void Kinect::setup(){
+    control.setName("kinect");
+    
     vector<string> choices;
     choices.push_back("blobs");
     choices.push_back("segmentation");
-    control.registerMenu("strategy", this, &Kinect::selectStrategy, choices);
-    control.registerParameter("track blobs", &trackingBlobs);
-    control.registerParameter("track keypoints", &trackingKeypoints);
-    
-    control.registerLabel("blobs parameters");
-    control.registerParameter("farThreshold", &farThreshold, 0.0f, 255.0f);
-    control.registerParameter("nearThreshold", &nearThreshold, 0.0f, 255.0f);
-    
-    control.registerLabel("segmentation parameters");
-    control.registerParameter("fade", &fade, 0.0f, 255.0f);
-    control.registerParameter("numDilate", &numDilate, 0, 10);
-    control.registerParameter("numErode", &numErode, 0, 10);
+    control.addMenu("strategy", choices, this, &Kinect::selectStrategy);
 
-    control.registerLabel("contour parameters");
-    control.registerParameter("minArea", &minArea, 0.0f, 100000.0f);
-    control.registerParameter("maxArea", &maxArea, 2500.0f, 150000.0f);
-    control.registerParameter("threshold", &threshold, 0.0f, 255.0f);
-    control.registerParameter("persistence", &persistence, 0.0f, 100.0f);
-    control.registerParameter("maxDistance", &maxDistance, 0.0f, 100.0f);
-    control.registerParameter("smoothingRate", &smoothingRate, 0.0f, 100.0f);
+    control.addParameter("track blobs", &trackingBlobs);
+    control.addParameter("track keypoints", &trackingKeypoints);
     
-    control.registerLabel("output parameters");
-    control.registerParameter("smoothed", &smoothness, 0, 10);
-    control.registerParameter("curved", &curved);
+//    control.registerLabel("blobs parameters");
+    control.addParameter("farThreshold", &farThreshold, 0.0f, 255.0f);
+    control.addParameter("nearThreshold", &nearThreshold, 0.0f, 255.0f);
+    
+//    control.registerLabel("segmentation parameters");
+    control.addParameter("fade", &fade, 0.0f, 255.0f);
+    control.addParameter("numDilate", &numDilate, 0, 10);
+    control.addParameter("numErode", &numErode, 0, 10);
+
+//    control.registerLabel("contour parameters");
+    control.addParameter("minArea", &minArea, 0.0f, 100000.0f);
+    control.addParameter("maxArea", &maxArea, 2500.0f, 150000.0f);
+    control.addParameter("threshold", &threshold, 0.0f, 255.0f);
+    control.addParameter("persistence", &persistence, 0.0f, 100.0f);
+    control.addParameter("maxDistance", &maxDistance, 0.0f, 100.0f);
+    control.addParameter("smoothingRate", &smoothingRate, 0.0f, 100.0f);
+    
+//    control.registerLabel("output parameters");
+    control.addParameter("smoothed", &smoothness, 0, 10);
+    control.addParameter("curved", &curved);
     control.setName("kinect");
     
     blobColors[0] = ofColor(255, 0, 0);

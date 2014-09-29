@@ -52,6 +52,10 @@ void OpenNi::setup(){
     jointNames.push_back("rightHip");
     jointNames.push_back("rightKnee");
     jointNames.push_back("rightFoot");
+    
+    
+    // setup control panel
+    control.setName("OpenNi");
 }
 
 //-------
