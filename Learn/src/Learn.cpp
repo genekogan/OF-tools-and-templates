@@ -34,9 +34,7 @@ void Learn::update(){
             }
         }
         else {
-            recording = false;
-            inRecording = false;
-            gui2->setColorBack(ofColor(0,100));
+            stopRecording();
         }
     }
     
@@ -186,11 +184,24 @@ void Learn::startRecording() {
 }
 
 //-------
+void Learn::stopRecording() {
+    countingDown = false;
+    recording = false;
+    inRecording = false;
+    currentNewInstances = 0;
+    gui2->setColorBack(ofColor(0,100));
+}
+
+//-------
 void Learn::recordInstance() {
     for (int i=0; i<outputs.size(); i++) {
         if (!outputs[i]->getRecording())    continue;
+        if (currentNewInstances==0 && outputs[i]->getNumInstances()>0) {
+            outputs[i]->addDataPage();
+        }
         outputs[i]->addInstance();
     }
+    currentNewInstances++;
 }
 
 //-------
@@ -277,10 +288,7 @@ void Learn::gui2Event(ofxUIEventArgs &e) {
             startRecording();
         }
         else {
-            inRecording = false;
-            countingDown = false;
-            recording = false;
-            gui2->setColorBack(ofColor(0,100));
+            stopRecording();
         }
     }
     else if (e.getName() == "train fast") {

@@ -69,11 +69,13 @@ public:
     virtual void draw();
 
     void setInputParameters(vector<LearnInputParameter *> &allInputs);
-    void setupHeaders();
+    void setupHeaders(int p=-1);
+    void addDataPage();
+    void setPage(int p);
 
     void addInstance();
     void clearInstances();
-    int getNumInstances() {return data.getNumberOfEntries();}
+    int getNumInstances();
     int getNumInputs() {return activeInputs.size();}
     
     void setVisible(bool visible);
@@ -103,14 +105,18 @@ protected:
     
     void guiEvent(ofxUIEventArgs &e);
     void guiInputSelectEvent(ofxUIEventArgs &e);
-
-    ofxUICanvas *guiInputSelect;
+    void guiDataEvent(ofxUIEventArgs &e);
+    
+    ofxUICanvas *guiInputSelect, *guiData;
     ofxUIDropDownList *selector;
     ofxUILabelToggle *guiInputs, *guiExamples;
-
+    ofxUILabelButton *guiDataStatus, *guiDataPage;
+    
     ofxLearn learn;
     vector<LearnInputParameter *> allInputs, activeInputs;
-    ofxSpreadsheet data;
+
+    vector<ofxSpreadsheet *> data;
+    int page;
     
     bool record, trained;
     bool viewExamples, viewInputs;

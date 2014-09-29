@@ -44,6 +44,7 @@ protected:
     void gui3Event(ofxUIEventArgs &e);
 
     void startRecording();
+    void stopRecording();
     void recordInstance();
     void trainClassifiers(string trainStrategy);
     void setPredictingMode(bool predicting);
@@ -60,7 +61,7 @@ protected:
     bool visible;
     
     float startTime, trainCountdown, trainDuration;
-    int instanceRate, framesPerInstance;
+    int instanceRate, framesPerInstance, currentNewInstances;
     bool inRecording, countingDown, recording, predicting;
     int newInputCounter, newOutputCounter;
 };

@@ -17,16 +17,20 @@ LearnInputParameter::LearnInputParameter(string name, float *value, float min, f
 
 //-----------
 LearnOutputParameter::LearnOutputParameter(string name, float *value, float min, float max) : LearnParameter(name, value, min, max) {
-    data.setup(600, 300);
-    setupHeaders();
     guiInputSelect = new ofxUICanvas(name+"_inputs");
-    setupGui();
-    ofAddListener(gui->newGUIEvent, this, &LearnOutputParameter::guiEvent);
-    ofAddListener(guiInputSelect->newGUIEvent, this, &LearnOutputParameter::guiInputSelectEvent);
+    guiData = new ofxUICanvas(name+"_data");
+
     record = false;
     trained = false;
     viewExamples = false;
     viewInputs = false;
+
+    setupGui();
+    addDataPage();
+
+    ofAddListener(gui->newGUIEvent, this, &LearnOutputParameter::guiEvent);
+    ofAddListener(guiInputSelect->newGUIEvent, this, &LearnOutputParameter::guiInputSelectEvent);
+    ofAddListener(guiData->newGUIEvent, this, &LearnOutputParameter::guiDataEvent);
 }
 
 //-----------
@@ -55,14 +59,31 @@ LearnOutputParameter::~LearnOutputParameter() {
 //  LEARNING
 
 void LearnOutputParameter::addInstance() {
-    data.addEntry(grabFeatureVector<float>(true));
-    guiExamples->setLabelText(ofToString(data.getNumberOfEntries())+" examples");
+    data[page]->addEntry(grabFeatureVector<float>(true));
+    guiExamples->setLabelText(ofToString(getNumInstances())+" examples");
+    guiDataStatus->setLabelText(ofToString(getName())+" examples ("+ofToString(getNumInstances())+")");
 }
 
 //-----------
 void LearnOutputParameter::clearInstances() {
+    for (int i=0; i<data.size(); i++) {
+        data[i]->clear();
+        delete data[i];
+    }
     data.clear();
-    guiExamples->setLabelText(ofToString(data.getNumberOfEntries())+" examples");
+    addDataPage();
+    setPage(0);
+    guiExamples->setLabelText(ofToString(getNumInstances())+" examples");
+    guiDataStatus->setLabelText(ofToString(getName())+" examples ("+ofToString(getNumInstances())+")");
+}
+
+//-----------
+int LearnOutputParameter::getNumInstances() {
+    int numInstances = 0;
+    for (int i=0; i<data.size(); i++) {
+        numInstances += data[i]->getNumberOfEntries();
+    }
+    return numInstances;
 }
 
 //-----------
@@ -72,32 +93,49 @@ void LearnOutputParameter::setInputParameters(vector<LearnInputParameter *> &all
 }
 
 //-----------
-void LearnOutputParameter::setupHeaders() {
+void LearnOutputParameter::addDataPage() {
+    ofxSpreadsheet *newData = new ofxSpreadsheet();
+    newData->setup(600, 300);
+    data.push_back(newData);
+    setupHeaders(data.size()-1);
+    setPage(data.size()-1);
+}
+
+//-----------
+void LearnOutputParameter::setupHeaders(int p) {
     vector<string> headers;
     headers.push_back(name);
     for (int i=0; i<activeInputs.size(); i++) {
         headers.push_back(activeInputs[i]->getName());
     }
-    data.setHeaders(headers);
+    if (p==-1) {
+        for (int i=0; i<data.size(); i++) {
+            data[i]->setHeaders(headers);
+        }
+    } else {
+        data[p]->setHeaders(headers);
+    }
 }
 
 //-----------
 void LearnOutputParameter::addSpreadsheetDataToLearn() {
     learn.clearTrainingInstances();
-    vector<vector<float> > entries = data.getEntries();
-    for (int i=0; i<entries.size(); i++) {
-        double normalizedLabel = (double) ofMap(entries[i][0], getMin(), getMax(), 0.0f, 1.0f);
-        vector<double> instance;
-        for (int j=1; j<entries[i].size(); j++) {
-            instance.push_back((double) entries[i][j]);
+    for (int p=0; p<data.size(); p++) {
+        vector<vector<float> > entries = data[p]->getEntries();
+        for (int i=0; i<entries.size(); i++) {
+            double normalizedLabel = (double) ofMap(entries[i][0], getMin(), getMax(), 0.0f, 1.0f);
+            vector<double> instance;
+            for (int j=1; j<entries[i].size(); j++) {
+                instance.push_back((double) entries[i][j]);
+            }
+            learn.addTrainingInstance(instance, normalizedLabel);
         }
-        learn.addTrainingInstance(instance, normalizedLabel);
     }
 }
 
 //-----------
 void LearnOutputParameter::trainClassifierFast() {
-    if (data.getNumberOfEntries() > 0) {
+    if (getNumInstances() > 0) {
         addSpreadsheetDataToLearn();
         learn.trainRegression(FAST, REGRESSION_SVM);
         trained = true;
@@ -106,7 +144,7 @@ void LearnOutputParameter::trainClassifierFast() {
 
 //-----------
 void LearnOutputParameter::trainClassifierAccurate() {
-    if (data.getNumberOfEntries() > 0) {
+    if (getNumInstances() > 0) {
         addSpreadsheetDataToLearn();
         learn.trainRegression(ACCURATE, REGRESSION_SVM);
         trained = true;
@@ -123,7 +161,7 @@ void LearnOutputParameter::predict() {
 //-----------
 void LearnOutputParameter::draw() {
     if (viewExamples) {
-        data.draw(420, 460);
+        data[page]->draw(420, 460);
     }
 }
 
@@ -170,7 +208,7 @@ void LearnOutputParameter::setupGui() {
     guiOsc->setAutoClear(false);
     guiInputs = gui->addLabelToggle("inputs", &viewInputs, 60.0f);
     guiExamples = gui->addLabelToggle("examples", &viewExamples, 105.0f);
-    guiExamples->setLabelText(ofToString(data.getNumberOfEntries())+" examples");
+    guiExamples->setLabelText(ofToString(getNumInstances())+" examples");
     gui->addLabelToggle("record", &record, 56.0f);
     gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
     guiValue = gui->addSlider("value", getMin(), getMax(), getReference(), 250.0f, 18.0f);
@@ -185,6 +223,20 @@ void LearnOutputParameter::setupGui() {
     guiMin->setAutoClear(false);
     guiMax->setAutoClear(false);
     gui->autoSizeToFitWidgets();
+    guiData->setVisible(viewInputs);
+    guiData->setPosition(420, 432);
+    guiData->clearWidgets();
+    guiDataStatus = guiData->addLabelButton(ofToString(getName())+" examples ("+ofToString(getNumInstances())+")", false, 150.0f);
+    guiDataStatus->setColorBack(ofColor(0,0));
+    guiData->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
+    guiData->addSpacer(220, 0);
+    guiData->addLabelButton("<", false, 15.0f);
+    guiDataPage = guiData->addLabelButton("page 1/1", false, 60.0f);
+    guiDataPage->setColorBack(ofColor(0,0));
+    guiData->addLabelButton(">", false, 15.0f);
+    guiData->addSpacer(20, 0);
+    guiData->addLabelButton("clear all", false, 64.0f)->setColorBack(ofColor(255,0,0,100));
+    guiData->autoSizeToFitWidgets();
 }
 
 //-----------
@@ -276,6 +328,7 @@ void LearnOutputParameter::guiEvent(ofxUIEventArgs &e) {
     }
     else if (e.getName() == "examples") {
         viewExamples = guiExamples->getValue();
+        guiData->setVisible(viewExamples);
         if (viewExamples) {
             viewInputs = false;
             guiInputSelect->setVisible(false);
@@ -288,14 +341,14 @@ void LearnOutputParameter::guiEvent(ofxUIEventArgs &e) {
     else if (e.getName() == "min" || e.getName() == "max") {
         if ((ofToFloat(guiMin->getTextString()) != getMin() ||
             ofToFloat(guiMax->getTextString()) != getMax()) &&
-            data.getNumberOfEntries() > 0) {
+            getNumInstances() > 0) {
             if (!ofSystemChoiceDialog("Warning: this will overwrite all recorded examples and trained classifiers. Proceed?")) {
                 guiMin->setTextString(ofToString(getMin()));
                 guiMax->setTextString(ofToString(getMax()));
                 return;
             }
             else {
-                data.clear();
+                clearInstances();
             }
         }
     }
@@ -315,10 +368,38 @@ void LearnOutputParameter::guiInputSelectEvent(ofxUIEventArgs &e) {
 }
 
 //-----------
+void LearnOutputParameter::setPage(int p) {
+    page = ofClamp(p, 0, data.size()-1);
+    guiDataPage->setLabelText("page "+ofToString(page+1)+"/"+ofToString(data.size()));
+    for (int i=0; i<data.size(); i++) {
+        data[i]->setInputsActive(false);
+    }
+    data[page]->setInputsActive(true);
+}
+
+//-----------
+void LearnOutputParameter::guiDataEvent(ofxUIEventArgs &e) {
+    if (e.getName() == "<") {
+        if (e.getButton()->getValue() == 1) return;
+        setPage(page-1);
+    }
+    else if (e.getName() == ">") {
+        if (e.getButton()->getValue() == 1) return;
+        setPage(page+1);
+    }
+    else if (e.getName() == "clear all") {
+        if (e.getButton()->getValue() == 1) return;
+        bool confirm = ofSystemChoiceDialog("Are you sure you want to delete all examples for "+getName()+"?");
+        if (confirm)    clearInstances();
+    }
+}
+
+//-----------
 void LearnOutputParameter::setVisible(bool visible){
     LearnParameter::setVisible(visible);
     viewExamples = visible ? viewExamples : false;
     viewInputs = visible ? viewInputs : false;
+    guiData->setVisible(viewInputs);
     guiInputSelect->setVisible(viewInputs);
 }
 
