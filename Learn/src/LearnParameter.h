@@ -13,6 +13,8 @@ class LearnParameter : public Parameter<float>
 public:
     LearnParameter(string name, float *value, float min=0, float max=1);
     ~LearnParameter();
+
+    void deselect();
     
     virtual void setVisible(bool visible){
         this->visible = visible;
@@ -23,26 +25,37 @@ public:
     bool isVisible() {return visible;}
 
     template<typename ListenerClass, typename ListenerMethod>
-    void addParameterChangeListener(ListenerClass *listener, ListenerMethod method) {
-        ofAddListener(parameterChangeEvent, listener, method);
+    void addParameterSelectedListener(ListenerClass *listener, ListenerMethod method) {
+        ofAddListener(pSelectedEvent, listener, method);
+    }
+
+    template<typename ListenerClass, typename ListenerMethod>
+    void addParameterChangedListener(ListenerClass *listener, ListenerMethod method) {
+        ofAddListener(pChangedEvent, listener, method);
     }
     
     template<typename ListenerClass, typename ListenerMethod>
     void addParameterDeletedListener(ListenerClass *listener, ListenerMethod method) {
-        ofAddListener(parameterDeletedEvent, listener, method);
+        ofAddListener(pDeletedEvent, listener, method);
     }
-    
+
 protected:
     
     virtual void setupGui() { }
+
     void guiEvent(ofxUIEventArgs &e);
+    void guiSetName();
+    void guiSetOscAddress();
+    void guiSetMin();
+    void guiSetMax();
+    void guiSetValueText();
 
     ofxUICanvas *gui;
     ofxUISlider *guiValue;
     ofxUITextInput *guiValueText, *guiMin, *guiMax, *guiOsc, *guiName;
     bool visible;
     
-    ofEvent<LearnParameter> parameterChangeEvent, parameterDeletedEvent;
+    ofEvent<LearnParameter> pSelectedEvent, pChangedEvent, pDeletedEvent;
 };
 
 
@@ -82,6 +95,8 @@ public:
     void setGuiPosition(int x, int y);
     void setupGui();
     void setupGuiInputSelector();
+    void setInputsVisible(bool b);
+    void setExamplesVisible(bool b);
 
     bool getRecording() {return record;}
     bool getTrained() {return trained;}
@@ -89,6 +104,11 @@ public:
     void trainClassifierFast();
     void trainClassifierAccurate();
     void predict();
+    
+    template<typename ListenerClass, typename ListenerMethod>
+    void addParameterViewedListener(ListenerClass *listener, ListenerMethod method) {
+        ofAddListener(pViewedEvent, listener, method);
+    }
     
 protected:
     
@@ -120,5 +140,7 @@ protected:
     
     bool record, trained;
     bool viewExamples, viewInputs;
+    
+    ofEvent<LearnOutputParameter> pViewedEvent;
 };
 

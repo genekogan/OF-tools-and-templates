@@ -226,10 +226,11 @@ void LearnOutputParameter::setupGui() {
     guiData->setVisible(viewInputs);
     guiData->setPosition(420, 432);
     guiData->clearWidgets();
-    guiDataStatus = guiData->addLabelButton(ofToString(getName())+" examples ("+ofToString(getNumInstances())+")", false, 150.0f);
+    guiDataStatus = guiData->addLabelButton(ofToString(getName())+" examples ("+ofToString(getNumInstances())+")", false, true);//, 200.0f);
     guiDataStatus->setColorBack(ofColor(0,0));
+    guiDataStatus->getRect()->setWidth(200.0f);
     guiData->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiData->addSpacer(220, 0);
+    guiData->addSpacer(167, 0);
     guiData->addLabelButton("<", false, 15.0f);
     guiDataPage = guiData->addLabelButton("page 1/1", false, 60.0f);
     guiDataPage->setColorBack(ofColor(0,0));
@@ -265,39 +266,88 @@ void LearnOutputParameter::setupGuiInputSelector() {
 //-----------
 void LearnParameter::guiEvent(ofxUIEventArgs &e) {
     if (e.getName() == "name") {
-        string newName = guiName->getTextString();
-        if (newName == getName())   return;
-        setName(newName);
-        setOscAddress("/"+guiName->getTextString());
-        guiOsc->setTextString(getOscAddress());
-        ofNotifyEvent(parameterChangeEvent, (LearnParameter &) *this, this);
+        if (guiName->isFocused())
+            ofNotifyEvent(pSelectedEvent, *this, this);
+        guiSetName();
     }
     else if (e.getName() == "osc") {
-        string newOscAddress = guiOsc->getTextString();
-        if (newOscAddress == getOscAddress())   return;
-        setOscAddress(guiOsc->getTextString());
-        ofNotifyEvent(parameterChangeEvent, (LearnParameter &) *this, this);
+        if (guiOsc->isFocused())
+            ofNotifyEvent(pSelectedEvent, *this, this);
+        guiSetOscAddress();
     }
     else if (e.getName() == "min") {
-        float currentValue = *getReference();
-        float newValue = ofToFloat(guiMin->getTextString());
-        setMin(newValue);
-        guiValue->setMin(newValue);
-        set(currentValue);
+        if (guiMin->isFocused())
+            ofNotifyEvent(pSelectedEvent, *this, this);
+        guiSetMin();
     }
     else if (e.getName() == "max") {
-        float currentValue = *getReference();
-        float newValue = ofToFloat(guiMax->getTextString());
-        setMax(newValue);
-        guiValue->setMax(ofToFloat(guiMax->getTextString()));
-        set(currentValue);
+        if (guiMax->isFocused())
+            ofNotifyEvent(pSelectedEvent, *this, this);
+        guiSetMax();
     }
     else if (e.getName() == "value") {
         guiValueText->setTextString(ofToString(guiValue->getValue()));
     }
     else if (e.getName() == "valueText") {
-        guiValue->setValue(ofToFloat(guiValueText->getTextString()));
+        if (guiValueText->isFocused())
+            ofNotifyEvent(pSelectedEvent, *this, this);
+        guiSetValueText();
     }
+}
+
+//-----------
+void LearnParameter::guiSetName() {
+    string newName = guiName->getTextString();
+    if (newName == getName())   return;
+    setName(newName);
+    setOscAddress("/"+guiName->getTextString());
+    guiOsc->setTextString(getOscAddress());
+    ofNotifyEvent(pChangedEvent, *this, this);
+}
+
+//-----------
+void LearnParameter::guiSetOscAddress() {
+    string newOscAddress = guiOsc->getTextString();
+    if (newOscAddress == getOscAddress())   return;
+    setOscAddress(guiOsc->getTextString());
+    ofNotifyEvent(pChangedEvent, *this, this);
+}
+
+//-----------
+void LearnParameter::guiSetMin() {
+    float currentValue = *getReference();
+    float newValue = ofToFloat(guiMin->getTextString());
+    setMin(newValue);
+    guiValue->setMin(newValue);
+    set(currentValue);
+}
+
+//-----------
+void LearnParameter::guiSetMax() {
+    float currentValue = *getReference();
+    float newValue = ofToFloat(guiMax->getTextString());
+    setMax(newValue);
+    guiValue->setMax(ofToFloat(guiMax->getTextString()));
+    set(currentValue);
+}
+
+//-----------
+void LearnParameter::guiSetValueText() {
+    guiValue->setValue(ofToFloat(guiValueText->getTextString()));
+}
+
+//-----------
+void LearnParameter::deselect() {
+    guiSetName();
+    guiSetOscAddress();
+    guiSetMin();
+    guiSetMax();
+    guiSetValueText();
+    guiName->setFocus(false);
+    guiOsc->setFocus(false);
+    guiMin->setFocus(false);
+    guiMax->setFocus(false);
+    guiValueText->setFocus(false);
 }
 
 //-----------
@@ -306,7 +356,7 @@ void LearnInputParameter::guiEvent(ofxUIEventArgs &e) {
     if (e.getName() == "X") {
         if (e.getButton()->getValue() == 1) return;
         string name = getName();
-        ofNotifyEvent(parameterDeletedEvent, (LearnParameter &) *this, this);
+        ofNotifyEvent(pDeletedEvent, (LearnParameter &) *this, this);
     }
 }
 
@@ -315,7 +365,7 @@ void LearnOutputParameter::guiEvent(ofxUIEventArgs &e) {
     if (e.getName() == "X") {
         if (e.getButton()->getValue() == 1) return;
         if (ofSystemChoiceDialog("Really delete "+getName()+"?")) {
-            ofNotifyEvent(parameterDeletedEvent, (LearnParameter &) *this, this);
+            ofNotifyEvent(pDeletedEvent, (LearnParameter &) *this, this);
         }
     }
     else if (e.getName() == "record") {
@@ -327,16 +377,12 @@ void LearnOutputParameter::guiEvent(ofxUIEventArgs &e) {
         gui->setColorBack(record ? ofColor(200, 0, 0, 200) : ofColor(0, 100));
     }
     else if (e.getName() == "examples") {
-        viewExamples = guiExamples->getValue();
-        guiData->setVisible(viewExamples);
-        if (viewExamples) {
-            viewInputs = false;
-            guiInputSelect->setVisible(false);
-        }
+        setExamplesVisible(guiExamples->getValue());
+        ofNotifyEvent(pViewedEvent, *this, this);
     }
     else if (e.getName() == "inputs") {
-        guiInputSelect->setVisible(viewInputs);
-        viewExamples = viewInputs ? false : viewExamples;
+        setInputsVisible(viewInputs);
+        ofNotifyEvent(pViewedEvent, *this, this);
     }
     else if (e.getName() == "min" || e.getName() == "max") {
         if ((ofToFloat(guiMin->getTextString()) != getMin() ||
@@ -353,6 +399,24 @@ void LearnOutputParameter::guiEvent(ofxUIEventArgs &e) {
         }
     }
     LearnParameter::guiEvent(e);
+}
+
+//-----------
+void LearnOutputParameter::setInputsVisible(bool b) {
+    guiInputs->setValue(b);
+    guiInputSelect->setVisible(viewInputs);
+    viewExamples = viewInputs ? false : viewExamples;
+}
+
+//-----------
+void LearnOutputParameter::setExamplesVisible(bool b) {
+    guiExamples->setValue(b);
+    viewExamples = b;
+    guiData->setVisible(viewExamples);
+    if (viewExamples) {
+        viewInputs = false;
+        guiInputSelect->setVisible(false);
+    }
 }
 
 //-----------
@@ -390,7 +454,9 @@ void LearnOutputParameter::guiDataEvent(ofxUIEventArgs &e) {
     else if (e.getName() == "clear all") {
         if (e.getButton()->getValue() == 1) return;
         bool confirm = ofSystemChoiceDialog("Are you sure you want to delete all examples for "+getName()+"?");
-        if (confirm)    clearInstances();
+        if (confirm) {
+            clearInstances();
+        }
     }
 }
 

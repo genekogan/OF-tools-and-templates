@@ -32,6 +32,8 @@ public:
     void inputParameterDeleted(LearnParameter & input);
     void outputParameterChanged(LearnParameter & output);
     void outputParameterDeleted(LearnParameter & output);
+    void outputParameterViewed(LearnOutputParameter & output);
+    void parameterSelected(LearnParameter & parameter);
 
     virtual void resetInputs();
     

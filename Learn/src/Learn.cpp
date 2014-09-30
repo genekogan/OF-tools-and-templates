@@ -75,8 +75,9 @@ void Learn::addInput(string name, float *value, float min, float max) {
     LearnInputParameter *newInput = new LearnInputParameter(name, value, min, max);
     newInput->setGuiPosition(10, 80+55*inputs.size());
     newInput->setVisible(true);
-    newInput->addParameterChangeListener(this, &Learn::inputParameterChanged);
+    newInput->addParameterChangedListener(this, &Learn::inputParameterChanged);
     newInput->addParameterDeletedListener(this, &Learn::inputParameterDeleted);
+    newInput->addParameterSelectedListener(this, &Learn::parameterSelected);
     inputs.push_back(newInput);
     resetInputs();
 }
@@ -87,8 +88,10 @@ void Learn::addOutput(string name, float *value, float min, float max) {
     newOutput->setGuiPosition(420, 80+55*outputs.size());
     newOutput->setInputParameters(inputs);
     newOutput->setVisible(true);
-    newOutput->addParameterChangeListener(this, &Learn::outputParameterChanged);
+    newOutput->addParameterChangedListener(this, &Learn::outputParameterChanged);
     newOutput->addParameterDeletedListener(this, &Learn::outputParameterDeleted);
+    newOutput->addParameterSelectedListener(this, &Learn::parameterSelected);
+    newOutput->addParameterViewedListener(this, &Learn::outputParameterViewed);
     outputs.push_back(newOutput);
     if (oscManager.getSending()) {
         oscManager.clearOutputTrackers();
@@ -372,6 +375,27 @@ void Learn::outputParameterDeleted(LearnParameter & output) {
             setupOscOutputs();
             return;
         }
+    }
+}
+
+//-------
+void Learn::outputParameterViewed(LearnOutputParameter & output) {
+    for (int i=0; i<outputs.size(); i++) {
+        if (outputs[i] == &output)   continue;
+        outputs[i]->setInputsVisible(false);
+        outputs[i]->setExamplesVisible(false);
+    }
+}
+
+//-------
+void Learn::parameterSelected(LearnParameter & parameter) {
+    for (int i=0; i<inputs.size(); i++) {
+        if (inputs[i] == &parameter)   continue;
+        inputs[i]->deselect();
+    }
+    for (int i=0; i<outputs.size(); i++) {
+        if (outputs[i] == &parameter)   continue;
+        outputs[i]->deselect();
     }
 }
 
