@@ -93,7 +93,7 @@ public:
 
     virtual void setActive(bool active) {
         this->active = active;
-        control.setVisible(active);
+        control.setActive(active);
     }
 
     void setGuiPosition(int x, int y) {

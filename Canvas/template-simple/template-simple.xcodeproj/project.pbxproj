@@ -13,6 +13,7 @@
 		5E39F94A08ADD7F0C2032152 /* Delaunay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C93371FF2466553B4DA1D0B /* Delaunay.cpp */; };
 		8D60C222CBD3F869382832E9 /* ofxSyphonServer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 32D6F27DC6308427F9A278C1 /* ofxSyphonServer.mm */; };
 		9102D0609CDD0B902F138C68 /* ofxDelaunay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBE3E908E4BB3468853C50ED /* ofxDelaunay.cpp */; };
+		B00CEF4019DE022B007DE53C /* Presets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B00CEF3E19DE022B007DE53C /* Presets.cpp */; };
 		B046422719D37BCB00E27300 /* Control.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B046422219D37BC200E27300 /* Control.cpp */; };
 		B046422819D37BCB00E27300 /* OscManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B046422419D37BC200E27300 /* OscManager.cpp */; };
 		B046423219D37BDA00E27300 /* ofxXmlSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B046422B19D37BDA00E27300 /* ofxXmlSettings.cpp */; };
@@ -195,6 +196,8 @@
 		8AA89AFF4E71C7EC510642B7 /* ofxDelaunay.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxDelaunay.h; path = ../../../addons/ofxDelaunay/src/ofxDelaunay.h; sourceTree = SOURCE_ROOT; };
 		92288960AB502F1CACECA160 /* ofxTwistedRibbon.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxTwistedRibbon.h; path = ../../../addons/ofxTwistedRibbon/src/ofxTwistedRibbon.h; sourceTree = SOURCE_ROOT; };
 		9A05F353F9133E47073EE4BE /* ofxBlurShader.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxBlurShader.h; path = ../../../addons/ofxBlurShader/src/ofxBlurShader.h; sourceTree = SOURCE_ROOT; };
+		B00CEF3E19DE022B007DE53C /* Presets.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Presets.cpp; sourceTree = "<group>"; };
+		B00CEF3F19DE022B007DE53C /* Presets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Presets.h; sourceTree = "<group>"; };
 		B046422219D37BC200E27300 /* Control.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Control.cpp; sourceTree = "<group>"; };
 		B046422319D37BC200E27300 /* Control.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Control.h; sourceTree = "<group>"; };
 		B046422419D37BC200E27300 /* OscManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OscManager.cpp; sourceTree = "<group>"; };
@@ -642,6 +645,8 @@
 		B046422119D37BC200E27300 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				B00CEF3E19DE022B007DE53C /* Presets.cpp */,
+				B00CEF3F19DE022B007DE53C /* Presets.h */,
 				B046422219D37BC200E27300 /* Control.cpp */,
 				B046422319D37BC200E27300 /* Control.h */,
 				B046422419D37BC200E27300 /* OscManager.cpp */,
@@ -1424,6 +1429,7 @@
 				B04642FE19D37BF000E27300 /* NetworkingUtils.cpp in Sources */,
 				B08573A919ABB67500CD4B01 /* HorizontalTiltShifPass.cpp in Sources */,
 				B046429819D37BDE00E27300 /* ofxUI2DGraph.cpp in Sources */,
+				B00CEF4019DE022B007DE53C /* Presets.cpp in Sources */,
 				B08573AA19ABB67500CD4B01 /* KaleidoscopePass.cpp in Sources */,
 				B046430219D37BF000E27300 /* OscReceivedElements.cpp in Sources */,
 				B046429919D37BDE00E27300 /* ofxUI2DPad.cpp in Sources */,

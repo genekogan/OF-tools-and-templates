@@ -72,6 +72,7 @@
 		B0BA199C19CEAF4900D64AAB /* OscTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0BA198F19CEAF4900D64AAB /* OscTypes.cpp */; };
 		B0BA19A319CEAF6D00D64AAB /* Base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0BA199F19CEAF6D00D64AAB /* Base64.cpp */; };
 		B0BA19A419CEAF6D00D64AAB /* ofxTouchOsc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0BA19A119CEAF6D00D64AAB /* ofxTouchOsc.cpp */; };
+		B0D1843D19DB0EC6006613F5 /* Presets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0D1843B19DB0EC6006613F5 /* Presets.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
@@ -267,6 +268,8 @@
 		B0BA19A019CEAF6D00D64AAB /* Base64.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Base64.h; sourceTree = "<group>"; };
 		B0BA19A119CEAF6D00D64AAB /* ofxTouchOsc.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxTouchOsc.cpp; sourceTree = "<group>"; };
 		B0BA19A219CEAF6D00D64AAB /* ofxTouchOsc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxTouchOsc.h; sourceTree = "<group>"; };
+		B0D1843B19DB0EC6006613F5 /* Presets.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Presets.cpp; sourceTree = "<group>"; };
+		B0D1843C19DB0EC6006613F5 /* Presets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Presets.h; sourceTree = "<group>"; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E45BE9710E8CC7DD009D7055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
@@ -366,6 +369,8 @@
 				B036B6DE19CB906200CB0081 /* Control.h */,
 				B036B77319CBEE9F00CB0081 /* OscManager.cpp */,
 				B036B77419CBEE9F00CB0081 /* OscManager.h */,
+				B0D1843B19DB0EC6006613F5 /* Presets.cpp */,
+				B0D1843C19DB0EC6006613F5 /* Presets.h */,
 			);
 			name = src;
 			path = ../src;
@@ -787,6 +792,7 @@
 				B036B74519CB90A600CB0081 /* ofxUIBiLabelSlider.cpp in Sources */,
 				B0BA199319CEAF4900D64AAB /* ofxOscParameterSync.cpp in Sources */,
 				B036B74619CB90A600CB0081 /* ofxUIButton.cpp in Sources */,
+				B0D1843D19DB0EC6006613F5 /* Presets.cpp in Sources */,
 				B0BA199119CEAF4900D64AAB /* ofxOscBundle.cpp in Sources */,
 				B036B76119CB90A600CB0081 /* ofxUISlider.cpp in Sources */,
 				B036B76819CB90A600CB0081 /* ofxUITextInput.cpp in Sources */,

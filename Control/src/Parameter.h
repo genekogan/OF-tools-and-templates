@@ -21,10 +21,11 @@ public:
     template<class T> void setMin(T min);
     template<class T> void setMax(T max);
 
+    template<class T> T get();
     template<class T> T* getReference();
     template<class T> T getMin();
     template<class T> T getMax();
-
+    
     string name;
     string oscAddress;
     Type type;
@@ -49,21 +50,48 @@ public:
         value = &val;
     }
     
-    const T get() const {return *value;}
+    T get() {return *value;}
     T* getReference() {return value;}
     T getMin() {return minValue;}
     T getMax() {return maxValue;}
     
-    void set(const T& rhs) {*value=rhs;}
+    void set(const T& val) {*value=val;}
     void setMin(T min) {minValue=min;}
     void setMax(T max) {maxValue=max;}
     
-private:
+    void lerpTo(T val, int nf) {
+        if (nf == 0) {
+            this->set(val);
+            return;
+        }
+        endValue = val;
+        startValue = *value;
+        numFrames = nf;
+        frame = 0;
+        ofAddListener(ofEvents().update, this, &Parameter::update);
+    }
+    
+    void update(ofEventArgs &data) {
+        if (++frame <= numFrames) {
+            float t = (float) frame / numFrames;
+            this->set(startValue*(1.0f-t)+endValue*t);
+        }
+        else {
+            ofRemoveListener(ofEvents().update, this, &Parameter::update);
+        }
+    }
+    
+protected:
+    
     T *value;
     T minValue, maxValue;
+    T startValue, endValue;
+    int frame, numFrames;
 };
 
 
+template<class T> T ParameterBase::get()
+{ return dynamic_cast<Parameter<T>&>(*this).get(); }
 template<class T> T ParameterBase::getMin()
 { return dynamic_cast<Parameter<T>&>(*this).getMin(); }
 template<class T> T ParameterBase::getMax()

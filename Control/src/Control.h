@@ -4,6 +4,7 @@
 #include "ofxUI.h"
 #include "Parameter.h"
 #include "OscManager.h"
+#include "Presets.h"
 
 
 class Control
@@ -13,42 +14,83 @@ public:
     
     Control() {
         gui = new ofxUICanvas("control");
+        guiPresets = new ofxUICanvas("controlPresets");
         setWidth(150);
         spacing = gui->getWidgetSpacing();
-        ofAddListener(gui->newGUIEvent, this, &Control::guiEvent);
         headerSelected = false;
+        setupGuiPresets();
+        visible = true;
+        setActive(true);
     }
+    
+    void update(ofEventArgs &data) {
+        updateColors();
+    }
+    
+    void savePreset();
+    
+    void loadPreset(string path);
     
     void setName(string name) {
         this->name = name;
+        setupGuiPresets();
     }
     
     void setWidth(int width) {
         this->width = width;
         gui->setWidth(width);
+        guiPresets->setWidth(width);
     }
 
     void setGuiPosition(int x, int y) {
         gui->setPosition(x, y);
+        guiPresets->setPosition(x, y);
+    }
+    
+    void setActive(bool active) {
+        if (active) {
+            ofAddListener(gui->newGUIEvent, this, &Control::guiEvent);
+            ofAddListener(guiPresets->newGUIEvent, this, &Control::guiPresetsEvent);
+            ofAddListener(ofEvents().update, this, &Control::update);
+        }
+        else {
+            ofRemoveListener(gui->newGUIEvent, this, &Control::guiEvent);
+            ofRemoveListener(guiPresets->newGUIEvent, this, &Control::guiPresetsEvent);
+            ofRemoveListener(ofEvents().update, this, &Control::update);
+        }
+        setVisible(active);
     }
     
     void setVisible(bool visible) {
         this->visible = visible;
-        if (visible)    gui->enable();
-        else            gui->disable();
+        if (visible) {
+            gui->enable();
+            guiPresets->enable();
+        }
+        else {
+            gui->disable();
+            guiPresets->disable();
+        }
         gui->setVisible(visible);
+        guiPresets->setVisible(false);
     }
     
     void toggleVisible() {
         setVisible(!visible);
     }
     
-    void clearParameters();
-
+    void togglePresetsVisible() {
+        visible = !visible;
+        gui->setVisible(visible);
+        guiPresets->setVisible(!visible);
+    }
+    
     vector<ParameterBase *> & getParameters() {
         return parameters;
     }
     
+    void clearParameters();
+
     template <typename T> void addParameter(string name, T *value, T min, T max) {
         ParameterBase *parameter = new Parameter<T>(name, *value, min, max);
         parameters.push_back(parameter);
@@ -77,6 +119,7 @@ public:
     }
     
     void addColor(string name, ofColor *value) {
+        string sn = ofToString(ofRandom(1000));
         ofVec4f *vec = new ofVec4f(value->r, value->g, value->b, value->a);
         GuiColorVecPair *color = new GuiColorVecPair();
         color->color = value;
@@ -96,24 +139,33 @@ private:
     struct GuiColorVecPair {
         ofColor *color;
         ofVec4f *vec;
-        void update() {color->set(vec->x, vec->y, vec->z, vec->w);}
+        void update() {
+            color->set(vec->x, vec->y, vec->z, vec->w);
+        }
     };
     
+    void updateColors();
+    
     void guiEvent(ofxUIEventArgs &e);
+    void guiPresetsEvent(ofxUIEventArgs &e);
     void setupGui();
+    void setupGuiPresets();
     
-    void addParameterToGui(string name, bool *t);
-    void addParameterToGui(string name, string *t);
-    void addParameterToGui(string name, int min, int max, int *value);
-    void addParameterToGui(string name, float min, float max, float *value);
-    void addParameterToGui(string name, ofVec2f min, ofVec2f max, ofVec2f *value);
-    void addParameterToGui(string name, ofVec3f min, ofVec3f max, ofVec3f *value);
-    void addParameterToGui(string name, ofVec4f min, ofVec4f max, ofVec4f *value);
+    void addParameterToGui(Parameter<bool> *parameter);
+    void addParameterToGui(Parameter<int> *parameter);
+    void addParameterToGui(Parameter<float> *parameter);
+    void addParameterToGui(Parameter<ofVec2f> *parameter);
+    void addParameterToGui(Parameter<ofVec3f> *parameter);
+    void addParameterToGui(Parameter<ofVec4f> *parameter);
+    void addParameterToGui(Parameter<string> *parameter);
     
-    ofxUICanvas *gui;
+    ofxUICanvas *gui, *guiPresets;
+    ofxUIDropDownList *presetNames;
+
     string name;
     bool visible;
     int width, spacing;
+    int numLerpFrames;
     
     vector<ParameterBase *> parameters;
     map<string, ofEvent<string>*> events;

@@ -36,11 +36,13 @@ void ofApp::setup(){
     position = ofVec2f(345, 298);
     resolution = 16;
     filled = true;
+    
 }
 
 //---------
 void ofApp::update(){
     
+    control.blah();
 }
 
 //---------
@@ -75,6 +77,8 @@ void ofApp::draw(){
 
 //---------
 void ofApp::keyPressed(int key){
+    if (key=='s') control.savePreset();
+
 }
 
 //--------------------------------------------------------------

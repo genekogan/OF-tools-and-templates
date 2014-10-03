@@ -65,6 +65,7 @@ class LearnInputParameter : public LearnParameter
 {
 public:
     LearnInputParameter(string name, float *value, float min=0, float max=1);
+
 protected:
     void setupGui();
     void guiEvent(ofxUIEventArgs &e);
@@ -97,6 +98,7 @@ public:
     void setupGuiInputSelector();
     void setInputsVisible(bool b);
     void setExamplesVisible(bool b);
+    void setDataSize(int width, int height);
 
     bool getRecording() {return record;}
     bool getTrained() {return trained;}
@@ -126,6 +128,7 @@ protected:
     void guiEvent(ofxUIEventArgs &e);
     void guiInputSelectEvent(ofxUIEventArgs &e);
     void guiDataEvent(ofxUIEventArgs &e);
+    void dataChangedEvent(bool &b);
     
     ofxUICanvas *guiInputSelect, *guiData;
     ofxUIDropDownList *selector;
@@ -136,7 +139,7 @@ protected:
     vector<LearnInputParameter *> allInputs, activeInputs;
 
     vector<ofxSpreadsheet *> data;
-    int page;
+    int page, dataWidth, dataHeight;
     
     bool record, trained;
     bool viewExamples, viewInputs;

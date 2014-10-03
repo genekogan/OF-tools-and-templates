@@ -1,0 +1,72 @@
+#pragma once
+
+#include "ofMain.h"
+#include "Parameter.h"
+#include "ofxUI.h"
+#include "Parameter.h"
+#include "OscManager.h"
+#include "Presets.h"
+
+
+class Presets {
+public:    
+    bool savePreset(string name, vector<ParameterBase *> &parameters);
+    void loadPreset(string path, vector<ParameterBase *> &parameters, int numFrames);
+
+    ofXml getXml(vector<ParameterBase *> &parameters);
+    
+    template <typename T>
+    void updateParameter(ofXml &xml, vector<ParameterBase *> &parameters, ParameterBase::Type type, int numFrames = 0);
+    
+    template <typename T>
+    void parameterToXml(ofXml &xml, Parameter<T> *parameter);
+};
+
+
+template <typename T> void Presets::updateParameter(ofXml &xml, vector<ParameterBase *> &parameters, ParameterBase::Type type, int numFrames) {
+    string name = xml.getValue<string>("Name");
+    for (int i=0; i<parameters.size(); i++) {
+        if (parameters[i]->getName()==name && parameters[i]->getType()==type) {
+            ((Parameter <T> *) parameters[i])->lerpTo(xml.getValue<T>("Value"), numFrames);
+            ((Parameter <T> *) parameters[i])->setMin(xml.getValue<T>("Min"));
+            ((Parameter <T> *) parameters[i])->setMax(xml.getValue<T>("Max"));
+        }
+    }
+}
+
+template <typename T> void Presets::parameterToXml(ofXml &xml, Parameter<T> *parameter) {
+    T value = parameter->get();
+    T min = parameter->getMin();
+    T max = parameter->getMax();
+    xml.addValue("Value", ofToString(value));
+    xml.addValue("Min", ofToString(min));
+    xml.addValue("Max", ofToString(max));
+}
+
+template <> inline void Presets::updateParameter<bool>(ofXml &xml, vector<ParameterBase *> &parameters, ParameterBase::Type type, int numFrames) {
+    string name = xml.getValue<string>("Name");
+    for (int i=0; i<parameters.size(); i++) {
+        if (parameters[i]->getName()==name && parameters[i]->getType()==ParameterBase::BOOL) {
+            ((Parameter <bool> *) parameters[i])->set(xml.getValue<bool>("Value"));
+        }
+    }
+}
+
+template <> inline void Presets::updateParameter<string>(ofXml &xml, vector<ParameterBase *> &parameters, ParameterBase::Type type, int numFrames) {
+    string name = xml.getValue<string>("Name");
+    for (int i=0; i<parameters.size(); i++) {
+        if (parameters[i]->getName()==name && parameters[i]->getType()==ParameterBase::STRING) {
+            ((Parameter <string> *) parameters[i])->set(xml.getValue<string>("Value"));
+        }
+    }
+}
+
+template <> inline void Presets::parameterToXml<bool>(ofXml &xml, Parameter<bool> *parameter) {
+    bool value = parameter->get();
+    xml.addValue("Value", ofToString(value));
+}
+
+template <> inline void Presets::parameterToXml<string>(ofXml &xml, Parameter<string> *parameter) {
+    string value = parameter->get();
+    xml.addValue("Value", ofToString(value));
+}

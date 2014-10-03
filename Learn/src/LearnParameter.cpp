@@ -25,6 +25,9 @@ LearnOutputParameter::LearnOutputParameter(string name, float *value, float min,
     viewExamples = false;
     viewInputs = false;
 
+    dataWidth = 600;
+    dataHeight = 300;
+    
     setupGui();
     addDataPage();
 
@@ -60,8 +63,6 @@ LearnOutputParameter::~LearnOutputParameter() {
 
 void LearnOutputParameter::addInstance() {
     data[page]->addEntry(grabFeatureVector<float>(true));
-    guiExamples->setLabelText(ofToString(getNumInstances())+" examples");
-    guiDataStatus->setLabelText(ofToString(getName())+" examples ("+ofToString(getNumInstances())+")");
 }
 
 //-----------
@@ -73,8 +74,6 @@ void LearnOutputParameter::clearInstances() {
     data.clear();
     addDataPage();
     setPage(0);
-    guiExamples->setLabelText(ofToString(getNumInstances())+" examples");
-    guiDataStatus->setLabelText(ofToString(getName())+" examples ("+ofToString(getNumInstances())+")");
 }
 
 //-----------
@@ -95,7 +94,8 @@ void LearnOutputParameter::setInputParameters(vector<LearnInputParameter *> &all
 //-----------
 void LearnOutputParameter::addDataPage() {
     ofxSpreadsheet *newData = new ofxSpreadsheet();
-    newData->setup(600, 300);
+    newData->setup(dataWidth, dataHeight);
+    newData->addSpreadsheetChangedListener(this, &LearnOutputParameter::dataChangedEvent);
     data.push_back(newData);
     setupHeaders(data.size()-1);
     setPage(data.size()-1);
@@ -130,6 +130,15 @@ void LearnOutputParameter::addSpreadsheetDataToLearn() {
             }
             learn.addTrainingInstance(instance, normalizedLabel);
         }
+    }
+}
+
+//-----------
+void LearnOutputParameter::setDataSize(int width, int height) {
+    this->dataWidth = width;
+    this->dataHeight = height;
+    for (int i=0; i<data.size(); i++) {
+        data[i]->setup(dataWidth, dataHeight);
     }
 }
 
@@ -226,7 +235,7 @@ void LearnOutputParameter::setupGui() {
     guiData->setVisible(viewInputs);
     guiData->setPosition(420, 432);
     guiData->clearWidgets();
-    guiDataStatus = guiData->addLabelButton(ofToString(getName())+" examples ("+ofToString(getNumInstances())+")", false, true);//, 200.0f);
+    guiDataStatus = guiData->addLabelButton(ofToString(getName())+" examples ("+ofToString(getNumInstances())+")", false, true);
     guiDataStatus->setColorBack(ofColor(0,0));
     guiDataStatus->getRect()->setWidth(200.0f);
     guiData->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
@@ -458,6 +467,12 @@ void LearnOutputParameter::guiDataEvent(ofxUIEventArgs &e) {
             clearInstances();
         }
     }
+}
+
+//-----------
+void LearnOutputParameter::dataChangedEvent(bool &b){
+    guiExamples->setLabelText(ofToString(getNumInstances())+" examples");
+    guiDataStatus->setLabelText(ofToString(getName())+" examples ("+ofToString(getNumInstances())+")");
 }
 
 //-----------
