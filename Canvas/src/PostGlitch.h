@@ -9,6 +9,7 @@
 class PostGlitchLayer : public CanvasLayer {
 public:
     void setup();
+    string getType() {return "PostGlitchLayer";}
     void setTexLayer(CanvasLayer *texLayer=NULL);
     void render();
     

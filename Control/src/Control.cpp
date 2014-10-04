@@ -2,9 +2,34 @@
 
 
 //-------
+Control::Control() {
+    gui = new ofxUICanvas("control");
+    guiPresets = new ofxUICanvas("controlPresets");
+    setWidth(150);
+    spacing = gui->getWidgetSpacing();
+    headerSelected = false;
+    setupGuiPresets();
+    visible = true;
+    setActive(true);
+}
+
+//-------
+void Control::update(ofEventArgs &data) {
+    if (active) {
+        updateColors();
+    }
+}
+
+//-------
+void Control::setName(string name) {
+    this->name = name;
+    setupGuiPresets();
+}
+
+//-------
 void Control::savePreset() {
     Presets presets;
-    bool saved = presets.savePreset(getName(), parameters);
+    bool saved = presets.savePreset(*this);
     if (!saved) return;
     setupGuiPresets();
 }
@@ -12,8 +37,73 @@ void Control::savePreset() {
 //-------
 void Control::loadPreset(string path) {
     Presets presets;
-    presets.loadPreset(path, parameters, numLerpFrames);
-    updateColors();
+    presets.loadPreset(*this, path, numLerpFrames);
+}
+
+//-------
+void Control::setWidth(int width) {
+    this->width = width;
+    gui->setWidth(width);
+    guiPresets->setWidth(width);
+}
+
+//-------
+void Control::setGuiPosition(int x, int y) {
+    gui->setPosition(x, y);
+    guiPresets->setPosition(x, y);
+}
+
+//-------
+void Control::setActive(bool active) {
+    this->active = active;
+    if (active) {
+        ofAddListener(gui->newGUIEvent, this, &Control::guiEvent);
+        ofAddListener(guiPresets->newGUIEvent, this, &Control::guiPresetsEvent);
+        ofAddListener(ofEvents().update, this, &Control::update);
+    }
+    else {
+        ofRemoveListener(gui->newGUIEvent, this, &Control::guiEvent);
+        ofRemoveListener(guiPresets->newGUIEvent, this, &Control::guiPresetsEvent);
+        ofRemoveListener(ofEvents().update, this, &Control::update);
+    }
+    setVisible(active);
+}
+
+//-------
+void Control::setVisible(bool visible) {
+    this->visible = visible;
+    if (visible) {
+        gui->enable();
+        guiPresets->enable();
+    }
+    else {
+        gui->disable();
+        guiPresets->disable();
+    }
+    gui->setVisible(visible);
+    guiPresets->setVisible(false);
+}
+
+//-------
+void Control::toggleVisible() {
+    setVisible(!visible);
+}
+
+//-------
+void Control::togglePresetsVisible() {
+    visible = !visible;
+    gui->setVisible(visible);
+    guiPresets->setVisible(!visible);
+}
+
+//-------
+vector<ofxUIDropDownList *> Control::getMenus() {
+    vector<ofxUIDropDownList *> dropdowns;
+    for (map<string,vector<string> >::iterator it=menus.begin(); it!=menus.end(); ++it){
+        ofxUIDropDownList *dropdown = (ofxUIDropDownList *) gui->getWidget(it->first);
+        dropdowns.push_back(dropdown);
+    }
+    return dropdowns;
 }
 
 //-------
@@ -58,6 +148,7 @@ void Control::setupGui() {
     
     /* add parameters */
     for (int i=0; i<parameters.size(); i++) {
+        if (!parametersVisible[parameters[i]])   continue;
         ParameterBase::Type type = parameters[i]->getType();
         if      (type == ParameterBase::BOOL) {
             addParameterToGui((Parameter<bool> *) parameters[i]);
@@ -86,7 +177,6 @@ void Control::setupGui() {
     for (map<string,vector<string> >::iterator it=menus.begin(); it!=menus.end(); ++it){
         ofxUIDropDownList *menu = gui->addDropDownList(it->first, it->second);
         menu->setAutoClose(false);
-        //menu->setAllowMultiple(true);
         menu->open();
         menu->setPadding(1);
     }
@@ -97,28 +187,20 @@ void Control::setupGui() {
     }
     
     /* set color of color sliders */
-    int idx = ofRandom(1000);
-    for (map<string,GuiColorVecPair*>::iterator it=colors.begin(); it!=colors.end(); ++it){
-        it->second->update();
-        gui->getWidget(it->first+"->x")->setColorFill(*colors[it->first]->color);
-        gui->getWidget(it->first+"->y")->setColorFill(*colors[it->first]->color);
-        gui->getWidget(it->first+"->z")->setColorFill(*colors[it->first]->color);
-        gui->getWidget(it->first+"->w")->setColorFill(*colors[it->first]->color);
-    }
+    updateColors();
+
     gui->autoSizeToFitWidgets();
 }
 
 //-------
 void Control::guiEvent(ofxUIEventArgs &e) {
-    
     // menu select notification
-    if (!menus[e.getParentName()].empty()) {
-        string selection = e.getName();
-        ofNotifyEvent(*menuEvents[e.getParentName()], selection, this);
+    if (menus.count(e.getParentName()) > 0) {
+        triggerMenuEvent(e.getParentName(), e.getName(), e.getToggle()->getValue());
     }
     
     // event notification
-    else if (events[e.getName()] != 0) {
+    else if (events.count(e.getName()) > 0) {
         if (e.getButton()->getValue() == 1) return;
         string state = e.getName();
         ofNotifyEvent(*events[e.getName()], state, this);
@@ -157,7 +239,6 @@ void Control::guiEvent(ofxUIEventArgs &e) {
             gui->getWidget(colorName+"->w")->setColorFillHighlight(*colors[colorName]->color);
         }
     }
-
 }
 
 //-------
@@ -177,6 +258,16 @@ void Control::guiPresetsEvent(ofxUIEventArgs &e) {
     else if (e.getParentName() == "presets") {
         string path = ofToDataPath("presets/"+getName()+"/"+e.getName());
         loadPreset(path);
+        togglePresetsVisible();
+    }
+}
+
+//-------
+void Control::triggerMenuEvent(string menuName, string selection, bool trigger) {
+    if (selection == "")    return;
+    if (trigger) {
+        ofNotifyEvent(*menuEvents[menuName], selection, this);
+        ((ofxUILabelToggle *) gui->getWidget(selection))->setValue(trigger);
     }
 }
 
@@ -229,12 +320,26 @@ void Control::addParameterToGui(Parameter<ofVec4f> *parameter) {
 }
 
 //-------
+void Control::addColor(string name, ofColor *value) {
+    string sn = ofToString(ofRandom(1000));
+    ofVec4f *vec = new ofVec4f(value->r, value->g, value->b, value->a);
+    GuiColorVecPair *color = new GuiColorVecPair();
+    color->color = value;
+    color->vec = vec;
+    colors[name] = color;
+    ParameterBase *parameter = new Parameter<ofVec4f>(name, *vec, ofVec4f(0, 0, 0, 0), ofVec4f(255, 255, 255, 255));
+    parameters.push_back(parameter);
+    parametersVisible[parameter] = true;
+    setupGui();
+}
+
+//-------
 void Control::addParameterToGui(Parameter<string> *parameter) {
     gui->addTextInput(parameter->getName(), *parameter->getReference());
 }
 
 //-------
-void Control::clearParameters() {
+void Control::clear() {
     for (map<string, GuiColorVecPair*>::iterator it=colors.begin(); it!=colors.end(); ++it){
         delete it->second;
         colors.erase(it);
@@ -247,6 +352,9 @@ void Control::clearParameters() {
         delete it->second;
         events.erase(it);
     }
+    for (map<ParameterBase *, bool>::iterator it=parametersVisible.begin(); it!=parametersVisible.end(); ++it){
+        parametersVisible.erase(it);
+    }
     for (int i=0; i<parameters.size(); i++) {
         delete parameters[i];
     }
@@ -255,25 +363,29 @@ void Control::clearParameters() {
     menus.clear();
     events.clear();
     parameters.clear();
+    parametersVisible.clear();
 }
 
 //-------
 void Control::updateColors() {
     for (map<string, GuiColorVecPair*>::iterator it=colors.begin(); it!=colors.end(); ++it){
         it->second->update();
+        gui->getWidget(it->first+"->x")->setColorFill(*colors[it->first]->color);
+        gui->getWidget(it->first+"->y")->setColorFill(*colors[it->first]->color);
+        gui->getWidget(it->first+"->z")->setColorFill(*colors[it->first]->color);
+        gui->getWidget(it->first+"->w")->setColorFill(*colors[it->first]->color);
     }
+
 }
 
 //-------
 Control::~Control() {
-    ofRemoveListener(gui->newGUIEvent, this, &Control::guiEvent);
-    ofRemoveListener(guiPresets->newGUIEvent, this, &Control::guiPresetsEvent);
-    ofRemoveListener(ofEvents().update, this, &Control::update);
+    setActive(false);
     gui->removeWidgets();
     gui->disable();
     guiPresets->removeWidgets();
     guiPresets->disable();
-    clearParameters();
+    clear();
     delete gui;
     delete guiPresets;
 }

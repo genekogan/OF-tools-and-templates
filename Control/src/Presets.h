@@ -1,19 +1,24 @@
 #pragma once
 
 #include "ofMain.h"
-#include "Parameter.h"
-#include "ofxUI.h"
-#include "Parameter.h"
-#include "OscManager.h"
-#include "Presets.h"
+#include "Control.h"
 
+
+class Control;
 
 class Presets {
 public:    
-    bool savePreset(string name, vector<ParameterBase *> &parameters);
-    void loadPreset(string path, vector<ParameterBase *> &parameters, int numFrames);
+    bool savePreset(Control &control, string filename="");
+    void loadPreset(Control &control, string path, int numFrames = 0);
+    void loadPreset(Control &control, ofXml &xml, int numFrames = 0);
 
+    ofXml getXml(Control &control);
     ofXml getXml(vector<ParameterBase *> &parameters);
+    ofXml getXml(ParameterBase * parameter);
+    ofXml getXml(vector<ofxUIDropDownList *> menus);
+    ofXml getXml(ofxUIDropDownList * menu);
+
+protected:
     
     template <typename T>
     void updateParameter(ofXml &xml, vector<ParameterBase *> &parameters, ParameterBase::Type type, int numFrames = 0);

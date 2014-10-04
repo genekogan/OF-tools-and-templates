@@ -5,16 +5,6 @@
 void GridFly::setup(){
     setName("GridFly");
     
-    control.addParameter("nx", &nx, 10, 400);
-    control.addParameter("ny", &ny, 10, 400);
-    control.addParameter("length", &length, ofVec2f(100,100), ofVec2f(4000,4000));
-    control.addParameter("margin", &margin, 0.0f, 1000.0f);
-    control.addParameter("noiseFactor", &noiseFactor, ofVec2f(0, 0), ofVec2f(0.01, 0.01));
-    control.addParameter("speed", &speed, 0.0f, 100.0f);
-    control.addParameter("angle", &angle, 0.0f, 360.0f);
-    control.addParameter("axis", &axis, ofVec3f(0, -1, -1), ofVec3f(1, 1, 1));
-    control.addColor("color", &color);
-    
     nx = 100;
     ny = 100;
     length = ofVec2f(2000, 2000);
@@ -25,6 +15,16 @@ void GridFly::setup(){
     axis = ofVec3f(1, 0, 0);
     color = ofColor(255, 100);
 
+    control.addParameter("nx", &nx, 10, 400);
+    control.addParameter("ny", &ny, 10, 400);
+    control.addParameter("length", &length, ofVec2f(100,100), ofVec2f(4000,4000));
+    control.addParameter("margin", &margin, 0.0f, 1000.0f);
+    control.addParameter("noiseFactor", &noiseFactor, ofVec2f(0, 0), ofVec2f(0.01, 0.01));
+    control.addParameter("speed", &speed, 0.0f, 100.0f);
+    control.addParameter("angle", &angle, 0.0f, 360.0f);
+    control.addParameter("axis", &axis, ofVec3f(0, -1, -1), ofVec3f(1, 1, 1));
+    control.addColor("color", &color);
+    
     vertices = &mesh.getVertices();
     for (int j=0; j<ny; j++) {
         addRow();

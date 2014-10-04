@@ -5,17 +5,17 @@
 void ShapeSpace::setup() {
     setName("ShapeSpace");
  
-    control.addParameter("numElements", &numElements, 1, 1000);
-    control.addParameter("size", &size, ofVec3f(0, 0, 0), ofVec3f(250, 250, 250));
-    control.addParameter("noiseSpeed", &noiseSpeed, ofVec3f(0, 0, 0), ofVec3f(0.01, 0.01, 0.1));
-    control.addColor("color", &color);
-    control.addColor("colorVar", &colorVar);
-    
     numElements = 16;
     size = ofVec3f(50, 50, 50);
     noiseSpeed = ofVec3f(0.001, 0.001, 0.001);
     color = ofColor(255, 0, 0, 80);
     colorVar = ofColor(80);
+    
+    control.addParameter("numElements", &numElements, 1, 1000);
+    control.addParameter("size", &size, ofVec3f(0, 0, 0), ofVec3f(250, 250, 250));
+    control.addParameter("noiseSpeed", &noiseSpeed, ofVec3f(0, 0, 0), ofVec3f(0.01, 0.01, 0.1));
+    control.addColor("color", &color);
+    control.addColor("colorVar", &colorVar);
     
 	light.setPosition(1000, 1000, 2000);
 }

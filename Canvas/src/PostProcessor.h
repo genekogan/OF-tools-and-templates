@@ -8,7 +8,9 @@
 class PostProcessingLayer : public CanvasLayer
 {
 public:
+    ~PostProcessingLayer();
     void setup();
+    string getType() {return "PostProcessingLayer";}
     void render();
     
 private:
@@ -45,9 +47,6 @@ private:
         gui.setVisible(false);
     }
     
-    
-    Control gui;
-    
     ofxPostProcessing post;
     
     FxaaPass::Ptr alias;
@@ -70,6 +69,8 @@ private:
     RimHighlightingPass::Ptr rimHighlight;
     SSAOPass::Ptr ssao;
     ZoomBlurPass::Ptr zoomBlur;
+    
+    Control gui;
     
     /* toggles */
     bool aliasEnabled;

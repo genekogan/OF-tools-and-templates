@@ -29,7 +29,7 @@ public:
         this->name = name;
         bgColor.set(0, 0, 0, 255);
         control.setName(name);
-        control.clearParameters();
+        control.clear();
         control.addParameter("clear", &toClear);
         control.addColor("bgColor", &bgColor);
         toClear = false;

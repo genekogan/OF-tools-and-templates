@@ -4,24 +4,6 @@
 void Amoeba::setup() {
     setName("Amoeba");
     
-    control.addParameter("center", &center, ofVec2f(0, 0), ofVec2f(width, height));
-    control.addParameter("numVertices", &numVertices, 3, 1000);
-    control.addParameter("radRange", &radRange, ofVec2f(-width, -width), ofVec2f(width, width));
-    control.addParameter("speed", &speed, 0.0f, 0.1f);
-    control.addParameter("noiseFactor", &noiseFactor, 0.0f, 0.1f);
-    control.addParameter("noiseRegion", &noiseRegion, -5.0f, 5.0f);
-    control.addParameter("offset", &offset, -4.0f, 4.0f);
-    control.addColor("colorFill", &colorFill);
-    control.addColor("colorStroke", &colorStroke);
-    control.addParameter("lineWidth", &lineWidth, 0.0f, 16.0f);
-    control.addParameter("filled", &filled);
-    control.addParameter("filledCycle", &cycleFill, 4, 200 );
-    control.addParameter("filledDensity", &densityFill, 0.0f, 1.0f);
-    control.addParameter("stroked", &stroked);
-    control.addParameter("strokedCycle", &cycleStroke, 4, 200);
-    control.addParameter("strokedDensity", &densityStroke, 0.0f, 1.0f);
-    control.addParameter("curvedVertices", &curvedVertices);
-    
     numVertices = 200;
     center = ofVec2f(width/2, height/2);
     radRange = ofVec2f(0, width/3);
@@ -40,6 +22,24 @@ void Amoeba::setup() {
     cycleStroke = 50;
     densityStroke = 1;
     densityFill = 1;
+    
+    control.addParameter("center", &center, ofVec2f(0, 0), ofVec2f(width, height));
+    control.addParameter("numVertices", &numVertices, 3, 1000);
+    control.addParameter("radRange", &radRange, ofVec2f(-width, -width), ofVec2f(width, width));
+    control.addParameter("speed", &speed, 0.0f, 0.1f);
+    control.addParameter("noiseFactor", &noiseFactor, 0.0f, 0.1f);
+    control.addParameter("noiseRegion", &noiseRegion, -5.0f, 5.0f);
+    control.addParameter("offset", &offset, -4.0f, 4.0f);
+    control.addColor("colorFill", &colorFill);
+    control.addColor("colorStroke", &colorStroke);
+    control.addParameter("lineWidth", &lineWidth, 0.0f, 16.0f);
+    control.addParameter("filled", &filled);
+    control.addParameter("filledCycle", &cycleFill, 4, 200 );
+    control.addParameter("filledDensity", &densityFill, 0.0f, 1.0f);
+    control.addParameter("stroked", &stroked);
+    control.addParameter("strokedCycle", &cycleStroke, 4, 200);
+    control.addParameter("strokedDensity", &densityStroke, 0.0f, 1.0f);
+    control.addParameter("curvedVertices", &curvedVertices);
 }
 
 //--------

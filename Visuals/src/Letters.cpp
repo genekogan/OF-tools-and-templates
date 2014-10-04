@@ -10,19 +10,6 @@ const char * Letters::alphanum = {
 void Letters::setup() {
     setName("Letters");
 
-    control.addParameter("rows", &nrows, 2, 200);
-    control.addParameter("cols", &ncols, 2, 200);
-    control.addParameter("letterRange", &letterRange, ofVec2f(0, 0), ofVec2f(1,1));
-    control.addColor("color", &color);
-    control.addParameter("rate", &rate, 1, 10);
-    control.addParameter("density", &density, 0.0f, 1.0f);
-    control.addParameter("rateNoise", &rateNoise, ofVec2f(0, 0), ofVec2f(0.1, 0.1));
-    control.addParameter("rateNoiseTime", &rateNoiseTime, 0.0f, 1.0f);
-    control.addParameter("letterNoise", &letterNoise, ofVec2f(0, 0), ofVec2f(0.1, 0.1));
-    control.addParameter("letterNoiseTime", &letterNoiseTime, 0.0f, 1.0f);
-    control.addParameter("noisyLetters", &noisyLetters);
-    control.addParameter("chinese", &chinese);
-    
     nrows = 30;
     ncols = 40;
     letterRange = ofVec2f(0, 1);
@@ -35,6 +22,19 @@ void Letters::setup() {
     color = ofColor(0, 255, 20);
     noisyLetters = false;
     chinese = false;
+    
+    control.addParameter("rows", &nrows, 2, 200);
+    control.addParameter("cols", &ncols, 2, 200);
+    control.addParameter("letterRange", &letterRange, ofVec2f(0, 0), ofVec2f(1,1));
+    control.addColor("color", &color);
+    control.addParameter("rate", &rate, 1, 10);
+    control.addParameter("density", &density, 0.0f, 1.0f);
+    control.addParameter("rateNoise", &rateNoise, ofVec2f(0, 0), ofVec2f(0.1, 0.1));
+    control.addParameter("rateNoiseTime", &rateNoiseTime, 0.0f, 1.0f);
+    control.addParameter("letterNoise", &letterNoise, ofVec2f(0, 0), ofVec2f(0.1, 0.1));
+    control.addParameter("letterNoiseTime", &letterNoiseTime, 0.0f, 1.0f);
+    control.addParameter("noisyLetters", &noisyLetters);
+    control.addParameter("chinese", &chinese);
     
     update();
 }

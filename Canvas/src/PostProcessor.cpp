@@ -47,6 +47,77 @@ void PostProcessingLayer::setup() {
     control.addParameter("ssao", &ssaoEnabled);
     control.addParameter("zoomBlur", &zoomBlurEnabled);
     
+    
+    /* add all parameters to control, but make them invisible in main gui */
+    /* they are accessible instead in the secondary gui */
+    control.addParameter("aperture", &dofAperture, 0.0f, 1.0f, true);
+    control.addParameter("focus", &dofFocus, 0.95f, 1.0f, true);
+    control.addParameter("maxBlur", &dofMaxBlur, 0.0f, 1.0f, true);
+    control.addParameter("segments", &kaleidoscopeSegments, 0.0f, 16.0f, true);
+    control.addParameter("amplitude", &noiseWarpAmplitude, 0.0f, 1.0f, true);
+    control.addParameter("frequency", &noiseWarpFrequency, 0.0f, 1.0f, true);
+    control.addParameter("speed", &noiseWarpSpeed, 0.0f, 1.0f, true);
+    control.addParameter("resolution", &pixelateResolution, ofVec2f(0, 0), ofVec2f(100, 100), true);
+    control.addParameter("hue", &edgesHue, 0.0f, 1.0f, true);
+    control.addParameter("saturation", &edgesSaturation, 0.0f, 1.0f, true);
+    control.addParameter("V", &vTiltShiftV, 0.0f, 1.0f, true);
+    control.addParameter("R", &vTiltShiftR, 0.0f, 1.0f, true);
+    control.addParameter("H", &hTiltShiftH, 0.0f, 0.1f, true);
+    control.addParameter("R", &hTiltShiftR, 0.0f, 0.1f, true);
+    control.addParameter("lightDirDOTviewDir", &godRayLightDirDOTviewDir, 0.0f, 1.0f, true);
+    control.addParameter("lightPoisitonOnScreen", &godRayLightPoisitonOnScreen, ofVec3f(-1, -1, -1), ofVec3f(1, 1, 1), true);
+    control.addParameter("specularColor", &toonSpecularColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), true);
+    control.addParameter("shinyness", &toonShinyness, 0.0f, 1.0f, true);
+    control.addParameter("level", &toonLevel, 0.0f, 1.0f, true);
+    control.addParameter("enableSpecular", &toonEnableSpecular, true);
+    control.addParameter("edgeThreshold", &toonEdgeThreshold, 0.0f, 1.0f, true);
+    control.addParameter("diffuseColor", &toonDiffuseColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), true);
+    control.addParameter("ambientColor", &toonAmbientColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), true);
+    control.addParameter("bypassOpacity", &bleachBypassOpacity, 0.0f, 1.0f, true);
+    control.addParameter("brightness", &contrastBrightness, 0.0f, 1.0f, true);
+    control.addParameter("contrast", &contrastContrast, 0.0f, 1.0f, true);
+    control.addParameter("attenuationOffset", &fakeSSSAttenuationOffset, 0.0f, 1.0f, true);
+    control.addParameter("baseColor", &fakeSSSBaseColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), true);
+    control.addParameter("extinctionCoefficient", &fakeSSSExtinctionCoefficient, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), true);
+    control.addParameter("lightColor", &fakeSSSLightColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), true);
+    control.addParameter("lightPosition", &fakeSSSLightPosition, ofPoint(0, 0), ofPoint(1, 1), true);
+    control.addParameter("materialThickness", &fakeSSSMaterialThickness, 0.0f, 1.0f, true);
+    control.addParameter("rimScale", &fakeSSSRimScale, 0.0f, 1.0f, true);
+    control.addParameter("specular", &fakeSSSSpecular, 0.0f, 1.0f, true);
+    control.addParameter("specularColor", &fakeSSSSpecularColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), true);
+    control.addParameter("brightness", &limbDarkenBrightness, 0.0f, 1.0f, true);
+    control.addParameter("endColor", &limbDarkenEndColor, ofVec3f(0, 0, 0), ofVec3f(1, 1, 1), true);
+    control.addParameter("radialScale", &limbDarkenRadialScale, 0.0f, 1.0f, true);
+    control.addParameter("startColor", &limbDarkenStartColor, ofVec3f(0, 0, 0), ofVec3f(1, 1, 1), true);
+    control.addParameter("amount", &shiftAmount, 0.0f, 1.0f, true);
+    control.addParameter("angle", &shiftAngle, 0.0f, 1.0f, true);
+    control.addParameter("cameraNear", &ssaoCameraNear, 0.0f, 1.0f, true);
+    control.addParameter("cameraFar", &ssaoCameraFar, 0.0f, 1.0f, true);
+    control.addParameter("fogNear", &ssaoFogNear, 0.0f, 1.0f, true);
+    control.addParameter("fogFar", &ssaoFogFar, 0.0f, 1.0f, true);
+    control.addParameter("fogEnabled", &ssaoFogEnabled, true);
+    control.addParameter("onlyAO", &ssaoOnlyAO, true);
+    control.addParameter("aoClamp", &ssaoAoClamp, 0.0f, 1.0f, true);
+    control.addParameter("lumInfluence", &ssaoLumInfluence, 0.0f, 1.0f, true);
+    control.addParameter("centerX", &zoomBlurCenterX, 0.0f, 1.0f, true);
+    control.addParameter("centerY", &zoomBlurCenterY, 0.0f, 1.0f, true);
+    control.addParameter("exposure", &zoomBlurExposure, 0.0f, 1.0f, true);
+    control.addParameter("decay", &zoomBlurDecay, 0.0f, 1.0f, true);
+    control.addParameter("density", &zoomBlurDensity, 0.0f, 1.0f, true);
+    control.addParameter("weight", &zoomBlurWeight, 0.0f, 1.0f, true);
+    control.addParameter("clamp", &zoomBlurClamp, 0.0f, 1.0f, true);
+
+    /*
+     // if to use menu instead of radio list
+     string pp[] = {"alias", "bloom", "dof", "kaleidoscope", "noiseWarp",
+     "pixelate", "edges", "vTiltShift", "hTiltShift", "godRay",
+     "toon", "bleachBypass", "contrast", "convolve", "fakeSSS",
+     "limbDarken", "shift", "rimHighlights", "ssao", "zoomBlur"};
+     vector<string> items = vector<string>(pp, pp + sizeof(pp) / sizeof(pp[0]));
+     control.setName("PostProcessing");
+     control.addMenu("Effects", items, this, &PostProcessingLayer::enableEffect);
+    */
+    
     aliasEnabled = false;
     bloomEnabled = false;
     dofEnabled = false;
@@ -67,13 +138,13 @@ void PostProcessingLayer::setup() {
     rimHighlightEnabled = false;
     ssaoEnabled = false;
     zoomBlurEnabled = false;
-
+    
     setupParameterGui();
 }
 
 //-----------
 void PostProcessingLayer::setupParameterGui() {
-    gui.clearParameters();
+    gui.clear();
     gui.setName("parameters");
     if (alias->getEnabled()) {
         //gui.registerLabel("alias");
@@ -333,4 +404,11 @@ void PostProcessingLayer::render() {
             texLayer->draw(0, 0);
         post.end();
     fbo.end();
+}
+
+//-----------
+PostProcessingLayer::~PostProcessingLayer() {
+    cout << "delete ppl" << endl;
+    gui.setActive(false);
+    gui.~Control();
 }

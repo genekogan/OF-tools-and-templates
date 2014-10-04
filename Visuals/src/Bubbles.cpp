@@ -4,6 +4,20 @@
 void Bubbles::setup() {
     setName("Bubbles");
     
+    speed = 0.091;
+    numBubbles = 600;
+    maxSizeInitial = 500;
+    maxSize = 140;
+    baseColor = ofColor(200, 40, 220);
+    varColor = ofVec3f(20, 20, 20);
+    positionNoiseMargin = ofVec2f(30, 30);
+    positionNoiseFactor = ofVec2f(0.01, 0.01);
+    positionSineMargin = ofVec2f(0, 0);
+    positionSineFreq = ofVec2f(0.05, 0.05);
+    positionTimeConstant = ofVec2f(0, 0);
+    maxPasses = 30;
+    blurAmt = 7;
+    
     control.addParameter("speed", &speed, 0.0f, 0.1f);
     control.addParameter("numBubbles", &numBubbles, 1, 2048);
     control.addParameter("maxSizeInitial", &maxSizeInitial, 100, 1000);
@@ -18,19 +32,6 @@ void Bubbles::setup() {
     control.addParameter("maxPasses", &maxPasses, 3, 50);
     control.addParameter("blurAmt", &blurAmt, 0, 20);
     
-    speed = 0.091;
-    numBubbles = 600;
-    maxSizeInitial = 500;
-    maxSize = 140;
-    baseColor = ofColor(200, 40, 220);
-    varColor = ofVec3f(20, 20, 20);
-    positionNoiseMargin = ofVec2f(30, 30);
-    positionNoiseFactor = ofVec2f(0.01, 0.01);
-    positionSineMargin = ofVec2f(0, 0);
-    positionSineFreq = ofVec2f(0.05, 0.05);
-    positionTimeConstant = ofVec2f(0, 0);
-    maxPasses = 30;
-    blurAmt = 7;
     
     
     // NEEDS TO BE FIXED
@@ -51,7 +52,6 @@ void Bubbles::setup() {
 
 //------------
 Bubbles::~Bubbles() {
-    cout << "kill bub"<<endl;
     for (int i=0; i<position.size(); i++) {
         delete position[i];
     }

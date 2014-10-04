@@ -5,7 +5,7 @@
 void CreatorLayer::setup() {
     setupChoices();
     control.setName("Creator");
-    control.clearParameters();
+    control.clear();
     control.addMenu("select scene", choices, this, &CreatorLayer::selectScene);
     guiPosition = ofPoint(5, 5);
     setupCreators();
@@ -53,7 +53,6 @@ void CreatorLayer::setupChoices() {
 void ModifierLayer::setup() {
     setupChoices();
     scene = new Shader();
-    ((Shader *) scene)->setupBrCoSa();
     control.setName("Modifier");
     control.addMenu("select scene", choices, this, &ModifierLayer::selectScene);
     if (texLayer != NULL) {

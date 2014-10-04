@@ -5,6 +5,18 @@
 void Meshy::setup() {
     setName("Meshy");
  
+    realtime = true;
+    circles = true;
+    filled = false;
+    numCandidates = 10;
+    numPoints = 1000;
+    minDist = 130;
+    color = ofColor(255, 50);
+    varColor = ofColor(20);
+    margin = 8;
+    triNoise = 0.01;
+    colorNoise = 0.001;
+    
     control.addParameter("realtime", &realtime);
     control.addParameter("circles", &circles);
     control.addParameter("filled", &filled);
@@ -18,18 +30,6 @@ void Meshy::setup() {
     control.addColor("varColor", &varColor);
     control.addParameter("lineWidth", &lineWidth, 0.0f, 5.0f);
     control.addEvent("triangulate", this, &Meshy::triangulate);
-    
-    realtime = true;
-    circles = true;
-    filled = false;
-    numCandidates = 10;
-    numPoints = 1000;
-    minDist = 130;
-    color = ofColor(255, 50);
-    varColor = ofColor(20);
-    margin = 8;
-    triNoise = 0.01;
-    colorNoise = 0.001;
  
     string s;
     triangulate(s);

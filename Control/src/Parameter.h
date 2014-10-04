@@ -36,6 +36,10 @@ template <typename T>
 class Parameter : public ParameterBase
 {
 public:
+    ~Parameter() {
+        //ofRemoveListener(ofEvents().update, this, &Parameter::update);
+    }
+    
     Parameter(string name, T &val) {
         this->name = name;
         this->oscAddress = "/"+name;
@@ -90,18 +94,12 @@ protected:
 };
 
 
-template<class T> T ParameterBase::get()
-{ return dynamic_cast<Parameter<T>&>(*this).get(); }
-template<class T> T ParameterBase::getMin()
-{ return dynamic_cast<Parameter<T>&>(*this).getMin(); }
-template<class T> T ParameterBase::getMax()
-{ return dynamic_cast<Parameter<T>&>(*this).getMax(); }
-template<class T> T* ParameterBase::getReference()
-{ return dynamic_cast<Parameter<T>&>(*this).getReference(); }
-template<class T> void ParameterBase::setMin(T min)
-{ return dynamic_cast<Parameter<T>&>(*this).setMin(); }
-template<class T> void ParameterBase::setMax(T max)
-{ return dynamic_cast<Parameter<T>&>(*this).setMax(); }
+template<class T> T ParameterBase::get() { return dynamic_cast<Parameter<T>&>(*this).get(); }
+template<class T> T ParameterBase::getMin() { return dynamic_cast<Parameter<T>&>(*this).getMin(); }
+template<class T> T ParameterBase::getMax() { return dynamic_cast<Parameter<T>&>(*this).getMax(); }
+template<class T> T* ParameterBase::getReference() { return dynamic_cast<Parameter<T>&>(*this).getReference(); }
+template<class T> void ParameterBase::setMin(T min) { return dynamic_cast<Parameter<T>&>(*this).setMin(); }
+template<class T> void ParameterBase::setMax(T max) { return dynamic_cast<Parameter<T>&>(*this).setMax(); }
 
 
 template<class T> void ParameterBase::setType() { }

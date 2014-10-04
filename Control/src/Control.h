@@ -11,127 +11,42 @@ class Control
 {
 public:
     ~Control();
+    Control();
     
-    Control() {
-        gui = new ofxUICanvas("control");
-        guiPresets = new ofxUICanvas("controlPresets");
-        setWidth(150);
-        spacing = gui->getWidgetSpacing();
-        headerSelected = false;
-        setupGuiPresets();
-        visible = true;
-        setActive(true);
-    }
-    
-    void update(ofEventArgs &data) {
-        updateColors();
-    }
+    void update(ofEventArgs &data);
     
     void savePreset();
-    
     void loadPreset(string path);
     
-    void setName(string name) {
-        this->name = name;
-        setupGuiPresets();
-    }
-    
-    void setWidth(int width) {
-        this->width = width;
-        gui->setWidth(width);
-        guiPresets->setWidth(width);
-    }
-
-    void setGuiPosition(int x, int y) {
-        gui->setPosition(x, y);
-        guiPresets->setPosition(x, y);
-    }
-    
-    void setActive(bool active) {
-        if (active) {
-            ofAddListener(gui->newGUIEvent, this, &Control::guiEvent);
-            ofAddListener(guiPresets->newGUIEvent, this, &Control::guiPresetsEvent);
-            ofAddListener(ofEvents().update, this, &Control::update);
-        }
-        else {
-            ofRemoveListener(gui->newGUIEvent, this, &Control::guiEvent);
-            ofRemoveListener(guiPresets->newGUIEvent, this, &Control::guiPresetsEvent);
-            ofRemoveListener(ofEvents().update, this, &Control::update);
-        }
-        setVisible(active);
-    }
-    
-    void setVisible(bool visible) {
-        this->visible = visible;
-        if (visible) {
-            gui->enable();
-            guiPresets->enable();
-        }
-        else {
-            gui->disable();
-            guiPresets->disable();
-        }
-        gui->setVisible(visible);
-        guiPresets->setVisible(false);
-    }
-    
-    void toggleVisible() {
-        setVisible(!visible);
-    }
-    
-    void togglePresetsVisible() {
-        visible = !visible;
-        gui->setVisible(visible);
-        guiPresets->setVisible(!visible);
-    }
-    
-    vector<ParameterBase *> & getParameters() {
-        return parameters;
-    }
-    
-    void clearParameters();
-
-    template <typename T> void addParameter(string name, T *value, T min, T max) {
-        ParameterBase *parameter = new Parameter<T>(name, *value, min, max);
-        parameters.push_back(parameter);
-        setupGui();
-    }
-    
-    template <typename T> void addParameter(string name, T *value) {
-        ParameterBase *parameter = new Parameter<T>(name, *value);
-        parameters.push_back(parameter);
-        setupGui();
-    }
-    
-    template <typename ListenerClass, typename ListenerMethod>
-    void addEvent(string name, ListenerClass *listener, ListenerMethod method) {
-        events[name] = new ofEvent<string>();
-        ofAddListener(*events[name], listener, method);
-        setupGui();
-    }
-    
-    template <typename ListenerClass, typename ListenerMethod>
-    void addMenu(string name, vector<string> items, ListenerClass *listener, ListenerMethod method) {
-        menus[name] = items;
-        menuEvents[name] = new ofEvent<string>();
-        ofAddListener(*menuEvents[name], listener, method);
-        setupGui();
-    }
-    
-    void addColor(string name, ofColor *value) {
-        string sn = ofToString(ofRandom(1000));
-        ofVec4f *vec = new ofVec4f(value->r, value->g, value->b, value->a);
-        GuiColorVecPair *color = new GuiColorVecPair();
-        color->color = value;
-        color->vec = vec;
-        colors[name] = color;
-        ParameterBase *parameter = new Parameter<ofVec4f>(name, *vec, ofVec4f(0, 0, 0, 0), ofVec4f(255, 255, 255, 255));
-        parameters.push_back(parameter);
-        setupGui();
-    }
-    
+    void setName(string name);
     string getName() {return name;}
+    
+    void setWidth(int width);
+    void setGuiPosition(int x, int y);
+    void setActive(bool active);
+    void setVisible(bool visible);
+    void toggleVisible();
+    void togglePresetsVisible();
+    
+    vector<ofxUIDropDownList *> getMenus();
+    vector<ParameterBase *> & getParameters() {return parameters;}
+    void clear();
 
+    template <typename T>
+    void addParameter(string name, T *value, T min, T max, bool invisible=false);
+    
+    template <typename T>
+    void addParameter(string name, T *value, bool invisible=false);
+    
+    template <typename ListenerClass, typename ListenerMethod>
+    void addEvent(string name, ListenerClass *listener, ListenerMethod method);
+    
+    template <typename ListenerClass, typename ListenerMethod>
+    void addMenu(string name, vector<string> items, ListenerClass *listener, ListenerMethod method);
+    
+    void addColor(string name, ofColor *value);
+    
+    void triggerMenuEvent(string menuName, string selection, bool trigger);
     bool headerSelected;
     
 private:
@@ -144,13 +59,12 @@ private:
         }
     };
     
-    void updateColors();
-    
     void guiEvent(ofxUIEventArgs &e);
     void guiPresetsEvent(ofxUIEventArgs &e);
     void setupGui();
     void setupGuiPresets();
-    
+    void updateColors();
+
     void addParameterToGui(Parameter<bool> *parameter);
     void addParameterToGui(Parameter<int> *parameter);
     void addParameterToGui(Parameter<float> *parameter);
@@ -163,13 +77,44 @@ private:
     ofxUIDropDownList *presetNames;
 
     string name;
-    bool visible;
+    bool active, visible;
     int width, spacing;
     int numLerpFrames;
     
     vector<ParameterBase *> parameters;
+    map<ParameterBase *, bool> parametersVisible;
     map<string, ofEvent<string>*> events;
     map<string, vector<string> > menus;
     map<string, ofEvent<string>*> menuEvents;
     map<string, GuiColorVecPair*> colors;
 };
+
+
+template <typename T> void Control::addParameter(string name, T *value, T min, T max, bool invisible) {
+    ParameterBase *parameter = new Parameter<T>(name, *value, min, max);
+    parameters.push_back(parameter);
+    parametersVisible[parameter] = !invisible;
+    setupGui();
+}
+
+template <typename T> void Control::addParameter(string name, T *value, bool invisible) {
+    ParameterBase *parameter = new Parameter<T>(name, *value);
+    parameters.push_back(parameter);
+    parametersVisible[parameter] = !invisible;
+    setupGui();
+}
+
+template <typename ListenerClass, typename ListenerMethod>
+void Control::addEvent(string name, ListenerClass *listener, ListenerMethod method) {
+    events[name] = new ofEvent<string>();
+    ofAddListener(*events[name], listener, method);
+    setupGui();
+}
+
+template <typename ListenerClass, typename ListenerMethod>
+void Control::addMenu(string name, vector<string> items, ListenerClass *listener, ListenerMethod method) {
+    menus[name] = items;
+    menuEvents[name] = new ofEvent<string>();
+    ofAddListener(*menuEvents[name], listener, method);
+    setupGui();
+}

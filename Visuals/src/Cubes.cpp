@@ -65,6 +65,12 @@ void Cube::draw() {
 void Cubes::setup() {
     setName("Cubes");
     
+    newBoxRate = 3;
+    pan = ofVec3f(-8, -3, 0);
+    panPosition = ofVec3f(0, 0, 0);
+    color = ofColor(255, 0, 0, 80);
+    colorVar = 10;
+
     control.addParameter("newBoxRate", &newBoxRate, 1, 10);
     control.addParameter("pan", &pan, ofVec3f(-20, -20, -20), ofVec3f(20, 20, 20));
     control.addParameter("translation", &translation, ofVec2f(0, 0), ofVec2f(width, height));
@@ -77,12 +83,6 @@ void Cubes::setup() {
     control.addEvent("preset5", this, &Cubes::preset5);
     control.addEvent("preset6", this, &Cubes::preset6);
     control.addEvent("preset7", this, &Cubes::preset7);
-    
-    newBoxRate = 3;
-    pan = ofVec3f(-8, -3, 0);
-    panPosition = ofVec3f(0, 0, 0);
-    color = ofColor(255, 0, 0, 80);
-    colorVar = 10;
     
     string s;
     preset1(s);

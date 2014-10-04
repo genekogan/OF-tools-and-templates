@@ -5,6 +5,11 @@
 void DebugScreen::setup() {
     setName("DebugScreen");
 
+    color1 = ofColor(ofRandom(255), ofRandom(255), ofRandom(255), 255);
+    color2 = ofColor(ofRandom(255), ofRandom(255), ofRandom(255), 255);
+    numRects = 8;
+    speed = 60;
+
     vector<string> debugModes;
     debugModes.push_back("Full");
     debugModes.push_back("Gradient");
@@ -24,11 +29,6 @@ void DebugScreen::setup() {
     control.addMenu("gradient type", gradientModes, this, &DebugScreen::setupGradient);
     control.addEvent("refresh", this, &DebugScreen::refresh);
     
-    color1 = ofColor(ofRandom(255), ofRandom(255), ofRandom(255), 255);
-    color2 = ofColor(ofRandom(255), ofRandom(255), ofRandom(255), 255);
-    numRects = 8;
-    speed = 60;
-    
     setupGradient((string &) gradientMode);
 }
 
@@ -42,7 +42,8 @@ void DebugScreen::setType(string &s) {
 
 //--------
 void DebugScreen::update() {
-
+    string s;
+    refresh(s);
 }
 
 //--------

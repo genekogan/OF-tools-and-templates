@@ -5,20 +5,6 @@
 void Agents::setup() {
     setName("Agents");
 
-    control.addParameter("numAgents", &numAgents, 1, 360);
-    control.addParameter("speed", &speed, -5.0f, 5.0f);
-    control.addParameter("size", &size, 30, 800);
-    control.addColor("colorLines", &color1);
-    control.addColor("colorTri", &color2);
-    control.addParameter("fillAlpha", &fillAlpha, 0, 255);
-    control.addParameter("strokeAlpha", &strokeAlpha, 0, 255);
-    control.addParameter("cycle", &cycle, 4, 1000);
-    control.addParameter("density", &density, 0.0f, 1.0f);
-    control.addParameter("wrap", &wrapping);
-    control.addParameter("debug", &debug);
-    control.addParameter("lines", &drawLines);
-    control.addParameter("triangles", &drawTriangles);
-    
     numAgents = 16;
     wrapping = true;
     debug = false;
@@ -32,6 +18,20 @@ void Agents::setup() {
     density = 0.7;
     drawLines = false;
     drawTriangles = true;
+
+    control.addParameter("numAgents", &numAgents, 1, 360);
+    control.addParameter("speed", &speed, -5.0f, 5.0f);
+    control.addParameter("size", &size, 30, 800);
+    control.addColor("colorLines", &color1);
+    control.addColor("colorTri", &color2);
+    control.addParameter("fillAlpha", &fillAlpha, 0, 255);
+    control.addParameter("strokeAlpha", &strokeAlpha, 0, 255);
+    control.addParameter("cycle", &cycle, 4, 1000);
+    control.addParameter("density", &density, 0.0f, 1.0f);
+    control.addParameter("wrap", &wrapping);
+    control.addParameter("debug", &debug);
+    control.addParameter("lines", &drawLines);
+    control.addParameter("triangles", &drawTriangles);
     
     update();
 }

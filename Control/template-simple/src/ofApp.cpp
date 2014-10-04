@@ -41,8 +41,6 @@ void ofApp::setup(){
 
 //---------
 void ofApp::update(){
-    
-    control.blah();
 }
 
 //---------

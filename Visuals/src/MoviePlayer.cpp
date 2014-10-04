@@ -4,14 +4,14 @@
 void MoviePlayer::setup() {
     setName("MoviePlayer");
     
+    playing = false;
+    speed = 1.0f;
+    oldSpeed = speed;
+
     control.addParameter("speed", &speed, -3.0f, 3.0f);
     control.addEvent("jump", this, &MoviePlayer::jumpBack);
     control.addEvent("random", this, &MoviePlayer::jumpRandom);
     control.addEvent("play", this, &MoviePlayer::play);
-    playing = false;
-    
-    speed = 1.0f;
-    oldSpeed = speed;
 }
 
 //--------

@@ -87,6 +87,22 @@ void PolarEq::draw() {
 void Polar::setup() {
     setName("Polar");
     
+    nx = 3;
+    ny = 3;
+    delTime = 1.0;
+    numPoints = 12;
+    color = ofColor(255, 255, 255, 150);
+    lineWidth = 2;
+    rad = 125;
+    radMargin = 0;
+    dRateMax = 0.03;
+    dAngMax = 1.0;
+    angNoise = 0.0004;
+    rateNoise = 0.0005;
+    radNoise = 0.0004;
+    is3d = false;
+    isRibbon = false;
+
     control.addColor("color", &color);
     control.addParameter("lineWidth", &lineWidth, 0.0f, 16.0f);
     control.addParameter("nx", &nx, 1, 12);
@@ -104,22 +120,6 @@ void Polar::setup() {
     control.addParameter("ribbons", &isRibbon);
     control.addParameter("speedRotation", &speedRotation, ofVec3f(0, 0, 0), ofVec3f(1, 1, 1));
     control.addEvent("refresh", this, &Polar::refresh);
-    
-    nx = 3;
-    ny = 3;
-    delTime = 1.0;
-    numPoints = 12;
-    color = ofColor(255, 255, 255, 150);
-    lineWidth = 2;
-    rad = 125;
-    radMargin = 0;
-    dRateMax = 0.03;
-    dAngMax = 1.0;
-    angNoise = 0.0004;
-    rateNoise = 0.0005;
-    radNoise = 0.0004;
-    is3d = false;
-    isRibbon = false;
     
     managePolarCount();
 }

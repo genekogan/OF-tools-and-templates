@@ -7,13 +7,14 @@
 #include "PostProcessor.h"
 #include "PostGlitch.h"
 #include "PostFx.h"
-
+#include "Presets.h"
 
 
 class Canvas
 {
 public:
     ~Canvas();
+    
     void setup(int width, int height);
     void update();
     void draw(int x, int y);
@@ -26,11 +27,17 @@ public:
     void addPostProcessor(string &s) {addLayer(CANVAS_POST_PROCESSING);}
     void addPostGlitch(string &s) {addLayer(CANVAS_POST_GLITCH);}
     void addPostFx(string &s) {addLayer(CANVAS_POST_FX);}
+    void clearLayers();
     
     void setVisible(bool guiVisible);
     void toggleGuiVisible();
-
-private:
+    
+    void loadPreset(string &filename);
+    bool savePreset(string filename="");
+    void savePresetFromGui(string &s);
+    
+protected:
+    
     void setupGui();
     
     void setDeleteLayer(string &s);

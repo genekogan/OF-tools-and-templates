@@ -21,6 +21,7 @@
 
 class PostFxLayer : public CanvasLayer{
     void setup();
+    string getType() {return "PostFxLayer";}
     void render();
 
 private:    
