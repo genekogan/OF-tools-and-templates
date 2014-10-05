@@ -16,7 +16,6 @@ void PostProcessingLayer::setup() {
     godRay = post.createPass<GodRaysPass>();
     toon = post.createPass<ToonPass>();
     bleachBypass = post.createPass<BleachBypassPass>();
-    contrast = post.createPass<ContrastPass>();
     convolve = post.createPass<ConvolutionPass>();
     fakeSSS = post.createPass<FakeSSSPass>();
     limbDarken = post.createPass<LimbDarkeningPass>();
@@ -38,7 +37,6 @@ void PostProcessingLayer::setup() {
     control.addParameter("godRay", &godRayEnabled);
     control.addParameter("toon", &toonEnabled);
     control.addParameter("bleachBypass", &bleachBypassEnabled);
-    control.addParameter("contrast", &contrastEnabled);
     control.addParameter("convolve", &convolveEnabled);
     control.addParameter("fakeSSS", &fakeSSSEnabled);
     control.addParameter("limbDarken", &limbDarkenEnabled);
@@ -74,8 +72,6 @@ void PostProcessingLayer::setup() {
     control.addParameter("diffuseColor", &toonDiffuseColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), true);
     control.addParameter("ambientColor", &toonAmbientColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), true);
     control.addParameter("bypassOpacity", &bleachBypassOpacity, 0.0f, 1.0f, true);
-    control.addParameter("brightness", &contrastBrightness, 0.0f, 1.0f, true);
-    control.addParameter("contrast", &contrastContrast, 0.0f, 1.0f, true);
     control.addParameter("attenuationOffset", &fakeSSSAttenuationOffset, 0.0f, 1.0f, true);
     control.addParameter("baseColor", &fakeSSSBaseColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), true);
     control.addParameter("extinctionCoefficient", &fakeSSSExtinctionCoefficient, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), true);
@@ -111,7 +107,7 @@ void PostProcessingLayer::setup() {
      // if to use menu instead of radio list
      string pp[] = {"alias", "bloom", "dof", "kaleidoscope", "noiseWarp",
      "pixelate", "edges", "vTiltShift", "hTiltShift", "godRay",
-     "toon", "bleachBypass", "contrast", "convolve", "fakeSSS",
+     "toon", "bleachBypass", "convolve", "fakeSSS",
      "limbDarken", "shift", "rimHighlights", "ssao", "zoomBlur"};
      vector<string> items = vector<string>(pp, pp + sizeof(pp) / sizeof(pp[0]));
      control.setName("PostProcessing");
@@ -130,7 +126,6 @@ void PostProcessingLayer::setup() {
     godRayEnabled = false;
     toonEnabled = false;
     bleachBypassEnabled = false;
-    contrastEnabled = false;
     convolveEnabled = false;
     fakeSSSEnabled = false;
     limbDarkenEnabled = false;
@@ -205,11 +200,6 @@ void PostProcessingLayer::setupParameterGui() {
     if (bleachBypass->getEnabled()) {
         //gui.registerLabel("bleachBypass");
         gui.addParameter("bypassOpacity", &bleachBypassOpacity, 0.0f, 1.0f);
-    }
-    if (contrast->getEnabled()) {
-        //gui.registerLabel("contrast");
-        gui.addParameter("brightness", &contrastBrightness, 0.0f, 1.0f);
-        gui.addParameter("contrast", &contrastContrast, 0.0f, 1.0f);
     }
     if (convolve->getEnabled()) {
         //gui.registerLabel("convolve");
@@ -288,7 +278,6 @@ void PostProcessingLayer::update() {
     checkEffectActive(godRay, godRayEnabled);
     checkEffectActive(toon, toonEnabled);
     checkEffectActive(bleachBypass, bleachBypassEnabled);
-    checkEffectActive(contrast, contrastEnabled);
     checkEffectActive(convolve, convolveEnabled);
     checkEffectActive(fakeSSS, fakeSSSEnabled);
     checkEffectActive(limbDarken, limbDarkenEnabled);
@@ -344,10 +333,6 @@ void PostProcessingLayer::update() {
     }
     if (bleachBypass->getEnabled()) {
         bleachBypass->setOpacity(bleachBypassOpacity);
-    }
-    if (contrast->getEnabled()) {
-        contrast->setBrightness(contrastBrightness);
-        contrast->setContrast(contrastContrast);
     }
     if (convolve->getEnabled()) {
     }

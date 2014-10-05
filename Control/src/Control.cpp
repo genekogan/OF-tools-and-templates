@@ -375,7 +375,6 @@ void Control::updateColors() {
         gui->getWidget(it->first+"->z")->setColorFill(*colors[it->first]->color);
         gui->getWidget(it->first+"->w")->setColorFill(*colors[it->first]->color);
     }
-
 }
 
 //-------

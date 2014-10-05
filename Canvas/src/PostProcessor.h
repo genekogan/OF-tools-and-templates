@@ -61,7 +61,6 @@ private:
     GodRaysPass::Ptr godRay;
     ToonPass::Ptr toon;
     BleachBypassPass::Ptr bleachBypass;
-    ContrastPass::Ptr contrast;
     ConvolutionPass::Ptr convolve;
     FakeSSSPass::Ptr fakeSSS;
     LimbDarkeningPass::Ptr limbDarken;
@@ -85,7 +84,6 @@ private:
     bool godRayEnabled;
     bool toonEnabled;
     bool bleachBypassEnabled;
-    bool contrastEnabled;
     bool convolveEnabled;
     bool fakeSSSEnabled;
     bool limbDarkenEnabled;
@@ -130,9 +128,6 @@ private:
     ofVec4f toonAmbientColor;
     
     float bleachBypassOpacity;
-    
-    float contrastBrightness;
-    float contrastContrast;
     
     float fakeSSSAttenuationOffset;
     ofVec4f fakeSSSBaseColor;

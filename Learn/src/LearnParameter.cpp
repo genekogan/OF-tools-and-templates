@@ -2,7 +2,7 @@
 
 
 //===========================================
-//  CONSTRUCTORS AND DESTRUCTORS
+//  CONSTRUCTORS, DESTRUCTORS, SETTERS
 
 LearnParameter::LearnParameter(string name, float *value, float min, float max) : Parameter<float>(name, *value, min, max) {
     *value = 0.5 * (min + max);
@@ -55,14 +55,55 @@ LearnOutputParameter::~LearnOutputParameter() {
     gui->disable();
 }
 
+//-----------
+void LearnParameter::set(float value){
+    Parameter<float>::set(value);
+    guiValue->setValue(value);
+    guiValueText->setTextString(ofToString(get()));
+}
+
+//-----------
+void LearnParameter::setName(string name){
+    Parameter<float>::setName(name);
+    guiName->setTextString(getName());
+}
+
+//-----------
+void LearnParameter::setOscAddress(string oscAddress){
+    Parameter<float>::setOscAddress(oscAddress);
+    guiOsc->setTextString(getOscAddress());
+}
+
+//-----------
+void LearnParameter::setMin(float min){
+    Parameter<float>::setMin(min);
+    guiMin->setTextString(ofToString(getMin()));
+}
+
+//-----------
+void LearnParameter::setMax(float max) {
+    Parameter<float>::setMax(max);
+    guiMax->setTextString(ofToString(getMax()));
+}
+
+//-----------
+void LearnParameter::setVisible(bool visible){
+    this->visible = visible;
+    gui->setVisible(visible);
+}
 
 
 
 //===========================================
 //  LEARNING
 
+void LearnOutputParameter::addInstance(vector<float> instance) {
+    data[page]->addEntry(instance);
+}
+
+//-----------
 void LearnOutputParameter::addInstance() {
-    data[page]->addEntry(grabFeatureVector<float>(true));
+    addInstance(grabFeatureVector<float>(true));
 }
 
 //-----------
@@ -174,7 +215,14 @@ void LearnOutputParameter::draw() {
     }
 }
 
-
+//-----------
+vector<vector<vector<float> > > LearnOutputParameter::getInstances() {
+    vector<vector<vector<float> > > instances;
+    for (int i=0; i<data.size(); i++) {
+        instances.push_back(data[i]->getEntries());
+    }
+    return instances;
+}
 
 
 //===========================================
@@ -256,17 +304,19 @@ void LearnOutputParameter::setupGuiInputSelector() {
     for (int i=0; i<allInputs.size(); i++) {
         inputLabels.push_back(allInputs[i]->getName());
     }
-    selector = guiInputSelect->addDropDownList("select inputs", inputLabels, 200.0f);
-    selector->setAutoClose(false);
-    selector->setAllowMultiple(true);
-    selector->open();
-    vector<ofxUILabelToggle *> toggles = selector->getToggles();
+    guiSelector = guiInputSelect->addDropDownList("select inputs", inputLabels, 200.0f);
+    vector<ofxUILabelToggle *> toggles = guiSelector->getToggles();
     for (int i=0; i<toggles.size(); i++) {
         string inputName = toggles[i]->getName();
         for (int j=0; j<activeInputs.size(); j++) {
-            toggles[i]->setValue(inputName == activeInputs[j]->getName());
+            if (inputName == activeInputs[j]->getName()) {
+                toggles[i]->setValue(value);
+            }
         }
     }
+    guiSelector->setAutoClose(false);
+    guiSelector->setAllowMultiple(true);
+    guiSelector->open();
     guiInputSelect->autoSizeToFitWidgets();
     guiInputSelect->setVisible(viewInputs);
     setupHeaders();
@@ -430,14 +480,53 @@ void LearnOutputParameter::setExamplesVisible(bool b) {
 
 //-----------
 void LearnOutputParameter::guiInputSelectEvent(ofxUIEventArgs &e) {
-    vector<ofxUILabelToggle *> toggles = selector->getToggles();
+    vector<ofxUILabelToggle *> toggles = guiSelector->getToggles();
     activeInputs.clear();
     for (int i=0; i<toggles.size(); i++) {
         if (toggles[i]->getValue()) {
-            activeInputs.push_back(allInputs[i]);
+            addInput(allInputs[i]);
+        }
+    }
+}
+
+//-----------
+void LearnOutputParameter::addInput(LearnInputParameter * input) {
+    for (int i=0; i<activeInputs.size(); i++) {
+        if (input == activeInputs[i]) return;   // prevent duplicates
+    }
+    activeInputs.push_back(input);
+    vector<ofxUILabelToggle *> toggles = guiSelector->getToggles();
+    for (int i=0; i<toggles.size(); i++) {
+        if (toggles[i]->getName() == input->getName()) {
+            toggles[i]->setValue(true);
         }
     }
     setupHeaders();
+}
+
+//-----------
+bool LearnOutputParameter::removeInput(LearnInputParameter * input) {
+    for (int i=0; i<allInputs.size(); i++) {
+        if (input == allInputs[i]) {
+            allInputs.erase(allInputs.begin() + i);
+        }
+    }
+    for (int i=0; i<activeInputs.size(); i++) {
+        if (input == activeInputs[i]) {
+            activeInputs.erase(activeInputs.begin() + i);
+            clearInstances();
+            trained = false;
+        }
+    }
+    guiSelector->removeToggle(input->getName());
+}
+
+//-----------
+bool LearnOutputParameter::getInputActive(LearnInputParameter * input) {
+    for (int i=0; i<activeInputs.size(); i++) {
+        if (input == activeInputs[i])   return true;
+    }
+    return false;
 }
 
 //-----------

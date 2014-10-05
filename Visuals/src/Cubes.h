@@ -28,6 +28,7 @@ public:
     void update();
     void draw();
     
+    void setPreset(string &s);
     void preset1(string &s);
     void preset2(string &s);
     void preset3(string &s);

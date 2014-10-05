@@ -71,7 +71,7 @@ void Learn::draw(){
 }
 
 //-------
-void Learn::addInput(string name, float *value, float min, float max) {
+LearnInputParameter * Learn::addInput(string name, float *value, float min, float max) {
     LearnInputParameter *newInput = new LearnInputParameter(name, value, min, max);
     newInput->setGuiPosition(10, 80+55*inputs.size());
     newInput->setVisible(true);
@@ -80,10 +80,11 @@ void Learn::addInput(string name, float *value, float min, float max) {
     newInput->addParameterSelectedListener(this, &Learn::parameterSelected);
     inputs.push_back(newInput);
     resetInputs();
+    return newInput;
 }
 
 //-------
-void Learn::addOutput(string name, float *value, float min, float max) {
+LearnOutputParameter * Learn::addOutput(string name, float *value, float min, float max) {
     LearnOutputParameter *newOutput = new LearnOutputParameter(name, value, min, max);
     newOutput->setGuiPosition(420, 80+55*outputs.size());
     newOutput->setInputParameters(inputs);
@@ -97,16 +98,17 @@ void Learn::addOutput(string name, float *value, float min, float max) {
         oscManager.clearOutputTrackers();
         setupOscOutputs();
     }
+    return newOutput;
 }
 
 //-------
-void Learn::addInput(string name, float min, float max) {
-    addInput(name, new float(), min, max);
+LearnInputParameter * Learn::addInput(string name, float min, float max) {
+    return addInput(name, new float(), min, max);
 }
 
 //-------
-void Learn::addOutput(string name, float min, float max) {
-    addOutput(name, new float(), min, max);
+LearnOutputParameter * Learn::addOutput(string name, float min, float max) {
+    return addOutput(name, new float(), min, max);
 }
 
 //-------
@@ -262,7 +264,7 @@ void Learn::setupGui() {
     gui3->setPosition(595, 5);
     gui3->setWidth(220);
     gui3->setHeight(60);
-    gui3->addLabelToggle("predict", false, 100, 50);
+    gui3->addLabelToggle("predict", &predicting, 100, 50);
     gui3->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
     gui3->addLabelButton("save", false, 100, 22);
     gui3->addWidgetSouthOf(new ofxUILabelButton("load", false,  100, 22, 0, 0, OFX_UI_FONT_SMALL), "save")->setPadding(2);
@@ -314,6 +316,11 @@ void Learn::gui3Event(ofxUIEventArgs &e) {
         cout << "save"<<endl;
         
         
+        bool saved = savePreset();
+        
+        if (saved) {
+            
+        }
         
         
         
@@ -328,6 +335,8 @@ void Learn::gui3Event(ofxUIEventArgs &e) {
     else if (e.getName() == "load") {
         if (e.getButton()->getValue() == 1) return;
         cout << "load"<<endl;
+        
+        loadPreset("path");
         /*
          
          LOAD PRESET
@@ -342,6 +351,11 @@ void Learn::resetInputs() {
         outputs[i]->setInputParameters(inputs);
     }
     setupOscInputs();
+    resetParameterGuiPositions();
+}
+
+//-------
+void Learn::resetParameterGuiPositions() {
     for (int i=0; i<inputs.size(); i++) {
         inputs[i]->setGuiPosition(10, 80+55*i);
     }
@@ -362,27 +376,47 @@ void Learn::outputParameterChanged(LearnParameter & input) {
 
 //-------
 void Learn::inputParameterDeleted(LearnParameter & input) {
-    for (int i=0; i<inputs.size(); i++) {
-        if (&input == inputs[i]) {
-            delete inputs[i];
-            inputs.erase(inputs.begin() + i);
-            resetInputs();
-            return;
+    vector<LearnInputParameter *>::iterator it=inputs.begin();
+    while (it != inputs.end()) {
+        if (*it == &input) {
+            /* check if input tied into any outputs and ask to confirm */
+            vector<string> dependentOutputs;
+            for (int i=0; i<outputs.size(); i++) {
+                if (outputs[i]->getInputActive(*it) && (outputs[i]->getNumInstances()>0 || outputs[i]->getTrained())) {
+                    dependentOutputs.push_back(outputs[i]->getName());
+                }
+            }
+            if (dependentOutputs.size() > 0) {
+                string msg = "The following output parameters are trained with this input: ";
+                msg += ofJoinString(dependentOutputs, ", ");
+                msg += ".\nAll of their examples and classifiers will be erased. Confirm?";
+                bool confirm = ofSystemChoiceDialog(msg);
+                if (!confirm)   return;
+            }
+            /* remove deleted input from all the outputs and delete itself */
+            for (int i=0; i<outputs.size(); i++) {
+                outputs[i]->removeInput(*it);
+            }
+            delete (*it);
+            it = inputs.erase(it);
         }
+        else ++it;
     }
+    resetParameterGuiPositions();
 }
 
 //-------
 void Learn::outputParameterDeleted(LearnParameter & output) {
-    for (int i=0; i<outputs.size(); i++) {
-        if (&output == outputs[i]) {
-            delete outputs[i];
-            outputs.erase(outputs.begin() + i);
-            resetInputs();
-            setupOscOutputs();
-            return;
+    vector<LearnOutputParameter *>::iterator it=outputs.begin();
+    while (it != outputs.end()) {
+        if (*it == &output) {
+            delete (*it);
+            it = outputs.erase(it);
         }
+        else ++it;
     }
+    resetInputs();
+    setupOscOutputs();
 }
 
 //-------
@@ -405,4 +439,267 @@ void Learn::parameterSelected(LearnParameter & parameter) {
         outputs[i]->deselect();
     }
 }
+
+
+
+
+
+
+//-------
+bool Learn::savePreset(string filename) {
+    Presets presets;
+
+    filename = "g";
+    if (filename=="") {
+        filename = ofSystemTextBoxDialog("Choose a filename");
+    }
+    if (filename=="") {
+        return false;
+    }
+    string path = ofToDataPath("presets/"+filename+".xml");
+
+    path = "/Users/Gene/Desktop/test.xml";
+    
+    ofXml xml;
+    
+    xml.addChild("LearnPreset");
+    xml.setTo("LearnPreset");
+    
+    /* save inputs */
+    
+    xml.addChild("Inputs");
+    xml.setTo("Inputs");
+    for (int i=0; i<inputs.size(); i++) {
+        ofXml xmlp = presets.getXml(inputs[i]);
+        xml.addXml(xmlp);
+    }
+    xml.setToParent();
+    
+    /* save outputs */
+    
+    xml.addChild("Outputs");
+    xml.setTo("Outputs");
+    for (int i=0; i<outputs.size(); i++) {
+        vector<LearnInputParameter *> activeInputs = outputs[i]->getActiveInputs();
+        vector<vector<vector<float> > > instances = outputs[i]->getInstances();
+        
+        // add inputs
+        ofXml xmlp = presets.getXml(outputs[i]);
+        xmlp.addChild("Inputs");
+        xmlp.setTo("Inputs");
+        for (int j=0; j<activeInputs.size(); j++) {
+            xmlp.addValue("Input", activeInputs[j]->getName());
+        }
+        xmlp.setToParent();
+        
+        // add pages of examples
+        xmlp.addChild("Examples");
+        xmlp.setTo("Examples");
+        for (int p=0; p<instances.size(); p++) {
+            xmlp.addChild("Page");
+            xmlp.setTo("Page["+ofToString(p)+"]");
+            for (int j=0; j<instances[p].size(); j++) {
+                string instanceString = ofToString(instances[p][j][0]);
+                for (int k=1; k<instances[p][j].size(); k++) {
+                    instanceString += ","+ofToString(instances[p][j][k]);
+                }
+                xmlp.addValue("Example", instanceString);
+            }
+            xmlp.setToParent();
+        }
+        xmlp.setToParent();
+        
+        // add classifier info
+        xmlp.addChild("Classifier");
+        xmlp.setTo("Classifier");
+        xmlp.setToParent();
+        
+        xml.addXml(xmlp);
+    }
+    xml.setToParent();
+    
+    xml.save(path);
+    ofSystem("open "+path);
+    
+    return true;
+}
+
+//-------
+void Learn::loadPreset(string filename) {
+    Presets presets;
+    ofXml xml;
+
+    string path = ofToDataPath("presets/"+filename);
+    path = "/Users/Gene/Desktop/test.xml";
+    bool xmlLoaded = xml.load(path);
+    if (!xmlLoaded) {
+        cout << "failed to load preset " << "test.xml" << endl;
+        return;
+    }
+
+    // store existing parameters to delete non-overwritten ones after loading done
+    map<string, bool> inputsToDelete, outputsToDelete;
+    for (int i=0; i<inputs.size(); i++) {
+        inputsToDelete[inputs[i]->getName()] = true;
+    }
+    for (int i=0; i<outputs.size(); i++) {
+        outputsToDelete[outputs[i]->getName()] = true;
+    }
+    
+    xml.setTo("LearnPreset");
+
+    /* Load Inputs */
+    
+    xml.setTo("Inputs");
+    if (xml.exists("Parameter")) {
+        xml.setTo("Parameter[0]");
+        do {
+            string name = xml.getValue<string>("Name");
+            string oscAddress = xml.getValue<string>("OscAddress");
+            string type = xml.getValue<string>("Type");
+            float value = xml.getValue<float>("Value");
+            float min = xml.getValue<float>("Min");
+            float max = xml.getValue<float>("Max");
+            
+            // input to load settings into
+            LearnInputParameter * input;
+            
+            // try to find existing input with same name...
+            bool inputExists = false;
+            for (int i=0; i<inputs.size(); i++) {
+                if (inputs[i]->getName() == name) {
+                    input = inputs[i];
+                    inputExists = true;
+                    break;
+                }
+            }
+            // ...or make new one if none found
+            if (!inputExists) {
+                input = addInput(name, new float(), min, max);
+            }
+            inputsToDelete[name] = false;
+            
+            input->setOscAddress(oscAddress);
+            input->setMin(min);
+            input->setMax(max);
+            input->set(value);
+        }
+        while (xml.setToSibling());
+        xml.setToParent();
+    }
+    xml.setToParent();
+
+    // delete non-overwritten inputs from before loading
+    for (int i=0; i<inputs.size(); i++) {
+        if (inputsToDelete[inputs[i]->getName()]) {
+            inputParameterDeleted((LearnParameter &) inputs[i]);
+        }
+    }
+    inputsToDelete.clear();
+    
+    /* Load Outputs */
+    
+    xml.setTo("Outputs");
+    if (xml.exists("Parameter")) {
+        xml.setTo("Parameter[0]");
+        do {
+            string name = xml.getValue<string>("Name");
+            string oscAddress = xml.getValue<string>("OscAddress");
+            string type = xml.getValue<string>("Type");
+            float value = xml.getValue<float>("Value");
+            float min = xml.getValue<float>("Min");
+            float max = xml.getValue<float>("Max");
+
+            // output to load settings into
+            LearnOutputParameter * output;
+            
+            // try to find existing output with same name...
+            bool outputExists = false;
+            for (int i=0; i<outputs.size(); i++) {
+                if (outputs[i]->getName() == name) {
+                    output = outputs[i];
+                    outputExists = true;
+                    break;
+                }
+            }
+            // ...or make new one if none found
+            if (!outputExists) {
+                output = addOutput(name, new float(), min, max);
+            }
+            outputsToDelete[name] = false;
+            
+            output->setOscAddress(oscAddress);
+            output->setMin(min);
+            output->setMax(max);
+            output->set(value);
+            output->setInputParameters(inputs);
+
+            // plug inputs into output
+            bool allInputsFound = true;
+            xml.setTo("Inputs");
+            if (xml.exists("Input[0]")) {
+                xml.setTo("Input[0]");
+                do {
+                    string inputName = xml.getValue();
+                    bool foundInput = false;
+                    for (int i=0; i<inputs.size(); i++) {
+                        if (inputs[i]->getName() == inputName) {
+                            output->addInput(inputs[i]);
+                            foundInput = true;
+                            break;
+                        }
+                    }
+                    if (!foundInput) allInputsFound = false;
+                }
+                while (xml.setToSibling());
+                xml.setToParent();
+            }
+            xml.setToParent();
+
+            // add saved examples to output
+            if (allInputsFound) {
+                xml.setTo("Examples");
+                if (xml.exists("Page[0]")) {
+                    xml.setTo("Page[0]");
+                    do {
+                        if (output->getNumInstances() > 0) {
+                            output->addDataPage();
+                        }
+                        if (xml.exists("Example[0]")) {
+                            xml.setTo("Example[0]");
+                            do {
+                                vector<string> instanceStr = ofSplitString(xml.getValue(), ",");
+                                vector<float> instance;
+                                for (int i=0; i<instanceStr.size(); i++) {
+                                    instance.push_back(ofToFloat(instanceStr[i]));
+                                }
+                                output->addInstance(instance);
+                            }
+                            while (xml.setToSibling());
+                            xml.setToParent();
+                        }
+                    }
+                    while (xml.setToSibling());
+                    xml.setToParent();
+                }
+                xml.setToParent();
+            }
+            else {
+                cout << "Error for Output "<<output->getName()<< " : not all inputs found, so skip loading examples."<<endl;
+            }
+        }
+        while (xml.setToSibling());
+        xml.setToParent();
+    }
+    xml.setToParent();
+    
+    // delete non-overwritten outputs from before loading
+    for (int i=0; i<outputs.size(); i++) {
+        if (inputsToDelete[outputs[i]->getName()]) {
+            outputParameterDeleted((LearnParameter &) outputs[i]);
+        }
+    }
+    outputsToDelete.clear();
+}
+
 

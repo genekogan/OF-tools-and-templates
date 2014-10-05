@@ -17,11 +17,13 @@ public:
     void setupOscInputs(int port=-1);
     void setupOscOutputs(string host="", int port=-1);
     void setupGui();
+    void resetParameterGuiPositions();
+    virtual void resetInputs();
     
-    virtual void addInput(string name, float *value, float min, float max);
-    virtual void addOutput(string name, float *value, float min, float max);
-    void addInput(string name, float min, float max);
-    void addOutput(string name, float min, float max);
+    virtual LearnInputParameter  * addInput (string name, float *value, float min, float max);
+    virtual LearnOutputParameter * addOutput(string name, float *value, float min, float max);
+    LearnInputParameter  * addInput (string name, float min, float max);
+    LearnOutputParameter * addOutput(string name, float min, float max);
     
     void setVisible(bool visible);
     void setGuiInputsVisible(bool visible);
@@ -34,8 +36,9 @@ public:
     void outputParameterDeleted(LearnParameter & output);
     void outputParameterViewed(LearnOutputParameter & output);
     void parameterSelected(LearnParameter & parameter);
-
-    virtual void resetInputs();
+    
+    bool savePreset(string filename="");
+    void loadPreset(string path);
     
 protected:
 

@@ -136,7 +136,6 @@ void Canvas::loadPreset(string &filename) {
     
     string path = ofToDataPath("presets/Canvas/"+filename);
     bool xmlLoaded = xml.load(path);
-    
     if (!xmlLoaded) {
         cout << "failed to load preset " << "test.xml" << endl;
         return;
@@ -155,7 +154,6 @@ void Canvas::loadPreset(string &filename) {
         xml.setTo("Preset");
         ofXml xmlControl;
         xmlControl.addXml(xml);
-        xmlControl.save("/Users/Gene/Desktop/test2.xml");
         xml.setToParent();
         
         CanvasLayer *newLayer;
@@ -202,7 +200,6 @@ bool Canvas::savePreset(string filename) {
     if (filename=="") {
         return false;
     }
-
     Presets presets;
 
     ofXml xml;

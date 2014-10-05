@@ -89,7 +89,8 @@ void Presets::loadPreset(Control &control, ofXml &xml, int numFrames) {
             while(xml.setToSibling());
             xml.setToParent();
             xml.setToParent();
-        } while (xml.setToSibling());
+        }
+        while (xml.setToSibling());
         
         xml.setToParent();
     }
@@ -115,7 +116,6 @@ ofXml Presets::getXml(vector<ParameterBase *> &parameters) {
     for (int i=0; i<parameters.size(); i++) {
         ofXml xmlp = getXml(parameters[i]);
         xml.addXml(xmlp);
-        
     }
     return xml;
 }
