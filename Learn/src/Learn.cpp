@@ -262,13 +262,23 @@ void Learn::setupGui() {
     gui3 = new ofxUICanvas("perform");
     gui3->clearWidgets();
     gui3->setPosition(595, 5);
-    gui3->setWidth(220);
+    gui3->setWidth(400);
     gui3->setHeight(60);
     gui3->addLabelToggle("predict", &predicting, 100, 50);
     gui3->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    gui3->addLabelButton("save", false, 100, 22);
-    gui3->addWidgetSouthOf(new ofxUILabelButton("load", false,  100, 22, 0, 0, OFX_UI_FONT_SMALL), "save")->setPadding(2);
+    gui3->addLabelButton("save", false, 100, 50);
     
+    vector<string> presets;
+    ofDirectory dir(ofToDataPath("presets/"));
+    dir.allowExt("xml");
+    dir.listDir();
+    for(int i = 0; i < dir.numFiles(); i++) {
+        presets.push_back(dir.getName(i));
+    }
+    guiSelector = gui3->addDropDownList("Load Preset", presets, 160.0f);
+    guiSelector->setAllowMultiple(false);
+    guiSelector->setAutoClose(false);
+
     ofAddListener(gui1->newGUIEvent, this, &Learn::gui1Event);
     ofAddListener(gui2->newGUIEvent, this, &Learn::gui2Event);
     ofAddListener(gui3->newGUIEvent, this, &Learn::gui3Event);
@@ -313,35 +323,14 @@ void Learn::gui3Event(ofxUIEventArgs &e) {
     }
     else if (e.getName() == "save") {
         if (e.getButton()->getValue() == 1) return;
-        cout << "save"<<endl;
-        
-        
         bool saved = savePreset();
-        
         if (saved) {
-            
+            // REBUILD GUI
         }
-        
-        
-        
-        
-        
-        /*
-         
-         SAVE PRESET 
-         
-         */
     }
-    else if (e.getName() == "load") {
-        if (e.getButton()->getValue() == 1) return;
-        cout << "load"<<endl;
-        
-        loadPreset("path");
-        /*
-         
-         LOAD PRESET
-         
-         */
+    else if (e.getParentName() == "Load Preset") {
+        string path = ofToDataPath("presets/"+e.getName());
+        loadPreset(path);
     }
 }
 
@@ -449,7 +438,6 @@ void Learn::parameterSelected(LearnParameter & parameter) {
 bool Learn::savePreset(string filename) {
     Presets presets;
 
-    filename = "g";
     if (filename=="") {
         filename = ofSystemTextBoxDialog("Choose a filename");
     }
@@ -458,8 +446,6 @@ bool Learn::savePreset(string filename) {
     }
     string path = ofToDataPath("presets/"+filename+".xml");
 
-    path = "/Users/Gene/Desktop/test.xml";
-    
     ofXml xml;
     
     xml.addChild("LearnPreset");
@@ -528,27 +514,38 @@ bool Learn::savePreset(string filename) {
 void Learn::loadPreset(string filename) {
     Presets presets;
     ofXml xml;
-
+    /*
     string path = ofToDataPath("presets/"+filename);
-    path = "/Users/Gene/Desktop/test.xml";
+    path = "../../../../data/presets/custom.xml";
+  //  path = "/Users/Gene/Desktop/test.xml";
+//    path = "/Users/Gene/Code/openFrameworks/tools/Learn/template-simple/bin/data/presets/custom.xml";
+    bool xmlLoaded = xml.load(path);
+    if (!xmlLoaded) {
+        cout << "failed to load preset " << path << endl;
+        return;
+    }
+     */
+    
+    string path = ofToDataPath("presets/Canvas/"+filename);
     bool xmlLoaded = xml.load(path);
     if (!xmlLoaded) {
         cout << "failed to load preset " << "test.xml" << endl;
         return;
     }
+    
+    
+    xml.setTo("LearnPreset");
+    loadInputs(xml);
+    loadOutputs(xml);
+}
 
+//-------
+void Learn::loadInputs(ofXml &xml) {
     // store existing parameters to delete non-overwritten ones after loading done
-    map<string, bool> inputsToDelete, outputsToDelete;
+    map<string, bool> inputsToDelete;
     for (int i=0; i<inputs.size(); i++) {
         inputsToDelete[inputs[i]->getName()] = true;
     }
-    for (int i=0; i<outputs.size(); i++) {
-        outputsToDelete[outputs[i]->getName()] = true;
-    }
-    
-    xml.setTo("LearnPreset");
-
-    /* Load Inputs */
     
     xml.setTo("Inputs");
     if (xml.exists("Parameter")) {
@@ -577,18 +574,17 @@ void Learn::loadPreset(string filename) {
             if (!inputExists) {
                 input = addInput(name, new float(), min, max);
             }
-            inputsToDelete[name] = false;
-            
             input->setOscAddress(oscAddress);
             input->setMin(min);
             input->setMax(max);
             input->set(value);
+            inputsToDelete[name] = false;
         }
         while (xml.setToSibling());
         xml.setToParent();
     }
     xml.setToParent();
-
+    
     // delete non-overwritten inputs from before loading
     for (int i=0; i<inputs.size(); i++) {
         if (inputsToDelete[inputs[i]->getName()]) {
@@ -596,8 +592,14 @@ void Learn::loadPreset(string filename) {
         }
     }
     inputsToDelete.clear();
-    
-    /* Load Outputs */
+}
+//-------
+void Learn::loadOutputs(ofXml &xml) {
+    // store existing parameters to delete non-overwritten ones after loading done
+    map<string, bool> outputsToDelete;
+    for (int i=0; i<outputs.size(); i++) {
+        outputsToDelete[outputs[i]->getName()] = true;
+    }
     
     xml.setTo("Outputs");
     if (xml.exists("Parameter")) {
@@ -609,7 +611,7 @@ void Learn::loadPreset(string filename) {
             float value = xml.getValue<float>("Value");
             float min = xml.getValue<float>("Min");
             float max = xml.getValue<float>("Max");
-
+            
             // output to load settings into
             LearnOutputParameter * output;
             
@@ -633,7 +635,7 @@ void Learn::loadPreset(string filename) {
             output->setMax(max);
             output->set(value);
             output->setInputParameters(inputs);
-
+            
             // plug inputs into output
             bool allInputsFound = true;
             xml.setTo("Inputs");
@@ -655,7 +657,7 @@ void Learn::loadPreset(string filename) {
                 xml.setToParent();
             }
             xml.setToParent();
-
+            
             // add saved examples to output
             if (allInputsFound) {
                 xml.setTo("Examples");
@@ -695,7 +697,7 @@ void Learn::loadPreset(string filename) {
     
     // delete non-overwritten outputs from before loading
     for (int i=0; i<outputs.size(); i++) {
-        if (inputsToDelete[outputs[i]->getName()]) {
+        if (outputsToDelete[outputs[i]->getName()]) {
             outputParameterDeleted((LearnParameter &) outputs[i]);
         }
     }

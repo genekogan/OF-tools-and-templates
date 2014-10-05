@@ -40,6 +40,10 @@ public:
     bool savePreset(string filename="");
     void loadPreset(string path);
     
+    void loadInputs(ofXml &xml);
+    void loadOutputs(ofXml &xml);
+    
+    
 protected:
 
     void setupTouchOsc();
@@ -63,6 +67,7 @@ protected:
     int oscOutputPort, oscInputPort;
     
     ofxUICanvas *gui1, *gui2, *gui3;
+    ofxUIDropDownList *guiSelector;
     bool visible;
     
     float startTime, trainCountdown, trainDuration;

@@ -99,6 +99,7 @@ public:
     int getNumInputs() {return activeInputs.size();}
     vector<LearnInputParameter *> & getActiveInputs() {return activeInputs;}
     bool getInputActive(LearnInputParameter * input);
+    void exportData(string filename="");
     
     void setVisible(bool visible);
     void setGuiPosition(int x, int y);

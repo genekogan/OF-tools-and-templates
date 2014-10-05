@@ -1,0 +1,6 @@
+ofxOsc
+ofxXmlSettings
+ofxSuperCollider
+ofxSuperColliderServer
+ofxTouchOsc
+ofxUI

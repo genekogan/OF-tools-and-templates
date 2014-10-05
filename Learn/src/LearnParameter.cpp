@@ -224,6 +224,39 @@ vector<vector<vector<float> > > LearnOutputParameter::getInstances() {
     return instances;
 }
 
+//-----------
+void LearnOutputParameter::exportData(string filename) {
+    string path;
+    if (filename=="") {
+        ofFileDialogResult filesave = ofSystemSaveDialog("data_"+getName()+".csv", "Choose a location to save to");
+        if (filesave.bSuccess) {
+            path = filesave.getPath();
+        }
+        else return;
+    }
+    else {
+        path = ofToDataPath(filename);
+    }
+    ofFile dataFile(path, ofFile::WriteOnly);
+    string header = "Page,"+getName();
+    for (int i=0; i<activeInputs.size(); i++) {
+        header += ","+activeInputs[i]->getName();
+    }
+    dataFile << header << "\n";
+    vector<vector<vector<float> > > examples = getInstances();
+    for (int p=0; p<examples.size(); p++) {
+        for (int i=0; i<examples[p].size(); i++) {
+            string dataRow = ofToString(p);
+            for (int j=0; j<examples[p][i].size(); j++) {
+                dataRow += ","+ofToString(examples[p][i][j]);
+            }
+            dataFile << dataRow << "\n";
+        }
+    }
+    dataFile.close();
+    ofSystem("open "+path);
+}
+
 
 //===========================================
 //  GUI
@@ -287,12 +320,13 @@ void LearnOutputParameter::setupGui() {
     guiDataStatus->setColorBack(ofColor(0,0));
     guiDataStatus->getRect()->setWidth(200.0f);
     guiData->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiData->addSpacer(167, 0);
+    guiData->addSpacer(130, 0);
     guiData->addLabelButton("<", false, 15.0f);
     guiDataPage = guiData->addLabelButton("page 1/1", false, 60.0f);
     guiDataPage->setColorBack(ofColor(0,0));
     guiData->addLabelButton(">", false, 15.0f);
     guiData->addSpacer(20, 0);
+    guiData->addLabelButton("csv", false, 30.0f);
     guiData->addLabelButton("clear all", false, 64.0f)->setColorBack(ofColor(255,0,0,100));
     guiData->autoSizeToFitWidgets();
 }
@@ -555,6 +589,10 @@ void LearnOutputParameter::guiDataEvent(ofxUIEventArgs &e) {
         if (confirm) {
             clearInstances();
         }
+    }
+    else if (e.getName() == "csv") {
+        if (e.getButton()->getValue() == 1) return;
+        exportData();
     }
 }
 
