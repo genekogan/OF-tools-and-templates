@@ -2,12 +2,18 @@
 
 
 //-------
-Learn::Learn() {
+Learn::Learn(bool init) {
     trainDuration = 2;
     trainCountdown = 2;
     instanceRate = 15;
     startTime = -(trainDuration + trainCountdown);
     oscActive = false;
+    
+    gui1 = new ofxUICanvas("setup");
+    gui2 = new ofxUICanvas("train");
+    gui3 = new ofxUICanvas("perform");
+
+    if (init)   setupGui();
 }
 
 //-------
@@ -56,17 +62,11 @@ void Learn::draw(){
     }
     if (countingDown) {
         float elapsed = ofGetElapsedTimef() - startTime;
-        ofSetColor(0, 0, 255);
-        ofRect(900, 5, 100, 60);
-        ofSetColor(255);
-        ofDrawBitmapString(ofToString(ceil(trainDuration - elapsed)), 945, 28);
+        guiStatusLabel->setLabel("  => starting in "+ofToString(ceil(trainDuration - elapsed)));
     }
     else if (recording) {
         float elapsed = ofGetElapsedTimef() - startTime;
-        ofSetColor(255, 0, 0);
-        ofRect(900, 5, 100, 60);
-        ofSetColor(255);
-        ofDrawBitmapString(ofToString(ceil(trainDuration + trainCountdown - elapsed)), 945, 28);
+        guiStatusLabel->setLabel("  => record for "+ofToString(ceil(trainDuration + trainCountdown - elapsed)));
     }
 }
 
@@ -137,10 +137,14 @@ void Learn::setupOscInputs(int port) {
 
 //-------
 void Learn::setupOscOutputs(string host, int port) {
-    if (host != "")
+    if (host != "") {
         this->oscOutputHost = host;
-    if (port != -1)
+        ((ofxUITextInput *) gui3->getWidget("oscHost"))->setTextString(host);
+    }
+    if (port != -1) {
         this->oscOutputPort = port;
+        ((ofxUITextInput *) gui3->getWidget("oscPortOut"))->setTextString(ofToString(port));
+    }
     vector<ParameterBase *> parameters;
     for (int i=0; i<outputs.size(); i++) {
         parameters.push_back(outputs[i]);
@@ -193,6 +197,7 @@ void Learn::stopRecording() {
     countingDown = false;
     recording = false;
     inRecording = false;
+    guiStatusLabel->setLabel("  => "+ofToString(currentNewInstances)+" added");
     currentNewInstances = 0;
     gui2->setColorBack(ofColor(0,100));
 }
@@ -238,15 +243,25 @@ void Learn::trainClassifiers(string trainStrategy) {
 
 //-------
 void Learn::setupGui() {
-    gui1 = new ofxUICanvas("setup");
+    guiStatusLabel = new ofxUILabel(120.0f, "", OFX_UI_FONT_SMALL, 16.0f);
+    ofxUILabelButton *bTouchOscIn = new ofxUILabelButton("T", false, 12, 22, 0, 0, OFX_UI_FONT_SMALL);
+    ofxUILabelButton *bTouchOscOut = new ofxUILabelButton("T", false, 12, 22, 0, 0, OFX_UI_FONT_SMALL);
+    bTouchOscIn->setName("touchOscIn");
+    bTouchOscOut->setName("touchOscOut");
+
+    gui1->setColorOutline(ofColor(255,200));
+    gui1->setDrawOutline(true);
     gui1->clearWidgets();
     gui1->setPosition(5, 5);
-    gui1->setWidth(110);
+    gui1->setWidth(120);
     gui1->setHeight(60);
-    gui1->addLabelButton("add input", false, 100, 22);
-    gui1->addWidgetSouthOf(new ofxUILabelButton("add output", false,  100, 22, 0, 0, OFX_UI_FONT_SMALL), "add input")->setPadding(2);
+    gui1->addLabelButton("add input", false, 90, 22);
+    gui1->addWidgetSouthOf(new ofxUILabelButton("add output", false,  90, 22, 0, 0, OFX_UI_FONT_SMALL), "add input")->setPadding(2);
+    gui1->addWidgetEastOf(bTouchOscIn, "add input")->setPadding(1);
+    gui1->addWidgetEastOf(bTouchOscOut, "add output")->setPadding(1);
     
-    gui2 = new ofxUICanvas("train");
+    gui2->setColorOutline(ofColor(255,200));
+    gui2->setDrawOutline(true);
     gui2->clearWidgets();
     gui2->setPosition(130, 5);
     gui2->setWidth(450);
@@ -258,34 +273,40 @@ void Learn::setupGui() {
     gui2->addWidgetEastOf(new ofxUISlider("countdown", 0.0, 5.0, &trainCountdown, 100.0f, 9.0f), "train fast")->setPadding(2);
     gui2->addWidgetSouthOf(new ofxUISlider("duration", 0.0, 5.0, &trainDuration, 100.0f, 9.0f), "countdown")->setPadding(2);
     gui2->addWidgetEastOf(new ofxUIIntSlider("instanceRate", 1, 30, &instanceRate, 100.0f, 9.0f), "countdown")->setPadding(2);
+    gui2->addWidgetSouthOf(guiStatusLabel, "instanceRate")->setPadding(4);
     
-    gui3 = new ofxUICanvas("perform");
+    vector<string> presets;
+    guiSelector = new ofxUIDropDownList("Load Preset", presets, 216, 0, 0, OFX_UI_FONT_SMALL);
+    guiSelector->setAllowMultiple(false);
+    guiSelector->setAutoClose(true);
+
+    gui3->setColorOutline(ofColor(255,200));
+    gui3->setDrawOutline(true);
     gui3->clearWidgets();
-    gui3->setPosition(595, 5);
-    gui3->setWidth(400);
+    gui3->setPosition(585, 5);
+    gui3->setWidth(438);
     gui3->setHeight(60);
     gui3->addLabelToggle("predict", &predicting, 100, 50);
     gui3->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
     gui3->addLabelButton("save", false, 100, 50);
+    gui3->addLabel("oscLabel", "osc");
+    gui3->addTextInput("oscPortIn", ofToString(oscManager.getReceiverPort()), 40.0f)->setAutoClear(false);
+    gui3->addTextInput("oscHost", oscManager.getHost(), 90.0f)->setAutoClear(false);
+    gui3->addTextInput("oscPortOut", ofToString(oscManager.getSenderPort()), 40.0f)->setAutoClear(false);
+    gui3->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+    gui3->addWidgetSouthOf(new ofxUISpacer(0, 5, "gui3Spacer"), "oscLabel");
+    gui3->addWidgetSouthOf(guiSelector, "gui3Spacer");
     
-    vector<string> presets;
-    ofDirectory dir(ofToDataPath("presets/"));
-    dir.allowExt("xml");
-    dir.listDir();
-    for(int i = 0; i < dir.numFiles(); i++) {
-        presets.push_back(dir.getName(i));
-    }
-    guiSelector = gui3->addDropDownList("Load Preset", presets, 160.0f);
-    guiSelector->setAllowMultiple(false);
-    guiSelector->setAutoClose(false);
-
     ofAddListener(gui1->newGUIEvent, this, &Learn::gui1Event);
     ofAddListener(gui2->newGUIEvent, this, &Learn::gui2Event);
     ofAddListener(gui3->newGUIEvent, this, &Learn::gui3Event);
+
+    resetPresets();
 }
 
 //-------
 void Learn::gui1Event(ofxUIEventArgs &e) {
+    cout << e.getName() << endl;
     if (e.getName() == "add input") {
         if (e.getButton()->getValue() == 1) return;
         addInput("newInput"+ofToString(newInputCounter++), 0, 1);
@@ -293,6 +314,14 @@ void Learn::gui1Event(ofxUIEventArgs &e) {
     else if (e.getName() == "add output") {
         if (e.getButton()->getValue() == 1) return;
         addOutput("newOutput"+ofToString(newOutputCounter++), new float(), 0, 1);
+    }
+    else if (e.getName() == "touchOscIn") {
+        if (e.getButton()->getValue() == 1) return;
+        saveInputsToTouchOsc();
+    }
+    else if (e.getName() == "touchOscOut") {
+        if (e.getButton()->getValue() == 1) return;
+        saveOutputsToTouchOsc();
     }
 }
 
@@ -318,19 +347,29 @@ void Learn::gui2Event(ofxUIEventArgs &e) {
 
 //-------
 void Learn::gui3Event(ofxUIEventArgs &e) {
-    if (e.getName() == "predict") {
-        predicting = e.getToggle()->getValue();
-    }
-    else if (e.getName() == "save") {
+    if (e.getName() == "save") {
         if (e.getButton()->getValue() == 1) return;
         bool saved = savePreset();
         if (saved) {
-            // REBUILD GUI
+            resetPresets();
         }
     }
     else if (e.getParentName() == "Load Preset") {
         string path = ofToDataPath("presets/"+e.getName());
         loadPreset(path);
+    }
+    else if (e.getName() == "oscHost" || e.getName() == "oscPortOut") {
+        string newHost = ((ofxUITextInput *) gui3->getWidget("oscHost"))->getTextString();
+        int newPort = ofToInt(((ofxUITextInput *) gui3->getWidget("oscPortOut"))->getTextString());
+        if (newHost != oscManager.getHost() || newPort != oscManager.getSenderPort()) {
+            oscManager.setupSender(newHost, newPort);
+        }
+    }
+    else if (e.getName() == "oscPortIn") {
+        int newPort = ofToInt(((ofxUITextInput *) gui3->getWidget("oscPortIn"))->getTextString());
+        if (newPort != oscManager.getReceiverPort()) {
+            oscManager.setupReceiver(newPort);
+        }
     }
 }
 
@@ -340,11 +379,11 @@ void Learn::resetInputs() {
         outputs[i]->setInputParameters(inputs);
     }
     setupOscInputs();
-    resetParameterGuiPositions();
+    resetGuiPositions();
 }
 
 //-------
-void Learn::resetParameterGuiPositions() {
+void Learn::resetGuiPositions() {
     for (int i=0; i<inputs.size(); i++) {
         inputs[i]->setGuiPosition(10, 80+55*i);
     }
@@ -352,6 +391,28 @@ void Learn::resetParameterGuiPositions() {
         outputs[i]->setGuiPosition(420, 80+55*i);
     }
 }
+
+//-------
+void Learn::resetPresets() {
+    vector<string> presets;
+    ofDirectory dir(ofToDataPath("presets/"));
+    dir.allowExt("xml");
+    dir.listDir();
+    for(int i = 0; i < dir.numFiles(); i++) {
+        presets.push_back(dir.getName(i));
+    }
+    guiSelector->clearToggles();
+    guiSelector->addToggles(presets);
+
+    /*
+    vector<ofxUILabelToggle *> toggles = guiSelector->getToggles();
+    for (int i=0; i<toggles.size(); i++) {
+        toggles[i]->setColorBack(ofColor(0));
+        toggles[i]->setColorFill(ofColor(0, 180));
+    }
+     */
+}
+
 
 //-------
 void Learn::inputParameterChanged(LearnParameter & input) {
@@ -368,7 +429,7 @@ void Learn::inputParameterDeleted(LearnParameter & input) {
     vector<LearnInputParameter *>::iterator it=inputs.begin();
     while (it != inputs.end()) {
         if (*it == &input) {
-            /* check if input tied into any outputs and ask to confirm */
+            // check if input tied into any outputs and ask to confirm
             vector<string> dependentOutputs;
             for (int i=0; i<outputs.size(); i++) {
                 if (outputs[i]->getInputActive(*it) && (outputs[i]->getNumInstances()>0 || outputs[i]->getTrained())) {
@@ -382,7 +443,7 @@ void Learn::inputParameterDeleted(LearnParameter & input) {
                 bool confirm = ofSystemChoiceDialog(msg);
                 if (!confirm)   return;
             }
-            /* remove deleted input from all the outputs and delete itself */
+            // remove deleted input from all the outputs and delete itself
             for (int i=0; i<outputs.size(); i++) {
                 outputs[i]->removeInput(*it);
             }
@@ -391,7 +452,7 @@ void Learn::inputParameterDeleted(LearnParameter & input) {
         }
         else ++it;
     }
-    resetParameterGuiPositions();
+    resetGuiPositions();
 }
 
 //-------
@@ -404,7 +465,7 @@ void Learn::outputParameterDeleted(LearnParameter & output) {
         }
         else ++it;
     }
-    resetInputs();
+    resetGuiPositions();
     setupOscOutputs();
 }
 
@@ -429,15 +490,18 @@ void Learn::parameterSelected(LearnParameter & parameter) {
     }
 }
 
+//-------
+void Learn::saveInputsToTouchOsc() {
+    oscManager.saveTouchOscLayout("touchOsc_inputs", (vector<ParameterBase *> &) inputs);
+}
 
-
-
-
+//-------
+void Learn::saveOutputsToTouchOsc() {
+    oscManager.saveTouchOscLayout("touchOsc_outputs", (vector<ParameterBase *> &) outputs);
+}
 
 //-------
 bool Learn::savePreset(string filename) {
-    Presets presets;
-
     if (filename=="") {
         filename = ofSystemTextBoxDialog("Choose a filename");
     }
@@ -445,14 +509,20 @@ bool Learn::savePreset(string filename) {
         return false;
     }
     string path = ofToDataPath("presets/"+filename+".xml");
-
-    ofXml xml;
     
+    ofXml xml;
     xml.addChild("LearnPreset");
     xml.setTo("LearnPreset");
-    
-    /* save inputs */
-    
+    saveInputs(filename, xml);
+    saveOutputs(filename, xml);
+    xml.save(path);
+    ofSystem("open "+path);
+    return true;
+}
+
+//-------
+void Learn::saveInputs(string filename, ofXml &xml) {
+    Presets presets;
     xml.addChild("Inputs");
     xml.setTo("Inputs");
     for (int i=0; i<inputs.size(); i++) {
@@ -460,9 +530,11 @@ bool Learn::savePreset(string filename) {
         xml.addXml(xmlp);
     }
     xml.setToParent();
-    
-    /* save outputs */
-    
+}
+
+//-------
+void Learn::saveOutputs(string filename, ofXml &xml) {
+    Presets presets;
     xml.addChild("Outputs");
     xml.setTo("Outputs");
     for (int i=0; i<outputs.size(); i++) {
@@ -496,44 +568,27 @@ bool Learn::savePreset(string filename) {
         xmlp.setToParent();
         
         // add classifier info
-        xmlp.addChild("Classifier");
-        xmlp.setTo("Classifier");
-        xmlp.setToParent();
-        
+        if (outputs[i]->getTrained()) {
+            ofDirectory dir;
+            string classifierPath = dir.getAbsolutePath();
+            classifierPath += "presets/classifiers/"+filename+"_"+outputs[i]->getName()+".dat";
+            outputs[i]->saveClassifier(classifierPath);
+            xmlp.addValue("Classifier", classifierPath);
+        }
         xml.addXml(xmlp);
     }
     xml.setToParent();
-    
-    xml.save(path);
-    ofSystem("open "+path);
-    
-    return true;
 }
 
 //-------
 void Learn::loadPreset(string filename) {
     Presets presets;
     ofXml xml;
-    /*
-    string path = ofToDataPath("presets/"+filename);
-    path = "../../../../data/presets/custom.xml";
-  //  path = "/Users/Gene/Desktop/test.xml";
-//    path = "/Users/Gene/Code/openFrameworks/tools/Learn/template-simple/bin/data/presets/custom.xml";
-    bool xmlLoaded = xml.load(path);
+    bool xmlLoaded = xml.load(filename);
     if (!xmlLoaded) {
-        cout << "failed to load preset " << path << endl;
+        cout << "failed to load preset " << filename << endl;
         return;
     }
-     */
-    
-    string path = ofToDataPath("presets/Canvas/"+filename);
-    bool xmlLoaded = xml.load(path);
-    if (!xmlLoaded) {
-        cout << "failed to load preset " << "test.xml" << endl;
-        return;
-    }
-    
-    
     xml.setTo("LearnPreset");
     loadInputs(xml);
     loadOutputs(xml);
@@ -586,13 +641,19 @@ void Learn::loadInputs(ofXml &xml) {
     xml.setToParent();
     
     // delete non-overwritten inputs from before loading
+    vector<LearnInputParameter *> parametersToDelete;
     for (int i=0; i<inputs.size(); i++) {
         if (inputsToDelete[inputs[i]->getName()]) {
-            inputParameterDeleted((LearnParameter &) inputs[i]);
+            parametersToDelete.push_back(inputs[i]);
         }
     }
+    for (int i=0; i<parametersToDelete.size(); i++) {
+        inputParameterDeleted((LearnParameter &) *parametersToDelete[i]);
+    }
+    parametersToDelete.clear();
     inputsToDelete.clear();
 }
+
 //-------
 void Learn::loadOutputs(ofXml &xml) {
     // store existing parameters to delete non-overwritten ones after loading done
@@ -685,6 +746,11 @@ void Learn::loadOutputs(ofXml &xml) {
                     xml.setToParent();
                 }
                 xml.setToParent();
+                
+                if (xml.exists("Classifier")) {
+                    string classifierPath = xml.getValue<string>("Classifier");
+                    output->loadClassifier(classifierPath);
+                }
             }
             else {
                 cout << "Error for Output "<<output->getName()<< " : not all inputs found, so skip loading examples."<<endl;
@@ -695,13 +761,17 @@ void Learn::loadOutputs(ofXml &xml) {
     }
     xml.setToParent();
     
-    // delete non-overwritten outputs from before loading
+    // delete non-overwritten inputs from before loading
+    vector<LearnOutputParameter *> parametersToDelete;
     for (int i=0; i<outputs.size(); i++) {
         if (outputsToDelete[outputs[i]->getName()]) {
-            outputParameterDeleted((LearnParameter &) outputs[i]);
+            parametersToDelete.push_back(outputs[i]);
         }
     }
+    for (int i=0; i<parametersToDelete.size(); i++) {
+        outputParameterDeleted((LearnParameter &) *parametersToDelete[i]);
+    }
+    parametersToDelete.clear();
     outputsToDelete.clear();
 }
-
 

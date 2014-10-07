@@ -1,56 +1,85 @@
 #include "SuperCollider.h"
 
 
-//-------
-SuperCollider::SuperCollider() {
 
+//-------
+SuperColliderLayer * SuperCollider::addLayer(string synthType, string synthFile) {
+    SuperColliderLayer *newLayer = new SuperColliderLayer();
+    newLayer->setup(synthType, synthFile);
+    
+    layers.push_back(newLayer);
+    setGuiPosition(5, 5);
+    return newLayer;
 }
 
 //-------
-void SuperCollider::setup() {
-    cout << "setup sc3 " << endl;
-    
-    control.addParameter("param", &a, 0.0f, 1.0f);
-    
-    getsc3();
+void SuperCollider::update() {
+    for (int i=0; i<layers.size(); i++) {
+        layers[i]->update();
+    }
 }
 
 //-------
-void SuperCollider::getsc3() {
-    
-    //vector<Instrument *> mods;
-    string synthFile = "/Users/Gene/Code/openFrameworks/tools/SuperCollider/synths.scd";
-    string synthType = "source";
-    
-    
+void SuperColliderLayer::setup(string synthType, string synthFile) {
     ofxRegex regex;
     ofFile file;
     file.open(synthFile);
-    
     string sc3file = file.readToBuffer().getText();
     string exp = ofToString("\n@synthDef "+synthType+"\n(.+\n)+.+/\n");
     vector<string> synthDefs = regex.getMatchedStrings(sc3file, exp);
     
-    for (int i=0; i<1; i++) {//synthDefs.size(); i++) {
-        Instrument *mod = new Instrument();
-        mods.push_back(mod);
+    for (int i=0; i<synthDefs.size(); i++) {
+        Instrument *instrument = new Instrument();
+        instruments.push_back(instrument);
         vector <string> statements = ofSplitString(synthDefs[i], "\n");
         for (int j=0; j<statements.size(); j++) {
             vector <string> statement = ofSplitString(statements[j], " ");
             if      (statement[0] == "@name") {
-                cout << "get name " << statement[1] << endl;
-                mod->setup(statement[1]);
+                instrument->setup(statement[1]);
             }
             else if (statement[0] == "@param") {
-                cout << "get param " << statement[1] << " " << ofToFloat(statement[2]) << " " <<  ofToFloat(statement[3]) << endl;
-                mod->addParameter(statement[1], ofToFloat(statement[2]), ofToFloat(statement[3]));
+                instrument->addParameter(statement[1], ofToFloat(statement[2]), ofToFloat(statement[3]));
             }
             else if (statement[0] == "@buffer") {
                 //cout << "buf name " << statement[1] << endl;
-                //string bufName = statement[1];  // does nothing for now
             }
         }
     }
-    //return mods;
     
+    vector<string> synthNames;
+    for (int i=0; i<instruments.size(); i++) {
+        synthNames.push_back(instruments[i]->getName());
+        instruments[i]->setVisible(false);
+        instruments[i]->setGuiPosition(300, 5);
+    }
+    
+    
+    
+    bus = new ofxSCBus();
+    //for (int i=0; i<instruments.size(); i++) {
+        //instruments[i]->setBusOut(bus);
+        //instruments[i]->setBusOutToDac();
+    //}
+    
+    
+    control.addMenu("synths", synthNames, this, &SuperColliderLayer::guiEvent);
+}
+
+//-------
+void SuperColliderLayer::guiEvent(string &s) {
+    for (int i=0; i<instruments.size(); i++) {
+        if (instruments[i]->getName() == s) {
+            instruments[i]->setVisible(true);
+        }
+        else {
+            instruments[i]->setVisible(false);
+        }
+    }
+}
+
+//-------
+void SuperColliderLayer::update() {
+    for (int i=0; i<instruments.size(); i++) {
+        instruments[i]->update();
+    }
 }

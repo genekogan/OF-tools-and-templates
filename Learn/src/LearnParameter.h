@@ -92,6 +92,7 @@ public:
     void addInstance();
     void clearInstances();
     int getNumInstances();
+    void exportData(string filename="");
     vector<vector<vector<float> > > getInstances();
 
     void addInput(LearnInputParameter * input);
@@ -99,22 +100,24 @@ public:
     int getNumInputs() {return activeInputs.size();}
     vector<LearnInputParameter *> & getActiveInputs() {return activeInputs;}
     bool getInputActive(LearnInputParameter * input);
-    void exportData(string filename="");
     
     void setVisible(bool visible);
-    void setGuiPosition(int x, int y);
+    virtual void setGuiPosition(int x, int y);
     void setupGui();
     void setupGuiInputSelector();
     void setInputsVisible(bool b);
     void setExamplesVisible(bool b);
     void setDataSize(int width, int height);
 
+    virtual void setTrained(bool trained);
     bool getRecording() {return record;}
     bool getTrained() {return trained;}
     
     void trainClassifierFast();
     void trainClassifierAccurate();
     void predict();
+    void loadClassifier(string path);
+    void saveClassifier(string path);
     
     template<typename ListenerClass, typename ListenerMethod>
     void addParameterViewedListener(ListenerClass *listener, ListenerMethod method) {

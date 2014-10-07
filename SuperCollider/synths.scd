@@ -1,4 +1,10 @@
 (
+s.quit;
+s.options.memSize = 64000;
+s.boot;
+)
+
+(
 //==========================================
 //  INPUTS
 //==========================================
@@ -58,19 +64,19 @@ SynthDef(\audioIn, { arg busOut;
 SynthDef(\pickler, { arg busOut, pulserate, numharmonics, ambience;
 	var trig, pitches, freq, idxfreq, out, out2, delay;
 	pitches = -12 + [ 28, 36, 40, 47, 60, 64, 67, 71, 72, 76, 79, 83, 84 ];
-	trig = Impulse.kr(pulserate);                 // trigger rate (5 hz)
+	trig = Impulse.kr(pulserate);                    // trigger rate (5 hz)
 	idxfreq = TIRand.kr(0, 13, trig);
 	freq = Select.kr(idxfreq, pitches).midicps;
-	out = Blip.ar(                        // Generate blip
+	out = Blip.ar(                                   // Generate blip
 		freq,
 		TRand.kr(1, numharmonics, trig),             // Num harmonics ranges from 1 to 12
-		max(0, TRand.kr(-0.5, 0.4, trig))  // amplitude ranges from 0 to 0.4
+		max(0, TRand.kr(-0.5, 0.4, trig))            // amplitude ranges from 0 to 0.4
 	);
 	out = Pan2.ar(out, TRand.kr(-1.0, 1.0, trig));   // Pan randomly
 	out = out*EnvGen.kr(Env.perc(0, 1), trig);       // apply envelope to it
 	out = Mix.ar({out}.dup(6))*0.2;
 	delay = CombL.ar(out, 1.0, 4/6, 6);              // create comb filter delay
-	out = out + delay;                                   // play out + its delay from combL
+	out = out + delay;                               // play out + its delay from combL
 	16.do({ out = AllpassC.ar(out, 1.0, DC.kr(Rand()).range(0.001, ambience), 8)});
 	Out.ar(busOut, out);
 }).store;
@@ -178,14 +184,16 @@ SynthDef(\quickChimes, { arg busOut;
 @name rezonator
 @param freq 10 3000
 @param rq 0.01 0.1
+@param delTime 0.001 1.5
 */
-SynthDef(\rezonator, { arg busOut, freq, rq;
+SynthDef(\rezonator, { arg busOut, freq, rq, delTime;
 	var res, comb, out;
 	res = RHPF.ar(
 		LFSaw.ar([4, 7], 0.0, 0.2),
 		freq,
 		rq);
-	comb = CombC.ar(res, 1.5, MouseY.kr(0.001, 1.5, 3), 3.5);
+	//comb = CombC.ar(res, 1.5, MouseY.kr(0.001, 1.5, 3), 3.5);
+	comb = CombC.ar(res, 1.5, delTime, 3.5);
 	out = AllpassC.ar(comb, 0.6, 0.3, 4);
 	Out.ar(0, out);
 }).store;
@@ -349,7 +357,7 @@ SynthDef(\fxcomb, { arg busOut, busIn, deltime, dectime;
 */
 SynthDef(\freeverb, { arg busOut, busIn, mix, room, damp;
 	var in, out;
-	in = In.ar(busIn);
+	in = In.ar(busIn, 2);
 	out = FreeVerb.ar(in, mix, room, damp);
 	Out.ar(busOut, out);
 }).store;

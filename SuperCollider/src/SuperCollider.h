@@ -4,23 +4,56 @@
 #include "Control.h"
 #include "ofxSuperCollider.h"
 #include "ofxRegex.h"
+#include "Instrument.h"
 
 
-class Instrument {
+
+class SuperColliderLayer
+{
 public:
-    Instrument() { }
-    void setup(string name) {
-        this->name = name;
-        control.setGuiPosition(300,5);
-        
+    void setup(string synthType, string synthFile);
+    void update();
+    void guiEvent(string &s);
+    
+    void setBusIn(ofxSCBus *bus) {
+        for (int i=0; i<instruments.size(); i++) {
+            instruments[i]->setBusIn(bus);
+        }
     }
-    void addParameter(string name, float min, float max) {
-        control.addParameter(name, new float(), min, max);
+    void setBusOut(ofxSCBus *bus) {
+        for (int i=0; i<instruments.size(); i++) {
+            instruments[i]->setBusOut(bus);
+        }
     }
     
-    string name;
+    
+    void setBusOutSelf() {
+        for (int i=0; i<instruments.size(); i++) {
+            instruments[i]->setBusOut(bus);
+        }
+    }
+    
+    
+    void setBusOutToDac() {
+        for (int i=0; i<instruments.size(); i++) {
+            instruments[i]->setBusOutToDac();
+        }
+    }
+    
+    void setGuiPosition(int x, int y) {
+        control.setGuiPosition(x, y);
+        for (int i=0; i<instruments.size(); i++) {
+            instruments[i]->setGuiPosition(x+200, y);
+        }
+    }
+    
+    ofxSCBus * getBus() {return bus;}
+    
+protected:
     
     Control control;
+    vector<Instrument *> instruments;
+    ofxSCBus *bus;
 };
 
 
@@ -28,14 +61,17 @@ public:
 class SuperCollider
 {
 public:
-    SuperCollider();
     void setup();
+    void update();
+    SuperColliderLayer * addLayer(string synthType, string synthFile);
+    
+    void setGuiPosition(int x, int y) {
+        for (int i=0; i<layers.size(); i++) {
+            layers[i]->setGuiPosition(i*400, 5);
+        }
+    }
 
-    void getsc3();
-    
-    Control control;
-    
-    float a;
-    
-    vector<Instrument *> mods;
+protected:
+
+    vector<SuperColliderLayer *> layers;
 };

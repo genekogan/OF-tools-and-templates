@@ -58,6 +58,7 @@
 		ADE367465D2A8EBAD4C7A8D9 /* IpEndpointName.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ADD194746185E2DA11468377 /* IpEndpointName.cpp */; };
 		ADE7C2AFC51E3F7E5E389026 /* ofxUISortableList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5613D5D24B00D8AD909F7E6A /* ofxUISortableList.cpp */; };
 		AE281BEBF3A00F1FC37F3DA0 /* ofxUIWaveform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9345327AA463407B3DADBADE /* ofxUIWaveform.cpp */; };
+		B04C494419E2275700ABA9D2 /* Instrument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B04C494219E2275700ABA9D2 /* Instrument.cpp */; };
 		B0881D6619E0F2DF00166692 /* libscsynth.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B0881D6419E0F2CA00166692 /* libscsynth.a */; };
 		B0881D6719E0F2DF00166692 /* libsndfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B0881D6519E0F2CA00166692 /* libsndfile.a */; };
 		B0881D7519E0F30A00166692 /* SuperCollider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0881D7319E0F2FA00166692 /* SuperCollider.cpp */; };
@@ -293,6 +294,8 @@
 		AE335EB4709BFD4671EEAC84 /* MessageMappingOscPacketListener.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = MessageMappingOscPacketListener.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/MessageMappingOscPacketListener.h; sourceTree = SOURCE_ROOT; };
 		AEFCF7E549ACA862C022AD40 /* ofxUIDefines.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxUIDefines.h; path = ../../../addons/ofxUI/src/ofxUIDefines.h; sourceTree = SOURCE_ROOT; };
 		AFCB8B4BF42F2B6188AC7297 /* SC_ComPort.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = SC_ComPort.h; path = ../../../addons/ofxSuperColliderServer/libs/supercollider/include/server/SC_ComPort.h; sourceTree = SOURCE_ROOT; };
+		B04C494219E2275700ABA9D2 /* Instrument.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Instrument.cpp; sourceTree = "<group>"; };
+		B04C494319E2275700ABA9D2 /* Instrument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Instrument.h; sourceTree = "<group>"; };
 		B0881D6419E0F2CA00166692 /* libscsynth.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libscsynth.a; sourceTree = "<group>"; };
 		B0881D6519E0F2CA00166692 /* libsndfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libsndfile.a; sourceTree = "<group>"; };
 		B0881D6B19E0F2F400166692 /* Control.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Control.cpp; sourceTree = "<group>"; };
@@ -644,6 +647,8 @@
 			children = (
 				B0881D7319E0F2FA00166692 /* SuperCollider.cpp */,
 				B0881D7419E0F2FA00166692 /* SuperCollider.h */,
+				B04C494219E2275700ABA9D2 /* Instrument.cpp */,
+				B04C494319E2275700ABA9D2 /* Instrument.h */,
 			);
 			name = src;
 			path = ../src;
@@ -1146,6 +1151,7 @@
 				11AD9D1E3B952DD20DF9A589 /* ofxTouchOsc.cpp in Sources */,
 				9F5C6DD965B4F3A6DB5B88F8 /* ofxUI2DGraph.cpp in Sources */,
 				4B3ED367CA852D522E2EE996 /* ofxUI2DPad.cpp in Sources */,
+				B04C494419E2275700ABA9D2 /* Instrument.cpp in Sources */,
 				F1E8DE8734BA6F69A5112FA8 /* ofxUIBaseDraws.cpp in Sources */,
 				C381F2B7CFD84C0E540EB4BC /* ofxUIBiLabelSlider.cpp in Sources */,
 				7D393646FB859A930EF58917 /* ofxUIButton.cpp in Sources */,

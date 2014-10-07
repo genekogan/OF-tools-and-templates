@@ -3,7 +3,6 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
-    learn.setupGui();
     learn.setupOscOutputs("localhost", 1234);
 
     learn.addInput("input1", &myVal, 5, 8);

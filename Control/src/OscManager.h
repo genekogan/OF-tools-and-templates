@@ -12,16 +12,32 @@ class OscManager
 public:
     ~OscManager();
     
-    void setupSender(string host, int port) {
-        oscSender.setup(host, port);
-        sending = true;
+    void setupSender(string host, int portOut) {
+        try {
+            oscSender.setup(host, portOut);
+            this->host = host;
+            this->portOut = portOut;
+            sending = true;
+        }
+        catch(runtime_error &e) {
+            ofLog(OF_LOG_ERROR, ofToString(e.what()));
+        }
     }
     
-    void setupReceiver(int port) {
-        oscReceiver.setup(port);
-        receiving = true;
+    void setupReceiver(int portIn) {
+        try {
+            oscReceiver.setup(portIn);
+            this->portIn = portIn;
+            receiving = true;
+        }
+        catch(runtime_error &e) {
+            ofLog(OF_LOG_ERROR, ofToString(e.what()));
+        }
     }
     
+    string getHost() {return host;}
+    int getSenderPort() {return portOut;}
+    int getReceiverPort() {return portIn;}
     bool getSending() {return sending;}
     bool getReceiving() {return receiving;}
     
@@ -98,6 +114,8 @@ private:
     map<string, TrackerBase* > inputTrackers;
     ofxOscSender oscSender;
     ofxOscReceiver oscReceiver;
+    string host;
+    int portIn, portOut;
     bool sending, receiving;
 };
 

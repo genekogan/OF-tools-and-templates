@@ -115,6 +115,8 @@ void LearnOutputParameter::clearInstances() {
     data.clear();
     addDataPage();
     setPage(0);
+    setTrained(false);
+    guiExamples->setLabelText(ofToString(getNumInstances())+" examples");
 }
 
 //-----------
@@ -188,7 +190,7 @@ void LearnOutputParameter::trainClassifierFast() {
     if (getNumInstances() > 0) {
         addSpreadsheetDataToLearn();
         learn.trainRegression(FAST, REGRESSION_SVM);
-        trained = true;
+        setTrained(true);
     }
 }
 
@@ -197,7 +199,20 @@ void LearnOutputParameter::trainClassifierAccurate() {
     if (getNumInstances() > 0) {
         addSpreadsheetDataToLearn();
         learn.trainRegression(ACCURATE, REGRESSION_SVM);
-        trained = true;
+        setTrained(true);
+    }
+}
+
+//-----------
+void LearnOutputParameter::loadClassifier(string path) {
+    learn.loadModel(REGRESSION_SVM, path);
+    setTrained(true);
+}
+
+//-----------
+void LearnOutputParameter::saveClassifier(string path) {
+    if (trained) {
+        learn.saveModel(path);
     }
 }
 
@@ -262,6 +277,8 @@ void LearnOutputParameter::exportData(string filename) {
 //  GUI
 
 void LearnInputParameter::setupGui() {
+    gui->setColorOutline(ofColor(255,200));
+    gui->setDrawOutline(true);
     gui->clearWidgets();
     gui->addLabelButton("X", false, 15.0f);
     gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
@@ -287,6 +304,8 @@ void LearnInputParameter::setupGui() {
 
 //-----------
 void LearnOutputParameter::setupGui() {
+    gui->setColorOutline(ofColor(255,200));
+    gui->setDrawOutline(true);
     gui->clearWidgets();
     gui->setWidth(800);
     gui->addLabelButton("X", false, 15.0f);
@@ -325,7 +344,7 @@ void LearnOutputParameter::setupGui() {
     guiDataPage = guiData->addLabelButton("page 1/1", false, 60.0f);
     guiDataPage->setColorBack(ofColor(0,0));
     guiData->addLabelButton(">", false, 15.0f);
-    guiData->addSpacer(20, 0);
+    guiData->addSpacer(21, 0);
     guiData->addLabelButton("csv", false, 30.0f);
     guiData->addLabelButton("clear all", false, 64.0f)->setColorBack(ofColor(255,0,0,100));
     guiData->autoSizeToFitWidgets();
@@ -334,6 +353,8 @@ void LearnOutputParameter::setupGui() {
 //-----------
 void LearnOutputParameter::setupGuiInputSelector() {
     guiInputSelect->clearWidgets();
+    guiInputSelect->setColorOutline(ofColor(255,200));
+    guiInputSelect->setDrawOutline(true);
     vector<string> inputLabels;
     for (int i=0; i<allInputs.size(); i++) {
         inputLabels.push_back(allInputs[i]->getName());
@@ -467,7 +488,12 @@ void LearnOutputParameter::guiEvent(ofxUIEventArgs &e) {
             record = false;
             return;
         }
-        gui->setColorBack(record ? ofColor(200, 0, 0, 200) : ofColor(0, 100));
+        if (trained){
+            gui->setColorBack(record ? ofColor(200, 0, 0, 200) : ofColor(0, 60, 0, 100));
+        }
+        else {
+            gui->setColorBack(record ? ofColor(200, 0, 0, 200) : ofColor(0, 100));
+        }
     }
     else if (e.getName() == "examples") {
         setExamplesVisible(guiExamples->getValue());
@@ -488,6 +514,7 @@ void LearnOutputParameter::guiEvent(ofxUIEventArgs &e) {
             }
             else {
                 clearInstances();
+                setTrained(false);
             }
         }
     }
@@ -549,7 +576,7 @@ bool LearnOutputParameter::removeInput(LearnInputParameter * input) {
         if (input == activeInputs[i]) {
             activeInputs.erase(activeInputs.begin() + i);
             clearInstances();
-            trained = false;
+            setTrained(false);
         }
     }
     guiSelector->removeToggle(input->getName());
@@ -574,6 +601,12 @@ void LearnOutputParameter::setPage(int p) {
 }
 
 //-----------
+void LearnOutputParameter::setTrained(bool trained) {
+    this->trained = trained;
+    gui->setColorBack(trained ? ofColor(0,60,0,100) : ofColor(0,100));
+}
+
+//-----------
 void LearnOutputParameter::guiDataEvent(ofxUIEventArgs &e) {
     if (e.getName() == "<") {
         if (e.getButton()->getValue() == 1) return;
@@ -588,6 +621,7 @@ void LearnOutputParameter::guiDataEvent(ofxUIEventArgs &e) {
         bool confirm = ofSystemChoiceDialog("Are you sure you want to delete all examples for "+getName()+"?");
         if (confirm) {
             clearInstances();
+            setTrained(false);
         }
     }
     else if (e.getName() == "csv") {

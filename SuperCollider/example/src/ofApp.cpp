@@ -2,12 +2,17 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    sc3.setup();
+    string synthFile = "/Users/Gene/Code/openFrameworks/tools/SuperCollider/synths.scd";
+    SuperColliderLayer *layer1 = sc3.addLayer("source", synthFile);
+    SuperColliderLayer *layer2 = sc3.addLayer("modifier", synthFile);
+    layer1->setBusOutSelf();
+    layer2->setBusIn(layer1->getBus());
+    layer2->setBusOutToDac();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-
+    sc3.update();
 }
 
 //--------------------------------------------------------------
