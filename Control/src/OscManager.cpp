@@ -1,49 +1,81 @@
 #include "OscManager.h"
 
+//----------
+bool OscManager::setupSender(string host, int portOut) {
+    try {
+        cout << "TRY SET UP OUT " << host << " " << portOut << endl;
+        oscSender.setup(host, portOut);
+        this->host = host;
+        this->portOut = portOut;
+        sending = true;
+        cout << "SET UP TO SND " << portOut << endl;
+    }
+    catch(runtime_error &e) {
+        ofLog(OF_LOG_ERROR, ofToString(e.what()));
+    }
+    return sending;
+}
+
+//----------
+bool OscManager::setupReceiver(int portIn) {
+    try {
+        cout << "TRY SET UP IN "<< portIn << endl;
+
+        oscReceiver.setup(portIn);
+        this->portIn = portIn;
+        receiving = true;
+        cout << "SET UP TO RCV " << portIn << endl;
+    }
+    catch(runtime_error &e) {
+        ofLog(OF_LOG_ERROR, ofToString(e.what()));
+    }
+    return receiving;
+}
+
+//----------
+void OscManager::update() {
+    if (receiving)
+        oscReceiveChanges();
+    if (sending)
+        oscSendChanges();
+}
+
+//----------
+void OscManager::registerToOscSender(vector<ParameterBase *> &parameters) {
+    for (int i=0; i<parameters.size(); i++) {
+        registerToOsc(parameters[i], true);
+    }
+}
+
+//----------
+void OscManager::registerToOscReceiver(vector<ParameterBase *> &parameters) {
+    for (int i=0; i<parameters.size(); i++) {
+        registerToOsc(parameters[i], false);
+    }
+}
 
 //----------
 void OscManager::registerToOsc(ParameterBase *parameter, bool send) {
     if (parameter->getType() == ParameterBase::BOOL) {
-        if (send)
-            outputTrackers[parameter->getOscAddress()] = new Tracker<bool>(parameter);
-        else
-            inputTrackers[parameter->getOscAddress()] = new Tracker<bool>(parameter);
+        registerParameterToOsc<bool>(parameter, send);
     }
     else if (parameter->getType() == ParameterBase::STRING) {
-        if (send)
-            outputTrackers[parameter->getOscAddress()] = new Tracker<string>(parameter);
-        else
-            inputTrackers[parameter->getOscAddress()] = new Tracker<string>(parameter);
+        registerParameterToOsc<string>(parameter, send);
     }
     else if (parameter->getType() == ParameterBase::INT) {
-        if (send)
-            outputTrackers[parameter->getOscAddress()] = new Tracker<int>(parameter);
-        else
-            inputTrackers[parameter->getOscAddress()] = new Tracker<int>(parameter);
+        registerParameterToOsc<int>(parameter, send);
     }
     else if (parameter->getType() == ParameterBase::FLOAT) {
-        if (send)
-            outputTrackers[parameter->getOscAddress()] = new Tracker<float>(parameter);
-        else
-            inputTrackers[parameter->getOscAddress()] = new Tracker<float>(parameter);
+        registerParameterToOsc<float>(parameter, send);
     }
     else if (parameter->getType() == ParameterBase::VEC2F) {
-        if (send)
-            outputTrackers[parameter->getOscAddress()] = new Tracker<ofVec2f>(parameter);
-        else
-            inputTrackers[parameter->getOscAddress()] = new Tracker<ofVec2f>(parameter);
+        registerParameterToOsc<ofVec2f>(parameter, send);
     }
     else if (parameter->getType() == ParameterBase::VEC3F) {
-        if (send)
-            outputTrackers[parameter->getOscAddress()] = new Tracker<ofVec3f>(parameter);
-        else
-            inputTrackers[parameter->getOscAddress()] = new Tracker<ofVec3f>(parameter);
+        registerParameterToOsc<ofVec3f>(parameter, send);
     }
     else if (parameter->getType() == ParameterBase::VEC4F) {
-        if (send)
-            outputTrackers[parameter->getOscAddress()] = new Tracker<ofVec4f>(parameter);
-        else
-            inputTrackers[parameter->getOscAddress()] = new Tracker<ofVec4f>(parameter);
+        registerParameterToOsc<ofVec4f>(parameter, send);
     }
 }
 
@@ -264,10 +296,22 @@ void OscManager::saveTouchOscLayout(string name, vector<ParameterBase *> &parame
     touchOsc.save(name);
 }
 
+void OscManager::blah() {
+    cout <<"============"<<endl;
+    for (map<string, TrackerBase*>::iterator it=inputTrackers.begin(); it!=inputTrackers.end(); ++it){
+        cout << "INPUT " <<it->first << endl;
+    }
+    for (map<string, TrackerBase*>::iterator it=outputTrackers.begin(); it!=outputTrackers.end(); ++it){
+        cout << "OUTPUT " <<it->first << endl;
+    }
+    cout <<"============"<<endl;
+}
+    
 //----------
 void OscManager::clearInputTrackers() {
     for (map<string, TrackerBase*>::iterator it=inputTrackers.begin(); it!=inputTrackers.end(); ++it){
         delete it->second;
+        inputTrackers.erase(it);
     }
     inputTrackers.clear();
 }
@@ -276,16 +320,13 @@ void OscManager::clearInputTrackers() {
 void OscManager::clearOutputTrackers() {
     for (map<string, TrackerBase*>::iterator it=outputTrackers.begin(); it!=outputTrackers.end(); ++it){
         delete it->second;
+        outputTrackers.erase(it);
     }
     outputTrackers.clear();
 }
 
 //----------
 OscManager::~OscManager() {
-    for (map<string, TrackerBase*>::iterator it=inputTrackers.begin(); it!=inputTrackers.end(); ++it){
-        delete it->second;
-    }
-    for (map<string, TrackerBase*>::iterator it=outputTrackers.begin(); it!=outputTrackers.end(); ++it){
-        delete it->second;
-    }
+    clearInputTrackers();
+    clearOutputTrackers();
 }

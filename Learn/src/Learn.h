@@ -10,15 +10,25 @@
 class Learn
 {
 public:
+    void blah() {oscManager.blah();}
     Learn(bool init=true);
     void update();
     void draw();
     
-    void setupOscInputs(int port=-1);
-    void setupOscOutputs(string host="", int port=-1);
+    void enableOscInputs(bool enable);
+    void enableOscOutputs(bool enable);
+    void setupOscSender(string host, int port);
+    void setupOscReceiver(int port);
+    
+    
+    //void setupOscInputs(int port=-1);
+    //void setupOscOutputs(string host="", int port=-1);
+    
+    
     virtual void setupGui();
     virtual void resetGuiPositions();
     virtual void resetInputs();
+    virtual void resetOutputs();
     virtual void resetPresets();
 
     virtual LearnInputParameter  * addInput (string name, float *value, float min, float max);
@@ -45,12 +55,12 @@ public:
     void saveInputs(string filename, ofXml &xml);
     void saveOutputs(string filename, ofXml &xml);
     
+    string loadPresetDialog(string filename);
     void loadPreset(string path);
     void loadInputs(ofXml &xml);
     void loadOutputs(ofXml &xml);
     
 protected:
-    void setupTouchOsc();
     
     void gui1Event(ofxUIEventArgs &e);
     void gui2Event(ofxUIEventArgs &e);
@@ -66,7 +76,7 @@ protected:
     vector<LearnOutputParameter *> outputs;
     
     OscManager oscManager;
-    bool oscActive;
+    bool oscInActive, oscOutActive;
     string oscOutputHost;
     int oscOutputPort, oscInputPort;
     

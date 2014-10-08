@@ -10,56 +10,23 @@
 class OscManager
 {
 public:
+    void blah();
     ~OscManager();
     
-    void setupSender(string host, int portOut) {
-        try {
-            oscSender.setup(host, portOut);
-            this->host = host;
-            this->portOut = portOut;
-            sending = true;
-        }
-        catch(runtime_error &e) {
-            ofLog(OF_LOG_ERROR, ofToString(e.what()));
-        }
-    }
+    bool setupSender(string host, int portOut);
+    bool setupReceiver(int portIn);
     
-    void setupReceiver(int portIn) {
-        try {
-            oscReceiver.setup(portIn);
-            this->portIn = portIn;
-            receiving = true;
-        }
-        catch(runtime_error &e) {
-            ofLog(OF_LOG_ERROR, ofToString(e.what()));
-        }
-    }
+    void update();
     
     string getHost() {return host;}
     int getSenderPort() {return portOut;}
     int getReceiverPort() {return portIn;}
+    
     bool getSending() {return sending;}
     bool getReceiving() {return receiving;}
     
-    void update() {
-        if (receiving)
-            oscReceiveChanges();
-        if (sending)
-            oscSendChanges();
-    }
-    
-    void registerToOscSender(vector<ParameterBase *> &parameters) {
-        for (int i=0; i<parameters.size(); i++) {
-            registerToOsc(parameters[i], true);
-        }
-    }
-    
-    void registerToOscReceiver(vector<ParameterBase *> &parameters) {
-        for (int i=0; i<parameters.size(); i++) {
-            registerToOsc(parameters[i], false);
-        }
-    }
-    
+    void registerToOscSender(vector<ParameterBase *> &parameters);
+    void registerToOscReceiver(vector<ParameterBase *> &parameters);
     void registerToOsc(ParameterBase *parameter, bool send);
 
     void clearInputTrackers();
@@ -67,7 +34,7 @@ public:
     
     void saveTouchOscLayout(string name, vector<ParameterBase *> &parameters);
 
-private:
+protected:
     
     struct TrackerBase {
         ParameterBase *parameter;
@@ -90,6 +57,29 @@ private:
         }
     };
     
+    template <typename T>
+    void registerParameterToOsc(ParameterBase *parameter, bool send) {
+
+        if (send) {
+            if (outputTrackers.count(parameter->getOscAddress()) == 0) {
+                cout << "ADD SEND " << parameter->getOscAddress() << " send " << send << endl;
+                outputTrackers[parameter->getOscAddress()] = new Tracker<T>(parameter);
+            }
+            else {
+                ofLog(OF_LOG_WARNING, "Warning: parameter "+parameter->getName()+" already registered to output OSC");
+            }
+        }
+        else {
+            if (inputTrackers.count(parameter->getOscAddress()) == 0) {
+                cout << "ADD RCV " << parameter->getOscAddress() << " send " << send << endl;
+                inputTrackers[parameter->getOscAddress()] = new Tracker<T>(parameter);
+            }
+            else {
+                ofLog(OF_LOG_WARNING, "Warning: parameter "+parameter->getName()+" already registered to input OSC");
+            }
+        }
+    }
+
     template <typename T>
     void checkIfToSendOscMessage(map<string, TrackerBase*>::iterator &it) {
         if (((Tracker<T> *) it->second)->checkChanged()) {

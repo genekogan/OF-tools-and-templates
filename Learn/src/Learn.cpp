@@ -7,7 +7,11 @@ Learn::Learn(bool init) {
     trainCountdown = 2;
     instanceRate = 15;
     startTime = -(trainDuration + trainCountdown);
-    oscActive = false;
+    oscInActive = false;
+    
+    oscOutputHost = "localhost";
+    oscOutputPort = 8000;
+    oscInputPort = 9000;
     
     gui1 = new ofxUICanvas("setup");
     gui2 = new ofxUICanvas("train");
@@ -18,12 +22,12 @@ Learn::Learn(bool init) {
 
 //-------
 void Learn::update(){
-
-    /* send & receive osc */
-    if (oscActive)
+    
+    // send & receive osc
+    if (oscInActive || oscOutActive)
         oscManager.update();
     
-    /* recording procedure */
+    // recording procedure
     if (countingDown) {
         float elapsed = ofGetElapsedTimef() - startTime;
         if (elapsed > trainCountdown) {
@@ -44,7 +48,7 @@ void Learn::update(){
         }
     }
     
-    /* prediction procedure */
+    // prediction procedure
     else if (predicting) {
         for (int i=0; i<outputs.size(); i++) {
             if (outputs[i]->getTrained())
@@ -95,8 +99,10 @@ LearnOutputParameter * Learn::addOutput(string name, float *value, float min, fl
     newOutput->addParameterViewedListener(this, &Learn::outputParameterViewed);
     outputs.push_back(newOutput);
     if (oscManager.getSending()) {
-        oscManager.clearOutputTrackers();
-        setupOscOutputs();
+        oscManager.registerToOsc(newOutput, true);
+    }
+    if (oscManager.getReceiving()) {
+        oscManager.registerToOsc(newOutput, false);
     }
     return newOutput;
 }
@@ -112,48 +118,59 @@ LearnOutputParameter * Learn::addOutput(string name, float min, float max) {
 }
 
 //-------
-void Learn::setupTouchOsc() {
-    vector<ParameterBase *> parameters;
-    for (int i=0; i<inputs.size(); i++) {
-        parameters.push_back(inputs[i]);
-    }
-    oscManager.saveTouchOscLayout("learn", parameters);
-}
-
-//-------
-void Learn::setupOscInputs(int port) {
-    if (port != -1)
-        this->oscInputPort = port;
-    vector<ParameterBase *> parameters;
-    for (int i=0; i<inputs.size(); i++) {
-        parameters.push_back(inputs[i]);
-    }
-    if (!oscManager.getReceiving())
-        oscManager.setupReceiver(oscInputPort);
-    oscManager.clearInputTrackers();
-    oscManager.registerToOscReceiver(parameters);
-    oscActive = true;
-}
-
-//-------
-void Learn::setupOscOutputs(string host, int port) {
+void Learn::setupOscSender(string host, int port) {
     if (host != "") {
         this->oscOutputHost = host;
-        ((ofxUITextInput *) gui3->getWidget("oscHost"))->setTextString(host);
+        ((ofxUITextInput *) gui3->getWidget("oscHost"))->setTextString(oscOutputHost);
     }
-    if (port != -1) {
+    if (port > 0) {
         this->oscOutputPort = port;
-        ((ofxUITextInput *) gui3->getWidget("oscPortOut"))->setTextString(ofToString(port));
+        ((ofxUITextInput *) gui3->getWidget("oscPortOut"))->setTextString(ofToString(oscOutputPort));
     }
-    vector<ParameterBase *> parameters;
-    for (int i=0; i<outputs.size(); i++) {
-        parameters.push_back(outputs[i]);
+    oscOutActive = oscManager.setupSender(oscOutputHost, oscOutputPort);
+}
+
+void Learn::setupOscReceiver(int port) {
+    if (port > 0) {
+        this->oscInputPort = port;
+        ((ofxUITextInput *) gui3->getWidget("oscPortIn"))->setTextString(ofToString(oscInputPort));
     }
-    if (!oscManager.getSending())
-        oscManager.setupSender(oscOutputHost, oscOutputPort);
-    oscManager.clearOutputTrackers();
-    oscManager.registerToOscSender(parameters);
-    oscActive = true;
+    oscInActive = oscManager.setupReceiver(oscInputPort);
+}
+
+//-------
+void Learn::enableOscInputs(bool enable) {
+    if (enable) {
+        if (!oscInActive) {
+            oscInActive = oscManager.setupReceiver(oscInputPort);
+        }
+        if (oscInActive) {
+            oscManager.clearInputTrackers();
+            oscManager.registerToOscReceiver((vector<ParameterBase *> &) inputs);
+            oscManager.registerToOscReceiver((vector<ParameterBase *> &) outputs);
+        }
+    }
+    else {
+        oscManager.clearInputTrackers();
+        oscInActive = false;
+    }
+}
+
+//-------
+void Learn::enableOscOutputs(bool enable) {
+    if (enable) {
+        if (!oscOutActive) {
+            oscOutActive = oscManager.setupSender(oscOutputHost, oscOutputPort);
+        }
+        if (oscOutActive) {
+            oscManager.clearOutputTrackers();
+            oscManager.registerToOscSender((vector<ParameterBase *> &) outputs);
+        }
+    }
+    else {
+        oscManager.clearOutputTrackers();
+        oscOutActive = false;
+    }
 }
 
 //-------
@@ -249,6 +266,11 @@ void Learn::setupGui() {
     bTouchOscIn->setName("touchOscIn");
     bTouchOscOut->setName("touchOscOut");
 
+    vector<string> presets;
+    guiSelector = new ofxUIDropDownList("Load Preset", presets, 216, 0, 0, OFX_UI_FONT_SMALL);
+    guiSelector->setAllowMultiple(false);
+    guiSelector->setAutoClose(true);
+
     gui1->setColorOutline(ofColor(255,200));
     gui1->setDrawOutline(true);
     gui1->clearWidgets();
@@ -275,27 +297,24 @@ void Learn::setupGui() {
     gui2->addWidgetEastOf(new ofxUIIntSlider("instanceRate", 1, 30, &instanceRate, 100.0f, 9.0f), "countdown")->setPadding(2);
     gui2->addWidgetSouthOf(guiStatusLabel, "instanceRate")->setPadding(4);
     
-    vector<string> presets;
-    guiSelector = new ofxUIDropDownList("Load Preset", presets, 216, 0, 0, OFX_UI_FONT_SMALL);
-    guiSelector->setAllowMultiple(false);
-    guiSelector->setAutoClose(true);
-
     gui3->setColorOutline(ofColor(255,200));
     gui3->setDrawOutline(true);
     gui3->clearWidgets();
     gui3->setPosition(585, 5);
     gui3->setWidth(438);
     gui3->setHeight(60);
-    gui3->addLabelToggle("predict", &predicting, 100, 50);
+    gui3->addLabelToggle("predict", &predicting, 100, 22);
     gui3->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
     gui3->addLabelButton("save", false, 100, 50);
     gui3->addLabel("oscLabel", "osc");
-    gui3->addTextInput("oscPortIn", ofToString(oscManager.getReceiverPort()), 40.0f)->setAutoClear(false);
-    gui3->addTextInput("oscHost", oscManager.getHost(), 90.0f)->setAutoClear(false);
-    gui3->addTextInput("oscPortOut", ofToString(oscManager.getSenderPort()), 40.0f)->setAutoClear(false);
+    gui3->addTextInput("oscPortIn", ofToString(oscInputPort), 40.0f)->setAutoClear(false);
+    gui3->addTextInput("oscHost", oscOutputHost, 90.0f)->setAutoClear(false);
+    gui3->addTextInput("oscPortOut", ofToString(oscOutputPort), 40.0f)->setAutoClear(false);
     gui3->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
     gui3->addWidgetSouthOf(new ofxUISpacer(0, 5, "gui3Spacer"), "oscLabel");
     gui3->addWidgetSouthOf(guiSelector, "gui3Spacer");
+    gui3->addWidgetSouthOf(new ofxUILabelToggle("osc <", &oscInActive, 46, 22, 0, 0, OFX_UI_FONT_SMALL), "predict");
+    gui3->addWidgetEastOf(new ofxUILabelToggle("osc >", &oscOutActive, 46, 22, 0, 0, OFX_UI_FONT_SMALL), "osc <");
     
     ofAddListener(gui1->newGUIEvent, this, &Learn::gui1Event);
     ofAddListener(gui2->newGUIEvent, this, &Learn::gui2Event);
@@ -306,7 +325,6 @@ void Learn::setupGui() {
 
 //-------
 void Learn::gui1Event(ofxUIEventArgs &e) {
-    cout << e.getName() << endl;
     if (e.getName() == "add input") {
         if (e.getButton()->getValue() == 1) return;
         addInput("newInput"+ofToString(newInputCounter++), 0, 1);
@@ -355,21 +373,32 @@ void Learn::gui3Event(ofxUIEventArgs &e) {
         }
     }
     else if (e.getParentName() == "Load Preset") {
-        string path = ofToDataPath("presets/"+e.getName());
-        loadPreset(path);
+        loadPresetDialog(e.getName());
     }
     else if (e.getName() == "oscHost" || e.getName() == "oscPortOut") {
+        cout << " LETS TRY TO SET UP NEW HOST " << endl;
         string newHost = ((ofxUITextInput *) gui3->getWidget("oscHost"))->getTextString();
         int newPort = ofToInt(((ofxUITextInput *) gui3->getWidget("oscPortOut"))->getTextString());
-        if (newHost != oscManager.getHost() || newPort != oscManager.getSenderPort()) {
-            oscManager.setupSender(newHost, newPort);
+        cout << " ===> " << newHost << " " << newPort << endl;
+        if ((newHost != oscManager.getHost() || newPort != oscManager.getSenderPort())
+            && newHost != "" && newPort > 0) {
+            cout << " ------>" << newHost << " " << newPort << endl;
+            setupOscSender(newHost, newPort);
+            enableOscOutputs(oscOutActive);
         }
     }
     else if (e.getName() == "oscPortIn") {
         int newPort = ofToInt(((ofxUITextInput *) gui3->getWidget("oscPortIn"))->getTextString());
-        if (newPort != oscManager.getReceiverPort()) {
-            oscManager.setupReceiver(newPort);
+        if (newPort != oscManager.getReceiverPort() && newPort > 0) {
+            setupOscReceiver(newPort);
+            enableOscInputs(oscInActive);
         }
+    }
+    else if (e.getName() == "osc <") {
+        enableOscInputs(e.getToggle()->getValue());
+    }
+    else if (e.getName() == "osc >") {
+        enableOscOutputs(e.getToggle()->getValue());
     }
 }
 
@@ -378,8 +407,25 @@ void Learn::resetInputs() {
     for (int i=0; i<outputs.size(); i++) {
         outputs[i]->setInputParameters(inputs);
     }
-    setupOscInputs();
+    if (oscManager.getReceiving()) {
+        oscManager.clearInputTrackers();
+        oscManager.registerToOscReceiver((vector<ParameterBase *> &) inputs);
+        oscManager.registerToOscReceiver((vector<ParameterBase *> &) outputs);
+    }
     resetGuiPositions();
+}
+
+//-------
+void Learn::resetOutputs() {
+    if (oscManager.getSending()) {
+        oscManager.clearOutputTrackers();
+        oscManager.registerToOscSender((vector<ParameterBase *> &) outputs);
+    }
+    if (oscManager.getReceiving()) {
+        oscManager.clearInputTrackers();
+        oscManager.registerToOscReceiver((vector<ParameterBase *> &) inputs);
+        oscManager.registerToOscReceiver((vector<ParameterBase *> &) outputs);
+    }
 }
 
 //-------
@@ -401,16 +447,9 @@ void Learn::resetPresets() {
     for(int i = 0; i < dir.numFiles(); i++) {
         presets.push_back(dir.getName(i));
     }
+    presets.push_back("...load from file...");
     guiSelector->clearToggles();
     guiSelector->addToggles(presets);
-
-    /*
-    vector<ofxUILabelToggle *> toggles = guiSelector->getToggles();
-    for (int i=0; i<toggles.size(); i++) {
-        toggles[i]->setColorBack(ofColor(0));
-        toggles[i]->setColorFill(ofColor(0, 180));
-    }
-     */
 }
 
 
@@ -420,8 +459,8 @@ void Learn::inputParameterChanged(LearnParameter & input) {
 }
 
 //-------
-void Learn::outputParameterChanged(LearnParameter & input) {
-    setupOscOutputs();
+void Learn::outputParameterChanged(LearnParameter & output) {
+    resetOutputs();
 }
 
 //-------
@@ -466,7 +505,8 @@ void Learn::outputParameterDeleted(LearnParameter & output) {
         else ++it;
     }
     resetGuiPositions();
-    setupOscOutputs();
+    oscManager.registerToOscReceiver((vector<ParameterBase *> &) outputs);
+    resetOutputs();
 }
 
 //-------
@@ -505,18 +545,14 @@ bool Learn::savePreset(string filename) {
     if (filename=="") {
         filename = ofSystemTextBoxDialog("Choose a filename");
     }
-    if (filename=="") {
-        return false;
-    }
+    if (filename=="")   return false;
     string path = ofToDataPath("presets/"+filename+".xml");
-    
     ofXml xml;
     xml.addChild("LearnPreset");
     xml.setTo("LearnPreset");
     saveInputs(filename, xml);
     saveOutputs(filename, xml);
     xml.save(path);
-    ofSystem("open "+path);
     return true;
 }
 
@@ -578,6 +614,18 @@ void Learn::saveOutputs(string filename, ofXml &xml) {
         xml.addXml(xmlp);
     }
     xml.setToParent();
+}
+
+//-------
+string Learn::loadPresetDialog(string filename) {
+    if (filename == "...load from file...") {
+        ofFileDialogResult file = ofSystemLoadDialog();
+        if (file.bSuccess) {
+            return file.filePath;
+        }
+    } else {
+        return ofToDataPath("presets/"+filename);
+    }
 }
 
 //-------
