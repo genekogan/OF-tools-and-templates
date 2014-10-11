@@ -100,11 +100,12 @@ public:
     int getNumInputs() {return activeInputs.size();}
     vector<LearnInputParameter *> & getActiveInputs() {return activeInputs;}
     bool getInputActive(LearnInputParameter * input);
-    
-    void setVisible(bool visible);
-    virtual void setGuiPosition(int x, int y);
+
     void setupGui();
     void setupGuiInputSelector();
+
+    void setVisible(bool visible);
+    void setGuiPosition(int x, int y);
     void setInputsVisible(bool b);
     void setExamplesVisible(bool b);
     void setDataSize(int width, int height);
@@ -115,7 +116,7 @@ public:
     
     void trainClassifierFast();
     void trainClassifierAccurate();
-    void predict();
+    virtual void predict();
     void loadClassifier(string path);
     void saveClassifier(string path);
     

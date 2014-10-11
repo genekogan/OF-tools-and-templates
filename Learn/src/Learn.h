@@ -10,7 +10,6 @@
 class Learn
 {
 public:
-    void blah() {oscManager.blah();}
     Learn(bool init=true);
     void update();
     void draw();
@@ -19,11 +18,6 @@ public:
     void enableOscOutputs(bool enable);
     void setupOscSender(string host, int port);
     void setupOscReceiver(int port);
-    
-    
-    //void setupOscInputs(int port=-1);
-    //void setupOscOutputs(string host="", int port=-1);
-    
     
     virtual void setupGui();
     virtual void resetGuiPositions();
@@ -50,7 +44,8 @@ public:
     
     void saveInputsToTouchOsc();
     void saveOutputsToTouchOsc();
-
+    void saveInputsAndOutputsToTouchOsc();
+    
     bool savePreset(string filename="");
     void saveInputs(string filename, ofXml &xml);
     void saveOutputs(string filename, ofXml &xml);
@@ -65,6 +60,8 @@ protected:
     void gui1Event(ofxUIEventArgs &e);
     void gui2Event(ofxUIEventArgs &e);
     void gui3Event(ofxUIEventArgs &e);
+    void oscEventSetRecording(bool &b);
+    void oscEventSetPredicting(bool &b);
 
     void startRecording();
     void stopRecording();
@@ -83,7 +80,7 @@ protected:
     ofxUICanvas *gui1, *gui2, *gui3;
     ofxUIDropDownList *guiSelector;
     ofxUILabel *guiStatusLabel;
-    bool visible;
+    bool visible, inputsVisible, outputsVisible;
     
     float startTime, trainCountdown, trainDuration;
     int instanceRate, framesPerInstance, currentNewInstances;

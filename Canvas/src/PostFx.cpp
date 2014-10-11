@@ -23,6 +23,7 @@ void PostFxLayer::setup() {
 	dir.sort();
     
     vector<string> lutChoices;
+    lutChoices.push_back("None");
     for (int i=0; i<dir.size(); i++) {
         lutChoices.push_back(dir.getPath(i));
     }
@@ -40,11 +41,19 @@ void PostFxLayer::setup() {
     
     string fx = "none";
     chooseFx(fx);
+    
+    pass = true;
 }
 
 //-----------
 void PostFxLayer::chooseLut(string &s ) {
-    lut.loadLUT(s);
+    if (s=="None") {
+        pass = true;
+    }
+    else {
+        lut.loadLUT(s);
+        pass = false;
+    }
 }
 
 //-----------
@@ -54,89 +63,93 @@ void PostFxLayer::chooseFx(string &s ) {
 
 //-----------
 void PostFxLayer::render() {
-    lut.setTexture(texLayer->getFbo()->getTextureReference());
-    lut.update();
+    if (!pass) {
+        lut.setTexture(texLayer->getFbo()->getTextureReference());
+        lut.update();
+    }
     
-    if (selection == "bloom"){
-        bloom << lut ;
+    fbo.begin();
+
+    if (selection == "none") {
+        if (pass)   texLayer->getFbo()->draw(0, 0);
+        else        lut.draw();
+    }
+    else if (selection == "bloom"){
+        if (pass)   bloom << texLayer->getFbo()->getTextureReference();
+        else        bloom << lut;
         bloom.update();
+        bloom.draw();
     }
     else if (selection == "gaussian_blur"){
         gaussianBlur.setRadius(radius);
-        gaussianBlur << lut;
+        if (pass)   gaussianBlur << texLayer->getFbo()->getTextureReference();
+        else        gaussianBlur << lut;
         gaussianBlur.update();
+        gaussianBlur.draw();
     }
     else if (selection == "bokeh"){
         bokeh.setRadius(radius);
-        bokeh << lut;
+        if (pass)   bokeh << texLayer->getFbo()->getTextureReference();
+        else        bokeh << lut;
         bokeh.update();
+        bokeh.draw();
     }
     else if (selection == "glow"){
         glow.setRadius(radius);
-        glow << lut;
+        if (pass)   glow << texLayer->getFbo()->getTextureReference();
+        else        glow << lut;
         glow.update();
+        glow.draw();
     }
     else if (selection == "blur"){
         blur.setFade(fade);
-        blur << lut;
+        if (pass)   blur << texLayer->getFbo()->getTextureReference();
+        else        blur << lut;
         blur.update();
+        blur.draw();
     }
     else if (selection == "median"){
-        median << lut;
+        if (pass)   median << texLayer->getFbo()->getTextureReference();
+        else        median << lut;
         median.update();
+        median.draw();
     }
     else if (selection == "oldtv"){
-        oldtv << lut;
+        if (pass)   oldtv << texLayer->getFbo()->getTextureReference();
+        else        oldtv << lut;
         oldtv.update();
+        oldtv.draw();
     }
     else if (selection == "inverse"){
-        inverse << lut;
+        if (pass)   inverse << texLayer->getFbo()->getTextureReference();
+        else        inverse << lut;
         inverse.update();
+        inverse.draw();
     }
     else if (selection == "barrelChromaAb"){
-        barrelChromaAb << lut;
+        if (pass)   barrelChromaAb << texLayer->getFbo()->getTextureReference();
+        else        barrelChromaAb << lut;
         barrelChromaAb.update();
+        barrelChromaAb.draw();
     }
     else if (selection == "chromaAb"){
-        chromaAb << lut;
+        if (pass)   chromaAb << texLayer->getFbo()->getTextureReference();
+        else        chromaAb << lut;
         chromaAb.update();
+        chromaAb.draw();
     }
     else if (selection == "chromaGlitch"){
-        chromaGlitch << lut;
+        if (pass)   chromaGlitch << texLayer->getFbo()->getTextureReference();
+        else        chromaGlitch << lut;
         chromaGlitch.update();
+        chromaGlitch.draw();
     }
     else if (selection == "grayscale"){
-        grayscale << lut;
+        if (pass)   grayscale << texLayer->getFbo()->getTextureReference();
+        else        grayscale << lut;
         grayscale.update();
+        grayscale.draw();
     }
 
-    // update fbo
-    fbo.begin();
-    if (selection == "none")
-        lut.draw();
-    else if (selection == "bloom")
-        bloom.draw();
-    else if (selection == "gaussian_blur")
-        gaussianBlur.draw();
-    else if (selection == "bokeh")
-        bokeh.draw();
-    else if (selection == "glow")
-        glow.draw();
-    else if (selection == "blur")
-        blur.draw();
-    else if (selection == "median")
-        median.draw();
-    else if (selection == "oldtv")
-        oldtv.draw();
-    else if (selection == "inverse")
-        inverse.draw();
-    else if (selection == "barrelChromaAb")
-        barrelChromaAb.draw();
-    else if (selection == "chromaAb")
-        chromaAb.draw();
-    else if (selection == "chromaGlitch")
-        chromaGlitch.draw();
-    else if (selection == "grayscale")
-        grayscale.draw();    
     fbo.end();
 }

@@ -56,6 +56,7 @@ private:
     ofxGrayscale grayscale;
     
     float radius, fade;
+    bool pass;
 };
 
 

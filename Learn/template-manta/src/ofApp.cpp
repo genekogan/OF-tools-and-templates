@@ -3,10 +3,7 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
-    learn.addInput("input1", &myVal, 5, 8);
-    learn.addInput("in2", -30, 30);
-    learn.addInput("in3", 100, 200);
-    
+    learn.addAllPadsAsInputs();
     learn.addOutput("output1", 20, 50);
 
     learn.setupOscSender("localhost", 1234);
@@ -17,7 +14,7 @@ void ofApp::setup(){
 void ofApp::update(){
     learn.update();
     
-    myVal = ofMap(ofGetMouseX(), 0, ofGetWidth(), 5, 8);
+    ofSetWindowTitle(ofToString(ofGetFrameRate()));
 }
 
 //--------------------------------------------------------------

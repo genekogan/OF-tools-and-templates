@@ -3,12 +3,10 @@
 //----------
 bool OscManager::setupSender(string host, int portOut) {
     try {
-        cout << "TRY SET UP OUT " << host << " " << portOut << endl;
         oscSender.setup(host, portOut);
         this->host = host;
         this->portOut = portOut;
         sending = true;
-        cout << "SET UP TO SND " << portOut << endl;
     }
     catch(runtime_error &e) {
         ofLog(OF_LOG_ERROR, ofToString(e.what()));
@@ -19,12 +17,9 @@ bool OscManager::setupSender(string host, int portOut) {
 //----------
 bool OscManager::setupReceiver(int portIn) {
     try {
-        cout << "TRY SET UP IN "<< portIn << endl;
-
         oscReceiver.setup(portIn);
         this->portIn = portIn;
         receiving = true;
-        cout << "SET UP TO RCV " << portIn << endl;
     }
     catch(runtime_error &e) {
         ofLog(OF_LOG_ERROR, ofToString(e.what()));
@@ -112,9 +107,12 @@ void OscManager::oscReceiveChanges() {
         ofxOscMessage msg;
         oscReceiver.getNextMessage(&msg);
         string address = msg.getAddress();
-        
-        if (inputTrackers[address]) {
+        if (inputTrackers.count(address) > 0) {
             oscReceiveProcessMessage(address, msg);
+        }
+        else if (eventTrackers.count(address) > 0) {
+            bool b = msg.getArgAsInt32(0) ? true : false;
+            ofNotifyEvent(*eventTrackers[address], b, this);
         }
         else {
             oscReceiveTouchOscChanges(msg);
@@ -129,7 +127,7 @@ void OscManager::oscReceiveTouchOscChanges(ofxOscMessage &msg) {
         int idx = ofToInt(m[m.size()-1]);
         m.pop_back();
         string address = ofJoinString(m, "/");
-        if (inputTrackers[address]) {
+        if (inputTrackers.count(address) > 0) {
             oscReceiveProcessTouchOscMessage(address, msg, idx);
         }
     }
@@ -138,8 +136,8 @@ void OscManager::oscReceiveTouchOscChanges(ofxOscMessage &msg) {
 //----------
 void OscManager::oscReceiveProcessMessage(string address, ofxOscMessage &msg) {
     ParameterBase::Type type = inputTrackers[address]->getType();
-
-    if (type == ParameterBase::BOOL) {
+    
+    if      (type == ParameterBase::BOOL) {
         ((Parameter<bool> *) inputTrackers[address]->parameter)->set(msg.getArgAsInt32(0)==1);
     }
     else if (type == ParameterBase::STRING) {
@@ -168,7 +166,7 @@ void OscManager::oscReceiveProcessTouchOscMessage(string address, ofxOscMessage 
     float value = msg.getArgAsFloat(0);
     
     if (type == ParameterBase::VEC2F) {
-        if (idx==1) {
+        if      (idx==1) {
             float newValue = ofLerp(((Parameter<ofVec2f> *) inputTrackers[address]->parameter)->getMin().x, ((Parameter<ofVec2f> *) inputTrackers[address]->parameter)->getMax().x, value);
             ((Parameter<ofVec2f> *) inputTrackers[address]->parameter)->getReference()->x = newValue;
         }
@@ -178,7 +176,7 @@ void OscManager::oscReceiveProcessTouchOscMessage(string address, ofxOscMessage 
         }
     }
     else if (type == ParameterBase::VEC3F) {
-        if (idx==1) {
+        if      (idx==1) {
             float newValue = ofLerp(((Parameter<ofVec3f> *) inputTrackers[address]->parameter)->getMin().x, ((Parameter<ofVec3f> *) inputTrackers[address]->parameter)->getMax().x, value);
             ((Parameter<ofVec3f> *) inputTrackers[address]->parameter)->getReference()->x = newValue;
         }
@@ -192,7 +190,7 @@ void OscManager::oscReceiveProcessTouchOscMessage(string address, ofxOscMessage 
         }
     }
     else if (type == ParameterBase::VEC4F) {
-        if (idx==1) {
+        if      (idx==1) {
             float newValue = ofLerp(((Parameter<ofVec4f> *) inputTrackers[address]->parameter)->getMin().x, ((Parameter<ofVec4f> *) inputTrackers[address]->parameter)->getMax().x, value);
             ((Parameter<ofVec4f> *) inputTrackers[address]->parameter)->getReference()->x = newValue;
         }
@@ -208,6 +206,39 @@ void OscManager::oscReceiveProcessTouchOscMessage(string address, ofxOscMessage 
             float newValue = ofLerp(((Parameter<ofVec4f> *) inputTrackers[address]->parameter)->getMin().w, ((Parameter<ofVec4f> *) inputTrackers[address]->parameter)->getMax().w, value);
             ((Parameter<ofVec4f> *) inputTrackers[address]->parameter)->getReference()->w = newValue;
         }
+    }
+}
+
+//----------
+template <typename T>
+void OscManager::registerParameterToOsc(ParameterBase *parameter, bool send) {
+    if (send) {
+        if (outputTrackers.count(parameter->getOscAddress()) == 0) {
+            outputTrackers[parameter->getOscAddress()] = new Tracker<T>(parameter);
+        }
+        else {
+            ofLog(OF_LOG_WARNING, "Warning: parameter "+parameter->getName()+" already registered to output OSC");
+        }
+    }
+    else {
+        if (inputTrackers.count(parameter->getOscAddress()) == 0) {
+            inputTrackers[parameter->getOscAddress()] = new Tracker<T>(parameter);
+        }
+        else {
+            ofLog(OF_LOG_WARNING, "Warning: parameter "+parameter->getName()+" already registered to input OSC");
+        }
+    }
+}
+
+//----------
+template <typename T>
+void OscManager::checkIfToSendOscMessage(map<string, TrackerBase*>::iterator &it) {
+    if (((Tracker<T> *) it->second)->checkChanged()) {
+        cout << "send OSC " << it->first << " :: "<<ofToString(it->second->getValue<T>()) << endl;
+        ofxOscMessage msg;
+        msg.setAddress(it->first);
+        addOscArgs(msg, it->second->getValue<T>());
+        oscSender.sendMessage(msg);
     }
 }
 
@@ -244,9 +275,15 @@ template<> inline void OscManager::addOscArgs<ofVec4f>(ofxOscMessage &msg, ofVec
 void OscManager::saveTouchOscLayout(string name, vector<ParameterBase *> &parameters) {
     ofxTouchOsc touchOsc;
     touchOsc.setScale(320, 540);
-    
-    ofxTouchOscPage *page1 = touchOsc.addPage("myPage");
-    page1->setDefaultWidgetColor(YELLOW);
+    ofxTouchOscPage * page = makeTouchOscPage(name, parameters);
+    touchOsc.addPage(page);
+    touchOsc.save(name);
+}
+
+//----------
+ofxTouchOscPage * OscManager::makeTouchOscPage(string name, vector<ParameterBase *> &parameters) {
+    ofxTouchOscPage *page = new ofxTouchOscPage("myPage");
+    page->setDefaultWidgetColor(YELLOW);
     
     float h = 0.94 / parameters.size();
     float y = 0.01;
@@ -254,59 +291,47 @@ void OscManager::saveTouchOscLayout(string name, vector<ParameterBase *> &parame
     for (int i=0; i<parameters.size(); i++) {
         ParameterBase::Type type = parameters[i]->getType();
         if (type == ParameterBase::BOOL) {
-            ofxTouchOscToggle *toggle = page1->addToggle(parameters[i]->getName(), 0.01, y, 0.4, h*0.85);
+            ofxTouchOscToggle *toggle = page->addToggle(parameters[i]->getName(), 0.01, y, 0.4, h*0.85);
             toggle->setOscAddress(parameters[i]->getOscAddress());
-            page1->addLabel(parameters[i]->getName(), 0.01, y, 0.4, h*0.85);
+            page->addLabel(parameters[i]->getName(), 0.01, y, 0.4, h*0.85);
         }
         else if (type == ParameterBase::INT) {
-            ofxTouchOscFader *fader = page1->addFader(parameters[i]->getName(), 0.01, y, 0.98, h*0.85);
+            ofxTouchOscFader *fader = page->addFader(parameters[i]->getName(), 0.01, y, 0.98, h*0.85);
             fader->setOscAddress(parameters[i]->getOscAddress());
             fader->setRange(parameters[i]->getMin<int>(), parameters[i]->getMax<int>());
-            page1->addLabel(parameters[i]->getName(), 0.01, y, 0.98, h*0.85);
+            page->addLabel(parameters[i]->getName(), 0.01, y, 0.98, h*0.85);
         }
         else if (type == ParameterBase::STRING) {
         }
         else if (type == ParameterBase::FLOAT) {
-            ofxTouchOscFader *fader = page1->addFader(parameters[i]->getName(), 0.01, y, 0.98, h*0.85);
+            ofxTouchOscFader *fader = page->addFader(parameters[i]->getName(), 0.01, y, 0.98, h*0.85);
             fader->setOscAddress(parameters[i]->getOscAddress());
             fader->setRange(parameters[i]->getMin<float>(), parameters[i]->getMax<float>());
-            page1->addLabel(parameters[i]->getName(), 0.01, y, 0.98, h*0.85);
+            page->addLabel(parameters[i]->getName(), 0.01, y, 0.98, h*0.85);
         }
         else if (type == ParameterBase::VEC2F) {
-            ofxTouchOscMultiFader *fader = page1->addMultiFader(parameters[i]->getName(), 0.01, y, 0.98, h*0.85);
+            ofxTouchOscMultiFader *fader = page->addMultiFader(parameters[i]->getName(), 0.01, y, 0.98, h*0.85);
             fader->setOscAddress(parameters[i]->getOscAddress());
             fader->setNumber(2);
-            page1->addLabel(parameters[i]->getName(), 0.01, y, 0.98, h*0.85);
+            page->addLabel(parameters[i]->getName(), 0.01, y, 0.98, h*0.85);
         }
         else if (type == ParameterBase::VEC3F) {
-            ofxTouchOscMultiFader *fader = page1->addMultiFader(parameters[i]->getName(), 0.01, y, 0.98, h*0.85);
+            ofxTouchOscMultiFader *fader = page->addMultiFader(parameters[i]->getName(), 0.01, y, 0.98, h*0.85);
             fader->setOscAddress(parameters[i]->getOscAddress());
             fader->setNumber(3);
-            page1->addLabel(parameters[i]->getName(), 0.01, y, 0.98, h*0.85);
+            page->addLabel(parameters[i]->getName(), 0.01, y, 0.98, h*0.85);
         }
         else if (type == ParameterBase::VEC4F) {
-            ofxTouchOscMultiFader *fader = page1->addMultiFader(parameters[i]->getName(), 0.01, y, 0.98, h*0.85);
+            ofxTouchOscMultiFader *fader = page->addMultiFader(parameters[i]->getName(), 0.01, y, 0.98, h*0.85);
             fader->setOscAddress(parameters[i]->getOscAddress());
             fader->setNumber(4);
-            page1->addLabel(parameters[i]->getName(), 0.01, y, 0.98, h*0.85);
+            page->addLabel(parameters[i]->getName(), 0.01, y, 0.98, h*0.85);
         }
         y += h;
     }
-    
-    touchOsc.save(name);
+    return page;
 }
 
-void OscManager::blah() {
-    cout <<"============"<<endl;
-    for (map<string, TrackerBase*>::iterator it=inputTrackers.begin(); it!=inputTrackers.end(); ++it){
-        cout << "INPUT " <<it->first << endl;
-    }
-    for (map<string, TrackerBase*>::iterator it=outputTrackers.begin(); it!=outputTrackers.end(); ++it){
-        cout << "OUTPUT " <<it->first << endl;
-    }
-    cout <<"============"<<endl;
-}
-    
 //----------
 void OscManager::clearInputTrackers() {
     for (map<string, TrackerBase*>::iterator it=inputTrackers.begin(); it!=inputTrackers.end(); ++it){
@@ -326,7 +351,30 @@ void OscManager::clearOutputTrackers() {
 }
 
 //----------
+void OscManager::clearEventTrackers() {
+    for (map<string, ofEvent<bool>*>::iterator it=eventTrackers.begin(); it!=eventTrackers.end(); ++it){
+        it->second->disable();
+        it->second->clear();
+        delete it->second;
+        eventTrackers.erase(it);
+    }
+    eventTrackers.clear();
+}
+
+//----------
 OscManager::~OscManager() {
     clearInputTrackers();
     clearOutputTrackers();
+    clearEventTrackers();
+}
+
+//----------
+void OscManager::listTrackedParameters() {
+    cout <<"List of tracked parameters:"<<endl;
+    for (map<string, TrackerBase*>::iterator it=inputTrackers.begin(); it!=inputTrackers.end(); ++it){
+        cout << " INPUT :: " <<it->first << endl;
+    }
+    for (map<string, TrackerBase*>::iterator it=outputTrackers.begin(); it!=outputTrackers.end(); ++it){
+        cout << " OUTPUT :: " <<it->first << endl;
+    }
 }

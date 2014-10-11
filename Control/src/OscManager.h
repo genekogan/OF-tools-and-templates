@@ -10,7 +10,6 @@
 class OscManager
 {
 public:
-    void blah();
     ~OscManager();
     
     bool setupSender(string host, int portOut);
@@ -29,69 +28,34 @@ public:
     void registerToOscReceiver(vector<ParameterBase *> &parameters);
     void registerToOsc(ParameterBase *parameter, bool send);
 
+    template<typename ListenerClass, typename ListenerMethod>
+    void registerOscEventListener(string address, ListenerClass *listener, ListenerMethod method) {
+        eventTrackers[address] = new ofEvent<bool>();
+        ofAddListener(*eventTrackers[address], listener, method);
+    }
+    
+    ofxTouchOscPage * makeTouchOscPage(string name, vector<ParameterBase *> &parameters);
+    void saveTouchOscLayout(string name, vector<ParameterBase *> &parameters);
+    
     void clearInputTrackers();
     void clearOutputTrackers();
-    
-    void saveTouchOscLayout(string name, vector<ParameterBase *> &parameters);
+    void clearEventTrackers();
 
+    void listTrackedParameters();
+    
 protected:
     
-    struct TrackerBase {
-        ParameterBase *parameter;
-        template<class T> T getValue() {
-            return ((Parameter<T> *) parameter)->get();
-        }
-        ParameterBase::Type getType() { return parameter->getType(); }
-    };
+    struct TrackerBase;
+    template <typename T> struct Tracker;
     
     template <typename T>
-    struct Tracker : public TrackerBase {
-        T value;
-        Tracker(ParameterBase *p) {
-            parameter = p;
-        }
-        bool checkChanged() {
-            bool isChanged = value != ((Parameter<T> *) parameter)->get();
-            value = ((Parameter<T> *) parameter)->get();
-            return isChanged;
-        }
-    };
-    
-    template <typename T>
-    void registerParameterToOsc(ParameterBase *parameter, bool send) {
-
-        if (send) {
-            if (outputTrackers.count(parameter->getOscAddress()) == 0) {
-                cout << "ADD SEND " << parameter->getOscAddress() << " send " << send << endl;
-                outputTrackers[parameter->getOscAddress()] = new Tracker<T>(parameter);
-            }
-            else {
-                ofLog(OF_LOG_WARNING, "Warning: parameter "+parameter->getName()+" already registered to output OSC");
-            }
-        }
-        else {
-            if (inputTrackers.count(parameter->getOscAddress()) == 0) {
-                cout << "ADD RCV " << parameter->getOscAddress() << " send " << send << endl;
-                inputTrackers[parameter->getOscAddress()] = new Tracker<T>(parameter);
-            }
-            else {
-                ofLog(OF_LOG_WARNING, "Warning: parameter "+parameter->getName()+" already registered to input OSC");
-            }
-        }
-    }
+    void registerParameterToOsc(ParameterBase *parameter, bool send);
 
     template <typename T>
-    void checkIfToSendOscMessage(map<string, TrackerBase*>::iterator &it) {
-        if (((Tracker<T> *) it->second)->checkChanged()) {
-            cout << "send OSC " << it->first << " :: "<<ofToString(it->second->getValue<T>()) << endl;
-            ofxOscMessage msg;
-            msg.setAddress(it->first);
-            addOscArgs(msg, it->second->getValue<T>());
-            oscSender.sendMessage(msg);
-        }
-    }
+    void checkIfToSendOscMessage(map<string, TrackerBase*>::iterator &it);
     
-    template<typename T> void addOscArgs(ofxOscMessage &msg, T val);
+    template<typename T>
+    void addOscArgs(ofxOscMessage &msg, T val);
 
     void oscSendChanges();
     void oscReceiveChanges();
@@ -102,11 +66,37 @@ protected:
 
     map<string, TrackerBase* > outputTrackers;
     map<string, TrackerBase* > inputTrackers;
+    map<string, ofEvent<bool>* > eventTrackers;
     ofxOscSender oscSender;
     ofxOscReceiver oscReceiver;
     string host;
     int portIn, portOut;
     bool sending, receiving;
+};
+
+
+//---------
+struct OscManager::TrackerBase {
+    ParameterBase *parameter;
+    template<class T> T getValue() {
+        return ((Parameter<T> *) parameter)->get();
+    }
+    ParameterBase::Type getType() {
+        return parameter->getType();
+    }
+};
+
+template <typename T>
+struct OscManager::Tracker : public TrackerBase {
+    T value;
+    Tracker(ParameterBase *p) {
+        parameter = p;
+    }
+    bool checkChanged() {
+        bool isChanged = value != ((Parameter<T> *) parameter)->get();
+        value = ((Parameter<T> *) parameter)->get();
+        return isChanged;
+    }
 };
 
 

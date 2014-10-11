@@ -393,7 +393,6 @@ void PostProcessingLayer::render() {
 
 //-----------
 PostProcessingLayer::~PostProcessingLayer() {
-    cout << "delete ppl" << endl;
     gui.setActive(false);
     gui.~Control();
 }

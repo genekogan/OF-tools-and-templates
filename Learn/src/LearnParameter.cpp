@@ -41,6 +41,12 @@ LearnParameter::~LearnParameter() {
     gui->clearWidgets();
     gui->removeWidgets();
     gui->disable();
+    pSelectedEvent.disable();
+    pSelectedEvent.clear();
+    pChangedEvent.disable();
+    pChangedEvent.clear();
+    pDeletedEvent.disable();
+    pDeletedEvent.clear();
 }
 
 //-----------
@@ -53,6 +59,8 @@ LearnOutputParameter::~LearnOutputParameter() {
     gui->clearWidgets();
     gui->removeWidgets();
     gui->disable();
+    pViewedEvent.disable();
+    pViewedEvent.clear();
 }
 
 //-----------

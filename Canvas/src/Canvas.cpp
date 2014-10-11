@@ -168,7 +168,7 @@ void Canvas::loadPreset(string &filename) {
         else if (type == "PostFxLayer")
             newLayer = addLayer(CANVAS_POST_FX);
         
-        /* load main control for new layer */
+        // load main control for new layer
         presets.loadPreset(newLayer->control, xmlControl);
         
         xml.setToParent();
@@ -182,7 +182,7 @@ void Canvas::loadPreset(string &filename) {
             xmlControl.addXml(xml);
             xml.setToParent();
             
-            /* load scene for Creator/Modifier */
+            // load scene for Creator/Modifier
             presets.loadPreset(newLayer->scene->control, xmlControl);
             
             xml.setToParent();

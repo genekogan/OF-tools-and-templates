@@ -10,7 +10,7 @@
 #include "Presets.h"
 
 
-class Canvas
+class Canvas : public ofThread
 {
 public:
     ~Canvas();
@@ -51,5 +51,4 @@ protected:
 
     int idxLayer;
     bool toDeleteLayer;
-
 };

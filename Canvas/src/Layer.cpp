@@ -32,6 +32,7 @@ void CreatorLayer::setupCreators() {
     scene = debug;
     string s = "debug";
     selectScene(s);
+    scene->getControl().headerSelected = true;
 }
 
 //----------------
@@ -58,6 +59,9 @@ void ModifierLayer::setup() {
     if (texLayer != NULL) {
         ((Shader *) scene)->setTexture(texLayer->getFbo());
     }
+    string s = "brcosa";
+    selectScene(s);
+    scene->getControl().headerSelected = true;
 }
 
 //----------------

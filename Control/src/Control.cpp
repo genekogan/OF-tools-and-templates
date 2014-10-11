@@ -345,10 +345,14 @@ void Control::clear() {
         colors.erase(it);
     }
     for (map<string, ofEvent<string>*>::iterator it=menuEvents.begin(); it!=menuEvents.end(); ++it){
+        it->second->disable();
+        it->second->clear();
         delete it->second;
         menuEvents.erase(it);
     }
     for (map<string, ofEvent<string>*>::iterator it=events.begin(); it!=events.end(); ++it){
+        it->second->disable();
+        it->second->clear();
         delete it->second;
         events.erase(it);
     }
