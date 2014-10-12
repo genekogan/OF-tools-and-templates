@@ -11,6 +11,7 @@ Learn::Learn(bool init) {
     
     inputsVisible = true;
     outputsVisible = true;
+    visible = true;
     
     oscOutputHost = "localhost";
     oscOutputPort = 8000;
@@ -99,6 +100,9 @@ LearnOutputParameter * Learn::addOutput(string name, float *value, float min, fl
     LearnOutputParameter *newOutput = new LearnOutputParameter(name, value, min, max);
     newOutput->setGuiPosition(420, 80+55*outputs.size());
     newOutput->setInputParameters(inputs);
+    if (inputGroups.size() > 0) {
+        newOutput->setInputGroups(inputGroups);
+    }
     newOutput->setVisible(outputsVisible);
     newOutput->addParameterChangedListener(this, &Learn::outputParameterChanged);
     newOutput->addParameterDeletedListener(this, &Learn::outputParameterDeleted);
@@ -267,7 +271,7 @@ void Learn::trainClassifiers(string trainStrategy) {
         if (!train) return;
     }
     for (int i=0; i<outputs.size(); i++) {
-        if (outputs[i]->getNumInstances() == 0)  continue;
+        if (outputs[i]->getNumInstances() == 0) continue;
         if (trainStrategy == "fast") {
             outputs[i]->trainClassifierFast();
         }

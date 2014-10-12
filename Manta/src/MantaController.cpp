@@ -2,80 +2,64 @@
 
 //-----------
 void MantaController::setup(){
-    
-    // connect to manta
-    manta.setup();
-    
-    
-    //control.setVisible(false);
-    
-    // set up listeners
-    /*
-     */
-    
-    /*
-     - all pads
-     - all velocities
-     - some pads
-     - some velocities
-     - inter finger distances
-     - perimeter
-     - avg pad (among those > on)
-     - total pad
-     - num fingers
-     - centroid
-     - weighted centroid
-     
-     */
+    isConnected = manta.setup();
 }
 
 //-----------
 void MantaController::update(){
+    if (!isConnected) return;
     
-    vector<ofPoint> fingers;
-    float padSum = 0;
-    float padAverage = 0;
-    int numFingers = 0;
+    fingers.clear();
+    fingerValues.clear();
     
+    padSum = 0;
+    padAverage = 0;
+    numFingers = 0;
     
     float currentValue;
-    for (int y=0; y<6; y++) {
-        for (int x=0; x<8; x++) {
-            currentValue = manta.getPad(y, x);
-            padSum += currentValue;
+    for (int row=0; row<6; row++) {
+        for (int col=0; col<8; col++) {
+            currentValue = manta.getPad(row, col);
             if (currentValue > 0) {
-                fingers.push_back(ofPoint(x, y, currentValue));
+                fingers.push_back(getPositionAtPad(row, col));
+                fingerValues.push_back(currentValue);
                 numFingers++;
+                padSum += currentValue;
             }
         }
     }
     
-    padAverage = padSum / numFingers;
+    if (numFingers > 0) {
+        padAverage = padSum / numFingers;
+        fingersHull = convexHull.getConvexHull(fingers);
+    }
     
-    
-    vector<ofPoint> fingerHull = convexHull.getConvexHull(fingers);
-    float perimeter = 0;
+
+    perimeter = 0;
     float currentDist;
-    for (int i=0; i<fingerHull.size(); i++) {
-        currentDist = pow(fingerHull[i].x - fingerHull[(i+1)%fingerHull.size()].x, 2)+
-                      pow(fingerHull[i].y - fingerHull[(i+1)%fingerHull.size()].y, 2);
+    for (int i=0; i<fingersHull.size(); i++) {
+        currentDist = pow(fingersHull[i].x - fingersHull[(i+1)%fingersHull.size()].x, 2)+
+                      pow(fingersHull[i].y - fingersHull[(i+1)%fingersHull.size()].y, 2);
         perimeter += currentDist;
     }
-    float averageDist = perimeter / (float) fingerHull.size();
-    
-    
+    if (fingersHull.size() > 0) {
+        averageInterFingerDistance = perimeter / (float) fingersHull.size();
+    }
+    else {
+        averageInterFingerDistance = 0;
+    }
     
     ofPoint centroid, weightedCentroid;
     for (int i=0; i<fingers.size(); i++) {
-        centroid += ofPoint(fingers[i].x, fingers[i].y);
-        weightedCentroid += (ofPoint(fingers[i].x, fingers[i].y) * fingers[i].z / padSum);
+        centroid += fingers[i];
+        weightedCentroid += (fingers[i] * fingerValues[i] / padSum);
     }
     centroid /= numFingers;
     
-    
-    cout << "CENTROID " << ofToString(centroid) << endl;
-    cout << "CENTROID W " << ofToString(weightedCentroid) << endl;
-    cout << "NUM FINGERS " << numFingers << "  SUM " << padSum << endl;
+    centroidX = centroid.x;
+    centroidY = centroid.y;
+    weightedCentroidX = weightedCentroid.x;
+    weightedCentroidY = weightedCentroid.y;
 }
 
 //-----------
@@ -89,13 +73,89 @@ void MantaController::draw(int x, int y, int w){
 }
 
 //-----------
-void MantaController::setGuiPosition(int x, int y) {
-    //control.setGuiPosition(x, y);
+void MantaController::drawStats(int x, int y, int w){
+    int h = w * 310.0 / 400.0;
+    
+    ofPushStyle();
+    ofPushMatrix();
+    
+    ofTranslate(x, y);
+    
+    ofSetColor(0);
+    ofFill();
+    ofRect(0, 0, w, h);
+    
+    // draw convex hull
+    ofNoFill();
+    ofSetColor(0, 255, 0);
+    ofSetLineWidth(1);
+    ofBeginShape();
+    for (int i=0; i<fingersHull.size(); i++) {
+        float x = ofMap(fingersHull[i].x, 0, 1, 0, w);
+        float y = ofMap(fingersHull[i].y, 1, 0, 0, h);
+        ofVertex(x, y);
+    }
+    ofEndShape();
+
+    // draw fingers
+    ofFill();
+    ofSetColor(255, 0, 0);
+    ofSetLineWidth(0);
+    for (int i=0; i<fingers.size(); i++) {
+        float x = ofMap(fingers[i].x, 0, 1, 0, w);
+        float y = ofMap(fingers[i].y, 1, 0, 0, h);
+        float r = ofMap(fingerValues[i], 0, 196, 0, 10);
+        ofCircle(x, y, r);
+    }
+
+    // draw centroids
+    float cx = ofMap(centroidX, 0, 1, 0, w);
+    float cy = ofMap(centroidY, 1, 0, 0, h);
+    float wcx = ofMap(weightedCentroidX, 0, 1, 0, w);
+    float wcy = ofMap(weightedCentroidY, 1, 0, 0, h);
+    ofNoFill();
+    ofSetColor(150);
+    ofSetLineWidth(2);
+    ofLine(cx-4, cy-4, cx+4, cy+4);
+    ofLine(cx+4, cy-4, cx-4, cy+4);
+    ofSetColor(255);
+    ofLine(wcx-4, wcy-4, wcx+4, wcy+4);
+    ofLine(wcx+4, wcy-4, wcx-4, wcy+4);
+
+    // draw stats
+    ofSetColor(255);
+    ofDrawBitmapString("pad sum", 3, 12);
+    ofDrawBitmapString("pad avg", 3, 28);
+    ofDrawBitmapString("perimeter", 3, 44);
+    ofDrawBitmapString("bw fingers", 3, 60);
+    ofSetColor(0, 255, 0);
+    ofSetLineWidth(0);
+    ofFill();
+    ofRect(75,  1, ofClamp(ofMap(padSum, 0, 1024, 0, w-80), 0, w-80), 14);
+    ofRect(75, 17, ofClamp(ofMap(padAverage, 0, 196, 0, w-80), 0, w-80), 14);
+    ofRect(75, 33, ofClamp(ofMap(perimeter, 0, 2, 0, w-80), 0, w-80), 14);
+    ofRect(75, 49, ofClamp(ofMap(averageInterFingerDistance, 0, 1, 0, w-80), 0, w-80), 14);
+    
+    ofPopMatrix();
+    ofPopStyle();
+}
+
+//----------
+ofPoint MantaController::getPositionAtPad(int row, int col) {
+    if (row % 2 != 0) {
+        return ofPoint(ofMap(col+0.5, 0, 9, 0, 1),
+                       ofMap(row + 0.5, 0, 7, 0, 1));
+    }
+    else {
+        return ofPoint(ofMap(col, 0, 9, 0, 1),
+                       ofMap(row + 0.5, 0, 7, 0, 1));
+    }
 }
 
 //----------
 void MantaController::close() {
-    manta.close();
+    if (isConnected)
+        manta.close();
 }
 
 //-----------

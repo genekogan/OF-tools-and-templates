@@ -22,6 +22,18 @@ public:
     virtual void setupGui();
     virtual void resetGuiPositions();
     virtual void resetInputs();
+    
+    
+    virtual void resetInputGroups() {
+        if (inputGroups.size() == 0) return;
+        for (int i=0; i<outputs.size(); i++) {
+            outputs[i]->setInputGroups(inputGroups);
+        }
+    }
+    vector<LearnOutputParameter::GuiInputGroup> inputGroups;
+                                
+                                
+    
     virtual void resetOutputs();
     virtual void resetPresets();
 

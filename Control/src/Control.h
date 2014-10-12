@@ -113,8 +113,14 @@ void Control::addEvent(string name, ListenerClass *listener, ListenerMethod meth
 
 template <typename ListenerClass, typename ListenerMethod>
 void Control::addMenu(string name, vector<string> items, ListenerClass *listener, ListenerMethod method) {
-    menus[name] = items;
-    menuEvents[name] = new ofEvent<string>();
-    ofAddListener(*menuEvents[name], listener, method);
-    setupGui();
+    if (menus.count(name) == 0) {
+        menus[name] = items;
+        menuEvents[name] = new ofEvent<string>();
+        ofAddListener(*menuEvents[name], listener, method);
+        setupGui();
+    }
+    else {
+        menus[name] = items;
+        setupGui();
+    }
 }

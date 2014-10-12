@@ -2,30 +2,38 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    aalto.setup();
     
-    //learn.addAllPadsAsInputs();
-    learn.addOutput("output1", 20, 50);
-
-    learn.setupOscSender("localhost", 1234);
-    learn.setupOscReceiver(8000);
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    learn.update();
+    aalto.update();
     
-    ofSetWindowTitle(ofToString(ofGetFrameRate()));
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    learn.draw();
+
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    if (key=='g')
-        learn.toggleVisible();
+    if (key=='q') {
+        aalto.noteOn(60, 90);
+    }
+    else if (key=='w') {
+        aalto.noteOff(60, 90);
+    }
+    
+    if (key=='1') {
+        aalto.savePreset();
+    }
+    /*
+    if (key=='2') {
+        aalto.loadPreset("thistestpr");
+    }
+     */
 }
 
 //--------------------------------------------------------------

@@ -24,6 +24,7 @@ LearnOutputParameter::LearnOutputParameter(string name, float *value, float min,
     trained = false;
     viewExamples = false;
     viewInputs = false;
+    inputGroupsEnabled = false;
 
     dataWidth = 600;
     dataHeight = 300;
@@ -363,10 +364,19 @@ void LearnOutputParameter::setupGuiInputSelector() {
     guiInputSelect->clearWidgets();
     guiInputSelect->setColorOutline(ofColor(255,200));
     guiInputSelect->setDrawOutline(true);
+    
     vector<string> inputLabels;
-    for (int i=0; i<allInputs.size(); i++) {
-        inputLabels.push_back(allInputs[i]->getName());
+    if (inputGroupsEnabled) {
+        for (int i=0; i<inputGroups.size(); i++) {
+            inputLabels.push_back(inputGroups[i].name);
+        }
     }
+    else {
+        for (int i=0; i<allInputs.size(); i++) {
+            inputLabels.push_back(allInputs[i]->getName());
+        }
+    }
+    
     guiSelector = guiInputSelect->addDropDownList("select inputs", inputLabels, 200.0f);
     vector<ofxUILabelToggle *> toggles = guiSelector->getToggles();
     for (int i=0; i<toggles.size(); i++) {
@@ -553,7 +563,14 @@ void LearnOutputParameter::guiInputSelectEvent(ofxUIEventArgs &e) {
     activeInputs.clear();
     for (int i=0; i<toggles.size(); i++) {
         if (toggles[i]->getValue()) {
-            addInput(allInputs[i]);
+            if (inputGroupsEnabled) {
+                for (int j=0; j<inputGroups[i].inputs.size(); j++) {
+                    addInput(inputGroups[i].inputs[j]);
+                }
+            }
+            else {
+                addInput(allInputs[i]);
+            }
         }
     }
 }

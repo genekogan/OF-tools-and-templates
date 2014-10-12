@@ -125,6 +125,30 @@ public:
         ofAddListener(pViewedEvent, listener, method);
     }
     
+    
+    
+    
+    struct GuiInputGroup {
+        string name;
+        vector<LearnInputParameter *> inputs;
+    };
+
+    
+    
+    vector<GuiInputGroup> inputGroups;
+    
+    bool inputGroupsEnabled;
+    
+    void setInputGroups(vector<GuiInputGroup> inputGroups) {
+        this->inputGroups = inputGroups;
+        inputGroupsEnabled = true;
+        setupGuiInputSelector();
+    }
+
+    
+    
+    
+    
 protected:
     
     template <typename T> vector<T> grabFeatureVector(bool labelFirst);
