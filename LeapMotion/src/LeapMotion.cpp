@@ -6,10 +6,10 @@ void LeapMotion::setup(){
     cam.setOrientation(ofPoint(-20, 0, 0));
     fbo.allocate(1024, 768, GL_RGBA);
     
-    control.registerParameter("trackVelocity", &trackVelocity);
-    control.registerParameter("numFrames", &numFrames, 1, 60);
-    trackVelocity.addListener(this, &LeapMotion::trackVelocityChanged);
-    numFrames.addListener(this, &LeapMotion::numFramesChanged);
+    control.setName("LeapMotion");
+    control.addParameter("trackVelocity", &trackVelocity);
+    control.addParameter("numFrames", &numFrames, 1, 60);
+    
     trackVelocity = false;
     numFrames = 15;
 }
@@ -41,6 +41,14 @@ void LeapMotion::setVelocityTracking(bool trackVelocity, int numFrames) {
 
 //-----------
 void LeapMotion::update(){
+    
+    // check if parameters have changed to setVelocity tracking parameters
+    if (trackVelocity != pTrackVelocity || numFrames != pNumFrames) {
+        setVelocityTracking(trackVelocity,numFrames);
+        pTrackVelocity = trackVelocity;
+        pNumFrames = numFrames;
+    }
+    
     simpleHands = leap.getSimpleHands();
     
     // update velocity
@@ -247,6 +255,5 @@ void LeapMotion::draw(int x, int y, int w, int h){
 
 //-----------
 LeapMotion::~LeapMotion(){
-    trackVelocity.removeListener(this, &LeapMotion::trackVelocityChanged);
-    numFrames.removeListener(this, &LeapMotion::numFramesChanged);
+    
 }

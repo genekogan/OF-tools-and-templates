@@ -4,6 +4,7 @@
 void ofApp::setup(){
     
     // decide which manta inputs are available
+    /*
     learn.addAllPadsAsInput();
     learn.addSlidersAsInput();
     learn.addButtonsAsInput();
@@ -14,7 +15,8 @@ void ofApp::setup(){
     learn.addAverageInterFingerDistanceAsInput();
     learn.addCentroidAsInput();
     learn.addWeightedCentroidAsInput();
-
+     */
+    
     // add outputs
     learn.addOutput("output1", 20, 50);
 

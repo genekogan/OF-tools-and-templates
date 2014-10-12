@@ -6,7 +6,6 @@
 #include "Control.h"
 
 
-
 class Learn
 {
 public:
@@ -22,18 +21,7 @@ public:
     virtual void setupGui();
     virtual void resetGuiPositions();
     virtual void resetInputs();
-    
-    
-    virtual void resetInputGroups() {
-        if (inputGroups.size() == 0) return;
-        for (int i=0; i<outputs.size(); i++) {
-            outputs[i]->setInputGroups(inputGroups);
-        }
-    }
-    vector<LearnOutputParameter::GuiInputGroup> inputGroups;
-                                
-                                
-    
+    virtual void resetInputGroups();
     virtual void resetOutputs();
     virtual void resetPresets();
 
@@ -42,6 +30,9 @@ public:
     LearnInputParameter  * addInput (string name, float min, float max);
     LearnOutputParameter * addOutput(string name, float min, float max);
     
+    void addParametersAsInput(string name, vector<LearnInputParameter*> &newInputs);
+    void addParameterAsInput(string name, LearnInputParameter* newInput);
+
     void setVisible(bool visible);
     void setGuiInputsVisible(bool visible);
     void setGuiOutputsVisible(bool visible);
@@ -83,6 +74,7 @@ protected:
     
     vector<LearnInputParameter *> inputs;
     vector<LearnOutputParameter *> outputs;
+    vector<LearnOutputParameter::GuiInputGroup> inputGroups;
     
     OscManager oscManager;
     bool oscInActive, oscOutActive;

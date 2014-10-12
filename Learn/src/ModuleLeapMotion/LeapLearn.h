@@ -1,18 +1,20 @@
 #pragma once
 
 #include "ofMain.h"
-#include "MantaController.h"
+#include "LeapMotion.h"
 #include "Learn.h"
 
 
-class MantaLearn : public Learn
+class LeapLearn : public Learn
 {
 public:
-    MantaLearn();
+    ~LeapLearn();
+    LeapLearn();
     
     void update();
     void draw();
     
+    /*
     void addAllPadsAsInput();
     void addSlidersAsInput();
     void addButtonsAsInput();
@@ -23,8 +25,9 @@ public:
     void addAverageInterFingerDistanceAsInput();
     void addCentroidAsInput();
     void addWeightedCentroidAsInput();
+     */
     
 protected:
     
-    MantaController manta;
+    LeapMotion leap;
 };

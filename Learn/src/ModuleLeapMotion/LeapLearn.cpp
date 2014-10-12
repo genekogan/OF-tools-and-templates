@@ -1,29 +1,34 @@
-#include "MantaLearn.h"
+#include "LeapLearn.h"
 
 
 //-----------
-MantaLearn::MantaLearn() : Learn() {
-    manta.setup();
+LeapLearn::LeapLearn() : Learn() {
     setGuiInputsVisible(false);
+
+    leap.setup();
+    leap.setGuiPosition(4, 80);
+    leap.setVelocityTracking(true, 15);
 }
 
 //-----------
-void MantaLearn::update() {
-    manta.update();
+void LeapLearn::update() {
+    leap.update();
     Learn::update();
 }
 
 //-----------
-void MantaLearn::draw() {
+void LeapLearn::draw() {
     if (visible) {
-        manta.draw(5, 80, 410);
-        manta.drawStats(5, 420, 410);
+        leap.draw(2, 80, 400, 330);
+        leap.drawVelocityGraph(LEFT, 2, 430, 180, 180);
+        leap.drawVelocityGraph(RIGHT, 195, 430, 180, 180);
         Learn::draw();
     }
 }
+/*
 
 //-----------
-void MantaLearn::addAllPadsAsInput() {
+void LeapLearn::addAllPadsAsInput() {
     vector<LearnInputParameter*> newInputs;
     for (int row=0; row<6; row++) {
         for (int col=0; col<8; col++) {
@@ -97,4 +102,9 @@ void MantaLearn::addWeightedCentroidAsInput() {
     newInputs.push_back(addInput("wCentroidX", &manta.getWeightedCentroidX(), 0, 10));
     newInputs.push_back(addInput("wCentroidY", &manta.getWeightedCentroidY(), 0, 10));
     addParametersAsInput("weighted centroid", newInputs);
+}
+*/
+
+LeapLearn::~LeapLearn() {
+    leap.close();
 }

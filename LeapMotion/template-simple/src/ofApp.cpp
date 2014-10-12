@@ -18,7 +18,7 @@ void ofApp::update(){
 void ofApp::draw(){
     ofBackground(235);
     
-    leap.draw(0, 0, 680, 560);
+    leap.draw(0, 120, 680, 560);
     
     // get tip of a specific finger
     ofPoint p = leap.getFingerTip(LEFT, INDEX);

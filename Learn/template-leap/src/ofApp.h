@@ -2,7 +2,7 @@
 
 #include "ofMain.h"
 #include "Control.h"
-#include "MantaLearn.h"
+#include "LeapLearn.h"
 
 class ofApp : public ofBaseApp{
 
@@ -21,5 +21,5 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 		
-    MantaLearn learn;
+    LeapLearn learn;
 };

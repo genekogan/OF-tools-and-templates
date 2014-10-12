@@ -23,18 +23,17 @@ void MantaController::update(){
             if (currentValue > 0) {
                 fingers.push_back(getPositionAtPad(row, col));
                 fingerValues.push_back(currentValue);
-                numFingers++;
+                numFingers+=1.0;
                 padSum += currentValue;
             }
         }
     }
     
-    if (numFingers > 0) {
+    if (numFingers > 0.0) {
         padAverage = padSum / numFingers;
         fingersHull = convexHull.getConvexHull(fingers);
     }
     
-
     perimeter = 0;
     float currentDist;
     for (int i=0; i<fingersHull.size(); i++) {
@@ -42,12 +41,8 @@ void MantaController::update(){
                       pow(fingersHull[i].y - fingersHull[(i+1)%fingersHull.size()].y, 2);
         perimeter += currentDist;
     }
-    if (fingersHull.size() > 0) {
-        averageInterFingerDistance = perimeter / (float) fingersHull.size();
-    }
-    else {
-        averageInterFingerDistance = 0;
-    }
+    
+    averageInterFingerDistance = (fingersHull.size()==0) ? 0 : perimeter / (float) fingersHull.size();
     
     ofPoint centroid, weightedCentroid;
     for (int i=0; i<fingers.size(); i++) {
@@ -60,11 +55,6 @@ void MantaController::update(){
     centroidY = centroid.y;
     weightedCentroidX = weightedCentroid.x;
     weightedCentroidY = weightedCentroid.y;
-}
-
-//-----------
-float * MantaController::getPadRef(int x, int y){
-    return manta.getPadRef(x, y);
 }
 
 //-----------
@@ -154,8 +144,10 @@ ofPoint MantaController::getPositionAtPad(int row, int col) {
 
 //----------
 void MantaController::close() {
-    if (isConnected)
+    if (isConnected) {
         manta.close();
+        isConnected = false;
+    }
 }
 
 //-----------

@@ -129,6 +129,22 @@ LearnOutputParameter * Learn::addOutput(string name, float min, float max) {
 }
 
 //-------
+void Learn::addParametersAsInput(string name, vector<LearnInputParameter*> &newInputs) {
+    LearnOutputParameter::GuiInputGroup newGroup;
+    newGroup.name = name;
+    newGroup.inputs = newInputs;
+    inputGroups.push_back(newGroup);
+    resetInputGroups();
+}
+
+//-------
+void Learn::addParameterAsInput(string name, LearnInputParameter* newInput) {
+    vector<LearnInputParameter*> newInputs;
+    newInputs.push_back(newInput);
+    addParametersAsInput(name, newInputs);
+}
+
+//-------
 void Learn::setupOscSender(string host, int port) {
     if (host != "") {
         this->oscOutputHost = host;
@@ -437,6 +453,14 @@ void Learn::resetInputs() {
         oscManager.registerToOscReceiver((vector<ParameterBase *> &) outputs);
     }
     resetGuiPositions();
+}
+
+//-------
+void Learn::resetInputGroups() {
+    if (inputGroups.size() == 0) return;
+    for (int i=0; i<outputs.size(); i++) {
+        outputs[i]->setInputGroups(inputGroups);
+    }
 }
 
 //-------

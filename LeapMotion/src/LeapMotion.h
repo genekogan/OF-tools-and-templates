@@ -30,9 +30,7 @@ public:
     float           getHandYaw(Handedness hand);
     
 private:
-    void            trackVelocityChanged(bool &b) {setVelocityTracking(trackVelocity,numFrames);}
-    void            numFramesChanged(int &v)      {setVelocityTracking(trackVelocity,numFrames);}
-    
+
     ofEasyCam       cam;
     ofFbo           fbo;
     
@@ -46,7 +44,7 @@ private:
     int             idxFrame;
     
     /* parameters */
-    Control             control;
-    ofxParameter<bool>  trackVelocity;
-    ofxParameter<int>   numFrames;
+    Control         control;
+    bool            trackVelocity, pTrackVelocity;
+    int             numFrames, pNumFrames;
 };
