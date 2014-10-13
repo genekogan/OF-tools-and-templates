@@ -2,25 +2,65 @@
 
 #include "ofMain.h"
 #include "ofxAudioUnit.h"
+#include "Sequencer.h"
 #include "Control.h"
-
+#include "MantaController.h"
 
 class Aalto
 {
 public:
-    ~Aalto();
     void setup();
 
     void update();
+    void draw();
     
     void noteOn(int note, int velocity) {
         aalto.midiNoteOn(note, velocity);
+        noteStatus[note] = true;
     }
 
     void noteOff(int note, int velocity) {
         aalto.midiNoteOff(note, velocity);
+        noteStatus[note] = false;
+    }
+
+    void noteEvent(int note, int velocity) {
+        aalto.midiNoteOn(note, velocity);
+        aalto.midiNoteOff(note, velocity);
+    }
+
+    void noteEvent2(int note, int velocity) {
+        aalto.midiNoteOn(note, velocity);
+        
+        noteEvents[note] = ofGetFrameNum();
+        
+        //aalto.midiNoteOff(note, velocity);
+    }
+
+    
+    void randomizeSequencer() {
+        
+//        for (int r=0; r<sequencer.)
+      //  for (int row=0; row<seq->getRowCount(); row++) {
+        //    for (int col=0; col<seq->getColumnCount(); col++) {
+    //            seq->setToggle(row, col, ofRandom(1) < ofMap(ofGetMouseY(), 0, ofGetHeight(), 0, 1));
+          //  }
+//        }
     }
     
+    map<int, int> noteEvents;
+    
+    
+    void toggleNote(int note, int velocity) {
+        if (noteStatus[note]) {
+            aalto.midiNoteOff(note, velocity);
+        }
+        else {
+            aalto.midiNoteOn(note, velocity);
+        }
+        noteStatus[note] = !noteStatus[note];
+    }
+
     void printList() {
 
         vector<AudioUnitParameterInfo> params = aalto.getParameterList();
@@ -30,6 +70,10 @@ public:
         
         
     }
+    
+    bool noteStatus[128];
+    
+    int col;
     
     int p0, p1, p2, p5, p12, p13;
     float p4, p10, p11, p14, p15, p16, p20,p21,p22,p23,p24,p25;
@@ -47,6 +91,7 @@ public:
         aalto.loadCustomPresetAtPath(ofToDataPath("presetsAudio/aalto/"+filename));
     }
     
+    void sequencerStep(vector<float> &column);
 
     void setKeyVoices(int v) { aalto.setParameter(0, 0, v); }   //1->4
     void setKeyMod(int v) { aalto.setParameter(1, 0, v); }   //1->127
@@ -173,6 +218,12 @@ protected:
     void setupGuiPresets();
     
     Control control;
+    
+    Sequencer sequencer;
+    
+    MantaController manta;
+    
+    
 
     ofxAudioUnitSampler aalto;
     ofxAudioUnitMixer mixer;

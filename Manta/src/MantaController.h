@@ -18,8 +18,8 @@ public:
     void drawStats(int x, int y, int w);
     
     // get pads
-    float getPad(int x, int y) {return manta.getPad(x, y);}
-    float * getPadRef(int x, int y) {return manta.getPadRef(x, y);}
+    float getPad(int row, int col) {return manta.getPad(row, col);}
+    float * getPadRef(int row, int col) {return manta.getPadRef(row, col);}
 
     // get sliders
     float getSlider(int index) {return manta.getSlider(index);}

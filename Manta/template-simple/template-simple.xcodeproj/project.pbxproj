@@ -52,6 +52,7 @@
 		ADE367465D2A8EBAD4C7A8D9 /* IpEndpointName.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ADD194746185E2DA11468377 /* IpEndpointName.cpp */; };
 		ADE7C2AFC51E3F7E5E389026 /* ofxUISortableList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5613D5D24B00D8AD909F7E6A /* ofxUISortableList.cpp */; };
 		AE281BEBF3A00F1FC37F3DA0 /* ofxUIWaveform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9345327AA463407B3DADBADE /* ofxUIWaveform.cpp */; };
+		B05C3E7219EB7D7100658007 /* ofxConvexHull.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B05C3E7019EB7D7100658007 /* ofxConvexHull.cpp */; };
 		B0FC0B7619E8A14B00D3A177 /* MantaController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0FC0B6C19E8A13000D3A177 /* MantaController.cpp */; };
 		B0FC0B7719E8A14B00D3A177 /* Control.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0FC0B6F19E8A13A00D3A177 /* Control.cpp */; };
 		B0FC0B7819E8A14B00D3A177 /* OscManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0FC0B7119E8A13A00D3A177 /* OscManager.cpp */; };
@@ -236,6 +237,8 @@
 		ADD194746185E2DA11468377 /* IpEndpointName.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = IpEndpointName.cpp; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/IpEndpointName.cpp; sourceTree = SOURCE_ROOT; };
 		AE335EB4709BFD4671EEAC84 /* MessageMappingOscPacketListener.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = MessageMappingOscPacketListener.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/MessageMappingOscPacketListener.h; sourceTree = SOURCE_ROOT; };
 		AEFCF7E549ACA862C022AD40 /* ofxUIDefines.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxUIDefines.h; path = ../../../addons/ofxUI/src/ofxUIDefines.h; sourceTree = SOURCE_ROOT; };
+		B05C3E7019EB7D7100658007 /* ofxConvexHull.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxConvexHull.cpp; sourceTree = "<group>"; };
+		B05C3E7119EB7D7100658007 /* ofxConvexHull.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxConvexHull.h; sourceTree = "<group>"; };
 		B0FC0B6C19E8A13000D3A177 /* MantaController.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MantaController.cpp; sourceTree = "<group>"; };
 		B0FC0B6D19E8A13000D3A177 /* MantaController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MantaController.h; sourceTree = "<group>"; };
 		B0FC0B6F19E8A13A00D3A177 /* Control.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Control.cpp; sourceTree = "<group>"; };
@@ -457,6 +460,24 @@
 			name = ofxUI;
 			sourceTree = "<group>";
 		};
+		B05C3E6E19EB7D7100658007 /* ofxConvexHull */ = {
+			isa = PBXGroup;
+			children = (
+				B05C3E6F19EB7D7100658007 /* src */,
+			);
+			name = ofxConvexHull;
+			sourceTree = "<group>";
+		};
+		B05C3E6F19EB7D7100658007 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B05C3E7019EB7D7100658007 /* ofxConvexHull.cpp */,
+				B05C3E7119EB7D7100658007 /* ofxConvexHull.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxConvexHull/src;
+			sourceTree = "<group>";
+		};
 		B0FC0B6919E8A12400D3A177 /* Control */ = {
 			isa = PBXGroup;
 			children = (
@@ -532,6 +553,7 @@
 			children = (
 				B0FC0B6A19E8A12900D3A177 /* Manta */,
 				B0FC0B6919E8A12400D3A177 /* Control */,
+				B05C3E6E19EB7D7100658007 /* ofxConvexHull */,
 				B0FC0B7A19E8A2B800D3A177 /* ofxTouchOsc */,
 				E6053AB7FEC63D5F83825B88 /* ofxOsc */,
 				1F4FB5C423662B96ADFDCC0B /* ofxXmlSettings */,
@@ -892,6 +914,7 @@
 				8F5205AEF8861EF234F0651A /* ofxOscSender.cpp in Sources */,
 				ADE367465D2A8EBAD4C7A8D9 /* IpEndpointName.cpp in Sources */,
 				67FE4C7B15C2F0478C8126C2 /* NetworkingUtils.cpp in Sources */,
+				B05C3E7219EB7D7100658007 /* ofxConvexHull.cpp in Sources */,
 				510CAFE035E576A4E1502D52 /* UdpSocket.cpp in Sources */,
 				A29D8C96AE042ECEAA1BD4F3 /* NetworkingUtilsWin.cpp in Sources */,
 				28090DEB5109115003E8F1C5 /* UdpSocketWin.cpp in Sources */,

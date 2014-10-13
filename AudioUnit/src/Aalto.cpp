@@ -1,5 +1,6 @@
 #include "Aalto.h"
 
+
 //-----------
 void Aalto::setup(){
     aalto = ofxAudioUnitSampler('aumu','Aalt', 'MLbs');
@@ -8,20 +9,58 @@ void Aalto::setup(){
     
     output.start();
     
-    
-    
     printList();
-    
-    
-    
-
-
     setupGui();
     setupGuiPresets();
+    
+    
+    sequencer.setup(6, 8);
+    sequencer.addBeatListener(this, &Aalto::sequencerStep);
+    sequencer.setPosition(300, 500);
+    
+    
+    manta.setup();
+
+}
+
+void Aalto::sequencerStep(vector<float> &column) {
+    cout << ofToString(column) << endl;
+    
+    for (int r=0; r<column.size(); r++) {
+        if (column[r] > 0.0) {
+            noteEvent2(56 + 4*r, 100);
+        }
+    }
+    
+    
 }
 
 //-----------
 void Aalto::update() {
+    
+    for (int r=0; r<6; r++) {
+        for (int c=0; c<8; c++) {
+            sequencer.setValue(r, c, manta.getPad(5 -r, c)/196.0);
+        }
+    }
+
+    
+    sequencer.update();
+    
+    
+    
+    
+    
+    
+    for (int i=0; i<128; i++) {
+        if (noteEvents.count(i)>0) {
+            if (noteEvents[i] == -1) continue;
+            if (ofGetFrameNum() > noteEvents[i] + 10) {
+                noteEvents[i] = -1;
+                noteOff(i, 120);
+            }
+        }
+    }
     
     
     setKeyVoices(p0);
@@ -80,6 +119,13 @@ void Aalto::setupGui() {
 
 }
 
+void Aalto::draw() {
+    manta.draw(505, 5, 500);
+    
+    sequencer.draw();
+    
+}
+
 //-----------
 void Aalto::setupGuiPresets() {
     vector<string> presets;
@@ -90,9 +136,4 @@ void Aalto::setupGuiPresets() {
         presets.push_back(dir.getName(i));
     }
     control.addMenu("presets", presets, this, &Aalto::loadPreset);
-}
-
-//-----------
-Aalto::~Aalto() {
-    aalto.~ofxAudioUnitSampler();
 }
