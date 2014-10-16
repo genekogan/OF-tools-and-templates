@@ -40,12 +40,27 @@ void Sequencer::update() {
         pDiscrete = discrete;
         sequencer.setDiscrete(discrete);
     }
-    
-    
-    
 }
 
 //-------
 void Sequencer::draw() {
     sequencer.draw();
+}
+
+//-------
+void Sequencer::setPosition(int x, int y, int w, int h) {
+    sequencer.setPosition(x, y, w, h);
+    control.setGuiPosition(x+w+5, y);
+}
+
+//-------
+void Sequencer::setVisible(bool visible) {
+    this->visible = visible;
+    sequencer.setVisible(visible);
+    control.setVisible(visible);
+}
+
+//-------
+void Sequencer::setValue(int row, int col, float value) {
+    sequencer.setValue(row, col, value);
 }

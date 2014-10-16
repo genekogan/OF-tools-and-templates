@@ -17,7 +17,6 @@ public:
     }
     
     int getNote(int root, int degree, int octave=0) {
-        //cout << "get note " << root << " " << degree<< " :: " << octave * 12 + root + major[degree % 8]<<endl;
         return octave * 12 + root + major[degree % 7];
     }
     
