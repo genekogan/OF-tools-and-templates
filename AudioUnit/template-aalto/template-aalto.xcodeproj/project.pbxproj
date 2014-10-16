@@ -31,6 +31,7 @@
 		B05C3E6219EB7A4600658007 /* MantaUSB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B05C3E5B19EB7A4600658007 /* MantaUSB.cpp */; };
 		B05C3E6719EB7A6F00658007 /* MantaController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B05C3E6519EB7A5C00658007 /* MantaController.cpp */; };
 		B05C3E6D19EB7B0A00658007 /* ofxConvexHull.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B05C3E6B19EB7B0A00658007 /* ofxConvexHull.cpp */; };
+		B05C3E7619EC081900658007 /* Theory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B05C3E7419EC081900658007 /* Theory.cpp */; };
 		B0FC0C1619E98BC600D3A177 /* Aalto.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0FC0C1419E98B6400D3A177 /* Aalto.cpp */; };
 		B0FC0C1819E98DAC00D3A177 /* CoreAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0FC0C1719E98DAC00D3A177 /* CoreAudioKit.framework */; };
 		B0FC0C1A19E98DB700D3A177 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0FC0C1919E98DB700D3A177 /* AudioUnit.framework */; };
@@ -213,6 +214,8 @@
 		B05C3E6619EB7A5C00658007 /* MantaController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MantaController.h; sourceTree = "<group>"; };
 		B05C3E6B19EB7B0A00658007 /* ofxConvexHull.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxConvexHull.cpp; sourceTree = "<group>"; };
 		B05C3E6C19EB7B0A00658007 /* ofxConvexHull.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxConvexHull.h; sourceTree = "<group>"; };
+		B05C3E7419EC081900658007 /* Theory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Theory.cpp; sourceTree = "<group>"; };
+		B05C3E7519EC081900658007 /* Theory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Theory.h; sourceTree = "<group>"; };
 		B0FC0C1419E98B6400D3A177 /* Aalto.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Aalto.cpp; sourceTree = "<group>"; };
 		B0FC0C1519E98B6400D3A177 /* Aalto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Aalto.h; sourceTree = "<group>"; };
 		B0FC0C1719E98DAC00D3A177 /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = System/Library/Frameworks/CoreAudioKit.framework; sourceTree = SDKROOT; };
@@ -642,6 +645,8 @@
 				B0FC0C1519E98B6400D3A177 /* Aalto.h */,
 				B05C3E4919EB6FA900658007 /* Sequencer.cpp */,
 				B05C3E4A19EB6FA900658007 /* Sequencer.h */,
+				B05C3E7419EC081900658007 /* Theory.cpp */,
+				B05C3E7519EC081900658007 /* Theory.h */,
 			);
 			name = src;
 			path = ../src;
@@ -1217,6 +1222,7 @@
 				B0FC0CBD19E9ABE300D3A177 /* ofxUIToggle.cpp in Sources */,
 				B0FC0CA019E9ABE300D3A177 /* ofxUIFPS.cpp in Sources */,
 				0B1A7EDFBC477E5A2E37CCDF /* ofxAudioUnitTap.cpp in Sources */,
+				B05C3E7619EC081900658007 /* Theory.cpp in Sources */,
 				EE243572ECA9AD4D118EEF8E /* TPCircularBuffer.c in Sources */,
 				B0FC0CBA19E9ABE300D3A177 /* ofxUITabBar.cpp in Sources */,
 			);

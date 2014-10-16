@@ -7,6 +7,7 @@ bool OscManager::setupSender(string host, int portOut) {
         this->host = host;
         this->portOut = portOut;
         sending = true;
+        ofLog(OF_LOG_NOTICE, "Connect OSC Sender "+host+", port "+ofToString(portOut));
     }
     catch(runtime_error &e) {
         ofLog(OF_LOG_ERROR, ofToString(e.what()));
@@ -20,6 +21,7 @@ bool OscManager::setupReceiver(int portIn) {
         oscReceiver.setup(portIn);
         this->portIn = portIn;
         receiving = true;
+        ofLog(OF_LOG_NOTICE, "Connect OSC Receiver, port "+ofToString(portIn));
     }
     catch(runtime_error &e) {
         ofLog(OF_LOG_ERROR, ofToString(e.what()));

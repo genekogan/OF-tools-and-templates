@@ -24,8 +24,8 @@ void Presets::loadPreset(Control &control, string path, int numFrames) {
         loadPreset(control, xml, numFrames);
     }
     else {
-        cout << "failed to load preset " << path << endl;
-    }    
+        ofLog(OF_LOG_ERROR, "failed to load preset "+path);
+    }
 }
 
 //--------------

@@ -1,8 +1,21 @@
 #include "MantaController.h"
 
+
 //-----------
 void MantaController::setup(){
-    isConnected = manta.setup();
+    isConnected = manta.setup();    
+    setMouseActive(true);
+}
+
+//-----------
+void MantaController::setMouseActive(bool mouseActive) {
+    this->mouseActive = mouseActive;
+    if (mouseActive) {
+        ofAddListener(ofEvents().mousePressed, this, &MantaController::mousePressed);
+    }
+    else {
+        ofRemoveListener(ofEvents().mousePressed, this, &MantaController::mousePressed);
+    }
 }
 
 //-----------
@@ -58,8 +71,26 @@ void MantaController::update(){
 }
 
 //-----------
-void MantaController::draw(int x, int y, int w){
-    manta.draw(x, y, w);
+void MantaController::markPad(int row, int col, bool mark) {
+    manta.setLedManual(false);
+    manta.setLedState(row, col, mark ? Manta::Red : Manta::Off);
+    manta.setLedManual(true);
+}
+
+//-----------
+void MantaController::draw(int x, int y, int width){
+    this->x = x;
+    this->y = y;
+    this->width = width;
+    manta.draw(x, y, width);
+    if (px != x || py != y || pwidth != width) {
+        px = x;
+        py = y;
+        pwidth = width;
+        if (mouseActive) {
+            setMousePadResponders();
+        }
+    }
 }
 
 //-----------
@@ -82,7 +113,7 @@ void MantaController::drawStats(int x, int y, int w){
     ofBeginShape();
     for (int i=0; i<fingersHull.size(); i++) {
         float x = ofMap(fingersHull[i].x, 0, 1, 0, w);
-        float y = ofMap(fingersHull[i].y, 1, 0, 0, h);
+        float y = ofMap(fingersHull[i].y, 0, 1, 0, h);
         ofVertex(x, y);
     }
     ofEndShape();
@@ -93,16 +124,16 @@ void MantaController::drawStats(int x, int y, int w){
     ofSetLineWidth(0);
     for (int i=0; i<fingers.size(); i++) {
         float x = ofMap(fingers[i].x, 0, 1, 0, w);
-        float y = ofMap(fingers[i].y, 1, 0, 0, h);
+        float y = ofMap(fingers[i].y, 0, 1, 0, h);
         float r = ofMap(fingerValues[i], 0, 196, 0, 10);
         ofCircle(x, y, r);
     }
 
     // draw centroids
     float cx = ofMap(centroidX, 0, 1, 0, w);
-    float cy = ofMap(centroidY, 1, 0, 0, h);
+    float cy = ofMap(centroidY, 0, 1, 0, h);
     float wcx = ofMap(weightedCentroidX, 0, 1, 0, w);
-    float wcy = ofMap(weightedCentroidY, 1, 0, 0, h);
+    float wcy = ofMap(weightedCentroidY, 0, 1, 0, h);
     ofNoFill();
     ofSetColor(150);
     ofSetLineWidth(2);
@@ -134,11 +165,25 @@ void MantaController::drawStats(int x, int y, int w){
 ofPoint MantaController::getPositionAtPad(int row, int col) {
     if (row % 2 != 0) {
         return ofPoint(ofMap(col+0.5, 0, 9, 0, 1),
-                       ofMap(row + 0.5, 0, 7, 0, 1));
+                       ofMap(row + 0.5, 0, 7, 1, 0));
     }
     else {
         return ofPoint(ofMap(col, 0, 9, 0, 1),
-                       ofMap(row + 0.5, 0, 7, 0, 1));
+                       ofMap(row + 0.5, 0, 7, 1, 0));
+    }
+}
+
+//----------
+void MantaController::setMousePadResponders() {
+    for (int row=0; row<6; row++) {
+        for (int col=0; col<8; col++) {
+            int rx = x + ofMap(col+0.5, 0, 8, 0.01*manta.getDrawWidth(), 0.94*manta.getDrawWidth());
+            int ry = y + ofMap(row+0.5, 6, 0, 0.24*manta.getDrawHeight(), 0.97*manta.getDrawHeight());
+            int size = manta.getDrawWidth() / 11.0;
+            if (row %2 != 0)  rx += 0.93*manta.getDrawWidth()/16.0;
+            ofRectangle padPosition(rx-size/2.0, ry-size/2.0, size, size);
+            padPositions[row * 8 + col] = padPosition;
+        }
     }
 }
 

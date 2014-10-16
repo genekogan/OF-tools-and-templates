@@ -2,97 +2,155 @@
 
 #include "ofMain.h"
 #include "ofxAudioUnit.h"
+#include "Theory.h"
 #include "Sequencer.h"
 #include "Control.h"
 #include "MantaController.h"
 
+
 class Aalto
 {
 public:
+    enum NoteMode { MANUAL, AUTO };
+    enum NoteType { NOTE_ON, NOTE_OFF, NOTE_AUTO };
+    enum OutputMode { PARAMETERS, NOTES };
+    
     void setup();
-
     void update();
     void draw();
     
-    void noteOn(int note, int velocity) {
-        aalto.midiNoteOn(note, velocity);
-        noteStatus[note] = true;
-    }
-
-    void noteOff(int note, int velocity) {
-        aalto.midiNoteOff(note, velocity);
-        noteStatus[note] = false;
-    }
-
-    void noteEvent(int note, int velocity) {
-        aalto.midiNoteOn(note, velocity);
-        aalto.midiNoteOff(note, velocity);
-    }
-
-    void noteEvent2(int note, int velocity) {
-        aalto.midiNoteOn(note, velocity);
-        
-        noteEvents[note] = ofGetFrameNum();
-        
-        //aalto.midiNoteOff(note, velocity);
-    }
-
+    void noteEvent(NoteType type, int note, int velocity=127);
+    void mantaPadEvent(ofxMantaEvent &e);
+    void mantaPadVelocityEvent(ofxMantaEvent &e);
+    void sequencerStep(vector<float> &column);
     
-    void randomizeSequencer() {
-        
-//        for (int r=0; r<sequencer.)
-      //  for (int row=0; row<seq->getRowCount(); row++) {
-        //    for (int col=0; col<seq->getColumnCount(); col++) {
-    //            seq->setToggle(row, col, ofRandom(1) < ofMap(ofGetMouseY(), 0, ofGetHeight(), 0, 1));
-          //  }
-//        }
-    }
+    void chooseNoteMode(string &s);
+    void choosePadMode(string &s);
+    void chooseSequencerMode(string &s);
     
-    map<int, int> noteEvents;
+    void printParameterList();
     
+    void showUI() {aalto.showUI();}
     
-    void toggleNote(int note, int velocity) {
-        if (noteStatus[note]) {
-            aalto.midiNoteOff(note, velocity);
-        }
-        else {
-            aalto.midiNoteOn(note, velocity);
-        }
-        noteStatus[note] = !noteStatus[note];
-    }
+    void savePreset(string filename="");
+    void loadPreset(string &filename);
 
-    void printList() {
+    void setupGui();
+    void setupGuiPresets();
 
-        vector<AudioUnitParameterInfo> params = aalto.getParameterList();
-        for (int i=0; i<params.size(); i++) {
-            cout << "void set"<<params[i].name<<"(float value) { aalto.setParameter("<<i<<", 0, value); }   //"<< params[i].minValue << "->"<<params[i].maxValue << endl;
-        }
-        
-        
-    }
+
+    Control control;
+    OutputMode sequencerMode;
+    OutputMode padMode;
+    NoteMode noteMode;
+
+    MantaController manta;
+    Sequencer sequencer;
+    Theory theory;
+
+    ofxAudioUnitSampler aalto, a2;
+    ofxAudioUnitMixer mixer;
+	ofxAudioUnitOutput output;
     
     bool noteStatus[128];
-    
-    int col;
-    
-    int p0, p1, p2, p5, p12, p13;
-    float p4, p10, p11, p14, p15, p16, p20,p21,p22,p23,p24,p25;
-    
-    void savePreset(string filename="") {
-        if (filename=="") {
-            filename = ofSystemTextBoxDialog("choose a preset name");
-        }
-        if (filename=="")   return;
-        aalto.saveCustomPresetAtPath(ofToDataPath("presetsAudio/aalto/"+filename+".aupreset"));
-        setupGuiPresets();
-    }
-    
-    void loadPreset(string &filename) {
-        aalto.loadCustomPresetAtPath(ofToDataPath("presetsAudio/aalto/"+filename));
-    }
-    
-    void sequencerStep(vector<float> &column);
+    map<int, int> noteEvents;
 
+
+    
+    void addParameterMapping(int idx, int parameterId, float min, float max) {
+       // mappings[idx] = ParameterMapping(parameterId, idx, min, max);;
+    }
+    
+    struct ParameterMapping {
+        string name;
+        int parameterId;
+        float min, max;
+        float rmin, rmax;
+    };
+    
+    map<string, vector<string> > parameterGroups;
+    vector<string> parameterGroupNames;
+    vector<ParameterMapping> parameters;
+    map<int, ParameterMapping> mappings;
+
+    
+    
+    
+    ofxUICanvas *guiP;
+    ofxUIDropDownList *guiParameterGroups, *guiParameters;
+    ofxUIRangeSlider *guiParameterRange;
+    int guiActivePad;
+    bool guiToSwitchParameters;
+    string guiToSwitchParametersName;
+    
+    void setGuiParameterGroup(string parameterGroupName) {
+        guiParameters->clearToggles();
+        guiParameters->addToggles(parameterGroups[parameterGroupName]);
+        guiParameters->open();
+    }
+    
+    void guiParametersEvent(ofxUIEventArgs &e) {
+        if (e.getParentName() == "parameter groups") {
+            if (parameterGroups.count(e.getName())>0) {
+                guiToSwitchParametersName = e.getName();
+                guiToSwitchParameters = true;
+            }
+        }
+        else if (e.getParentName() == "parameters") {
+            for (int i=0; i<parameters.size(); i++) {
+                if (parameters[i].name == e.getName()) {
+//                    guiParameterRange->setName(parameters[i].name);
+//                    guiParameterRange->setMaxAndMin(parameters[i].max, parameters[i].min);
+                    mappings[guiActivePad] = parameters[i];
+                    manta.markPad(guiActivePad / 8, guiActivePad % 8, true);
+                    //manta.setLabel(guiActivePad/8, guiActivePad%8, parameters[i].name);
+                    setGui1();
+                    return;
+                }
+            }
+        }
+        else if (e.getName() == "remove") {
+            mappings.erase(guiActivePad);
+            manta.markPad(guiActivePad / 8, guiActivePad % 8, false);
+            setGui1();
+        }
+        else if (e.getName() == "range") {
+            mappings[guiActivePad].rmin = guiParameterRange->getValueLow();
+            mappings[guiActivePad].rmax = guiParameterRange->getValueHigh();
+        }
+    }
+    
+    void setGui1() {
+        guiP->clearWidgets();
+        if (mappings.count(guiActivePad) == 0) {
+            vector<string> parameterNames;
+            guiP->addLabel("add parameter map");
+            guiParameterGroups = guiP->addDropDownList("parameter groups", parameterGroupNames);
+            guiParameters = guiP->addDropDownList("parameters", parameterNames);
+            guiParameterGroups->setAutoClose(true);
+            guiParameters->setAutoClose(true);
+        }
+        else {
+            guiP->addLabel("p("+ofToString(guiActivePad/8)+", "+ofToString(guiActivePad%8)+") :: "+mappings[guiActivePad].name);
+            guiParameterRange = guiP->addRangeSlider("range",
+                                                     mappings[guiActivePad].min,
+                                                     mappings[guiActivePad].max,
+                                                     0.2, 0.5);
+            guiP->addLabelButton("remove", false);
+        }
+    }
+    
+    void padClickEvent(int & pad) {
+        guiActivePad = pad;
+        setGui1();
+    }
+    
+    
+    
+    
+    
+    
+    
     void setKeyVoices(int v) { aalto.setParameter(0, 0, v); }   //1->4
     void setKeyMod(int v) { aalto.setParameter(1, 0, v); }   //1->127
     void setKeyBend(int v) { aalto.setParameter(2, 0, v); }   //0->24
@@ -210,23 +268,5 @@ public:
     void setOutputPan(float v) { aalto.setParameter(124, 0, v); }   //-1->1
     void setOutputPanP(float v) { aalto.setParameter(126, 0, v); }   //-1->1
 
-    
-    
-protected:
-    
-    void setupGui();
-    void setupGuiPresets();
-    
-    Control control;
-    
-    Sequencer sequencer;
-    
-    MantaController manta;
-    
-    
-
-    ofxAudioUnitSampler aalto;
-    ofxAudioUnitMixer mixer;
-	ofxAudioUnitOutput output;
 
 };

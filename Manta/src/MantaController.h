@@ -12,9 +12,11 @@ public:
     ~MantaController();
     void setup();
     void close();
-
+    
+    void setMouseActive(bool active);
+    
     void update();
-    void draw(int x, int y, int w);
+    void draw(int x, int y, int width);
     void drawStats(int x, int y, int w);
     
     // get pads
@@ -40,15 +42,31 @@ public:
     float & getWeightedCentroidX() {return weightedCentroidX;}
     float & getWeightedCentroidY() {return weightedCentroidY;}
     
-    // returns [0,1]x[0,1] position of (row,col)
+    // mark manta
+    void markPad(int row, int col, bool mark);
+    
+    // returns gui element positions
     ofPoint getPositionAtPad(int row, int col);
     
-    // add event listeners
+    // wrap manta event listeners
     template <typename L, typename M> void addPadListener(L *listener, M method) {manta.addPadListener(listener, method);}
     template <typename L, typename M> void addSliderListener(L *listener, M method) {manta.addSliderListener(listener, method);}
     template <typename L, typename M> void addButtonListener(L *listener, M method) {manta.addButtonListener(listener, method);}
     template <typename L, typename M> void addPadVelocityListener(L *listener, M method) {manta.addPadVelocityListener(listener, method);}
     template <typename L, typename M> void addButtonVelocityListener(L *listener, M method) {manta.addButtonVelocityListener(listener, method);}
+    template <typename L, typename M> void removePadListener(L *listener, M method) {manta.removePadListener(listener, method);}
+    template <typename L, typename M> void removeSliderListener(L *listener, M method) {manta.removeSliderListener(listener, method);}
+    template <typename L, typename M> void removeButtonListener(L *listener, M method) {manta.removeButtonListener(listener, method);}
+    template <typename L, typename M> void removePadVelocityListener(L *listener, M method) {manta.removePadVelocityListener(listener, method);}
+    template <typename L, typename M> void removeButtonVelocityListener(L *listener, M method) {manta.removeButtonVelocityListener(listener, method);}
+    
+    // add gui interaction listeners
+    template <typename L, typename M> void addPadClickListener(L *listener, M method) {
+        ofAddListener(padClickEvent, listener, method);
+    }
+    template <typename L, typename M> void removePadClickListener(L *listener, M method) {
+        ofRemoveListener(padClickEvent, listener, method);
+    }
     
 protected:
     
@@ -68,4 +86,20 @@ protected:
     float averageInterFingerDistance;
     float perimeter;
 
+    // mouse callbacks
+    void mousePressed(ofMouseEventArgs &evt) {
+        if (!mouseActive)   return;
+        for (int i=0; i<48; i++) {
+            if (padPositions[i].inside(evt.x, evt.y)) {
+                ofNotifyEvent(padClickEvent, i, this);
+            }
+        }
+    }
+    
+    ofEvent<int> padClickEvent;
+    bool mouseActive;
+    void setMousePadResponders();
+    ofRectangle padPositions[48];
+    int x, y, width;
+    int px, py, pwidth;
 };

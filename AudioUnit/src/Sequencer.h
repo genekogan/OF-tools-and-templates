@@ -7,8 +7,6 @@
 
 class Sequencer {
 public:
-    
-    
     void setup(int rows, int cols);
     
     void setValue(int row, int col, float value) {
@@ -34,6 +32,7 @@ public:
     void draw();
     
     
+    int getColumn() {return sequencer.getColumn();}
     int getNumberRows() {return sequencer.getNumberRows();}
     int getNumberColumns() {return sequencer.getNumberColumns();}
 

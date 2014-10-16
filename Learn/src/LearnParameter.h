@@ -6,7 +6,6 @@
 #include "Control.h"
 
 
-
 //-----------
 class LearnParameter : public Parameter<float>
 {
@@ -78,6 +77,8 @@ protected:
 class LearnOutputParameter : public LearnParameter
 {
 public:
+    enum LearnModel { SVM, MLP };
+    
     ~LearnOutputParameter();
     LearnOutputParameter(string name, float *value, float min=0, float max=1);
     
@@ -114,6 +115,7 @@ public:
     bool getRecording() {return record;}
     bool getTrained() {return trained;}
     
+    void setTrainingParameters(LearnModel learnModel, int numHiddenLayers=1, float targetRmse=0.01, int maxSamples=100000);
     void trainClassifierFast();
     void trainClassifierAccurate();
     virtual void predict();
@@ -165,6 +167,7 @@ protected:
     ofxUILabelButton *guiDataStatus, *guiDataPage;
     
     ofxLearn learn;
+    LearnModel learnModel;
     vector<LearnInputParameter *> allInputs, activeInputs;
 
     vector<ofxSpreadsheet *> data;

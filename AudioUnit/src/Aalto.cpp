@@ -5,11 +5,13 @@
 void Aalto::setup(){
     aalto = ofxAudioUnitSampler('aumu','Aalt', 'MLbs');
     aalto.showUI();
-    aalto.connectTo(mixer).connectTo(output);
-    
+    aalto.connectTo(mixer);
+    mixer.connectTo(output);
     output.start();
     
-    printList();
+    
+    //a2 = ofxAudioUnitSampler('aumu', 'tYn6', 'UHfX');
+    
     setupGui();
     setupGuiPresets();
     
@@ -18,112 +20,223 @@ void Aalto::setup(){
     sequencer.addBeatListener(this, &Aalto::sequencerStep);
     sequencer.setPosition(300, 500);
     
-    
     manta.setup();
+    manta.addPadListener(this, &Aalto::mantaPadEvent);
+    manta.addPadVelocityListener(this, &Aalto::mantaPadVelocityEvent);
 
-}
+    //manta.removePadListener(this, &Aalto::mantaPadEvent);
+    //manta.removePadVelocityListener(this, &Aalto::mantaPadVelocityEvent);
 
-void Aalto::sequencerStep(vector<float> &column) {
-    cout << ofToString(column) << endl;
     
-    for (int r=0; r<column.size(); r++) {
-        if (column[r] > 0.0) {
-            noteEvent2(56 + 4*r, 100);
+    for (int r=0; r<6; r++) {
+        for (int c=0; c<8; c++) {
+            int note = (2*r - (int)(r/2) + c) % 7;
+            int octave = floor((2*r - floor(r/2) + c)/7);
+            int note2 = theory.getNote(60+12*octave, note);
         }
     }
     
+    noteMode = MANUAL;
+    padMode = NOTES;
     
+//    addParameterMapping(0, 123, 0.5, 0.8);
+//    addParameterMapping(1, 123, 0.5, 0.8);
+//    addParameterMapping(2, 123, 0.5, 0.8);
+//    addParameterMapping(3, 123, 0.5, 0.8);
+    
+    
+    
+    
+    vector<AudioUnitParameterInfo> params = aalto.getParameterList();
+    string newGroupName = "parameter group";
+    for (int i=0; i<params.size(); i++) {
+        ParameterMapping parameter;
+        parameter.name = params[i].name;
+        parameter.parameterId = i;
+        parameter.min = params[i].minValue;
+        parameter.max = params[i].maxValue;
+        parameters.push_back(parameter);
+        int clumpId = params[i].clumpID;
+        while (clumpId + 1 > parameterGroups.size()) {
+            newGroupName = ofToString(params[i].name);
+            vector<string> newGroup;
+            parameterGroups[newGroupName] = newGroup;
+        }
+        parameterGroups[newGroupName].push_back(params[i].name);
+    }
+
+    
+    manta.addPadClickListener(this, &Aalto::padClickEvent);
+    //manta.removePadClickListener(this, &Aalto::padClickEvent);
+
+    for (map<string, vector<string> >::iterator it=parameterGroups.begin(); it!=parameterGroups.end(); ++it) {
+        parameterGroupNames.push_back(it->first);
+    }
+    
+    
+    guiP = new ofxUICanvas("parameter inspector");
+    guiP->setPosition(465, 5);
+    ofAddListener(guiP->newGUIEvent, this, &Aalto::guiParametersEvent);
+    
+    
+    
+    
+    setupGui();
 }
 
 //-----------
 void Aalto::update() {
     
-    for (int r=0; r<6; r++) {
-        for (int c=0; c<8; c++) {
-            sequencer.setValue(r, c, manta.getPad(5 -r, c)/196.0);
+    if (guiToSwitchParameters) {
+        setGuiParameterGroup(guiToSwitchParametersName);
+        guiToSwitchParameters = false;
+    }
+    
+    
+    
+    bool mantaActive = false;
+    if (mantaActive) {
+        for (int r=0; r<6; r++) {
+            for (int c=0; c<8; c++) {
+                sequencer.setValue(r, c, manta.getPad(5 -r, c)/196.0);
+            }
         }
     }
-
-    
     sequencer.update();
-    
-    
-    
-    
-    
     
     for (int i=0; i<128; i++) {
         if (noteEvents.count(i)>0) {
             if (noteEvents[i] == -1) continue;
-            if (ofGetFrameNum() > noteEvents[i] + 10) {
+            if (ofGetFrameNum() > noteEvents[i] + 2) {
                 noteEvents[i] = -1;
-                noteOff(i, 120);
+                noteEvent(NOTE_OFF, i, 120);
             }
         }
     }
-    
-    
-    setKeyVoices(p0);
-    setKeyMod(p1);
-    setKeyBend(p2);
-    setKeyGlide(p4);
-    
-    setSeqWave(p5);
-    
-    
-    setSeqRate(p10);
-    setSeqRatio(p11);
-    setSeqSteps(p12);
-    setSeqOffset(p13);
-    
-    setSeqRateP(p14);
-    setSeqStepsP(p15);
-    setSeqOffsetP(p16);
+}
 
-    
-    setFilterCutoff(p20);
-    setFilterQ(p21);
-    setFilterMix(p22);
-    setFilterCutoffP(p23);
-    setFilterQP(p24);
-    setFilterMixP(p25);
+//-----------
+void Aalto::noteEvent(NoteType type, int note, int velocity) {
+    if (type == NOTE_ON) {
+        aalto.midiNoteOn(note, velocity);
+        noteStatus[note] = true;
+    }
+    else if (type == NOTE_OFF) {
+        aalto.midiNoteOff(note, velocity);
+        noteStatus[note] = false;
+    }
+    else if (type == NOTE_AUTO) {
+        aalto.midiNoteOn(note, velocity);
+        noteEvents[note] = ofGetFrameNum();
+    }
+}
 
+//-----------
+void Aalto::choosePadMode(string &s) {
+    if (s=="notes") {
+        padMode = NOTES;
+    }
+    else if (s=="parameters") {
+        padMode = PARAMETERS;
+    }
+}
+
+//-----------
+void Aalto::chooseNoteMode(string &s) {
+    if (s=="manual") {
+        noteMode = MANUAL;
+    }
+    else if (s=="auto") {
+        noteMode = AUTO;
+    }
+}
+
+//-----------
+void Aalto::chooseSequencerMode(string &s) {
+    if (s=="notes") {
+        sequencerMode = NOTES;
+    }
+    else if (s=="parameters") {
+        sequencerMode = PARAMETERS;
+    }
+}
+
+//-----------
+void Aalto::mantaPadEvent(ofxMantaEvent &e) {
+    if (padMode == PARAMETERS) {
+        int idx = e.col + 8*e.row;
+        if (mappings.count(idx) > 0) {
+        
+            aalto.setParameter(mappings[idx].parameterId, 0,
+                               ofMap(e.value / 196.0, 0, 1,
+                                     mappings[idx].rmin,
+                                     mappings[idx].rmax));
+        }
+ 
+    }
+}
+
+//-----------
+void Aalto::mantaPadVelocityEvent(ofxMantaEvent &e) {
+    int velocity = e.value;
     
+    if (padMode == NOTES) {
+        int degree = (2*e.row - (int)(e.row/2) + e.col) % 7;
+        int octave = floor((2*e.row - floor(e.row/2) + e.col)/7);
+        int note = theory.getNote(60 + 12 * octave, degree);
+        if (noteMode == MANUAL) {
+            if (e.value == 0) {
+                noteEvent(NOTE_OFF, note, 100);
+            }
+            else {
+                noteEvent(NOTE_ON, note, velocity);
+            }
+        }
+        else if (noteMode == AUTO) {
+            if (e.value > 0) {
+                noteEvent(NOTE_AUTO, note, velocity);
+            }
+        }
+    }
+}
+
+//-----------
+void Aalto::sequencerStep(vector<float> &column) {
+    if (sequencerMode == PARAMETERS) {
+        
+    }
+    else if (sequencerMode == NOTES) {
+        int col = sequencer.getColumn();
+        for (int r=0; r<column.size(); r++) {
+            if (column[r] > 0.0) {
+                int note = theory.getNote(60, col + 2*(r+1) + floor((r+1)/2));
+                noteEvent(NOTE_AUTO, note, 127.0*column[r]);
+            }
+        }
+    }
+}
+
+//-----------
+void Aalto::draw() {
+    manta.draw(220, 5, 240);
+    sequencer.draw();
 }
 
 //-----------
 void Aalto::setupGui() {
     control.setName("aalto");
     
-    control.addParameter("keyVoices", &p0, 1, 4);
-    control.addParameter("keyMod", &p1, 1, 127);
-    control.addParameter("keyBend", &p2, 0, 24);
-    control.addParameter("keyGlide", &p4, 0.005f, 5.0f);
-    control.addParameter("seqWave", &p5, 0, 3);
+    vector<string> noteOptions, padOptions, seqOptions;
+    noteOptions.push_back("manual");
+    noteOptions.push_back("auto");
+    padOptions.push_back("notes");
+    padOptions.push_back("parameters");
+    seqOptions.push_back("notes");
+    seqOptions.push_back("parameters");
     
-    control.addParameter("seqRate", &p10, 0.001f, 13.75f);
-    control.addParameter("seqRatio", &p11, 0.25f, 8.0f);
-    control.addParameter("seqSteps", &p12, 0, 16);
-    control.addParameter("seqOffset", &p13, 0, 15);
-
-    control.addParameter("seqRateP", &p14, -4.0f, 4.0f);
-    control.addParameter("seqStepsP", &p15, -15.0f, 15.0f);
-    control.addParameter("seqOffsetP", &p16, -15.0f, 15.0f);
-
-    control.addParameter("filterCutoff", &p20, 20.0f, 2000.0f);
-    control.addParameter("filterQ", &p21, 0.00f, 1.0f);
-    control.addParameter("filterMix", &p22, -1.0f, 1.0f);
-    control.addParameter("filterCutoffP", &p23, -4.0f, 4.0f);
-    control.addParameter("filterQP", &p24, -1.0f, 1.0f);
-    control.addParameter("filterMixP", &p25, -1.0f, 1.0f);
-
-}
-
-void Aalto::draw() {
-    manta.draw(505, 5, 500);
-    
-    sequencer.draw();
-    
+    control.addMenu("noteMode", noteOptions, this, &Aalto::chooseNoteMode);
+    control.addMenu("pads", padOptions, this, &Aalto::choosePadMode);
+    control.addMenu("sequencer", seqOptions, this, &Aalto::chooseSequencerMode);
 }
 
 //-----------
@@ -136,4 +249,44 @@ void Aalto::setupGuiPresets() {
         presets.push_back(dir.getName(i));
     }
     control.addMenu("presets", presets, this, &Aalto::loadPreset);
+}
+
+//-----------
+void Aalto::printParameterList() {
+    vector<AudioUnitParameterInfo> params = aalto.getParameterList();
+    for (int i=0; i<params.size(); i++) {
+        cout << "void set"<<params[i].name<<"(float value) { aalto.setParameter("<<i<<", 0, value); }   //"<< params[i].minValue << "->"<<params[i].maxValue << endl;
+    }
+    
+    cout << "==========="<<endl;
+    params = mixer.getParameterList();
+    for (int i=0; i<params.size(); i++) {
+        cout << "void set"<<params[i].name<<"(float value) { aalto.setParameter("<<i<<", 0, value); }   //"<< params[i].minValue << "->"<<params[i].maxValue << endl;
+    }
+    cout << "==========="<<endl;
+    params = output.getParameterList();
+    for (int i=0; i<params.size(); i++) {
+        cout << "void set"<<params[i].name<<"(float value) { aalto.setParameter("<<i<<", 0, value); }   //"<< params[i].minValue << "->"<<params[i].maxValue << endl;
+    }
+    cout << "==========="<<endl;
+    params = a2.getParameterList();
+    for (int i=0; i<params.size(); i++) {
+        cout << params[i].clumpID<< " void set"<<params[i].name<<"(float value) { aalto.setParameter("<<i<<", 0, value); }   //"<< params[i].minValue << "->"<<params[i].maxValue << endl;
+    }
+
+}
+
+//-----------
+void Aalto::savePreset(string filename) {
+    if (filename=="") {
+        filename = ofSystemTextBoxDialog("choose a preset name");
+    }
+    if (filename=="")   return;
+    aalto.saveCustomPresetAtPath(ofToDataPath("presetsAudio/aalto/"+filename+".aupreset"));
+    setupGuiPresets();
+}
+
+//-----------
+void Aalto::loadPreset(string &filename) {
+    aalto.loadCustomPresetAtPath(ofToDataPath("presetsAudio/aalto/"+filename));
 }

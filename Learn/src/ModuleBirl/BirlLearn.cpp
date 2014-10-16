@@ -49,6 +49,7 @@ void BirlLearner::setupOscSender(string host, int port) {
 //-------
 BirlOutputParameter * BirlLearner::addOutput(string name, float *val, float min, float max) {
     BirlOutputParameter *newOutput = new BirlOutputParameter(name, val, min, max);
+    newOutput->setTrainingParameters(LEARN_TYPE, MLP_HIDDEN_LAYERS, MLP_MAX_SAMPLES);
     newOutput->setInputParameters(inputs);
     newOutput->addParameterChangedListener((Learn*) this, &Learn::outputParameterChanged);
     newOutput->addParameterDeletedListener((Learn*) this, &Learn::outputParameterDeleted);
@@ -141,13 +142,8 @@ void BirlLearner::setupGui() {
     gui2->addWidgetEastOf(new ofxUISlider("countdown", 0.0, 5.0, &trainCountdown, 100.0f, 9.0f), "train fast")->setPadding(2);
     gui2->addWidgetSouthOf(new ofxUISlider("duration", 0.0, 5.0, &trainDuration, 100.0f, 9.0f), "countdown")->setPadding(2);
     gui2->addWidgetEastOf(new ofxUIIntSlider("instanceRate", 1, 30, &instanceRate, 100.0f, 9.0f), "countdown")->setPadding(2);
-    
     gui2->addWidgetSouthOf(guiStatusLabel, "instanceRate")->setPadding(4);
-    //gui2->addWidgetEastOf(guiStatusLabel, "duration")->setPadding(4);
-    
     gui2->addWidgetEastOf(new ofxUILabelToggle("predict", &predicting, 100, 50, 0, 0, OFX_UI_FONT_SMALL), "instanceRate");
-    //gui2->addWidgetEastOf(new ofxUILabelToggle("predict", &predicting, 100, 50, 0, 0, OFX_UI_FONT_SMALL), "");
-    
     gui2->addLabelButton("save", false, 100, 50);
 
     gui3->setColorOutline(ofColor(255,200));
@@ -302,7 +298,7 @@ void BirlLearner::loadPreset(string filename) {
     ofXml xml;
     bool xmlLoaded = xml.load(filename);
     if (!xmlLoaded) {
-        cout << "failed to load preset " << filename << endl;
+        ofLog(OF_LOG_ERROR, "failed to load preset "+ofToString(filename));
         return;
     }
     xml.setTo("BirlPreset");

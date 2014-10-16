@@ -22,6 +22,7 @@ void MantaLearn::draw() {
     }
 }
 
+
 //-----------
 void MantaLearn::addAllPadsAsInput() {
     vector<LearnInputParameter*> newInputs;

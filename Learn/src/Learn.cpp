@@ -154,6 +154,7 @@ void Learn::setupOscSender(string host, int port) {
         this->oscOutputPort = port;
         ((ofxUITextInput *) gui3->getWidget("oscPortOut"))->setTextString(ofToString(oscOutputPort));
     }
+    //oscOutActive = oscManager.setupSender(oscOutputHost, oscOutputPort);
     enableOscOutputs(true);
 }
 
@@ -163,6 +164,7 @@ void Learn::setupOscReceiver(int port) {
         this->oscInputPort = port;
         ((ofxUITextInput *) gui3->getWidget("oscPortIn"))->setTextString(ofToString(oscInputPort));
     }
+    //oscOutActive = oscManager.setupReceiver(oscInputPort);
     enableOscInputs(true);
 }
 
@@ -422,7 +424,8 @@ void Learn::gui3Event(ofxUIEventArgs &e) {
         string newHost = ((ofxUITextInput *) gui3->getWidget("oscHost"))->getTextString();
         int newPort = ofToInt(((ofxUITextInput *) gui3->getWidget("oscPortOut"))->getTextString());
         if ((newHost != oscManager.getHost() || newPort != oscManager.getSenderPort())
-            && newHost != "" && newPort > 0) {
+            && (newHost != "" && newPort > 0)) {
+            enableOscOutputs(false);
             setupOscSender(newHost, newPort);
             enableOscOutputs(oscOutActive);
         }
@@ -430,6 +433,7 @@ void Learn::gui3Event(ofxUIEventArgs &e) {
     else if (e.getName() == "oscPortIn") {
         int newPort = ofToInt(((ofxUITextInput *) gui3->getWidget("oscPortIn"))->getTextString());
         if (newPort != oscManager.getReceiverPort() && newPort > 0) {
+            enableOscInputs(false);
             setupOscReceiver(newPort);
             enableOscInputs(oscInActive);
         }
@@ -717,7 +721,7 @@ void Learn::loadPreset(string filename) {
     ofXml xml;
     bool xmlLoaded = xml.load(filename);
     if (!xmlLoaded) {
-        cout << "failed to load preset " << filename << endl;
+        ofLog(OF_LOG_ERROR, "failed to load preset "+ofToString(filename));
         return;
     }
     xml.setTo("LearnPreset");
@@ -884,7 +888,7 @@ void Learn::loadOutputs(ofXml &xml) {
                 }
             }
             else {
-                cout << "Error for Output "<<output->getName()<< " : not all inputs found, so skip loading examples."<<endl;
+                ofLog(OF_LOG_ERROR, "Error for output "+output->getName()+" : not all inputs found, so skip loading examples.");
             }
         }
         while (xml.setToSibling());

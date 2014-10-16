@@ -12,6 +12,7 @@ void ofApp::setup(){
 //-----------
 void ofApp::update(){
     canvas.update();
+    ofSetWindowTitle(ofToString(ofGetFrameRate()));
 }
 
 //-----------

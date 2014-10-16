@@ -183,6 +183,7 @@ void LearnOutputParameter::addSpreadsheetDataToLearn() {
             learn.addTrainingInstance(instance, normalizedLabel);
         }
     }
+
 }
 
 //-----------
@@ -195,10 +196,23 @@ void LearnOutputParameter::setDataSize(int width, int height) {
 }
 
 //-----------
+void LearnOutputParameter::setTrainingParameters(LearnModel learnModel, int numHiddenLayers, float targetRmse, int maxSamples) {
+    this->learnModel = learnModel;
+    learn.setMlpNumHiddenLayers(numHiddenLayers);
+    learn.setMlpTargetRmse(targetRmse);
+    learn.setMlpMaxSamples(maxSamples);
+}
+
+//-----------
 void LearnOutputParameter::trainClassifierFast() {
     if (getNumInstances() > 0) {
         addSpreadsheetDataToLearn();
-        learn.trainRegression(FAST, REGRESSION_SVM);
+        if (learnModel == MLP) {
+            learn.trainRegression(FAST, REGRESSION_MLP);
+        }
+        else if (learnModel == SVM) {
+            learn.trainRegression(FAST, REGRESSION_SVM);
+        }
         setTrained(true);
     }
 }
@@ -207,15 +221,26 @@ void LearnOutputParameter::trainClassifierFast() {
 void LearnOutputParameter::trainClassifierAccurate() {
     if (getNumInstances() > 0) {
         addSpreadsheetDataToLearn();
-        learn.trainRegression(ACCURATE, REGRESSION_SVM);
+        if (learnModel == MLP) {
+            learn.trainRegression(ACCURATE, REGRESSION_MLP);
+        }
+        else if (learnModel == SVM) {
+            learn.trainRegression(ACCURATE, REGRESSION_SVM);
+        }
         setTrained(true);
     }
 }
 
 //-----------
 void LearnOutputParameter::loadClassifier(string path) {
-    learn.loadModel(REGRESSION_SVM, path);
-    setTrained(true);
+    if (learnModel == MLP) {
+        //learn.loadModel(REGRESSION_MLP, path);
+    }
+    else if (learnModel == SVM) {
+        learn.loadModel(REGRESSION_SVM, path);
+        setTrained(true);
+    }
+    //setTrained(true);
 }
 
 //-----------
