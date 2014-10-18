@@ -239,9 +239,17 @@ void BirlOutputParameter::setTrained(bool trained) {
 }
 
 //-----------
+void BirlOutputParameter::setVisible(bool visible) {
+    LearnOutputParameter::setVisible(visible);
+    guiPreview->setVisible(visible);
+    guiPerform->setVisible(visible);
+}
+
+//-----------
 void BirlOutputParameter::deselect() {
     LearnOutputParameter::deselect();
     guiPerformOsc->setFocus(false);
     guiPreviewOsc->setFocus(false);
 }
+
 

@@ -24,6 +24,7 @@ public:
     void setTrainingMode();
     void setGuiMode(BirlMode mode);
     void setGuiMode() {setGuiMode(mode);}
+    void toggleViewPreferences();
     
     bool savePreset(string filename);
     void loadPreset(string filename);
@@ -35,13 +36,21 @@ protected:
     void gui3Event(ofxUIEventArgs &e);
     void guiModeEvent(ofxUIEventArgs &e);
     void guiPresetsEvent(ofxUIEventArgs &e);
+    void guiSettingsEvent(ofxUIEventArgs &e);
     
     void parameterSelected(LearnParameter & parameter);
     void resetInputButtons();
 
+    void setOutputTrainingSettings();
+    
     BirlMode mode;
-    ofxUICanvas *guiMode;
-    ofxUICanvas *guiPresets;
+    ofxUICanvas *guiMode, *guiPresets, *guiSettings;
+    ofxUITextInput *guiEmbouchureMax, *guiKeysMax, *guiKeysDiscreteMax, *guiHiddenLayers, *guiTargetRmse, *guiMaxSamples;
     
     Birl birl;
+    
+    // settings
+    int embouchureMax, keysMax, hiddenLayers, maxSamples;
+    float keysDiscreteMax, targetRmse;
+    bool viewSettings;
 };

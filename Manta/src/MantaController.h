@@ -44,6 +44,8 @@ public:
     
     // mark manta
     void markPad(int row, int col, bool mark);
+    void markSlider(int index, bool mark);
+    void markButton(int index, bool mark);
     
     // returns gui element positions
     ofPoint getPositionAtPad(int row, int col);
@@ -61,12 +63,12 @@ public:
     template <typename L, typename M> void removeButtonVelocityListener(L *listener, M method) {manta.removeButtonVelocityListener(listener, method);}
     
     // add gui interaction listeners
-    template <typename L, typename M> void addPadClickListener(L *listener, M method) {
-        ofAddListener(padClickEvent, listener, method);
-    }
-    template <typename L, typename M> void removePadClickListener(L *listener, M method) {
-        ofRemoveListener(padClickEvent, listener, method);
-    }
+    template <typename L, typename M> void addPadClickListener(L *listener, M method) {ofAddListener(padClickEvent, listener, method);}
+    template <typename L, typename M> void addSliderClickListener(L *listener, M method) {ofAddListener(sliderClickEvent, listener, method);}
+    template <typename L, typename M> void addButtonClickListener(L *listener, M method) {ofAddListener(buttonClickEvent, listener, method);}
+    template <typename L, typename M> void removePadClickListener(L *listener, M method) {ofRemoveListener(padClickEvent, listener, method);}
+    template <typename L, typename M> void removeSliderClickListener(L *listener, M method) {ofRemoveListener(sliderClickEvent, listener, method);}
+    template <typename L, typename M> void removeButtonClickListener(L *listener, M method) {ofRemoveListener(buttonClickEvent, listener, method);}
     
 protected:
     
@@ -87,19 +89,12 @@ protected:
     float perimeter;
 
     // mouse callbacks
-    void mousePressed(ofMouseEventArgs &evt) {
-        if (!mouseActive)   return;
-        for (int i=0; i<48; i++) {
-            if (padPositions[i].inside(evt.x, evt.y)) {
-                ofNotifyEvent(padClickEvent, i, this);
-            }
-        }
-    }
+    void mousePressed(ofMouseEventArgs &evt);
     
-    ofEvent<int> padClickEvent;
+    ofEvent<int> padClickEvent, sliderClickEvent, buttonClickEvent;
     bool mouseActive;
-    void setMousePadResponders();
-    ofRectangle padPositions[48];
+    void setMouseResponders();
+    ofRectangle padPositions[48], sliderPositions[2], buttonPositions[4];
     int x, y, width;
     int px, py, pwidth;
 };

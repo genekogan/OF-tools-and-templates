@@ -20,7 +20,7 @@ void MantaController::setMouseActive(bool mouseActive) {
 
 //-----------
 void MantaController::update(){
-    if (!isConnected) return;
+    if (!isConnected)  return;
     
     fingers.clear();
     fingerValues.clear();
@@ -73,7 +73,21 @@ void MantaController::update(){
 //-----------
 void MantaController::markPad(int row, int col, bool mark) {
     manta.setLedManual(false);
-    manta.setLedState(row, col, mark ? Manta::Red : Manta::Off);
+    manta.setPadLedState(row, col, mark ? Manta::Red : Manta::Off);
+    manta.setLedManual(true);
+}
+
+//-----------
+void MantaController::markSlider(int index, bool mark) {
+    manta.setLedManual(false);
+    manta.setSliderLedState(index, mark ? Manta::Red : Manta::Off);
+    manta.setLedManual(true);
+}
+
+//-----------
+void MantaController::markButton(int index, bool mark) {
+    manta.setLedManual(false);
+    manta.setButtonLedState(index, mark ? Manta::Red : Manta::Off);
     manta.setLedManual(true);
 }
 
@@ -88,7 +102,7 @@ void MantaController::draw(int x, int y, int width){
         py = y;
         pwidth = width;
         if (mouseActive) {
-            setMousePadResponders();
+            setMouseResponders();
         }
     }
 }
@@ -174,14 +188,55 @@ ofPoint MantaController::getPositionAtPad(int row, int col) {
 }
 
 //----------
-void MantaController::setMousePadResponders() {
+void MantaController::mousePressed(ofMouseEventArgs &evt) {
+    if (!mouseActive)   return;
+    for (int i=0; i<2; i++) {
+        if (sliderPositions[i].inside(evt.x, evt.y)) {
+            ofNotifyEvent(sliderClickEvent, i, this);
+            return;
+        }
+    }
+    for (int i=0; i<4; i++) {
+        if (buttonPositions[i].inside(evt.x, evt.y)) {
+            ofNotifyEvent(buttonClickEvent, i, this);
+            return;
+        }
+    }
+    for (int i=0; i<48; i++) {
+        if (padPositions[i].inside(evt.x, evt.y)) {
+            ofNotifyEvent(padClickEvent, i, this);
+            return;
+        }
+    }
+}
+
+//----------
+void MantaController::setMouseResponders() {
+    float sliderSizeX = 0.65*manta.getDrawWidth();
+    float sliderSizeY = 0.05*manta.getDrawHeight();
+    float buttonSize = 1.5*0.02*manta.getDrawWidth();
+
+    ofRectangle sliderPosition0(x + 0.08*manta.getDrawWidth(), y + 0.05*manta.getDrawHeight(), sliderSizeX, sliderSizeY);
+    ofRectangle sliderPosition1(x + 0.05*manta.getDrawWidth(), y + 0.13*manta.getDrawHeight(), sliderSizeX, sliderSizeY);
+    ofRectangle buttonPosition0(x + 0.8*manta.getDrawWidth() - 0.5*buttonSize, y + 0.075*manta.getDrawHeight() - 0.5*buttonSize, buttonSize, buttonSize);
+    ofRectangle buttonPosition1(x + 0.9*manta.getDrawWidth() - 0.5*buttonSize, y + 0.075*manta.getDrawHeight() - 0.5*buttonSize, buttonSize, buttonSize);
+    ofRectangle buttonPosition2(x + 0.85*manta.getDrawWidth() - 0.5*buttonSize, y + 0.155*manta.getDrawHeight() - 0.5*buttonSize, buttonSize, buttonSize);
+    ofRectangle buttonPosition3(x + 0.95*manta.getDrawWidth() - 0.5*buttonSize, y + 0.155*manta.getDrawHeight() - 0.5*buttonSize, buttonSize, buttonSize);
+    
+    sliderPositions[0] = sliderPosition0;
+    sliderPositions[1] = sliderPosition1;
+    buttonPositions[0] = buttonPosition0;
+    buttonPositions[1] = buttonPosition1;
+    buttonPositions[2] = buttonPosition2;
+    buttonPositions[3] = buttonPosition3;
+    
     for (int row=0; row<6; row++) {
         for (int col=0; col<8; col++) {
             int rx = x + ofMap(col+0.5, 0, 8, 0.01*manta.getDrawWidth(), 0.94*manta.getDrawWidth());
             int ry = y + ofMap(row+0.5, 6, 0, 0.24*manta.getDrawHeight(), 0.97*manta.getDrawHeight());
             int size = manta.getDrawWidth() / 11.0;
             if (row %2 != 0)  rx += 0.93*manta.getDrawWidth()/16.0;
-            ofRectangle padPosition(rx-size/2.0, ry-size/2.0, size, size);
+            ofRectangle padPosition(rx - 0.5*size, ry - 0.5*size, size, size);
             padPositions[row * 8 + col] = padPosition;
         }
     }

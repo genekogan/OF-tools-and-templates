@@ -24,6 +24,7 @@ public:
     void setupGuiPreview();
     void setGuiPreviewPosition(int x, int y);
     void setPreviewMode(BirlMode mode);
+    void setVisible(bool visible);
     void deselect();
     
     void guiEvent(ofxUIEventArgs &e);

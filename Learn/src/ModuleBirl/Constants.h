@@ -9,7 +9,7 @@
 #define PRESSURE_NUMBER 2
 #define EMBOUCHURE_NUMBER 20
 #define EMBOUCHURE_MAX 4096
-#define KEYS_MAX 1500
+#define KEYS_MAX 900 //1500
 #define KEYS_DISCRETE_THRESHOLD 0.5
 
 
@@ -17,7 +17,7 @@
 
 #define LEARN_TYPE LearnOutputParameter::MLP
 #define MLP_HIDDEN_LAYERS 2
-#define MLP_TARGET RMSE 0.001
+#define MLP_TARGET_RMSE 0.001
 #define MLP_MAX_SAMPLES 1000000
 
 

@@ -3,8 +3,27 @@
 
 //-------
 BirlLearner::BirlLearner() : Learn(false) {
+    // default settings
+    embouchureMax = EMBOUCHURE_MAX;
+    keysMax = KEYS_MAX;
+    keysDiscreteMax = KEYS_DISCRETE_THRESHOLD;
+    hiddenLayers = MLP_HIDDEN_LAYERS;
+    targetRmse = MLP_TARGET_RMSE;
+    maxSamples = MLP_MAX_SAMPLES;
+    
+    // set up components
     guiPresets = new ofxUICanvas("Presets");
     guiMode = new ofxUICanvas("choose mode");
+    guiSettings = new ofxUICanvas("settings");
+    guiSettings->setVisible(false);
+
+    ofAddListener(gui1->newGUIEvent, this, &BirlLearner::gui1Event);
+    ofAddListener(gui2->newGUIEvent, this, &BirlLearner::gui2Event);
+    ofAddListener(gui3->newGUIEvent, this, &BirlLearner::gui3Event);
+    ofAddListener(guiMode->newGUIEvent, this, &BirlLearner::guiModeEvent);
+    ofAddListener(guiPresets->newGUIEvent, this, &BirlLearner::guiPresetsEvent);
+    ofAddListener(guiSettings->newGUIEvent, this, &BirlLearner::guiSettingsEvent);
+    
     oscInActive = false;
     setGuiInputsVisible(false);
     setupGui();
@@ -49,7 +68,7 @@ void BirlLearner::setupOscSender(string host, int port) {
 //-------
 BirlOutputParameter * BirlLearner::addOutput(string name, float *val, float min, float max) {
     BirlOutputParameter *newOutput = new BirlOutputParameter(name, val, min, max);
-    newOutput->setTrainingParameters(LEARN_TYPE, MLP_HIDDEN_LAYERS, MLP_MAX_SAMPLES);
+    newOutput->setTrainingParameters(LEARN_TYPE, hiddenLayers, targetRmse, maxSamples);
     newOutput->setInputParameters(inputs);
     newOutput->addParameterChangedListener((Learn*) this, &Learn::outputParameterChanged);
     newOutput->addParameterDeletedListener((Learn*) this, &Learn::outputParameterDeleted);
@@ -181,12 +200,42 @@ void BirlLearner::setupGui() {
     guiMode->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
     guiMode->addLabelToggle("Train", false, 80.0f);
     guiMode->autoSizeToFitWidgets();
-
-    ofAddListener(gui1->newGUIEvent, this, &BirlLearner::gui1Event);
-    ofAddListener(gui2->newGUIEvent, this, &BirlLearner::gui2Event);
-    ofAddListener(gui3->newGUIEvent, this, &BirlLearner::gui3Event);
-    ofAddListener(guiMode->newGUIEvent, this, &BirlLearner::guiModeEvent);
-    ofAddListener(guiPresets->newGUIEvent, this, &BirlLearner::guiPresetsEvent);
+    
+    guiSettings->setColorOutline(ofColor(255));
+    guiSettings->setPosition(220, 10);
+    guiSettings->setWidth(420);
+    guiSettings->clearWidgets();
+    guiSettings->addLabel("Settings");
+    guiSettings->addSpacer();
+    guiSettings->addLabel("embouchure max: ");
+    guiSettings->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
+    guiEmbouchureMax = guiSettings->addTextInput("embouchure_max", ofToString(embouchureMax), 120.0f);
+    guiEmbouchureMax->setAutoClear(false);
+    guiSettings->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+    guiSettings->addLabel("keys max: ");
+    guiSettings->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
+    guiKeysMax = guiSettings->addTextInput("keys_max", ofToString(keysMax), 120.0f);
+    guiKeysMax->setAutoClear(false);
+    guiSettings->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+    guiSettings->addLabel("discrete threshold: ");
+    guiSettings->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
+    guiKeysDiscreteMax = guiSettings->addTextInput("keys_discrete_max", ofToString(keysDiscreteMax), 120.0f);
+    guiKeysDiscreteMax->setAutoClear(false);
+    guiSettings->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+    guiSettings->addLabel("hidden layers: ");
+    guiSettings->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
+    guiHiddenLayers = guiSettings->addTextInput("hidden_layers", ofToString(hiddenLayers), 120.0f);
+    guiHiddenLayers->setAutoClear(false);
+    guiSettings->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+    guiSettings->addLabel("target rmse: ");
+    guiSettings->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
+    guiTargetRmse = guiSettings->addTextInput("target_rmse", ofToString(targetRmse), 120.0f);
+    guiTargetRmse->setAutoClear(false);
+    guiSettings->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+    guiSettings->addLabel("max samples: ");
+    guiSettings->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
+    guiMaxSamples = guiSettings->addTextInput("max_samples", ofToString(maxSamples), 120.0f);
+    guiMaxSamples->setAutoClear(false);
     
     resetPresets();
 }
@@ -194,9 +243,11 @@ void BirlLearner::setupGui() {
 //-------
 void BirlLearner::guiModeEvent(ofxUIEventArgs &e) {
     if (e.getName() == "Train") {
+        if (viewSettings)   toggleViewPreferences();
         setTrainingMode();
     }
     else if (e.getName() == "Perform") {
+        if (viewSettings)   toggleViewPreferences();
         setPerformanceMode();
     }
 }
@@ -217,6 +268,7 @@ void BirlLearner::setGuiMode(BirlMode mode) {
     gui3->setVisible(mode == BIRL_PERFORM);
     guiPresets->setVisible(mode == BIRL_INPUTS || mode == BIRL_PERFORM);
     for (int i=0; i<outputs.size(); i++) {
+        ((BirlOutputParameter *) outputs[i])->setVisible(true);
         ((BirlOutputParameter *) outputs[i])->setPreviewMode(mode);
         if (mode != BIRL_TRAIN)  outputs[i]->setExamplesVisible(false);
     }
@@ -267,6 +319,77 @@ void BirlLearner::gui3Event(ofxUIEventArgs &e) {
         setGuiMode(BIRL_TRAIN);
     }
     Learn::gui3Event(e);
+}
+
+//--------
+void BirlLearner::toggleViewPreferences() {
+    viewSettings = !viewSettings;
+    guiSettings->setVisible(viewSettings);
+    if (viewSettings) {
+        gui1->setVisible(false);
+        gui2->setVisible(false);
+        gui3->setVisible(false);
+        guiPresets->setVisible(false);
+        for (int i=0; i<outputs.size(); i++) {
+            ((BirlOutputParameter *) outputs[i])->setVisible(false);
+        }
+    }
+    else {
+        setGuiMode();
+    }
+}
+
+//--------
+void BirlLearner::guiSettingsEvent(ofxUIEventArgs &e) {
+    if      (e.getName() == "embouchure_max") {
+        int newEmbouchureMax = ofToInt(guiEmbouchureMax->getTextString());
+        if (embouchureMax != newEmbouchureMax) {
+            embouchureMax  = newEmbouchureMax;
+            birl.setEmbouchureMax(embouchureMax);
+        }
+    }
+    else if (e.getName() == "keys_max") {
+        int newKeysMax = ofToInt(guiKeysMax->getTextString());
+        if (keysMax != newKeysMax) {
+            keysMax  = newKeysMax;
+            birl.setKeysMax(keysMax);
+        }
+    }
+    else if (e.getName() == "keys_discrete_max") {
+        float newKeysDiscreteMax = ofToFloat(guiKeysDiscreteMax->getTextString());
+        if (keysDiscreteMax != newKeysDiscreteMax) {
+            keysDiscreteMax  = newKeysDiscreteMax;
+            birl.setKeysDiscreteThreshold(keysDiscreteMax);
+        }
+    }
+    else if (e.getName() == "hidden_layers") {
+        int newHiddenLayers = ofToInt(guiHiddenLayers->getTextString());
+        if (hiddenLayers != newHiddenLayers) {
+            hiddenLayers  = newHiddenLayers;
+            setOutputTrainingSettings();
+        }
+    }
+    else if (e.getName() == "target_rmse") {
+        float newTargetRmse = ofToFloat(guiTargetRmse->getTextString());
+        if (targetRmse != newTargetRmse) {
+            targetRmse  = newTargetRmse;
+            setOutputTrainingSettings();
+        }
+    }
+    else if (e.getName() == "max_samples") {
+        int newMaxSamples = ofToInt(guiMaxSamples->getTextString());
+        if (maxSamples != newMaxSamples) {
+            maxSamples  = newMaxSamples;
+            setOutputTrainingSettings();
+        }
+    }
+}
+
+//-------
+void BirlLearner::setOutputTrainingSettings() {
+    for (int i=0; i<outputs.size(); i++) {
+        outputs[i]->setTrainingParameters(LEARN_TYPE, hiddenLayers, targetRmse, maxSamples);
+    }
 }
 
 //-------

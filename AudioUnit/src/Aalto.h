@@ -29,7 +29,6 @@ public:
     void update();
     void draw();
     
-    void chooseNoteMode(string &s);
     void chooseSequencerMode(string &s);
     
     void setupGui();
@@ -46,15 +45,22 @@ public:
 protected:
     
     void guiParametersEvent(ofxUIEventArgs &e);
-    void padClickEvent(int & pad);
+    void guiStatsEvent(ofxUIEventArgs &e);
     void noteEvent(NoteType type, int note, int velocity=127);
+    
+    void padClickEvent(int & pad);
+    void sliderClickEvent(int & slider);
+    void buttonClickEvent(int & button);
+
+    void sequencerStepEvent(vector<float> &column);
+    
     void mantaPadEvent(ofxMantaEvent &e);
     void mantaPadVelocityEvent(ofxMantaEvent &e);
-    void sequencerStepEvent(vector<float> &column);
-
+    void mantaSliderEvent(ofxMantaEvent &e);
+    void mantaButtonEvent(ofxMantaEvent &e);
+    
     Control control;
     OutputMode sequencerMode;
-    NoteMode noteMode;
 
     MantaController manta;
     Sequencer sequencer;
@@ -65,6 +71,9 @@ protected:
 	ofxAudioUnitOutput output;
     
     bool noteStatus[128];
+    bool noteManual;
+    bool sequencerManta;
+    bool mantaSendNotes;
     map<int, int> noteEvents;
     
     map<string, vector<string> > parameterGroups;
@@ -72,12 +81,12 @@ protected:
     vector<ParameterMapping> parameters;
     map<int, ParameterMapping> mappings;
 
-    ofxUICanvas *guiP;
+    ofxUICanvas *guiP, *guiS;
     ofxUIDropDownList *guiParameterGroups, *guiParameters;
     ofxUIRangeSlider *guiParameterRange;
     ofxUITextInput *guiParameterMin, *guiParameterMax;
     
-    int guiActivePad;
+    int guiActiveManta;
     bool guiToSwitchParameters;
     string guiToSwitchParametersName;
 };
