@@ -38,6 +38,7 @@ protected:
 
     void setInputs();
     void setTrained(bool trained);
+    void setRecording(bool record);
     
     ofxUICanvas *guiPreview, *guiPerform;
     ofxUISlider *guiPerformValue;

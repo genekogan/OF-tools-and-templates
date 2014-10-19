@@ -29,6 +29,12 @@ LearnOutputParameter::LearnOutputParameter(string name, float *value, float min,
     dataWidth = 600;
     dataHeight = 300;
     
+    if (DEFAULT_LEARN_TYPE == "SVM") {
+        setTrainingSvm();
+    } else {
+        setTrainingMlp();
+    }
+    
     setupGui();
     addDataPage();
 
@@ -144,6 +150,13 @@ void LearnOutputParameter::setInputParameters(vector<LearnInputParameter *> &all
 }
 
 //-----------
+void LearnOutputParameter::setInputGroups(vector<GuiInputGroup> inputGroups) {
+    this->inputGroups = inputGroups;
+    inputGroupsEnabled = true;
+    setupGuiInputSelector();
+}
+
+//-----------
 void LearnOutputParameter::addDataPage() {
     ofxSpreadsheet *newData = new ofxSpreadsheet();
     newData->setup(dataWidth, dataHeight);
@@ -196,11 +209,16 @@ void LearnOutputParameter::setDataSize(int width, int height) {
 }
 
 //-----------
-void LearnOutputParameter::setTrainingParameters(LearnModel learnModel, int numHiddenLayers, float targetRmse, int maxSamples) {
-    this->learnModel = learnModel;
+void LearnOutputParameter::setTrainingMlp(int numHiddenLayers, float targetRmse, int maxSamples) {
+    this->learnModel = MLP;
     learn.setMlpNumHiddenLayers(numHiddenLayers);
     learn.setMlpTargetRmse(targetRmse);
     learn.setMlpMaxSamples(maxSamples);
+}
+
+//-----------
+void LearnOutputParameter::setTrainingSvm() {
+    this->learnModel = SVM;
 }
 
 //-----------
@@ -209,6 +227,7 @@ void LearnOutputParameter::trainClassifierFast() {
         addSpreadsheetDataToLearn();
         if (learnModel == MLP) {
             learn.trainRegression(FAST, REGRESSION_MLP);
+            setupMlpCoefficients();
         }
         else if (learnModel == SVM) {
             learn.trainRegression(FAST, REGRESSION_SVM);
@@ -223,11 +242,30 @@ void LearnOutputParameter::trainClassifierAccurate() {
         addSpreadsheetDataToLearn();
         if (learnModel == MLP) {
             learn.trainRegression(ACCURATE, REGRESSION_MLP);
+            setupMlpCoefficients();
         }
         else if (learnModel == SVM) {
             learn.trainRegression(ACCURATE, REGRESSION_SVM);
         }
         setTrained(true);
+    }
+}
+
+//---------
+void LearnOutputParameter::setupMlpCoefficients() {
+    dlib::matrix<double> w1m = learn.getRegressionMlp()->get_w1();
+    dlib::matrix<double> w3m = learn.getRegressionMlp()->get_w3();
+    
+    int numLayers = learn.getMlpNumHiddenLayers();
+    int numFeatures = getNumInputs();
+    
+    for (int i=0; i<numLayers+1; i++) {
+        for (int j=0; j<numFeatures+1; j++) {
+            mlpCoefficientsW1.push_back(w1m(i, j));
+        }
+    }
+    for (int i=0; i<numLayers+1; i++) {
+        mlpCoefficientsW3.push_back(w3m(i));
     }
 }
 
@@ -251,10 +289,44 @@ void LearnOutputParameter::saveClassifier(string path) {
 }
 
 //-----------
-void LearnOutputParameter::predict() {
-    double normalizedPrediction = learn.predict(grabFeatureVector<double>(false));
+void LearnOutputParameter::predict(vector<double> instance) {
+    double normalizedPrediction;
+    if (learnModel == SVM) {
+        normalizedPrediction = learn.predict(instance);
+    }
+    else if (learnModel == MLP) {
+        normalizedPrediction = predictMlp(instance);
+    }
     set((float) ofMap(normalizedPrediction, 0.0, 1.0, getMin(), getMax()));
     guiValueText->setTextString(ofToString(guiValue->getValue()));
+}
+
+//-----------
+double LearnOutputParameter::predictMlp(vector<double> example) {
+    int numLayers = learn.getMlpNumHiddenLayers();
+    int numFeatures = getNumInputs();
+    
+    vector<double> z;
+    for (int i=0; i<example.size(); i++) {
+        z.push_back(example[i]);
+    }
+    z.push_back(-1.0);
+    
+    vector<double> tmp1;
+    for (int i=0; i<numLayers+1; i++) {
+        float tmp0 = 0.0;
+        for (int j=0; j<numFeatures+1; j++) {
+            tmp0 += ( mlpCoefficientsW1[ i*(numFeatures+1) + j ] * z[j] );
+        }
+        tmp1.push_back( sigmoid(tmp0) );
+    }
+    tmp1[numLayers] = -1.0;    // bias term overrides last element
+    
+    float tmp2 = 0.0;
+    for (int j=0; j<numLayers+1; j++) {
+        tmp2 += (mlpCoefficientsW3[j] * tmp1[j]);
+    }
+    return sigmoid(tmp2);
 }
 
 //-----------
@@ -526,17 +598,7 @@ void LearnOutputParameter::guiEvent(ofxUIEventArgs &e) {
         }
     }
     else if (e.getName() == "record") {
-        if (record && activeInputs.size()==0) {
-            ofSystemAlertDialog("Can't record: no inputs selected.");
-            record = false;
-            return;
-        }
-        if (trained){
-            gui->setColorBack(record ? ofColor(200, 0, 0, 200) : ofColor(0, 60, 0, 100));
-        }
-        else {
-            gui->setColorBack(record ? ofColor(200, 0, 0, 200) : ofColor(0, 100));
-        }
+        setRecording(record);
     }
     else if (e.getName() == "examples") {
         setExamplesVisible(guiExamples->getValue());
@@ -657,6 +719,22 @@ void LearnOutputParameter::setTrained(bool trained) {
 }
 
 //-----------
+void LearnOutputParameter::setRecording(bool record) {
+    this->record = record;
+    if (record && activeInputs.size()==0) {
+        ofSystemAlertDialog("Can't record: no inputs selected.");
+        record = false;
+        return;
+    }
+    if (trained){
+        gui->setColorBack(record ? ofColor(200, 0, 0, 200) : ofColor(0, 60, 0, 100));
+    }
+    else {
+        gui->setColorBack(record ? ofColor(200, 0, 0, 200) : ofColor(0, 100));
+    }
+}
+
+//-----------
 void LearnOutputParameter::guiDataEvent(ofxUIEventArgs &e) {
     if (e.getName() == "<") {
         if (e.getButton()->getValue() == 1) return;
@@ -701,4 +779,8 @@ void LearnOutputParameter::setGuiPosition(int x, int y) {
     guiInputSelect->setPosition(x, 460);
 }
 
+//-----------
+inline double LearnOutputParameter::sigmoid(double x) {
+    return 1.0/(1.0 + pow(2.71828182845904523536028747135266249775724709369995, -x));
+}
 

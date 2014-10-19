@@ -6,6 +6,9 @@
 #include "Control.h"
 
 
+#define DEFAULT_LEARN_TYPE "SVM"  // SVM, MLP
+
+
 //-----------
 class LearnParameter : public Parameter<float>
 {
@@ -79,12 +82,18 @@ class LearnOutputParameter : public LearnParameter
 public:
     enum LearnModel { SVM, MLP };
     
+    struct GuiInputGroup {
+        string name;
+        vector<LearnInputParameter *> inputs;
+    };
+
     ~LearnOutputParameter();
     LearnOutputParameter(string name, float *value, float min=0, float max=1);
     
     virtual void draw();
 
     void setInputParameters(vector<LearnInputParameter *> &allInputs);
+    void setInputGroups(vector<GuiInputGroup> inputGroups);
     void setupHeaders(int p=-1);
     void addDataPage();
     void setPage(int p);
@@ -112,13 +121,20 @@ public:
     void setDataSize(int width, int height);
 
     virtual void setTrained(bool trained);
+    virtual void setRecording(bool record);
     bool getRecording() {return record;}
     bool getTrained() {return trained;}
     
-    void setTrainingParameters(LearnModel learnModel, int numHiddenLayers=1, float targetRmse=0.01, int maxSamples=100000);
+    void setTrainingMlp(int numHiddenLayers=1, float targetRmse=0.01, int maxSamples=100000);
+    void setTrainingSvm();
     void trainClassifierFast();
     void trainClassifierAccurate();
-    virtual void predict();
+    
+    void setupMlpCoefficients();
+    double predictMlp(vector<double> example);
+    virtual void predict() {predict(grabFeatureVector<double>(false));}
+    virtual void predict(vector<double> instance);
+
     void loadClassifier(string path);
     void saveClassifier(string path);
     
@@ -127,32 +143,9 @@ public:
         ofAddListener(pViewedEvent, listener, method);
     }
     
-    
-    
-    
-    struct GuiInputGroup {
-        string name;
-        vector<LearnInputParameter *> inputs;
-    };
-
-    
-    
-    vector<GuiInputGroup> inputGroups;
-    
-    bool inputGroupsEnabled;
-    
-    void setInputGroups(vector<GuiInputGroup> inputGroups) {
-        this->inputGroups = inputGroups;
-        inputGroupsEnabled = true;
-        setupGuiInputSelector();
-    }
-
-    
-    
-    
-    
 protected:
-    
+    inline double sigmoid(double x);
+
     template <typename T> vector<T> grabFeatureVector(bool labelFirst);
     void addSpreadsheetDataToLearn();
     
@@ -168,7 +161,9 @@ protected:
     
     ofxLearn learn;
     LearnModel learnModel;
+    vector<double> mlpCoefficientsW1, mlpCoefficientsW3;
     vector<LearnInputParameter *> allInputs, activeInputs;
+    vector<GuiInputGroup> inputGroups;
 
     vector<ofxSpreadsheet *> data;
     int page, dataWidth, dataHeight;
@@ -177,6 +172,8 @@ protected:
     bool viewExamples, viewInputs;
     
     ofEvent<LearnOutputParameter> pViewedEvent;
+    
+    bool inputGroupsEnabled;
 };
 
 

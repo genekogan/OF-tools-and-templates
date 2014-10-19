@@ -3,7 +3,6 @@
 
 //-------
 BirlLearner::BirlLearner() : Learn(false) {
-    // default settings
     embouchureMax = EMBOUCHURE_MAX;
     keysMax = KEYS_MAX;
     keysDiscreteMax = KEYS_DISCRETE_THRESHOLD;
@@ -11,7 +10,6 @@ BirlLearner::BirlLearner() : Learn(false) {
     targetRmse = MLP_TARGET_RMSE;
     maxSamples = MLP_MAX_SAMPLES;
     
-    // set up components
     guiPresets = new ofxUICanvas("Presets");
     guiMode = new ofxUICanvas("choose mode");
     guiSettings = new ofxUICanvas("settings");
@@ -53,6 +51,16 @@ void BirlLearner::setup(Birl &birl) {
 }
 
 //-------
+void BirlLearner::draw() {
+    Learn::draw();
+    if (viewSettings) {
+        ofSetColor(255, 0, 0);
+        ofDrawBitmapString(settingsChanged, 225, 196);
+        ofSetColor(255);
+    }
+}
+
+//-------
 void BirlLearner::setupOscSender(string host, int port) {
     if (host != "") {
         this->oscOutputHost = host;
@@ -68,7 +76,12 @@ void BirlLearner::setupOscSender(string host, int port) {
 //-------
 BirlOutputParameter * BirlLearner::addOutput(string name, float *val, float min, float max) {
     BirlOutputParameter *newOutput = new BirlOutputParameter(name, val, min, max);
-    newOutput->setTrainingParameters(LEARN_TYPE, hiddenLayers, targetRmse, maxSamples);
+    if (LEARN_TYPE == LearnOutputParameter::SVM) {
+        newOutput->setTrainingSvm();
+    }
+    else {
+        newOutput->setTrainingMlp(hiddenLayers, targetRmse, maxSamples);
+    }
     newOutput->setInputParameters(inputs);
     newOutput->addParameterChangedListener((Learn*) this, &Learn::outputParameterChanged);
     newOutput->addParameterDeletedListener((Learn*) this, &Learn::outputParameterDeleted);
@@ -267,10 +280,15 @@ void BirlLearner::setGuiMode(BirlMode mode) {
     gui2->setVisible(mode == BIRL_TRAIN);
     gui3->setVisible(mode == BIRL_PERFORM);
     guiPresets->setVisible(mode == BIRL_INPUTS || mode == BIRL_PERFORM);
+    int numRecording = 0;
     for (int i=0; i<outputs.size(); i++) {
         ((BirlOutputParameter *) outputs[i])->setVisible(true);
         ((BirlOutputParameter *) outputs[i])->setPreviewMode(mode);
         if (mode != BIRL_TRAIN)  outputs[i]->setExamplesVisible(false);
+        if (outputs[i]->getRecording()) numRecording++;
+    }
+    if (mode == BIRL_TRAIN && numRecording == 0) {
+        outputs[0]->setRecording(true);
     }
     ((ofxUILabelToggle *) guiMode->getWidget("Train"))->setValue(mode != BIRL_PERFORM);
     ((ofxUILabelToggle *) guiMode->getWidget("Perform"))->setValue(mode == BIRL_PERFORM);
@@ -336,49 +354,55 @@ void BirlLearner::toggleViewPreferences() {
     }
     else {
         setGuiMode();
+        settingsChanged = "";
     }
 }
 
 //--------
 void BirlLearner::guiSettingsEvent(ofxUIEventArgs &e) {
-    if      (e.getName() == "embouchure_max") {
+    if (e.getName() == "embouchure_max" ||
+        e.getName() == "keys_max" ||
+        e.getName() == "keys_discrete_max" ||
+        e.getName() == "hidden_layers" ||
+        e.getName() == "target_rmse" ||
+        e.getName() == "max_samples") {
+        
         int newEmbouchureMax = ofToInt(guiEmbouchureMax->getTextString());
+        int newKeysMax = ofToInt(guiKeysMax->getTextString());
+        float newKeysDiscreteMax = ofToFloat(guiKeysDiscreteMax->getTextString());
+        int newHiddenLayers = ofToInt(guiHiddenLayers->getTextString());
+        float newTargetRmse = ofToFloat(guiTargetRmse->getTextString());
+        int newMaxSamples = ofToInt(guiMaxSamples->getTextString());
+        
+        settingsChanged = "";
         if (embouchureMax != newEmbouchureMax) {
+            settingsChanged += "\nChanged embouchure max from " + ofToString(embouchureMax) + " to " + ofToString(newEmbouchureMax);
             embouchureMax  = newEmbouchureMax;
             birl.setEmbouchureMax(embouchureMax);
         }
-    }
-    else if (e.getName() == "keys_max") {
-        int newKeysMax = ofToInt(guiKeysMax->getTextString());
         if (keysMax != newKeysMax) {
+            settingsChanged = "\nChanged keys max from " + ofToString(keysMax) + " to " + ofToString(newKeysMax);
             keysMax  = newKeysMax;
             birl.setKeysMax(keysMax);
         }
-    }
-    else if (e.getName() == "keys_discrete_max") {
-        float newKeysDiscreteMax = ofToFloat(guiKeysDiscreteMax->getTextString());
         if (keysDiscreteMax != newKeysDiscreteMax) {
+            settingsChanged = "\nChanged keys discrete threshold from " + ofToString(keysDiscreteMax) + " to " + ofToString(newKeysDiscreteMax);
             keysDiscreteMax  = newKeysDiscreteMax;
             birl.setKeysDiscreteThreshold(keysDiscreteMax);
         }
-    }
-    else if (e.getName() == "hidden_layers") {
-        int newHiddenLayers = ofToInt(guiHiddenLayers->getTextString());
         if (hiddenLayers != newHiddenLayers) {
+            settingsChanged = "\nChanged MLP hidden layers from " + ofToString(hiddenLayers) + " to " + ofToString(newHiddenLayers);
             hiddenLayers  = newHiddenLayers;
             setOutputTrainingSettings();
         }
-    }
-    else if (e.getName() == "target_rmse") {
-        float newTargetRmse = ofToFloat(guiTargetRmse->getTextString());
         if (targetRmse != newTargetRmse) {
+            settingsChanged = "\nChanged MLP target RMSE from " + ofToString(targetRmse) + " to " + ofToString(newTargetRmse);
             targetRmse  = newTargetRmse;
             setOutputTrainingSettings();
         }
-    }
-    else if (e.getName() == "max_samples") {
-        int newMaxSamples = ofToInt(guiMaxSamples->getTextString());
+
         if (maxSamples != newMaxSamples) {
+            settingsChanged = "\nChanged MLP max samples from " + ofToString(maxSamples) + " to " + ofToString(newMaxSamples);
             maxSamples  = newMaxSamples;
             setOutputTrainingSettings();
         }
@@ -388,7 +412,12 @@ void BirlLearner::guiSettingsEvent(ofxUIEventArgs &e) {
 //-------
 void BirlLearner::setOutputTrainingSettings() {
     for (int i=0; i<outputs.size(); i++) {
-        outputs[i]->setTrainingParameters(LEARN_TYPE, hiddenLayers, targetRmse, maxSamples);
+        if (LEARN_TYPE == LearnOutputParameter::SVM) {
+            outputs[i]->setTrainingSvm();
+        }
+        else if (LEARN_TYPE == LearnOutputParameter::MLP) {
+            outputs[i]->setTrainingMlp(hiddenLayers, targetRmse, maxSamples);
+        }
     }
 }
 

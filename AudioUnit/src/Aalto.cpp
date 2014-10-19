@@ -335,10 +335,12 @@ void Aalto::setupGuiPadInspector() {
         guiP->addLabel("min: ");
         guiP->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
         guiParameterMin = guiP->addTextInput("min", ofToString(mappings[guiActiveManta].rmin), 80.0f);
+        guiParameterMin->setAutoClear(false);
         guiP->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
         guiP->addLabel("max: ");
         guiP->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
         guiParameterMax = guiP->addTextInput("max", ofToString(mappings[guiActiveManta].rmax), 80.0f);
+        guiParameterMax->setAutoClear(false);
         guiP->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
         guiP->addLabelButton("remove", false);
         guiP->addSpacer();

@@ -15,6 +15,8 @@ public:
     void setupOscSender(string host, int port);
     void setupGui();
     
+    void draw();
+    
     BirlOutputParameter * addOutput(string name, float *val, float min, float max);
     BirlOutputParameter * addOutput(string name, float min, float max) {return addOutput(name, new float(), min, max);}
     void resetInputs();
@@ -49,8 +51,8 @@ protected:
     
     Birl birl;
     
-    // settings
     int embouchureMax, keysMax, hiddenLayers, maxSamples;
     float keysDiscreteMax, targetRmse;
     bool viewSettings;
+    string settingsChanged;
 };

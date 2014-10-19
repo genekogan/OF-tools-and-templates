@@ -20,6 +20,15 @@ void MantaController::setMouseActive(bool mouseActive) {
 
 //-----------
 void MantaController::update(){
+    
+    
+    /*
+     
+     
+    CLEAN UP 
+     
+     */
+    
     if (!isConnected)  return;
     
     fingers.clear();

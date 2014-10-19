@@ -181,7 +181,7 @@ void BirlOutputParameter::guiPreviewEvent(ofxUIEventArgs &e) {
         ofNotifyEvent(pChangedEvent, (LearnParameter &) *this, this);
     }
     else if (e.getName() == "record") {
-        guiPreview->setColorBack(record ? ofColor(255, 0, 0) : ofColor(0, 100));
+        setRecording(record);
     }
     else if (e.getName() == "examples") {
         setExamplesVisible(guiExamples->getValue());
@@ -193,23 +193,18 @@ void BirlOutputParameter::guiPreviewEvent(ofxUIEventArgs &e) {
 void BirlOutputParameter::predict() {
     vector<double> birlInstance;
     if (inputKeys || inputKeysDiscrete) {
-        for (int i=0; i<KEYS_NUMBER; i++) {
+        for (int i=0; i<KEYS_NUMBER; i++)
             birlInstance.push_back(allInputs[i]->get());
-        }
     }
     if (inputPressure) {
-        for (int i=0; i<PRESSURE_NUMBER; i++) {
+        for (int i=0; i<PRESSURE_NUMBER; i++)
             birlInstance.push_back(allInputs[2 * KEYS_NUMBER + i]->get());
-        }
     }
     if (inputEmbouchure) {
-        for (int i=0; i<EMBOUCHURE_NUMBER; i++) {
+        for (int i=0; i<EMBOUCHURE_NUMBER; i++)
             birlInstance.push_back(allInputs[2 * KEYS_NUMBER + PRESSURE_NUMBER + i]->get());
-        }
     }
-    double normalizedPrediction = learn.predict(birlInstance);
-    set((float) ofMap(normalizedPrediction, 0.0, 1.0, getMin(), getMax()));
-    guiValueText->setTextString(ofToString(guiValue->getValue()));
+    LearnOutputParameter::predict(birlInstance);
 }
 
 //-----------
@@ -236,6 +231,19 @@ void BirlOutputParameter::setTrained(bool trained) {
     gui->setColorBack(trained ? ofColor(0,60,0,100) : ofColor(0,100));
     guiPreview->setColorBack(trained ? ofColor(0,60,0,100) : ofColor(0,100));
     guiPerform->setColorBack(trained ? ofColor(0,60,0,100) : ofColor(0,100));
+}
+
+//-----------
+void BirlOutputParameter::setRecording(bool record) {
+    LearnOutputParameter::setRecording(record);
+    if (trained){
+        guiPreview->setColorBack(record ? ofColor(200, 0, 0, 200) : ofColor(0, 60, 0, 100));
+    }
+    else {
+        guiPreview->setColorBack(record ? ofColor(200, 0, 0, 200) : ofColor(0, 100));
+    }
+    cout << "TRY " << endl;
+//    guiPreview->setColorBack(record ? ofColor(255, 0, 0) : ofColor(0, 100));
 }
 
 //-----------
