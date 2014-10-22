@@ -1,6 +1,14 @@
 #include "LearnParameter.h"
 
 
+void LearnOutputParameter::activateAllInputs() {
+    activeInputs.clear();
+    for (int i=0; i<allInputs.size(); i++) {
+        addInput(allInputs[i]);
+    }
+}
+
+
 //===========================================
 //  CONSTRUCTORS, DESTRUCTORS, SETTERS
 
@@ -22,6 +30,7 @@ LearnOutputParameter::LearnOutputParameter(string name, float *value, float min,
 
     record = false;
     trained = false;
+    training = false;
     viewExamples = false;
     viewInputs = false;
     inputGroupsEnabled = false;
@@ -32,7 +41,7 @@ LearnOutputParameter::LearnOutputParameter(string name, float *value, float min,
     if (DEFAULT_LEARN_TYPE == "SVM") {
         setTrainingSvm();
     } else {
-        setTrainingMlp();
+        setTrainingMlp(DEFAULT_MLP_HIDDEN_LAYERS, DEFAULT_MLP_TARGET_RMSE, DEFAULT_MLP_MAX_SAMPLES);
     }
     
     setupGui();
@@ -58,6 +67,7 @@ LearnParameter::~LearnParameter() {
 
 //-----------
 LearnOutputParameter::~LearnOutputParameter() {
+    clearInstances();
     ofRemoveListener(gui->newGUIEvent, this, &LearnOutputParameter::guiEvent);
     ofRemoveListener(guiInputSelect->newGUIEvent, this, &LearnOutputParameter::guiInputSelectEvent);
     guiInputSelect->clearWidgets();
@@ -124,6 +134,7 @@ void LearnOutputParameter::addInstance() {
 //-----------
 void LearnOutputParameter::clearInstances() {
     for (int i=0; i<data.size(); i++) {
+        data[i]->removeSpreadsheetChangedListener(this, &LearnOutputParameter::dataChangedEvent);
         data[i]->clear();
         delete data[i];
     }
@@ -132,6 +143,7 @@ void LearnOutputParameter::clearInstances() {
     setPage(0);
     setTrained(false);
     guiExamples->setLabelText(ofToString(getNumInstances())+" examples");
+    guiDataStatus->setLabelText(ofToString(getName())+" examples ("+ofToString(getNumInstances())+")");
 }
 
 //-----------
@@ -191,14 +203,31 @@ void LearnOutputParameter::addSpreadsheetDataToLearn() {
             double normalizedLabel = (double) ofMap(entries[i][0], getMin(), getMax(), 0.0f, 1.0f);
             vector<double> instance;
             for (int j=1; j<entries[i].size(); j++) {
+                //instance.push_back((double) entries[i][j]);
+                float val = ((double) entries[i][j] - activeInputs[j-1]->getMin()) / (activeInputs[j-1]->getMax() - activeInputs[j-1]->getMin());
+                instance.push_back(val);
+            }
+            learn.addTrainingInstance(instance, normalizedLabel);
+        }
+    }
+}
+/*
+//-----------
+void LearnOutputParameter::addSpreadsheetDataToLearn() {
+    learn.clearTrainingInstances();
+    for (int p=0; p<data.size(); p++) {
+        vector<vector<float> > entries = data[p]->getEntries();
+        for (int i=0; i<entries.size(); i++) {
+            double normalizedLabel = (double) ofMap(entries[i][0], getMin(), getMax(), 0.0f, 1.0f);
+            vector<double> instance;
+            for (int j=1; j<entries[i].size(); j++) {
                 instance.push_back((double) entries[i][j]);
             }
             learn.addTrainingInstance(instance, normalizedLabel);
         }
     }
-
 }
-
+*/
 //-----------
 void LearnOutputParameter::setDataSize(int width, int height) {
     this->dataWidth = width;
@@ -209,11 +238,11 @@ void LearnOutputParameter::setDataSize(int width, int height) {
 }
 
 //-----------
-void LearnOutputParameter::setTrainingMlp(int numHiddenLayers, float targetRmse, int maxSamples) {
+void LearnOutputParameter::setTrainingMlp(int mlpNumHiddenLayers, float mlpTargetRmse, int mlpMaxSamples) {
     this->learnModel = MLP;
-    learn.setMlpNumHiddenLayers(numHiddenLayers);
-    learn.setMlpTargetRmse(targetRmse);
-    learn.setMlpMaxSamples(maxSamples);
+    this->mlpNumHiddenLayers = mlpNumHiddenLayers;
+    this->mlpTargetRmse = mlpTargetRmse;
+    this->mlpMaxSamples = mlpMaxSamples;
 }
 
 //-----------
@@ -222,32 +251,24 @@ void LearnOutputParameter::setTrainingSvm() {
 }
 
 //-----------
-void LearnOutputParameter::trainClassifierFast() {
+void LearnOutputParameter::trainClassifier(TrainMode trainMode) {
     if (getNumInstances() > 0) {
+        training = true;
+        learn.clearTrainingInstances();
         addSpreadsheetDataToLearn();
         if (learnModel == MLP) {
-            learn.trainRegression(FAST, REGRESSION_MLP);
+            learn.setMlpNumHiddenLayers(mlpNumHiddenLayers);
+            learn.setMlpTargetRmse(mlpTargetRmse);
+            learn.setMlpMaxSamples(mlpMaxSamples);
+            learn.trainRegression(REGRESSION_MLP, trainMode);
             setupMlpCoefficients();
         }
         else if (learnModel == SVM) {
-            learn.trainRegression(FAST, REGRESSION_SVM);
+            learn.trainRegression(REGRESSION_SVM, trainMode);
         }
+        setRecording(false);
         setTrained(true);
-    }
-}
-
-//-----------
-void LearnOutputParameter::trainClassifierAccurate() {
-    if (getNumInstances() > 0) {
-        addSpreadsheetDataToLearn();
-        if (learnModel == MLP) {
-            learn.trainRegression(ACCURATE, REGRESSION_MLP);
-            setupMlpCoefficients();
-        }
-        else if (learnModel == SVM) {
-            learn.trainRegression(ACCURATE, REGRESSION_SVM);
-        }
-        setTrained(true);
+        training = false;
     }
 }
 
@@ -255,10 +276,10 @@ void LearnOutputParameter::trainClassifierAccurate() {
 void LearnOutputParameter::setupMlpCoefficients() {
     dlib::matrix<double> w1m = learn.getRegressionMlp()->get_w1();
     dlib::matrix<double> w3m = learn.getRegressionMlp()->get_w3();
-    
     int numLayers = learn.getMlpNumHiddenLayers();
     int numFeatures = getNumInputs();
-    
+    mlpCoefficientsW1.clear();
+    mlpCoefficientsW3.clear();
     for (int i=0; i<numLayers+1; i++) {
         for (int j=0; j<numFeatures+1; j++) {
             mlpCoefficientsW1.push_back(w1m(i, j));
@@ -270,15 +291,20 @@ void LearnOutputParameter::setupMlpCoefficients() {
 }
 
 //-----------
-void LearnOutputParameter::loadClassifier(string path) {
-    if (learnModel == MLP) {
-        //learn.loadModel(REGRESSION_MLP, path);
-    }
-    else if (learnModel == SVM) {
-        learn.loadModel(REGRESSION_SVM, path);
-        setTrained(true);
-    }
-    //setTrained(true);
+void LearnOutputParameter::loadClassifierSvm(string path) {
+    learnModel = SVM;
+    learn.loadModel(REGRESSION_SVM, path);
+    setTrained(true);
+}
+
+//-----------
+void LearnOutputParameter::loadClassifierMlp(vector<double> w1, vector<double> w3) {
+    learnModel = MLP;
+    mlpCoefficientsW1.clear();
+    mlpCoefficientsW3.clear();
+    this->mlpCoefficientsW1 = w1;
+    this->mlpCoefficientsW3 = w3;
+    setTrained(true);
 }
 
 //-----------
@@ -333,6 +359,11 @@ double LearnOutputParameter::predictMlp(vector<double> example) {
 void LearnOutputParameter::draw() {
     if (viewExamples) {
         data[page]->draw(420, 460);
+    }
+    if (training) {
+        if (ofGetFrameNum() % 8 == 0) {
+            gui->setColorBack(ofColor(ofRandom(255),ofRandom(255),ofRandom(255)));
+        }
     }
 }
 
@@ -416,10 +447,10 @@ void LearnOutputParameter::setupGui() {
     gui->setWidth(800);
     gui->addLabelButton("X", false, 15.0f);
     gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiName = gui->addTextInput("name", ofToString(getName()), 155.0f);
+    guiName = gui->addTextInput("name", ofToString(getName()), 125.0f);
     guiName->setAutoClear(false);
     gui->addLabel("osc:");
-    guiOsc = gui->addTextInput("osc", ofToString(getOscAddress()), 128.0f);
+    guiOsc = gui->addTextInput("osc", ofToString(getOscAddress()), 155.0f);
     guiOsc->setAutoClear(false);
     guiInputs = gui->addLabelToggle("inputs", &viewInputs, 60.0f);
     guiExamples = gui->addLabelToggle("examples", &viewExamples, 105.0f);
@@ -562,7 +593,8 @@ void LearnParameter::guiSetMax() {
 
 //-----------
 void LearnParameter::guiSetValueText() {
-    guiValue->setValue(ofToFloat(guiValueText->getTextString()));
+    float newValue = ofToFloat(guiValueText->getTextString());
+    guiValue->setValue(newValue);
 }
 
 //-----------
@@ -715,7 +747,8 @@ void LearnOutputParameter::setPage(int p) {
 //-----------
 void LearnOutputParameter::setTrained(bool trained) {
     this->trained = trained;
-    gui->setColorBack(trained ? ofColor(0,60,0,100) : ofColor(0,100));
+    if (trained)    record = false;
+    gui->setColorBack(trained ? ofColor(0,60,0,100) : record ? ofColor(200,0,0,200) : ofColor(0,100));
 }
 
 //-----------
@@ -726,12 +759,7 @@ void LearnOutputParameter::setRecording(bool record) {
         record = false;
         return;
     }
-    if (trained){
-        gui->setColorBack(record ? ofColor(200, 0, 0, 200) : ofColor(0, 60, 0, 100));
-    }
-    else {
-        gui->setColorBack(record ? ofColor(200, 0, 0, 200) : ofColor(0, 100));
-    }
+    gui->setColorBack(record ? ofColor(200,0,0,200) : trained ? ofColor(0,60,0,100) : ofColor(0,100));
 }
 
 //-----------
@@ -784,3 +812,32 @@ inline double LearnOutputParameter::sigmoid(double x) {
     return 1.0/(1.0 + pow(2.71828182845904523536028747135266249775724709369995, -x));
 }
 
+//-------
+void LearnParameter::setFont(string path) {
+    gui->setFont(path);
+}
+
+//-------
+void LearnOutputParameter::setFont(string path) {
+    LearnParameter::setFont(path);
+    guiInputSelect->setFont(path);
+    guiData->setFont(path);
+}
+
+//-------
+void LearnParameter::setFontSizes(int small, int medium, int large) {
+    gui->setFontSize(OFX_UI_FONT_SMALL, small);
+    gui->setFontSize(OFX_UI_FONT_MEDIUM, medium);
+    gui->setFontSize(OFX_UI_FONT_LARGE, large);
+}
+
+//-------
+void LearnOutputParameter::setFontSizes(int small, int medium, int large) {
+    LearnParameter::setFontSizes(small, medium, large);
+    guiInputSelect->setFontSize(OFX_UI_FONT_SMALL, small);
+    guiInputSelect->setFontSize(OFX_UI_FONT_MEDIUM, medium);
+    guiInputSelect->setFontSize(OFX_UI_FONT_LARGE, large);
+    guiData->setFontSize(OFX_UI_FONT_SMALL, small);
+    guiData->setFontSize(OFX_UI_FONT_MEDIUM, medium);
+    guiData->setFontSize(OFX_UI_FONT_LARGE, large);
+}

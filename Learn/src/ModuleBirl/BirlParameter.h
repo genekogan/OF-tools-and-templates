@@ -20,26 +20,37 @@ public:
     
     void draw();
     
+    // gui
     void setupGui();
     void setupGuiPreview();
+
+    // visibility
     void setGuiPreviewPosition(int x, int y);
     void setPreviewMode(BirlMode mode);
     void setVisible(bool visible);
     void deselect();
-    
-    void guiEvent(ofxUIEventArgs &e);
-    void guiPreviewEvent(ofxUIEventArgs &e);
 
+    // style
+    void setFont(string path);
+    void setFontSizes(int small, int medium, int large);
+
+    // input groups
     bool inputKeys, inputKeysDiscrete, inputPressure, inputEmbouchure;
-    
+
 protected:
 
-    void predict();
-
-    void setInputs();
-    void setTrained(bool trained);
-    void setRecording(bool record);
+    // gui events
+    void guiEvent(ofxUIEventArgs &e);
+    void guiPreviewEvent(ofxUIEventArgs &e);
+    void guiPreviewSetMinMax();
     
+    // recording and training
+    void setInputs();
+    void setRecording(bool record);
+    void setTrained(bool trained);
+    void predict();
+    
+    // extra gui elements
     ofxUICanvas *guiPreview, *guiPerform;
     ofxUISlider *guiPerformValue;
     ofxUITextInput *guiPreviewOsc, *guiPerformOsc, *guiPerformValueText;

@@ -238,6 +238,7 @@
 		B0BA149619CDDCB300D64AAB /* OscManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OscManager.cpp; sourceTree = "<group>"; };
 		B0BA149719CDDCB300D64AAB /* OscManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OscManager.h; sourceTree = "<group>"; };
 		B0BA149819CDDCB300D64AAB /* Parameter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Parameter.h; sourceTree = "<group>"; };
+		B0C3AE3F19F6D96C0054FB59 /* ThreadedLearner.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThreadedLearner.h; sourceTree = "<group>"; };
 		B0DE053019E04BA4003A728E /* Presets.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Presets.cpp; sourceTree = "<group>"; };
 		B0DE053119E04BA4003A728E /* Presets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Presets.h; sourceTree = "<group>"; };
 		B21E7E5F548EEA92F368040B /* tinyxml.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = tinyxml.h; path = ../../../addons/ofxXmlSettings/libs/tinyxml.h; sourceTree = SOURCE_ROOT; };
@@ -468,6 +469,7 @@
 				B0BA149019CDDCAA00D64AAB /* Learn.h */,
 				B0BA149119CDDCAA00D64AAB /* LearnParameter.cpp */,
 				B0BA149219CDDCAA00D64AAB /* LearnParameter.h */,
+				B0C3AE3F19F6D96C0054FB59 /* ThreadedLearner.h */,
 			);
 			name = src;
 			path = ../src;

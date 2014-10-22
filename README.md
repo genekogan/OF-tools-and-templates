@@ -1,4 +1,4 @@
-## Tools and templates for OpenFrameworks
+### Tools and templates for OpenFrameworks
 
 This repository contains a series of “tools” and “templates” for my projects involving OpenFrameworks. Tools and templates are analogous to [addons](http://www.ofxaddons.com) and examples in OF.
 
@@ -9,7 +9,7 @@ Templates are to tools as examples are to addons. They are complete OF projects 
 This repo is incomplete at the moment, and will be updated regularly as I add more to it.
 
 
-### Usage
+#### Usage
 
 To use these in an OF project, the best place to put this repo is in your OF root folder, so that “tools” and “templates” are the same level from your root folder as addons and included examples.
 
@@ -17,3 +17,4 @@ Many of the tools and templates require some addons to function. An incomplete l
 
 ofxGui (included in OF)
 ofxSyphon
+

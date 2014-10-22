@@ -44,7 +44,7 @@ public:
     
     // mark manta
     void markPad(int row, int col, bool mark);
-    void markSlider(int index, bool mark);
+    void markSlider(int index, int column);
     void markButton(int index, bool mark);
     
     // returns gui element positions

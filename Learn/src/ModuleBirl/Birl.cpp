@@ -3,7 +3,14 @@
 
 //-------
 void Birl::setup(int port) {
-	osc.setup(port);
+    try {
+        osc.setup(port);
+        oscConnected = true;
+    }
+    catch (runtime_error &e) {
+        ofLog(OF_LOG_ERROR, e.what());
+        oscConnected = false;
+    }
     
     keysMax = KEYS_MAX;
     keysDiscreteThreshold = KEYS_DISCRETE_THRESHOLD;
@@ -13,6 +20,8 @@ void Birl::setup(int port) {
     keysDiscrete.resize(KEYS_NUMBER);
     pressure.resize(PRESSURE_NUMBER);
     embouchure.resize(EMBOUCHURE_NUMBER);
+    
+    buttons.resize(9);
 }
 
 //-------
@@ -31,6 +40,10 @@ void Birl::updateFakeData() {
 
 //-------
 void Birl::update() {
+    if (!oscConnected) {
+        return;
+    }
+
     while(osc.hasWaitingMessages()){
         ofxOscMessage m;
         osc.getNextMessage(&m);
@@ -52,11 +65,28 @@ void Birl::update() {
         else if (m.getAddress() == "/birl/maxbreathneg/") {
             maxbreathneg = m.getArgAsInt32(0);
         }
+        else if (m.getAddress() == "/birl/buttons/") {
+            for (int i=0; i<9; i++) {
+                buttons[i] = m.getArgAsInt32(i);
+            }
+            buttonsChanged = true;
+        }
         else if (m.getAddress() == "/birl/embouchure/") {
             for (int i=0; i<EMBOUCHURE_NUMBER; i++) {
                 embouchure[i] = ofMap(m.getArgAsInt32(i), 0, embouchureMax, 0, 1);
             }
         }
+    }
+}
+
+//-------
+bool Birl::getButtonsChanged() {
+    if (buttonsChanged) {
+        buttonsChanged = false;
+        return true;
+    }
+    else {
+        return false;
     }
 }
 
@@ -92,7 +122,7 @@ void Birl::draw(int x, int y, int w, int h) {
     ofRectRounded(0, 0, w, BIRL_DRAW_EMBOUCHURE_H, 5);
     ofNoFill();
     ofSetLineWidth(3);
-    ofSetColor(20, 20, 255);
+    ofSetColor(BIRL_COLOR_BLUE);
     ofRectRounded(0, 0, w, BIRL_DRAW_EMBOUCHURE_H, 5);
     ofSetLineWidth(2);
     ofNoFill();
@@ -113,11 +143,11 @@ void Birl::draw(int x, int y, int w, int h) {
     ofSetColor(255);
     ofRect(0, 0, w, BIRL_DRAW_PRESSURE_H);
     ofNoFill();
-    ofSetColor(200, 60, 30);
+    ofSetColor(BIRL_COLOR_ORANGE);
     ofRect(0, 0, w/2, BIRL_DRAW_PRESSURE_H);
     ofRect(w/2, 0, w/2, BIRL_DRAW_PRESSURE_H);
     ofFill();
-    ofSetColor(20, 20, 255);
+    ofSetColor(BIRL_COLOR_BLUE);
     ofRect(-1+w/2, 0, pressure[0] * -0.5 * w, BIRL_DRAW_PRESSURE_H);
     ofRect( 1+w/2, 0, pressure[1] *  0.5 * w, BIRL_DRAW_PRESSURE_H);
     
@@ -127,11 +157,11 @@ void Birl::draw(int x, int y, int w, int h) {
     int keysHeight = h - BIRL_DRAW_EMBOUCHURE_H - BIRL_DRAW_PRESSURE_H - 20;
     
     ofFill();
-    ofSetColor(200, 60, 30);
+    ofSetColor(BIRL_COLOR_ORANGE);
     ofRectRounded(0, 0, w, keysHeight, 8);
     ofNoFill();
-    ofSetLineWidth(2);
-    ofSetColor(20, 20, 255);
+    ofSetLineWidth(4);
+    ofSetColor(BIRL_COLOR_BLUE);
     ofRectRounded(0, 0, w, keysHeight, 8);
     
     for (int i=0; i<9; i++) {
@@ -144,17 +174,19 @@ void Birl::draw(int x, int y, int w, int h) {
         ofSetColor(255);
         ofEllipse(0, 0, 40, 40);
         ofNoFill();
-        ofSetLineWidth(2);
-        ofSetColor(200);
-        ofEllipse(0, 0, 40, 40);
         
         float s = 40 * keys[i];
         ofFill();
         ofSetLineWidth(0);
-        ofSetColor(20, 20, 255);
+        ofSetColor(BIRL_COLOR_BLUE);
         ofEllipse(0, 0, s, s);
         
         ofPopMatrix();
+    }
+    
+    if (!oscConnected) {
+        ofSetColor(255, 0, 0);
+        ofDrawBitmapString("Birl not connected to OSC!", 2, keysHeight + 15);
     }
     
     ofPopStyle();

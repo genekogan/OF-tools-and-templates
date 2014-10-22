@@ -2,6 +2,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    ofSetLogLevel(OF_LOG_VERBOSE);
     
     learn.addInput("input1", &myVal, 5, 8);
     learn.addInput("in2", -30, 30);

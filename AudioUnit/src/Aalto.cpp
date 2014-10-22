@@ -2,31 +2,39 @@
 
 
 //-----------
-void Aalto::setup(){
+Aalto::Aalto() {
+    noteAutoFrameLength = 30;
+    noteVelocity = 120;
     noteManual = false;
     mantaSendNotes = true;
     sequencerManta = false;
+    sequencerSmooth = true;
     sequencerMode = NOTES;
-    
-    // setup audio
+}
+
+//-----------
+void Aalto::setup(){
     aalto = ofxAudioUnitSampler('aumu','Aalt', 'MLbs');
     aalto.showUI();
     aalto.connectTo(mixer);
     mixer.connectTo(output);
     output.start();
-    
-    // setup sequencer
-    sequencer.setup(6, 8);
-    sequencer.addBeatListener(this, &Aalto::sequencerStepEvent);
-    sequencer.setPosition(220, 200, 320, 160);
-
-    // setup gui
-    setupGui();
-    setupGuiPresets();
 
     // setup manta
     manta.setup();
+
+    // setup sequencer
+    sequencer.setup(6, 8);
+    sequencer.addBeatListener(this, &Aalto::sequencerStepEvent);
+    sequencer.addInterpolatedBeatListener(this, &Aalto::sequencerInterpolatedStepEvent);
+    sequencer.setSmooth(sequencerSmooth);
+    sequencer.setPosition(165, 225, 260, 120);
     
+    // setup gui
+    setupGui();
+    setupGuiPresets();
+    setActive(true);
+
     // setup instrument parameters
     vector<AudioUnitParameterInfo> params = aalto.getParameterList();
     string newGroupName = "parameter group";
@@ -48,8 +56,6 @@ void Aalto::setup(){
         }
         parameterGroups[newGroupName].push_back(params[i].name);
     }
-    
-    setActive(true);
 }
 
 //-----------
@@ -59,7 +65,6 @@ void Aalto::setActive(bool active) {
         manta.addPadVelocityListener(this, &Aalto::mantaPadVelocityEvent);
         manta.addSliderListener(this, &Aalto::mantaSliderEvent);
         manta.addButtonListener(this, &Aalto::mantaButtonEvent);
-        
         manta.addPadClickListener(this, &Aalto::padClickEvent);
         manta.addSliderClickListener(this, &Aalto::sliderClickEvent);
         manta.addButtonClickListener(this, &Aalto::buttonClickEvent);
@@ -69,7 +74,6 @@ void Aalto::setActive(bool active) {
         manta.removePadVelocityListener(this, &Aalto::mantaPadVelocityEvent);
         manta.removeSliderListener(this, &Aalto::mantaSliderEvent);
         manta.removeButtonListener(this, &Aalto::mantaButtonEvent);
-
         manta.removePadClickListener(this, &Aalto::padClickEvent);
         manta.removeSliderClickListener(this, &Aalto::sliderClickEvent);
         manta.removeButtonClickListener(this, &Aalto::buttonClickEvent);
@@ -85,41 +89,40 @@ void Aalto::update() {
     
     manta.update();
     
-    if (mappings.count(54) > 0)
-        aalto.setParameter(mappings[54].parameterId, 0, ofMap(manta.getNumFingers(), 0, 10, mappings[54].rmin, mappings[54].rmax));
-    if (mappings.count(55) > 0)
-        aalto.setParameter(mappings[55].parameterId, 0, ofMap(manta.getPadSum(), 0, 1024, mappings[55].rmin, mappings[55].rmax));
-    if (mappings.count(56) > 0)
-        aalto.setParameter(mappings[56].parameterId, 0, ofMap(manta.getPadAverage(), 0, 196, mappings[56].rmin, mappings[56].rmax));
-    if (mappings.count(57) > 0)
-        aalto.setParameter(mappings[57].parameterId, 0, ofMap(manta.getPerimeter(), 0, 2, mappings[57].rmin, mappings[57].rmax));
-    if (mappings.count(58) > 0)
-        aalto.setParameter(mappings[58].parameterId, 0, ofMap(manta.getAverageInterFingerDistance(), 0, 1, mappings[58].rmin, mappings[58].rmax));
-    if (mappings.count(59) > 0)
-        aalto.setParameter(mappings[59].parameterId, 0, ofMap(manta.getCentroidX(), 0, 1, mappings[59].rmin, mappings[59].rmax));
-    if (mappings.count(60) > 0)
-        aalto.setParameter(mappings[60].parameterId, 0, ofMap(manta.getCentroidY(), 0, 1, mappings[60].rmin, mappings[60].rmax));
-    if (mappings.count(61) > 0)
-        aalto.setParameter(mappings[61].parameterId, 0, ofMap(manta.getWeightedCentroidX(), 0, 1, mappings[61].rmin, mappings[61].rmax));
-    if (mappings.count(62) > 0)
-        aalto.setParameter(mappings[62].parameterId, 0, ofMap(manta.getWeightedCentroidY(), 0, 1, mappings[62].rmin, mappings[62].rmax));
-    
+    if (mantaMap.count(54) > 0)
+        aalto.setParameter(mantaMap[54].parameterId, 0, ofMap(manta.getNumFingers(), 0, 10, mantaMap[54].rmin, mantaMap[54].rmax));
+    if (mantaMap.count(55) > 0)
+        aalto.setParameter(mantaMap[55].parameterId, 0, ofMap(manta.getPadSum(), 0, 1024, mantaMap[55].rmin, mantaMap[55].rmax));
+    if (mantaMap.count(56) > 0)
+        aalto.setParameter(mantaMap[56].parameterId, 0, ofMap(manta.getPadAverage(), 0, 196, mantaMap[56].rmin, mantaMap[56].rmax));
+    if (mantaMap.count(57) > 0)
+        aalto.setParameter(mantaMap[57].parameterId, 0, ofMap(manta.getPerimeter(), 0, 2, mantaMap[57].rmin, mantaMap[57].rmax));
+    if (mantaMap.count(58) > 0)
+        aalto.setParameter(mantaMap[58].parameterId, 0, ofMap(manta.getAverageInterFingerDistance(), 0, 1, mantaMap[58].rmin, mantaMap[58].rmax));
+    if (mantaMap.count(59) > 0)
+        aalto.setParameter(mantaMap[59].parameterId, 0, ofMap(manta.getCentroidX(), 0, 1, mantaMap[59].rmin, mantaMap[59].rmax));
+    if (mantaMap.count(60) > 0)
+        aalto.setParameter(mantaMap[60].parameterId, 0, ofMap(manta.getCentroidY(), 0, 1, mantaMap[60].rmin, mantaMap[60].rmax));
+    if (mantaMap.count(61) > 0)
+        aalto.setParameter(mantaMap[61].parameterId, 0, ofMap(manta.getWeightedCentroidX(), 0, 1, mantaMap[61].rmin, mantaMap[61].rmax));
+    if (mantaMap.count(62) > 0)
+        aalto.setParameter(mantaMap[62].parameterId, 0, ofMap(manta.getWeightedCentroidY(), 0, 1, mantaMap[62].rmin, mantaMap[62].rmax));
     
     if (sequencerManta) {
         for (int r=0; r<6; r++) {
             for (int c=0; c<8; c++) {
-                sequencer.setValue(r, c, manta.getPad(5 -r, c)/196.0);
+                sequencer.setValue(r, c, manta.getPad(5 -r, c) * 0.0051);
             }
         }
     }
     sequencer.update();
-    
+
     for (int i=0; i<128; i++) {
         if (noteEvents.count(i)>0) {
             if (noteEvents[i] == -1) continue;
-            if (ofGetFrameNum() > noteEvents[i] + 2) {
+            if (ofGetFrameNum() > noteEvents[i] + noteAutoFrameLength) {
                 noteEvents[i] = -1;
-                noteEvent(NOTE_OFF, i, 120);
+                noteEvent(NOTE_OFF, i, noteVelocity);
             }
         }
     }
@@ -143,25 +146,21 @@ void Aalto::noteEvent(NoteType type, int note, int velocity) {
 
 //-----------
 void Aalto::chooseSequencerMode(string &s) {
-    if      (s=="notes") {
-        sequencerMode = NOTES;
-    }
-    else if (s=="parameters") {
-        sequencerMode = PARAMETERS;
-    }
+    sequencerMode = (s == "notes") ? NOTES : PARAMETERS;
 }
 
 //-----------
+void Aalto::toggleSmooth(string &s) {
+    this->sequencerSmooth = !sequencerSmooth;
+    sequencer.setSmooth(sequencerSmooth);
+}
+
+
+//-----------
 void Aalto::mantaPadEvent(ofxMantaEvent &e) {
-    int idx = e.col + 8*e.row;
-    if (mappings.count(idx) > 0) {
-        aalto.setParameter(mappings[idx].parameterId, 0,
-                           ofMap(e.value / 196.0, 0, 1,
-                                 mappings[idx].rmin,
-                                 mappings[idx].rmax));
-    }
-    else {
-        
+    int idx = e.col + 8 * e.row;
+    if (mantaMap.count(idx) > 0) {
+        aalto.setParameter(mantaMap[idx].parameterId, 0, ofMap(e.value, 0, 196.0, mantaMap[idx].rmin, mantaMap[idx].rmax));
     }
 }
 
@@ -169,28 +168,16 @@ void Aalto::mantaPadEvent(ofxMantaEvent &e) {
 void Aalto::mantaSliderEvent(ofxMantaEvent &e) {
     if (e.value == -1)  return;
     int idx = 48 + e.id;
-    if (mappings.count(idx) > 0) {
-        aalto.setParameter(mappings[idx].parameterId, 0,
-                           ofMap(e.value / 4096.0, 0, 1,
-                                 mappings[idx].rmin,
-                                 mappings[idx].rmax));
-    }
-    else {
-        
+    if (mantaMap.count(idx) > 0) {
+        aalto.setParameter(mantaMap[idx].parameterId, 0, ofMap(e.value, 0, 4096, mantaMap[idx].rmin, mantaMap[idx].rmax));
     }
 }
 
 //-----------
 void Aalto::mantaButtonEvent(ofxMantaEvent &e) {
     int idx = 50 + e.id;
-    if (mappings.count(idx) > 0) {
-        aalto.setParameter(mappings[idx].parameterId, 0,
-                           ofMap(e.value / 196.0, 0, 1,
-                                 mappings[idx].rmin,
-                                 mappings[idx].rmax));
-    }
-    else {
-        
+    if (mantaMap.count(idx) > 0) {
+        aalto.setParameter(mantaMap[idx].parameterId, 0, ofMap(e.value, 0, 196.0, mantaMap[idx].rmin, mantaMap[idx].rmax));
     }
 }
 
@@ -204,142 +191,168 @@ void Aalto::guiParametersEvent(ofxUIEventArgs &e) {
     }
     else if (e.getParentName() == "parameters") {
         for (int i=0; i<parameters.size(); i++) {
-            if (parameters[i].name == e.getName()) {
-                if (guiActiveManta < 48)
-                    manta.markPad(guiActiveManta / 8, guiActiveManta % 8, true);
-                else if (guiActiveManta < 50)
-                    manta.markSlider(guiActiveManta - 48, true);
-                else if (guiActiveManta < 54)
-                    manta.markButton(guiActiveManta - 50, true);
-                mappings[guiActiveManta] = parameters[i];
+            if (guiActiveIsSequencer) {
+                if (parameters[i].name == e.getName()) {
+                    seqMap[guiActiveSeq] = parameters[i];
+                }
+            }
+            else {
+                if (parameters[i].name == e.getName()) {
+                    if (guiActiveManta < 48)
+                        manta.markPad(guiActiveManta / 8, guiActiveManta % 8, true);
+                    else if (guiActiveManta < 50)
+                        manta.markSlider(guiActiveManta - 48, true);
+                    else if (guiActiveManta < 54)
+                        manta.markButton(guiActiveManta - 50, true);
+                    mantaMap[guiActiveManta] = parameters[i];
+                }
                 setupGuiPadInspector();
                 return;
             }
         }
     }
     else if (e.getName() == "remove") {
-        if (guiActiveManta < 48)
-            manta.markPad(guiActiveManta / 8, guiActiveManta % 8, false);
-        else if (guiActiveManta < 50)
-            manta.markSlider(guiActiveManta - 48, false);
-        else if (guiActiveManta < 54)
-            manta.markButton(guiActiveManta - 50, false);
-        mappings.erase(guiActiveManta);
+        if (guiActiveIsSequencer) {
+            seqMap.erase(guiActiveSeq);
+        }
+        else {
+            if (guiActiveManta < 48)
+                manta.markPad(guiActiveManta / 8, guiActiveManta % 8, false);
+            else if (guiActiveManta < 50)
+                manta.markSlider(guiActiveManta - 48, false);
+            else if (guiActiveManta < 54)
+                manta.markButton(guiActiveManta - 50, false);
+            mantaMap.erase(guiActiveManta);
+        }
         setupGuiPadInspector();
     }
     else if (e.getName() == "range") {
-        mappings[guiActiveManta].rmin = guiParameterRange->getValueLow();
-        mappings[guiActiveManta].rmax = guiParameterRange->getValueHigh();
-        guiParameterMin->setTextString(ofToString(mappings[guiActiveManta].rmin));
-        guiParameterMax->setTextString(ofToString(mappings[guiActiveManta].rmax));
+        if (guiActiveIsSequencer) {
+            seqMap[guiActiveSeq].rmin = guiParameterRange->getValueLow();
+            seqMap[guiActiveSeq].rmax = guiParameterRange->getValueHigh();
+            guiParameterMin->setTextString(ofToString(seqMap[guiActiveSeq].rmin));
+            guiParameterMax->setTextString(ofToString(seqMap[guiActiveSeq].rmax));
+        }
+        else {
+            mantaMap[guiActiveManta].rmin = guiParameterRange->getValueLow();
+            mantaMap[guiActiveManta].rmax = guiParameterRange->getValueHigh();
+            guiParameterMin->setTextString(ofToString(mantaMap[guiActiveManta].rmin));
+            guiParameterMax->setTextString(ofToString(mantaMap[guiActiveManta].rmax));
+        }
     }
     else if (e.getName() == "min") {
-        mappings[guiActiveManta].rmin = ofToFloat(guiParameterMin->getTextString());
-        guiParameterRange->setValueLow(mappings[guiActiveManta].rmin);
+        if (guiActiveIsSequencer) {
+            seqMap[guiActiveSeq].rmin = ofToFloat(guiParameterMin->getTextString());
+            guiParameterRange->setValueLow(seqMap[guiActiveSeq].rmin);
+        }
+        else {
+            mantaMap[guiActiveManta].rmin = ofToFloat(guiParameterMin->getTextString());
+            guiParameterRange->setValueLow(mantaMap[guiActiveManta].rmin);
+        }
     }
     else if (e.getName() == "max") {
-        mappings[guiActiveManta].rmax = ofToFloat(guiParameterMax->getTextString());
-        guiParameterRange->setValueHigh(mappings[guiActiveManta].rmax);
+        if (guiActiveIsSequencer) {
+            seqMap[guiActiveSeq].rmax = ofToFloat(guiParameterMax->getTextString());
+            guiParameterRange->setValueHigh(seqMap[guiActiveSeq].rmax);
+        }
+        else {
+            mantaMap[guiActiveManta].rmax = ofToFloat(guiParameterMax->getTextString());
+            guiParameterRange->setValueHigh(mantaMap[guiActiveManta].rmax);
+        }
     }
 }
 
 //-----------
 void Aalto::guiStatsEvent(ofxUIEventArgs &e) {
-    if      (e.getName() == "numFingers") {
-        guiActiveManta = 54;
-        setupGuiPadInspector();
-    }
-    else if (e.getName() == "padSum") {
-        guiActiveManta = 55;
-        setupGuiPadInspector();
-    }
-    else if (e.getName() == "padAverage") {
-        guiActiveManta = 56;
-        setupGuiPadInspector();
-    }
-    else if (e.getName() == "perimeter") {
-        guiActiveManta = 57;
-        setupGuiPadInspector();
-    }
-    else if (e.getName() == "fingerDist") {
-        guiActiveManta = 58;
-        setupGuiPadInspector();
-    }
-    else if (e.getName() == "centroidX") {
-        guiActiveManta = 59;
-        setupGuiPadInspector();
-    }
-    else if (e.getName() == "centroidY") {
-        guiActiveManta = 60;
-        setupGuiPadInspector();
-    }
-    else if (e.getName() == "wCentroidX") {
-        guiActiveManta = 61;
-        setupGuiPadInspector();
-    }
-    else if (e.getName() == "wCentroidY") {
-        guiActiveManta = 62;
-        setupGuiPadInspector();
+    if      (e.getName() == "numFingers")   setupGuiPadInspector(54);
+    else if (e.getName() == "padSum")       setupGuiPadInspector(55);
+    else if (e.getName() == "padAverage")   setupGuiPadInspector(56);
+    else if (e.getName() == "perimeter")    setupGuiPadInspector(57);
+    else if (e.getName() == "fingerDist")   setupGuiPadInspector(58);
+    else if (e.getName() == "centroidX")    setupGuiPadInspector(59);
+    else if (e.getName() == "centroidY")    setupGuiPadInspector(60);
+    else if (e.getName() == "wCentroidX")   setupGuiPadInspector(61);
+    else if (e.getName() == "wCentroidY")   setupGuiPadInspector(62);
+    for (int i=0; i<6; i++) {
+        if (e.getName() == "seq_row_"+ofToString(i)) {
+            setupGuiSeqInspector(i);
+        }
     }
 }
 
 //-----------
-void Aalto::setupGuiPadInspector() {
+void Aalto::setupGuiPadInspector(int guiActiveManta) {
+    guiActiveIsSequencer = false;
+    this->guiActiveManta = guiActiveManta;
     guiP->clearWidgets();
-    if (mappings.count(guiActiveManta) == 0) {
+    if      (guiActiveManta < 48)
+        guiP->addLabel("pad ("+ofToString(guiActiveManta/8)+", "+ofToString(guiActiveManta%8)+")");
+    else if (guiActiveManta < 50)
+        guiP->addLabel("slider ("+ofToString(guiActiveManta-48)+")");
+    else if (guiActiveManta < 54)
+        guiP->addLabel("button ("+ofToString(guiActiveManta-50)+")");
+    else if (guiActiveManta == 54)  guiP->addLabel("numFingers");
+    else if (guiActiveManta == 55)  guiP->addLabel("padSum");
+    else if (guiActiveManta == 56)  guiP->addLabel("padAverage");
+    else if (guiActiveManta == 57)  guiP->addLabel("perimeter");
+    else if (guiActiveManta == 58)  guiP->addLabel("fingerDist");
+    else if (guiActiveManta == 59)  guiP->addLabel("centroidX");
+    else if (guiActiveManta == 60)  guiP->addLabel("centroidY");
+    else if (guiActiveManta == 61)  guiP->addLabel("wCentroidX");
+    else if (guiActiveManta == 62)  guiP->addLabel("wCentroidY");
+    guiP->addSpacer();
+
+    if (mantaMap.count(guiActiveManta) == 0) {
         vector<string> parameterNames;
-        if (guiActiveManta < 48)
-            guiP->addLabel("pad ("+ofToString(guiActiveManta/8)+", "+ofToString(guiActiveManta%8)+")");
-        else if (guiActiveManta < 50)
-            guiP->addLabel("slider ("+ofToString(guiActiveManta-48)+")");
-        else if (guiActiveManta < 54)
-            guiP->addLabel("button ("+ofToString(guiActiveManta-50)+")");
-        else if (guiActiveManta == 54)  guiP->addLabel("numFingers");
-        else if (guiActiveManta == 55)  guiP->addLabel("padSum");
-        else if (guiActiveManta == 56)  guiP->addLabel("padAverage");
-        else if (guiActiveManta == 57)  guiP->addLabel("perimeter");
-        else if (guiActiveManta == 58)  guiP->addLabel("fingerDist");
-        else if (guiActiveManta == 59)  guiP->addLabel("centroidX");
-        else if (guiActiveManta == 60)  guiP->addLabel("centroidY");
-        else if (guiActiveManta == 61)  guiP->addLabel("wCentroidX");
-        else if (guiActiveManta == 62)  guiP->addLabel("wCentroidY");
-        guiP->addSpacer();
         guiParameterGroups = guiP->addDropDownList("parameter groups", parameterGroupNames);
         guiParameters = guiP->addDropDownList("parameters", parameterNames);
         guiParameterGroups->setAutoClose(true);
         guiParameters->setAutoClose(true);
     }
     else {
-        if (guiActiveManta < 48)
-            guiP->addLabel("pad ("+ofToString(guiActiveManta/8)+", "+ofToString(guiActiveManta%8)+")");
-        else if (guiActiveManta < 50)
-            guiP->addLabel("slider ("+ofToString(guiActiveManta-48)+")");
-        else if (guiActiveManta < 54)
-            guiP->addLabel("button ("+ofToString(guiActiveManta-50)+")");
-        else if (guiActiveManta == 54)  guiP->addLabel("numFingers");
-        else if (guiActiveManta == 55)  guiP->addLabel("padSum");
-        else if (guiActiveManta == 56)  guiP->addLabel("padAverage");
-        else if (guiActiveManta == 57)  guiP->addLabel("perimeter");
-        else if (guiActiveManta == 58)  guiP->addLabel("fingerDist");
-        else if (guiActiveManta == 59)  guiP->addLabel("centroidX");
-        else if (guiActiveManta == 60)  guiP->addLabel("centroidY");
-        else if (guiActiveManta == 61)  guiP->addLabel("wCentroidX");
-        else if (guiActiveManta == 62)  guiP->addLabel("wCentroidY");
-        guiP->addSpacer();
-        guiP->addLabel(mappings[guiActiveManta].name);
-        guiParameterRange = guiP->addRangeSlider("pad range",
-                                                 mappings[guiActiveManta].min,
-                                                 mappings[guiActiveManta].max,
-                                                 mappings[guiActiveManta].rmin,
-                                                 mappings[guiActiveManta].rmax);
+        guiP->addLabel(mantaMap[guiActiveManta].name);
+        guiParameterRange = guiP->addRangeSlider("pad range", mantaMap[guiActiveManta].min, mantaMap[guiActiveManta].max, mantaMap[guiActiveManta].rmin, mantaMap[guiActiveManta].rmax);
         guiP->addLabel("min: ");
         guiP->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-        guiParameterMin = guiP->addTextInput("min", ofToString(mappings[guiActiveManta].rmin), 80.0f);
+        guiParameterMin = guiP->addTextInput("min", ofToString(mantaMap[guiActiveManta].rmin), 80.0f);
         guiParameterMin->setAutoClear(false);
         guiP->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
         guiP->addLabel("max: ");
         guiP->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-        guiParameterMax = guiP->addTextInput("max", ofToString(mappings[guiActiveManta].rmax), 80.0f);
+        guiParameterMax = guiP->addTextInput("max", ofToString(mantaMap[guiActiveManta].rmax), 80.0f);
+        guiParameterMax->setAutoClear(false);
+        guiP->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+        guiP->addLabelButton("remove", false);
+        guiP->addSpacer();
+    }
+}
+
+//-----------
+void Aalto::setupGuiSeqInspector(int guiActiveSeq) {
+    guiActiveIsSequencer = true;
+    this->guiActiveSeq = guiActiveSeq;
+    guiP->clearWidgets();
+    guiP->addLabel("sequencer ("+ofToString(guiActiveSeq)+")");
+    guiP->addSpacer();
+    
+    if (seqMap.count(guiActiveSeq) == 0) {
+        vector<string> parameterNames;
+        guiParameterGroups = guiP->addDropDownList("parameter groups", parameterGroupNames);
+        guiParameters = guiP->addDropDownList("parameters", parameterNames);
+        guiParameterGroups->setAutoClose(true);
+        guiParameters->setAutoClose(true);
+    }
+    else {
+        guiP->addLabel(seqMap[guiActiveSeq].name);
+        guiParameterRange = guiP->addRangeSlider("pad range", seqMap[guiActiveSeq].min, seqMap[guiActiveSeq].max, mantaMap[guiActiveManta].rmin, mantaMap[guiActiveManta].rmax);
+        guiP->addLabel("min: ");
+        guiP->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
+        guiParameterMin = guiP->addTextInput("min", ofToString(seqMap[guiActiveSeq].rmin), 80.0f);
+        guiParameterMin->setAutoClear(false);
+        guiP->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+        guiP->addLabel("max: ");
+        guiP->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
+        guiParameterMax = guiP->addTextInput("max", ofToString(seqMap[guiActiveSeq].rmax), 80.0f);
         guiParameterMax->setAutoClear(false);
         guiP->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
         guiP->addLabelButton("remove", false);
@@ -356,44 +369,33 @@ void Aalto::setupGuiParameterGroup(string parameterGroupName) {
 
 //-----------
 void Aalto::padClickEvent(int & pad) {
-    guiActiveManta = pad;
-    setupGuiPadInspector();
+    setupGuiPadInspector(pad);
 }
 
 //-----------
 void Aalto::sliderClickEvent(int & slider) {
-    guiActiveManta = 48 + slider;
-    setupGuiPadInspector();
+    setupGuiPadInspector(48 + slider);
 }
 
 //-----------
 void Aalto::buttonClickEvent(int & button) {
-    guiActiveManta = 50 + button;
-    setupGuiPadInspector();
+    setupGuiPadInspector(50 + button);
 }
 
 //-----------
 void Aalto::mantaPadVelocityEvent(ofxMantaEvent &e) {
     int velocity = e.value;
-    if (mappings.count(e.row * 8 + e.col) > 0) {
-    }
-    else {
-        if (mantaSendNotes) {
-            int degree = (2*e.row - (int)(e.row/2) + e.col) % 7;
-            int octave = floor((2*e.row - floor(e.row/2) + e.col)/7);
-            int note = theory.getNote(60 + 12 * octave, degree);
-            if (noteManual) {
-                if (velocity == 0) {
-                    noteEvent(NOTE_OFF, note, 100);
-                }
-                else {
-                    noteEvent(NOTE_ON, note, velocity);
-                }
-            }
-            else {
-                if (velocity > 0) {
-                    noteEvent(NOTE_AUTO, note, velocity);
-                }
+    int idx = e.row * 8 + e.col;
+    if (mantaSendNotes && mantaMap.count(idx) == 0) {
+        int degree = (2*e.row - (int)(e.row/2) + e.col) % 7;
+        int octave = floor((2*e.row - floor(e.row/2) + e.col)/7);
+        int note = theory.getNote(60 + 12 * octave, degree);
+        if (noteManual) {
+            noteEvent(velocity==0 ? NOTE_OFF : NOTE_ON, note, velocity==0 ? 100 : 0);
+        }
+        else {
+            if (velocity > 0) {
+                noteEvent(NOTE_AUTO, note, velocity);
             }
         }
     }
@@ -401,10 +403,22 @@ void Aalto::mantaPadVelocityEvent(ofxMantaEvent &e) {
 
 //-----------
 void Aalto::sequencerStepEvent(vector<float> &column) {
-    if (sequencerMode == PARAMETERS) {
-        
+    if (!sequencer.getSmooth()) {
+        processColumn(column);
     }
-    else if (sequencerMode == NOTES) {
+}
+
+//-----------
+void Aalto::sequencerInterpolatedStepEvent(vector<float> &column) {
+    if (sequencer.getSmooth()) {
+        processColumn(column);
+    }
+}
+
+//-----------
+void Aalto::processColumn(vector<float> &column) {
+    cout << ofToString(column) << endl;
+    if (sequencerMode == NOTES) {
         int col = sequencer.getColumn();
         for (int r=0; r<column.size(); r++) {
             if (column[r] > 0.0) {
@@ -413,12 +427,22 @@ void Aalto::sequencerStepEvent(vector<float> &column) {
             }
         }
     }
+    else if (sequencerMode == PARAMETERS) {
+        int col = sequencer.getColumn();
+        for (int r=0; r<column.size(); r++) {
+            if (seqMap.count(r)) {
+                aalto.setParameter(seqMap[r].parameterId, 0,
+                                   ofMap(column[r], 0, 1,
+                                         seqMap[r].rmin, seqMap[r].rmax));
+            }
+        }
+    }
 }
 
 //-----------
 void Aalto::draw() {
-    manta.draw(205, 5, 240);
-    manta.drawStats(450, 5, 240);
+    manta.draw(165, 5, 260);
+    manta.drawStats(430, 5, 260);
     sequencer.draw();
 }
 
@@ -426,28 +450,31 @@ void Aalto::draw() {
 void Aalto::setupGui() {
     control.setName("aalto");
     
-    vector<string> noteOptions, padOptions, seqOptions;
+    vector<string> noteOptions, padOptions, seqOptions, seqRows;
     noteOptions.push_back("manual");
     noteOptions.push_back("auto");
     padOptions.push_back("notes");
     padOptions.push_back("parameters");
     seqOptions.push_back("notes");
     seqOptions.push_back("parameters");
+    for (int i=0; i<6; i++) seqRows.push_back("seq_row_"+ofToString(i));
     
+    control.addParameter("noteAutoLength", &noteAutoFrameLength, 1, 200);
+    control.addParameter("defaultVelocity", &noteVelocity, 1, 127);
     control.addParameter("noteManual", &noteManual);
     control.addParameter("play manta", &mantaSendNotes);
     control.addParameter("sequencerManta", &sequencerManta);
+    control.addEvent("toggle smooth", this, &Aalto::toggleSmooth);
     control.addMenu("sequencer", seqOptions, this, &Aalto::chooseSequencerMode);
     
     guiP = new ofxUICanvas("parameter inspector");
     guiP->setPosition(810, 5);
-    guiP->setHeight(185);
-    ofAddListener(guiP->newGUIEvent, this, &Aalto::guiParametersEvent);
+    guiP->setHeight(230);
 
     guiS = new ofxUICanvas("parameter inspector");
     guiS->setPosition(695, 5);
     guiS->setWidth(110);
-    guiS->setHeight(185);
+    guiS->setHeight(230);
     guiS->clearWidgets();
     guiS->addLabelButton("numFingers", false);
     guiS->addLabelButton("padSum", false);
@@ -458,8 +485,10 @@ void Aalto::setupGui() {
     guiS->addLabelButton("centroidY", false);
     guiS->addLabelButton("wCentroidX", false);
     guiS->addLabelButton("wCentroidY", false);
+    guiS->addDropDownList("sequencer", seqRows);
 
     ofAddListener(guiS->newGUIEvent, this, &Aalto::guiStatsEvent);
+    ofAddListener(guiP->newGUIEvent, this, &Aalto::guiParametersEvent);
 }
 
 //-----------
@@ -480,7 +509,7 @@ void Aalto::setupGuiPresets() {
 void Aalto::printParameterList() {
     vector<AudioUnitParameterInfo> params = aalto.getParameterList();
     for (int i=0; i<params.size(); i++) {
-        cout << "void set"<<params[i].name<<"(float value) { aalto.setParameter("<<i<<", 0, value); }   //"<< params[i].minValue << "->"<<params[i].maxValue << endl;
+        cout << "parameter :: "<<params[i].name<<" :: "<< params[i].minValue << "->"<<params[i].maxValue << endl;
     }
 }
 
@@ -490,11 +519,151 @@ void Aalto::savePreset(string filename) {
         filename = ofSystemTextBoxDialog("choose a preset name");
     }
     if (filename=="")   return;
-    aalto.saveCustomPresetAtPath(ofToDataPath("presetsAudio/aalto/"+filename+".aupreset"));
+    string path = ofToDataPath("presetsAudio/"+filename+".xml");
+    string aaltoPath = ofToDataPath("presetsAudio/aalto/"+filename+".aupreset");
+
+    aalto.saveCustomPresetAtPath(aaltoPath);
+    
+    ofXml xml;
+    xml.addChild("AudioPreset");
+    xml.setTo("AudioPreset");
+    
+    // aupreset
+    xml.addValue("Aupreset", aaltoPath);
+    
+    // sequencer
+    bool active = sequencer.getActive();
+    bool discrete = sequencer.getDiscrete();
+    int bpm = sequencer.getBpm();
+    int cols = sequencer.getNumberColumns();
+    int rows = sequencer.getNumberRows();
+    string values = ofToString(sequencer.getValue(0, 0));
+    for (int r=0; r<rows; r++) {
+        for (int c=0; c<cols; c++) {
+            if (c==0 && r==0)   continue;
+            values += ","+ofToString(sequencer.getValue(r, c));
+        }
+    }
+    xml.addChild("Sequencer");
+    xml.setTo("Sequencer");
+    xml.addValue("Active", active ? "1" : "0");
+    xml.addValue("Discrete", discrete ? "1" : "0");
+    xml.addValue("Bpm", ofToString(bpm));
+    xml.addValue("Rows", ofToString(rows));
+    xml.addValue("Cols", ofToString(cols));
+    xml.addValue("Values", values);
+    xml.setToParent();
+    
+    // manta
+    xml.addChild("Manta");
+    xml.setTo("Manta");
+    int idx = 0;
+    for (int i=0; i<63; i++) {
+        if (mantaMap.count(i) > 0) {
+            ofXml xmlMapping;
+            xml.addChild("Mapping");
+            xml.setTo("Mapping["+ofToString(idx)+"]");
+            xml.addValue("MantaId", ofToString(i));
+            xml.addValue("Name", mantaMap[i].name);
+            xml.addValue("ParameterId", ofToString(mantaMap[i].parameterId));
+            xml.addValue("Min", ofToString(mantaMap[i].min));
+            xml.addValue("Max", ofToString(mantaMap[i].max));
+            xml.addValue("Rmin", ofToString(mantaMap[i].rmin));
+            xml.addValue("Rmax", ofToString(mantaMap[i].rmax));
+            xml.setToParent();
+            idx++;
+        }
+    }
+    xml.setToParent();
+    
+    // parameters
+    xml.addChild("Parameters");
+    xml.setTo("Parameters");
+    xml.addValue("NoteManual", noteManual ? "1" : "0");
+    xml.addValue("SequencerManta", sequencerManta ? "1" : "0");
+    xml.addValue("MantaSendNotes", mantaSendNotes ? "1" : "0");
+    xml.addValue("SequencerMode", sequencerMode == PARAMETERS ? "Parameters" : "Notes");
+    xml.setToParent();
+
+    xml.setToParent();
+    xml.save(path);
     setupGuiPresets();
 }
 
 //-----------
 void Aalto::loadPreset(string &filename) {
-    aalto.loadCustomPresetAtPath(ofToDataPath("presetsAudio/aalto/"+filename+".aupreset"));
+    string path = ofToDataPath("presetsAudio/"+filename+".xml");
+
+    ofXml xml;
+    xml.load(path);
+    
+    // sequencer
+    if (xml.exists("Sequencer")) {
+        xml.setTo("Sequencer");
+        int rows = xml.getValue<int>("Rows");
+        int cols = xml.getValue<int>("Cols");
+        bool active = xml.getValue<string>("Active") == "1";
+        bool discrete = xml.getValue<string>("Discrete") == "1";
+        int bpm = xml.getValue<int>("Bpm");
+        vector<string> valueStr = ofSplitString(xml.getValue<string>("Values"), ",");
+        
+        sequencer.setSize(rows, cols);
+        sequencer.setActive(active);
+        sequencer.setDiscrete(discrete);
+        sequencer.setBpm(bpm);
+        for (int i=0; i<valueStr.size(); i++) {
+            int r = floor(i / cols);
+            int c = i % cols;
+            sequencer.setValue(r, c, ofToFloat(valueStr[i]));
+        }
+        xml.setToParent();
+    }
+
+    // manta
+    if (xml.exists("Manta")) {
+        mantaMap.erase(mantaMap.begin(), mantaMap.end());
+        xml.setTo("Manta");
+        if (xml.exists("Mapping")) {
+            xml.setTo("Mapping[0]");
+            do {
+                int idx = xml.getValue<int>("MantaId");
+                mantaMap[idx].parameterId = xml.getValue<int>("ParameterId");
+                mantaMap[idx].name = xml.getValue<string>("Name");
+                mantaMap[idx].min = xml.getValue<float>("Min");
+                mantaMap[idx].max = xml.getValue<float>("Max");
+                mantaMap[idx].rmin = xml.getValue<float>("Rmin");
+                mantaMap[idx].rmax = xml.getValue<float>("Rmax");
+            }
+            while (xml.setToSibling());
+            xml.setToParent();
+        }
+        xml.setToParent();
+    }
+
+    // parameters
+    if (xml.exists("Parameters")) {
+        xml.setTo("Parameters");
+        noteManual = xml.getValue<string>("NoteManual") == "1";
+        sequencerManta = xml.getValue<string>("SequencerManta") == "1";
+        mantaSendNotes = xml.getValue<string>("MantaSendNotes") == "1";
+        sequencerMode = xml.getValue<string>("SequencerMode") == "Notes" ? NOTES : PARAMETERS;
+        xml.setToParent();
+    }
+    
+    // aupreset
+    if (xml.exists("Aupreset")) {
+        string aaltoPath = xml.getValue<string>("Aupreset");
+        aalto.loadCustomPresetAtPath(aaltoPath);
+    }
+}
+
+//-----------
+Aalto::~Aalto() {
+    setActive(false);
+    sequencer.removeInterpolatedBeatListener(this, &Aalto::sequencerInterpolatedStepEvent);
+    sequencer.removeBeatListener(this, &Aalto::sequencerStepEvent);
+    ofRemoveListener(guiS->newGUIEvent, this, &Aalto::guiStatsEvent);
+    ofRemoveListener(guiP->newGUIEvent, this, &Aalto::guiParametersEvent);
+    delete guiP;
+    delete guiS;
 }

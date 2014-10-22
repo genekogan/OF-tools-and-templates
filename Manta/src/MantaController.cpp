@@ -87,9 +87,9 @@ void MantaController::markPad(int row, int col, bool mark) {
 }
 
 //-----------
-void MantaController::markSlider(int index, bool mark) {
+void MantaController::markSlider(int index, int column) {
     manta.setLedManual(false);
-    manta.setSliderLedState(index, mark ? Manta::Red : Manta::Off);
+    manta.setSliderLedState(index, Manta::Amber, column);
     manta.setLedManual(true);
 }
 

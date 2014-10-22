@@ -236,7 +236,7 @@ void OscManager::registerParameterToOsc(ParameterBase *parameter, bool send) {
 template <typename T>
 void OscManager::checkIfToSendOscMessage(map<string, TrackerBase*>::iterator &it) {
     if (((Tracker<T> *) it->second)->checkChanged()) {
-        cout << "send OSC " << it->first << " :: "<<ofToString(it->second->getValue<T>()) << endl;
+        //ofLog(OF_LOG_VERBOSE, "send OSC "+ it->first +" :: "+ ofToString(it->second->getValue<T>()));
         ofxOscMessage msg;
         msg.setAddress(it->first);
         addOscArgs(msg, it->second->getValue<T>());
@@ -271,6 +271,25 @@ template<> inline void OscManager::addOscArgs<ofVec4f>(ofxOscMessage &msg, ofVec
     msg.addFloatArg(val.y);
     msg.addFloatArg(val.z);
     msg.addFloatArg(val.w);
+}
+
+//----------
+void OscManager::sendMessageManually(string address, vector<int> val) {
+    ofxOscMessage msg;
+    msg.setAddress(address);
+    for (int i=0; i<val.size(); i++)
+        msg.addIntArg(val[i]);
+    oscSender.sendMessage(msg);
+}
+
+
+//----------
+void OscManager::sendMessageManually(string address, vector<float> val) {
+    ofxOscMessage msg;
+    msg.setAddress(address);
+    for (int i=0; i<val.size(); i++)
+        msg.addFloatArg(val[i]);
+    oscSender.sendMessage(msg);
 }
 
 //----------

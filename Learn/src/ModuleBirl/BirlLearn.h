@@ -11,28 +11,37 @@ class BirlLearner : public Learn
 {
 public:
     BirlLearner();
-    void setup(Birl &birl);
-    void setupOscSender(string host, int port);
-    void setupGui();
     
+    void setup(Birl *birl);
+    void setupOscSender(string host, int port);
+
+    void update();
     void draw();
     
-    BirlOutputParameter * addOutput(string name, float *val, float min, float max);
-    BirlOutputParameter * addOutput(string name, float min, float max) {return addOutput(name, new float(), min, max);}
-    void resetInputs();
-    void resetGuiPositions();
+    // add output
+    BirlOutputParameter * addOutput(string name, float *value, float min, float max);
+    BirlOutputParameter * addOutput(string name, float min, float max);
     
-    void setPerformanceMode();
-    void setTrainingMode();
-    void setGuiMode(BirlMode mode);
-    void setGuiMode() {setGuiMode(mode);}
-    void toggleViewPreferences();
-    
+    // presets
     bool savePreset(string filename);
-    void loadPreset(string filename);
-        
+    void loadPreset(string filename, bool loadExamples=true);
+    
+    // style
+    void setFont(string path);
+    void setFontSizes(int small, int medium, int large);
+
 protected:
     
+    // gui
+    void setupGui();
+    void setGuiMode(BirlMode mode);
+    void setGuiMode() {setGuiMode(mode);}
+    void setPerformanceMode();
+    void setTrainingMode();
+    void toggleViewPreferences();
+    void resetGuiPositions();
+
+    // gui events
     void gui1Event(ofxUIEventArgs &e);
     void gui2Event(ofxUIEventArgs &e);
     void gui3Event(ofxUIEventArgs &e);
@@ -40,19 +49,27 @@ protected:
     void guiPresetsEvent(ofxUIEventArgs &e);
     void guiSettingsEvent(ofxUIEventArgs &e);
     
+    // events
     void parameterSelected(LearnParameter & parameter);
+    void resetInputs();
     void resetInputButtons();
-
     void setOutputTrainingSettings();
     
+    // gui and mode
     BirlMode mode;
-    ofxUICanvas *guiMode, *guiPresets, *guiSettings;
+    ofxUICanvas *guiMode, *guiPresets, *guiSettings, *guiSettingsButton;
     ofxUITextInput *guiEmbouchureMax, *guiKeysMax, *guiKeysDiscreteMax, *guiHiddenLayers, *guiTargetRmse, *guiMaxSamples;
     
-    Birl birl;
+    // birl
+    Birl *birl;
     
+    // birl settings
     int embouchureMax, keysMax, hiddenLayers, maxSamples;
     float keysDiscreteMax, targetRmse;
     bool viewSettings;
     string settingsChanged;
+    
+    // presets
+    string presetFilename;
+    bool presetLoadedWithoutExamples;
 };

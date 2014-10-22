@@ -12,8 +12,12 @@ BirlLearner::BirlLearner() : Learn(false) {
     
     guiPresets = new ofxUICanvas("Presets");
     guiMode = new ofxUICanvas("choose mode");
+    guiSettingsButton = new ofxUICanvas("settingsButton");
     guiSettings = new ofxUICanvas("settings");
     guiSettings->setVisible(false);
+
+    //string font = "/Users/Gene/Downloads/ATRotisSansSerif.ttf";
+    //setFont(font, 8, 9, 10);
 
     ofAddListener(gui1->newGUIEvent, this, &BirlLearner::gui1Event);
     ofAddListener(gui2->newGUIEvent, this, &BirlLearner::gui2Event);
@@ -21,6 +25,7 @@ BirlLearner::BirlLearner() : Learn(false) {
     ofAddListener(guiMode->newGUIEvent, this, &BirlLearner::guiModeEvent);
     ofAddListener(guiPresets->newGUIEvent, this, &BirlLearner::guiPresetsEvent);
     ofAddListener(guiSettings->newGUIEvent, this, &BirlLearner::guiSettingsEvent);
+    ofAddListener(guiSettingsButton->newGUIEvent, this, &BirlLearner::guiSettingsEvent);
     
     oscInActive = false;
     setGuiInputsVisible(false);
@@ -28,13 +33,14 @@ BirlLearner::BirlLearner() : Learn(false) {
     setPerformanceMode();
 }
 
+
 //-------
-void BirlLearner::setup(Birl &birl) {
+void BirlLearner::setup(Birl *birl) {
     this->birl = birl;
-    vector<float> & keys = birl.getKeys();
-    vector<float> & keysDiscrete = birl.getKeysDiscrete();
-    vector<float> & pressure = birl.getPressure();
-    vector<float> & embouchure = birl.getEmbouchure();
+    vector<float> & keys = birl->getKeys();
+    vector<float> & keysDiscrete = birl->getKeysDiscrete();
+    vector<float> & pressure = birl->getPressure();
+    vector<float> & embouchure = birl->getEmbouchure();
     for (int i=0; i<keys.size(); i++) {
         addInput("key_"+ofToString(i), &keys[i], 0, 1);
     }
@@ -48,6 +54,14 @@ void BirlLearner::setup(Birl &birl) {
         addInput("embouchure_"+ofToString(i), &embouchure[i], 0, 1);
     }
     setGuiInputsVisible(false);
+}
+
+//-------
+void BirlLearner::update() {
+    Learn::update();
+    if (birl->getButtonsChanged()) {
+        oscManager.sendMessageManually("/birl/buttons/", birl->getButtons());
+    }
 }
 
 //-------
@@ -73,97 +87,54 @@ void BirlLearner::setupOscSender(string host, int port) {
     oscOutActive = oscManager.setupSender(oscOutputHost, oscOutputPort);
 }
 
+
+
+
+//===========================================
+//  OUTPUTS
+
 //-------
-BirlOutputParameter * BirlLearner::addOutput(string name, float *val, float min, float max) {
-    BirlOutputParameter *newOutput = new BirlOutputParameter(name, val, min, max);
-    if (LEARN_TYPE == LearnOutputParameter::SVM) {
+BirlOutputParameter * BirlLearner::addOutput(string name, float *value, float min, float max) {
+    BirlOutputParameter *newOutput = new BirlOutputParameter(name, value, min, max);
+	Learn::initializeOutput(newOutput);
+	if (LEARN_TYPE == LearnOutputParameter::SVM)
         newOutput->setTrainingSvm();
-    }
-    else {
+    else
         newOutput->setTrainingMlp(hiddenLayers, targetRmse, maxSamples);
-    }
-    newOutput->setInputParameters(inputs);
-    newOutput->addParameterChangedListener((Learn*) this, &Learn::outputParameterChanged);
-    newOutput->addParameterDeletedListener((Learn*) this, &Learn::outputParameterDeleted);
-    newOutput->addParameterViewedListener((Learn*) this, &Learn::outputParameterViewed);
-    newOutput->addParameterSelectedListener(this, &BirlLearner::parameterSelected);
     newOutput->setupGui();
-    newOutput->setVisible(true);
-    newOutput->setPreviewMode(mode);
-    outputs.push_back(newOutput);
-    if (oscManager.getSending()) {
-        oscManager.registerToOsc(newOutput, true);
-    }
     setGuiMode();
     return newOutput;
 }
 
 //-------
-void BirlLearner::setPerformanceMode() {
-    setGuiMode(BIRL_PERFORM);
+BirlOutputParameter * BirlLearner::addOutput(string name, float min, float max) {
+    return addOutput(name, new float(), min, max);
 }
 
-//-------
-void BirlLearner::setTrainingMode() {
-    setGuiMode(BIRL_INPUTS);
-    if (outputs.size() == 0) {
-        addOutput("pitch", 40, 80); // one default parameter
-    }
-}
 
-//-------
-void BirlLearner::resetGuiPositions() {
-    for (int i=0; i<outputs.size(); i++) {
-        outputs[i]->setGuiPosition(220, 100+55*i);
-        ((BirlOutputParameter *) outputs[i])->setGuiPreviewPosition(220, 100+30*i);
-    }
-}
 
-//-------
-void BirlLearner::resetInputs() {
-    for (int i=0; i<outputs.size(); i++) {
-        outputs[i]->setInputParameters(inputs);
-    }
-    if (oscManager.getReceiving()) {
-        oscManager.clearInputTrackers();
-        oscManager.registerToOscReceiver((vector<ParameterBase *> &) inputs);
-        oscManager.registerToOscReceiver((vector<ParameterBase *> &) outputs);
-    }
-    resetGuiPositions();
-}
 
-//-----------
-void BirlLearner::resetInputButtons() {
-    LearnInputParameter *inputFirstKey = inputs[0];
-    LearnInputParameter *inputFirstKeyDiscrete = inputs[birl.getKeys().size()];
-    LearnInputParameter *inputFirstPressure = inputs[birl.getKeys().size() + birl.getKeysDiscrete().size()];
-    LearnInputParameter *inputFirstEmbouchure = inputs[birl.getKeys().size() + birl.getKeysDiscrete().size() + birl.getPressure().size()];
-    for (int i=0; i<outputs.size(); i++) {
-        ((BirlOutputParameter *) outputs[i])->inputKeys = outputs[i]->getInputActive(inputFirstKey);
-        ((BirlOutputParameter *) outputs[i])->inputKeysDiscrete = outputs[i]->getInputActive(inputFirstKeyDiscrete);
-        ((BirlOutputParameter *) outputs[i])->inputPressure = outputs[i]->getInputActive(inputFirstPressure);
-        ((BirlOutputParameter *) outputs[i])->inputEmbouchure = outputs[i]->getInputActive(inputFirstEmbouchure);
-    }
-}
+//===========================================
+//  GUI
 
 //-------
 void BirlLearner::setupGui() {
     guiStatusLabel = new ofxUILabel(120.0f, "", OFX_UI_FONT_SMALL, 16.0f);
-
+    
     gui1->setColorOutline(ofColor(255,200));
     gui1->setDrawOutline(true);
     gui1->clearWidgets();
-    gui1->setPosition(220, 5);
+    gui1->setPosition(BIRL_LEARN_COL_2_X, 5);
     gui1->setWidth(220);
     gui1->setHeight(60);
     gui1->addLabelButton("add output", false, 100, 50);
     gui1->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
     gui1->addLabelButton("next", false, 100, 50);
-
+    
     gui2->setColorOutline(ofColor(255,200));
     gui2->setDrawOutline(true);
     gui2->clearWidgets();
-    gui2->setPosition(220, 5);
+    gui2->setPosition(BIRL_LEARN_COL_2_X, 5);
     gui2->setWidth(750);
     gui2->setHeight(60);
     gui2->addLabelButton("back", false, 100, 50);
@@ -171,17 +142,17 @@ void BirlLearner::setupGui() {
     gui2->addLabelToggle("record", &inRecording, 100, 50);
     gui2->addLabelButton("train fast", false, 100, 22);
     gui2->addWidgetSouthOf(new ofxUILabelButton("train accurate", false,  100, 22, 0, 0, OFX_UI_FONT_SMALL), "train fast")->setPadding(2);
-    gui2->addWidgetEastOf(new ofxUISlider("countdown", 0.0, 5.0, &trainCountdown, 100.0f, 9.0f), "train fast")->setPadding(2);
-    gui2->addWidgetSouthOf(new ofxUISlider("duration", 0.0, 5.0, &trainDuration, 100.0f, 9.0f), "countdown")->setPadding(2);
-    gui2->addWidgetEastOf(new ofxUIIntSlider("instanceRate", 1, 30, &instanceRate, 100.0f, 9.0f), "countdown")->setPadding(2);
-    gui2->addWidgetSouthOf(guiStatusLabel, "instanceRate")->setPadding(4);
-    gui2->addWidgetEastOf(new ofxUILabelToggle("predict", &predicting, 100, 50, 0, 0, OFX_UI_FONT_SMALL), "instanceRate");
+    gui2->addWidgetEastOf(new ofxUISlider("wait", 0.0, 5.0, &trainCountdown, 100.0f, 9.0f), "train fast")->setPadding(2);
+    gui2->addWidgetSouthOf(new ofxUISlider("duration", 0.0, 5.0, &trainDuration, 100.0f, 9.0f), "wait")->setPadding(2);
+    gui2->addWidgetEastOf(new ofxUIIntSlider("rate", 1, 30, &instanceRate, 100.0f, 9.0f), "wait")->setPadding(2);
+    gui2->addWidgetSouthOf(guiStatusLabel, "rate")->setPadding(4);
+    gui2->addWidgetEastOf(new ofxUILabelToggle("predict", &predicting, 100, 50, 0, 0, OFX_UI_FONT_SMALL), "rate");
     gui2->addLabelButton("save", false, 100, 50);
-
+    
     gui3->setColorOutline(ofColor(255,200));
     gui3->setDrawOutline(true);
     gui3->clearWidgets();
-    gui3->setPosition(220, 5);
+    gui3->setPosition(BIRL_LEARN_COL_2_X, 5);
     gui3->setWidth(600);
     gui3->setHeight(60);
     gui3->addLabelToggle("predict", &predicting, 120, 50);
@@ -192,11 +163,11 @@ void BirlLearner::setupGui() {
     gui3->addWidgetSouthOf(new ofxUISpacer(0, 4, "gui3spacer"), "osc host");
     gui3->addWidgetSouthOf(new ofxUILabel("osc port", OFX_UI_FONT_MEDIUM), "gui3spacer");
     gui3->addTextInput("oscPortOut", ofToString(oscOutputPort), 120.0f)->setAutoClear(false);
-
+    
     vector<string> presets;
     guiPresets->setDrawBack(false);
     guiPresets->clearWidgets();
-    guiPresets->setPosition(ofGetWidth()-195, 0);
+    guiPresets->setPosition(ofGetWidth()-215, 0);
     guiPresets->setWidth(190);
     guiSelector = guiPresets->addDropDownList("Load Preset", presets);
     guiSelector->setColorOutline(ofColor(0, 255, 0, 200));
@@ -214,8 +185,8 @@ void BirlLearner::setupGui() {
     guiMode->addLabelToggle("Train", false, 80.0f);
     guiMode->autoSizeToFitWidgets();
     
-    guiSettings->setColorOutline(ofColor(255));
-    guiSettings->setPosition(220, 10);
+    guiSettings->setColorOutline(ofColor(255,200));
+    guiSettings->setPosition(BIRL_LEARN_COL_2_X, 10);
     guiSettings->setWidth(420);
     guiSettings->clearWidgets();
     guiSettings->addLabel("Settings");
@@ -250,27 +221,13 @@ void BirlLearner::setupGui() {
     guiMaxSamples = guiSettings->addTextInput("max_samples", ofToString(maxSamples), 120.0f);
     guiMaxSamples->setAutoClear(false);
     
+    guiSettingsButton->setPosition(ofGetWidth()-24, 0);
+    guiSettingsButton->clearWidgets();
+    guiSettingsButton->addImageButton("viewSettings", "settings.png", false);
+    guiSettingsButton->autoSizeToFitWidgets();
+    guiSettingsButton->setDrawBack(false);
+    
     resetPresets();
-}
-
-//-------
-void BirlLearner::guiModeEvent(ofxUIEventArgs &e) {
-    if (e.getName() == "Train") {
-        if (viewSettings)   toggleViewPreferences();
-        setTrainingMode();
-    }
-    else if (e.getName() == "Perform") {
-        if (viewSettings)   toggleViewPreferences();
-        setPerformanceMode();
-    }
-}
-
-//-------
-void BirlLearner::guiPresetsEvent(ofxUIEventArgs &e) {
-    if (e.getParentName() == "Load Preset") {
-        string path = loadPresetDialog(e.getName());
-        loadPreset(path);
-    }
 }
 
 //-------
@@ -294,6 +251,58 @@ void BirlLearner::setGuiMode(BirlMode mode) {
     ((ofxUILabelToggle *) guiMode->getWidget("Perform"))->setValue(mode == BIRL_PERFORM);
     resetGuiPositions();
 }
+
+//-------
+void BirlLearner::setPerformanceMode() {
+    setGuiMode(BIRL_PERFORM);
+}
+
+//-------
+void BirlLearner::setTrainingMode() {
+    setGuiMode(BIRL_INPUTS);
+    if (outputs.size() == 0) {
+        addOutput("pitch", 40, 80); // one default parameter
+    }
+    else if (presetLoadedWithoutExamples) {
+        loadPreset(presetFilename, true);
+        presetLoadedWithoutExamples = false;
+    }
+}
+
+//--------
+void BirlLearner::toggleViewPreferences() {
+    viewSettings = !viewSettings;
+    guiSettings->setVisible(viewSettings);
+    if (viewSettings) {
+        gui1->setVisible(false);
+        gui2->setVisible(false);
+        gui3->setVisible(false);
+        guiPresets->setVisible(false);
+        for (int i=0; i<outputs.size(); i++) {
+            ((BirlOutputParameter *) outputs[i])->setVisible(false);
+        }
+        ((ofxUILabelToggle *) guiMode->getWidget("Train"))->setValue(false);
+        ((ofxUILabelToggle *) guiMode->getWidget("Perform"))->setValue(false);
+    }
+    else {
+        setGuiMode();
+        settingsChanged = "";
+    }
+}
+
+//-------
+void BirlLearner::resetGuiPositions() {
+    for (int i=0; i<outputs.size(); i++) {
+        outputs[i]->setGuiPosition(BIRL_LEARN_COL_2_X, 100+55*i);
+        ((BirlOutputParameter *) outputs[i])->setGuiPreviewPosition(BIRL_LEARN_COL_2_X, 100+30*i);
+    }
+}
+
+
+
+
+//===========================================
+//  GUI EVENTS
 
 //-------
 void BirlLearner::gui1Event(ofxUIEventArgs &e) {
@@ -339,22 +348,23 @@ void BirlLearner::gui3Event(ofxUIEventArgs &e) {
     Learn::gui3Event(e);
 }
 
-//--------
-void BirlLearner::toggleViewPreferences() {
-    viewSettings = !viewSettings;
-    guiSettings->setVisible(viewSettings);
-    if (viewSettings) {
-        gui1->setVisible(false);
-        gui2->setVisible(false);
-        gui3->setVisible(false);
-        guiPresets->setVisible(false);
-        for (int i=0; i<outputs.size(); i++) {
-            ((BirlOutputParameter *) outputs[i])->setVisible(false);
-        }
+//-------
+void BirlLearner::guiModeEvent(ofxUIEventArgs &e) {
+    if (e.getName() == "Train") {
+        if (viewSettings)   toggleViewPreferences();
+        setTrainingMode();
     }
-    else {
-        setGuiMode();
-        settingsChanged = "";
+    else if (e.getName() == "Perform") {
+        if (viewSettings)   toggleViewPreferences();
+        setPerformanceMode();
+    }
+}
+
+//-------
+void BirlLearner::guiPresetsEvent(ofxUIEventArgs &e) {
+    if (e.getParentName() == "Load Preset") {
+        string path = loadPresetDialog(e.getName());
+        loadPreset(path, mode!=BIRL_PERFORM);
     }
 }
 
@@ -378,17 +388,17 @@ void BirlLearner::guiSettingsEvent(ofxUIEventArgs &e) {
         if (embouchureMax != newEmbouchureMax) {
             settingsChanged += "\nChanged embouchure max from " + ofToString(embouchureMax) + " to " + ofToString(newEmbouchureMax);
             embouchureMax  = newEmbouchureMax;
-            birl.setEmbouchureMax(embouchureMax);
+            birl->setEmbouchureMax(embouchureMax);
         }
         if (keysMax != newKeysMax) {
             settingsChanged = "\nChanged keys max from " + ofToString(keysMax) + " to " + ofToString(newKeysMax);
             keysMax  = newKeysMax;
-            birl.setKeysMax(keysMax);
+            birl->setKeysMax(keysMax);
         }
         if (keysDiscreteMax != newKeysDiscreteMax) {
             settingsChanged = "\nChanged keys discrete threshold from " + ofToString(keysDiscreteMax) + " to " + ofToString(newKeysDiscreteMax);
             keysDiscreteMax  = newKeysDiscreteMax;
-            birl.setKeysDiscreteThreshold(keysDiscreteMax);
+            birl->setKeysDiscreteThreshold(keysDiscreteMax);
         }
         if (hiddenLayers != newHiddenLayers) {
             settingsChanged = "\nChanged MLP hidden layers from " + ofToString(hiddenLayers) + " to " + ofToString(newHiddenLayers);
@@ -400,12 +410,30 @@ void BirlLearner::guiSettingsEvent(ofxUIEventArgs &e) {
             targetRmse  = newTargetRmse;
             setOutputTrainingSettings();
         }
-
         if (maxSamples != newMaxSamples) {
             settingsChanged = "\nChanged MLP max samples from " + ofToString(maxSamples) + " to " + ofToString(newMaxSamples);
             maxSamples  = newMaxSamples;
             setOutputTrainingSettings();
         }
+    }
+    else if (e.getName() == "viewSettings") {
+        if (e.getButton()->getValue()==0) {
+            toggleViewPreferences();
+        }
+    }
+}
+
+
+
+
+//===========================================
+//  EVENTS
+
+//-------
+void BirlLearner::parameterSelected(LearnParameter & parameter) {
+    for (int i=0; i<outputs.size(); i++) {
+        if (outputs[i] == &parameter)   continue;
+        ((BirlOutputParameter *) outputs[i])->deselect();
     }
 }
 
@@ -422,12 +450,37 @@ void BirlLearner::setOutputTrainingSettings() {
 }
 
 //-------
-void BirlLearner::parameterSelected(LearnParameter & parameter) {
+void BirlLearner::resetInputs() {
     for (int i=0; i<outputs.size(); i++) {
-        if (outputs[i] == &parameter)   continue;
-        ((BirlOutputParameter *) outputs[i])->deselect();
+        outputs[i]->setInputParameters(inputs);
+    }
+    if (oscManager.getReceiving()) {
+        oscManager.clearInputTrackers();
+        oscManager.registerToOscReceiver((vector<ParameterBase *> &) inputs);
+        oscManager.registerToOscReceiver((vector<ParameterBase *> &) outputs);
+    }
+    resetGuiPositions();
+}
+
+//-----------
+void BirlLearner::resetInputButtons() {
+    LearnInputParameter *inputFirstKey = inputs[0];
+    LearnInputParameter *inputFirstKeyDiscrete = inputs[birl->getKeys().size()];
+    LearnInputParameter *inputFirstPressure = inputs[birl->getKeys().size() + birl->getKeysDiscrete().size()];
+    LearnInputParameter *inputFirstEmbouchure = inputs[birl->getKeys().size() + birl->getKeysDiscrete().size() + birl->getPressure().size()];
+    for (int i=0; i<outputs.size(); i++) {
+        ((BirlOutputParameter *) outputs[i])->inputKeys = outputs[i]->getInputActive(inputFirstKey);
+        ((BirlOutputParameter *) outputs[i])->inputKeysDiscrete = outputs[i]->getInputActive(inputFirstKeyDiscrete);
+        ((BirlOutputParameter *) outputs[i])->inputPressure = outputs[i]->getInputActive(inputFirstPressure);
+        ((BirlOutputParameter *) outputs[i])->inputEmbouchure = outputs[i]->getInputActive(inputFirstEmbouchure);
     }
 }
+
+
+
+
+//===========================================
+//  PRESETS
 
 //-------
 bool BirlLearner::savePreset(string filename) {
@@ -445,7 +498,7 @@ bool BirlLearner::savePreset(string filename) {
 }
 
 //-------
-void BirlLearner::loadPreset(string filename) {
+void BirlLearner::loadPreset(string filename, bool loadExamples) {
     Presets presets;
     ofXml xml;
     bool xmlLoaded = xml.load(filename);
@@ -454,9 +507,44 @@ void BirlLearner::loadPreset(string filename) {
         return;
     }
     xml.setTo("BirlPreset");
-    loadOutputs(xml);
+    loadOutputs(xml, loadExamples);
     resetInputButtons();
     setGuiMode();
+    this->presetFilename = filename;
+    presetLoadedWithoutExamples = !loadExamples;
     predicting = true;
 }
+
+
+
+
+//===========================================
+//  STYLE
+
+//-------
+void BirlLearner::setFont(string path) {
+    Learn::setFont(path);
+    guiPresets->setFont(path);
+    guiMode->setFont(path);
+    guiSettings->setFont(path);
+    guiSettingsButton->setFont(path);
+}
+
+//-------
+void BirlLearner::setFontSizes(int small, int medium, int large) {
+    Learn::setFontSizes(small, medium, large);
+    guiPresets->setFontSize(OFX_UI_FONT_SMALL, small);
+    guiPresets->setFontSize(OFX_UI_FONT_MEDIUM, medium);
+    guiPresets->setFontSize(OFX_UI_FONT_LARGE, large);
+    guiMode->setFontSize(OFX_UI_FONT_SMALL, small);
+    guiMode->setFontSize(OFX_UI_FONT_MEDIUM, medium);
+    guiMode->setFontSize(OFX_UI_FONT_LARGE, large);
+    guiSettings->setFontSize(OFX_UI_FONT_SMALL, small);
+    guiSettings->setFontSize(OFX_UI_FONT_MEDIUM, medium);
+    guiSettings->setFontSize(OFX_UI_FONT_LARGE, large);
+    guiSettingsButton->setFontSize(OFX_UI_FONT_SMALL, small);
+    guiSettingsButton->setFontSize(OFX_UI_FONT_MEDIUM, medium);
+    guiSettingsButton->setFontSize(OFX_UI_FONT_LARGE, large);
+}
+
 

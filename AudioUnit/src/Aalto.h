@@ -11,29 +11,33 @@
 class Aalto
 {
 public:
+    Aalto();
+    ~Aalto();
     
+    enum NoteMode   { MANUAL, AUTO };
+    enum NoteType   { NOTE_ON, NOTE_OFF, NOTE_AUTO };
+    enum OutputMode { PARAMETERS, NOTES };
+
     struct ParameterMapping {
         string name;
         int parameterId;
         float min, max;
         float rmin, rmax;
     };
-
-    enum NoteMode { MANUAL, AUTO };
-    enum NoteType { NOTE_ON, NOTE_OFF, NOTE_AUTO };
-    enum OutputMode { PARAMETERS, NOTES };
     
     void setup();
-    void setActive(bool active);
-    
     void update();
     void draw();
     
+    void setActive(bool active);
     void chooseSequencerMode(string &s);
+    void toggleSmooth(string &s);
     
     void setupGui();
     void setupGuiPresets();
-    void setupGuiPadInspector();
+    void setupGuiSeqInspector(int guiActiveSeq);
+    void setupGuiPadInspector(int guiActiveManta);
+    void setupGuiPadInspector() { guiActiveIsSequencer ? setupGuiSeqInspector(guiActiveSeq) : setupGuiPadInspector(guiActiveManta); }
     void setupGuiParameterGroup(string parameterGroupName);
     
     void savePreset(string filename="");
@@ -44,15 +48,17 @@ public:
 
 protected:
     
+    void noteEvent(NoteType type, int note, int velocity=127);
+    void sequencerStepEvent(vector<float> &column);
+    void sequencerInterpolatedStepEvent(vector<float> &column);
+    void processColumn(vector<float> &column);
+
     void guiParametersEvent(ofxUIEventArgs &e);
     void guiStatsEvent(ofxUIEventArgs &e);
-    void noteEvent(NoteType type, int note, int velocity=127);
     
     void padClickEvent(int & pad);
     void sliderClickEvent(int & slider);
     void buttonClickEvent(int & button);
-
-    void sequencerStepEvent(vector<float> &column);
     
     void mantaPadEvent(ofxMantaEvent &e);
     void mantaPadVelocityEvent(ofxMantaEvent &e);
@@ -70,23 +76,24 @@ protected:
     ofxAudioUnitMixer mixer;
 	ofxAudioUnitOutput output;
     
-    bool noteStatus[128];
-    bool noteManual;
-    bool sequencerManta;
-    bool mantaSendNotes;
     map<int, int> noteEvents;
+    bool noteStatus[128];
+    bool noteManual, sequencerManta, mantaSendNotes, sequencerSmooth;
+    int noteAutoFrameLength;
+    int noteVelocity;
     
     map<string, vector<string> > parameterGroups;
     vector<string> parameterGroupNames;
     vector<ParameterMapping> parameters;
-    map<int, ParameterMapping> mappings;
+    map<int, ParameterMapping> mantaMap, seqMap;
 
     ofxUICanvas *guiP, *guiS;
     ofxUIDropDownList *guiParameterGroups, *guiParameters;
     ofxUIRangeSlider *guiParameterRange;
     ofxUITextInput *guiParameterMin, *guiParameterMax;
     
-    int guiActiveManta;
+    int guiActiveManta, guiActiveSeq;
+    bool guiActiveIsSequencer;
     bool guiToSwitchParameters;
     string guiToSwitchParametersName;
 };

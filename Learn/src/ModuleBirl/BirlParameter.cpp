@@ -1,6 +1,27 @@
 #include "BirlParameter.h"
 
 
+//===========================================
+//  CONSTRUCTOR, DESTRUCTOR, DRAW
+
+
+//-----------
+BirlOutputParameter::BirlOutputParameter(string name, float *val, float min, float max) : LearnOutputParameter(name, val, min, max) {
+    guiPreview = new ofxUICanvas();
+    guiPerform = new ofxUICanvas();
+    setupGuiPreview();
+    ofAddListener(gui->newGUIEvent, this, &BirlOutputParameter::guiEvent);
+    ofAddListener(guiPreview->newGUIEvent, this, &BirlOutputParameter::guiPreviewEvent);
+    ofAddListener(guiPerform->newGUIEvent, this, &BirlOutputParameter::guiPreviewEvent);
+    setDataSize(795, 300);
+    guiData->setPosition(220, 430);
+    viewInputs = false;
+    inputKeys = false;
+    inputKeysDiscrete = false;
+    inputPressure = false;
+    inputEmbouchure = false;
+}
+
 //-----------
 BirlOutputParameter::~BirlOutputParameter() {
     ofRemoveListener(gui->newGUIEvent, this, &BirlOutputParameter::guiEvent);
@@ -28,24 +49,22 @@ void BirlOutputParameter::draw() {
     if (guiPerform->isVisible()) {
         guiPerformValueText->setTextString(ofToString(guiValue->getValue()));
     }
+    if (training) {
+        if (ofGetFrameNum() % 5 == 0) {
+            ofColor newColor = ofColor(ofRandom(255),ofRandom(255),ofRandom(255));
+            gui->setColorBack(newColor);
+            guiPreview->setColorBack(newColor);
+            guiPerform->setColorBack(newColor);
+        }
+    }
+
 }
 
-//-----------
-BirlOutputParameter::BirlOutputParameter(string name, float *val, float min, float max) : LearnOutputParameter(name, val, min, max) {
-    guiPreview = new ofxUICanvas();
-    guiPerform = new ofxUICanvas();
-    setupGuiPreview();
-    ofAddListener(gui->newGUIEvent, this, &BirlOutputParameter::guiEvent);
-    ofAddListener(guiPreview->newGUIEvent, this, &BirlOutputParameter::guiPreviewEvent);
-    ofAddListener(guiPerform->newGUIEvent, this, &BirlOutputParameter::guiPreviewEvent);
-    setDataSize(795, 300);
-    guiData->setPosition(220, 430);
-    viewInputs = false;
-    inputKeys = false;
-    inputKeysDiscrete = false;
-    inputPressure = false;
-    inputEmbouchure = false;
-}
+
+
+
+//===========================================
+//  GUI
 
 //-----------
 void BirlOutputParameter::setupGui() {
@@ -56,7 +75,7 @@ void BirlOutputParameter::setupGui() {
     gui->addLabelButton("X", false, 15.0f);
     guiName = gui->addTextInput("name", getName(), 155.0f);
     guiName->setAutoClear(false);
-    gui->addLabel("osc:");
+    gui->addLabel("osc: ");
     guiOsc = gui->addTextInput("osc", getOscAddress(), 128.0f);
     guiOsc->setAutoClear(false);
     gui->addLabel("min:");
@@ -92,7 +111,6 @@ void BirlOutputParameter::setupGuiPreview() {
     guiExamples->setLabelText(ofToString(getNumInstances())+" examples");
     guiPreview->addLabelToggle("record", &record, 56.0f);
     guiPreview->autoSizeToFitWidgets();
-    
     guiPerform->setColorOutline(ofColor(255,200));
     guiPerform->setDrawOutline(true);
     guiPerform->clearWidgets();
@@ -107,22 +125,13 @@ void BirlOutputParameter::setupGuiPreview() {
     guiPerform->autoSizeToFitWidgets();
 }
 
-//-------
-void BirlOutputParameter::setGuiPreviewPosition(int x, int y) {
-    guiPreview->setPosition(x, y);
-    guiPerform->setPosition(x, y);
-}
-
-//-------
-void BirlOutputParameter::setPreviewMode(BirlMode mode) {
-    gui->setVisible(mode == BIRL_INPUTS);
-    guiPreview->setVisible(mode == BIRL_TRAIN);
-    guiPerform->setVisible(mode == BIRL_PERFORM);
-}
-
 //-----------
 void BirlOutputParameter::guiEvent(ofxUIEventArgs &e) {
-    if (e.getName() == "osc") {
+    if (e.getName() == "name") {
+        guiPreviewOsc->setTextString(getOscAddress());
+        guiPerformOsc->setTextString(getOscAddress());
+    }
+    else if (e.getName() == "osc") {
         setOscAddress(guiOsc->getTextString());
         guiPreviewOsc->setTextString(getOscAddress());
         guiPerformOsc->setTextString(getOscAddress());
@@ -149,6 +158,21 @@ void BirlOutputParameter::guiEvent(ofxUIEventArgs &e) {
             inputKeys = false;
         setInputs();
     }
+    else if (e.getName() == "min") {
+        guiPreviewSetMinMax();
+    }
+    else if (e.getName() == "max") {
+        guiPreviewSetMinMax();
+    }
+}
+
+//-----------
+void BirlOutputParameter::guiPreviewSetMinMax() {
+    float currentValue = get();
+    guiValue->setMaxAndMin(getMax(), getMin());
+    guiPerformValue->setMaxAndMin(getMax(), getMin());
+    guiValue->setValue(currentValue);
+    guiPerformValue->setValue(currentValue);
 }
 
 //-----------
@@ -161,8 +185,11 @@ void BirlOutputParameter::guiPreviewEvent(ofxUIEventArgs &e) {
     else if (e.getName() == "valueText") {
         if (guiValueText->isFocused())
             ofNotifyEvent(pSelectedEvent, *this, this);
-        guiValue->setValue(ofToFloat(guiValueText->getTextString()));
-        guiPerformValue->setValue(ofToFloat(guiValueText->getTextString()));
+        float newValue = ofToFloat(guiValueText->getTextString());
+        guiValue->setValue(newValue);
+
+        guiPerformValue->setValue(newValue);
+        
     }
     else if (e.getName() == "osc") {
         if (guiPreviewOsc->isFocused())
@@ -189,22 +216,46 @@ void BirlOutputParameter::guiPreviewEvent(ofxUIEventArgs &e) {
     }
 }
 
+
+//===========================================
+//  VISIBILITY
+
 //-----------
-void BirlOutputParameter::predict() {
-    vector<double> birlInstance;
-    if (inputKeys || inputKeysDiscrete) {
-        for (int i=0; i<KEYS_NUMBER; i++)
-            birlInstance.push_back(allInputs[i]->get());
-    }
-    if (inputPressure) {
-        for (int i=0; i<PRESSURE_NUMBER; i++)
-            birlInstance.push_back(allInputs[2 * KEYS_NUMBER + i]->get());
-    }
-    if (inputEmbouchure) {
-        for (int i=0; i<EMBOUCHURE_NUMBER; i++)
-            birlInstance.push_back(allInputs[2 * KEYS_NUMBER + PRESSURE_NUMBER + i]->get());
-    }
-    LearnOutputParameter::predict(birlInstance);
+void BirlOutputParameter::setVisible(bool visible) {
+    LearnOutputParameter::setVisible(visible);
+    guiPreview->setVisible(visible);
+    guiPerform->setVisible(visible);
+}
+
+//-------
+void BirlOutputParameter::setGuiPreviewPosition(int x, int y) {
+    guiPreview->setPosition(x, y);
+    guiPerform->setPosition(x, y);
+}
+
+//-------
+void BirlOutputParameter::setPreviewMode(BirlMode mode) {
+    gui->setVisible(mode == BIRL_INPUTS);
+    guiPreview->setVisible(mode == BIRL_TRAIN);
+    guiPerform->setVisible(mode == BIRL_PERFORM);
+}
+
+//-----------
+void BirlOutputParameter::deselect() {
+    LearnOutputParameter::deselect();
+    guiPerformOsc->setFocus(false);
+    guiPreviewOsc->setFocus(false);
+}
+
+
+
+//===========================================
+//  LEARNING
+
+//-----------
+void BirlOutputParameter::setRecording(bool record) {
+    LearnOutputParameter::setRecording(record);
+    guiPreview->setColorBack(record ? ofColor(200, 0, 0, 200) : trained ? ofColor(0, 60, 0, 100) : ofColor(0, 100));
 }
 
 //-----------
@@ -234,30 +285,43 @@ void BirlOutputParameter::setTrained(bool trained) {
 }
 
 //-----------
-void BirlOutputParameter::setRecording(bool record) {
-    LearnOutputParameter::setRecording(record);
-    if (trained){
-        guiPreview->setColorBack(record ? ofColor(200, 0, 0, 200) : ofColor(0, 60, 0, 100));
+void BirlOutputParameter::predict() {
+    vector<double> birlInstance;
+    if (inputKeys || inputKeysDiscrete) {
+        for (int i=0; i<KEYS_NUMBER; i++)
+            birlInstance.push_back(allInputs[i]->get());
     }
-    else {
-        guiPreview->setColorBack(record ? ofColor(200, 0, 0, 200) : ofColor(0, 100));
+    if (inputPressure) {
+        for (int i=0; i<PRESSURE_NUMBER; i++)
+            birlInstance.push_back(allInputs[2 * KEYS_NUMBER + i]->get());
     }
-    cout << "TRY " << endl;
-//    guiPreview->setColorBack(record ? ofColor(255, 0, 0) : ofColor(0, 100));
+    if (inputEmbouchure) {
+        for (int i=0; i<EMBOUCHURE_NUMBER; i++)
+            birlInstance.push_back(allInputs[2 * KEYS_NUMBER + PRESSURE_NUMBER + i]->get());
+    }
+    LearnOutputParameter::predict(birlInstance);
+}
+
+
+
+
+//===========================================
+//  STYLE
+
+//-----------
+void BirlOutputParameter::setFont(string path) {
+    LearnOutputParameter::setFont(path);
+    guiPreview->setFont(path);
+    guiPerform->setFont(path);
 }
 
 //-----------
-void BirlOutputParameter::setVisible(bool visible) {
-    LearnOutputParameter::setVisible(visible);
-    guiPreview->setVisible(visible);
-    guiPerform->setVisible(visible);
+void BirlOutputParameter::setFontSizes(int small, int medium, int large) {
+    LearnOutputParameter::setFontSizes(small, medium, large);
+    guiPreview->setFontSize(OFX_UI_FONT_SMALL, small);
+    guiPreview->setFontSize(OFX_UI_FONT_MEDIUM, medium);
+    guiPreview->setFontSize(OFX_UI_FONT_LARGE, large);
+    guiPerform->setFontSize(OFX_UI_FONT_SMALL, small);
+    guiPerform->setFontSize(OFX_UI_FONT_MEDIUM, medium);
+    guiPerform->setFontSize(OFX_UI_FONT_LARGE, large);
 }
-
-//-----------
-void BirlOutputParameter::deselect() {
-    LearnOutputParameter::deselect();
-    guiPerformOsc->setFocus(false);
-    guiPreviewOsc->setFocus(false);
-}
-
-

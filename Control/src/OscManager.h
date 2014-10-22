@@ -34,6 +34,9 @@ public:
         ofAddListener(*eventTrackers[address], listener, method);
     }
     
+    void sendMessageManually(string address, vector<int> val);
+    void sendMessageManually(string address, vector<float> val);
+
     ofxTouchOscPage * makeTouchOscPage(string name, vector<ParameterBase *> &parameters);
     void saveTouchOscLayout(string name, vector<ParameterBase *> &parameters);
     
