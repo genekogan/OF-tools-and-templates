@@ -2,7 +2,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    aalto.setup();
+    audio.setup();
     
     ofSetFrameRate(30);
 
@@ -11,20 +11,20 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    aalto.update();
+    audio.update();
     
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    aalto.draw();
+    audio.draw();
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     
     if (key=='1') {
-        aalto.savePreset();
+        audio.savePreset();
     }
 
 }

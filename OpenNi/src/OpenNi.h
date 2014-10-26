@@ -10,10 +10,14 @@ class OpenNi
 public:
     void setup();
     void update();
-    void draw();
+    void draw(int x=0, int y=0, int w=640, int h=480);
     void close();
     
+    vector<ofPoint *> & getJoints() {return joints;}
+    string getJointName(int idx) {return jointNames[idx];}
+    
 private:
+    
     void userEvent(ofxOpenNIUserEvent & event);
     
 	ofxOpenNI kinect;

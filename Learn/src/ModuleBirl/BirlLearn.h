@@ -48,6 +48,7 @@ protected:
     void guiModeEvent(ofxUIEventArgs &e);
     void guiPresetsEvent(ofxUIEventArgs &e);
     void guiSettingsEvent(ofxUIEventArgs &e);
+    void guiProcessSettings();
     
     // events
     void parameterSelected(LearnParameter & parameter);

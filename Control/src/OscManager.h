@@ -1,10 +1,6 @@
 #pragma once
 
-#include "ofMain.h"
-#include "ofxOsc.h"
-#include "ofxTouchOsc.h"
-#include "Parameter.h"
-
+#include "Control.h"
 
 
 class OscManager

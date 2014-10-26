@@ -39,7 +39,7 @@ public:
     LearnOutputParameter * addOutput(string name, float min, float max);
     void addParameterAsInput(string name, LearnInputParameter* newInput);
     void addParametersAsInput(string name, vector<LearnInputParameter*> &newInputs);
-    void initializeOutput(LearnOutputParameter *output);
+    void initializeOutput(LearnOutputParameter *output, bool sendOsc=true, bool receiveOsc=true);
     
     // osc
     void setupOscSender(string host, int port);
@@ -66,6 +66,10 @@ public:
     virtual void outputParameterViewed(LearnOutputParameter & output);
     virtual void parameterSelected(LearnParameter & parameter);
     
+    // presets
+    bool savePreset(string filename="");
+    void loadPreset(string path);
+
     
 protected:
     
@@ -76,6 +80,8 @@ protected:
 
     // osc events
     void oscEventSetRecording(bool &b);
+    void oscEventSetTrainFast(bool &b);
+    void oscEventSetTrainAccurate(bool &b);
     void oscEventSetPredicting(bool &b);
 
     // gui
@@ -92,11 +98,9 @@ protected:
     void trainClassifiers(string trainStrategy);
     
     // presets
-    bool savePreset(string filename="");
     void saveInputs(string filename, ofXml &xml);
     void saveOutputs(string filename, ofXml &xml);
     string loadPresetDialog(string filename);
-    void loadPreset(string path);
     void loadInputs(ofXml &xml);
     void loadOutputs(ofXml &xml, bool loadExamples=true, bool loadClassifier=true);
     virtual void resetPresets();

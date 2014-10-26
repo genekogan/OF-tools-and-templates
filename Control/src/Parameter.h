@@ -1,7 +1,6 @@
 #pragma once
 
-#include "ofMain.h"
-
+//#include "Control.h"
 
 class ParameterBase
 {

@@ -81,23 +81,23 @@ void MantaController::update(){
 
 //-----------
 void MantaController::markPad(int row, int col, bool mark) {
-    manta.setLedManual(false);
-    manta.setPadLedState(row, col, mark ? Manta::Red : Manta::Off);
     manta.setLedManual(true);
+    manta.setPadLedState(row, col, mark ? Manta::Red : Manta::Off);
+    manta.setLedManual(false);
 }
 
 //-----------
 void MantaController::markSlider(int index, int column) {
-    manta.setLedManual(false);
-    manta.setSliderLedState(index, Manta::Amber, column);
     manta.setLedManual(true);
+    manta.setSliderLedState(index, Manta::Amber, column);
+    manta.setLedManual(false);
 }
 
 //-----------
 void MantaController::markButton(int index, bool mark) {
-    manta.setLedManual(false);
-    manta.setButtonLedState(index, mark ? Manta::Red : Manta::Off);
     manta.setLedManual(true);
+    manta.setButtonLedState(index, mark ? Manta::Red : Manta::Off);
+    manta.setLedManual(false);
 }
 
 //-----------

@@ -24,8 +24,10 @@ Learn::Learn(bool init) {
     gui1 = new ofxUICanvas("setup");
     gui2 = new ofxUICanvas("train");
     gui3 = new ofxUICanvas("perform");
-    
+
     oscManager.registerOscEventListener("/toggleRecord", this, &Learn::oscEventSetRecording);
+    oscManager.registerOscEventListener("/toggleTrainFast", this, &Learn::oscEventSetTrainFast);
+    oscManager.registerOscEventListener("/toggleTrainAccurate", this, &Learn::oscEventSetTrainAccurate);
     oscManager.registerOscEventListener("/togglePredict", this, &Learn::oscEventSetPredicting);
     
     if (init)   setupGui();
@@ -125,47 +127,33 @@ LearnInputParameter * Learn::addInput(string name, float *value, float min, floa
 LearnOutputParameter * Learn::addOutput(string name, float *value, float min, float max) {
 	LearnOutputParameter *newOutput = new LearnOutputParameter(name, value, min, max);
 	initializeOutput(newOutput);
-/*
-    newOutput->addParameterChangedListener(this, &Learn::outputParameterChanged);
-    newOutput->addParameterDeletedListener(this, &Learn::outputParameterDeleted);
-    newOutput->addParameterSelectedListener(this, &Learn::parameterSelected);
-    newOutput->addParameterViewedListener(this, &Learn::outputParameterViewed);
-*/
     return newOutput;
 }
 
 //-------
-void Learn::initializeOutput(LearnOutputParameter *output) {
-    outputs.push_back(output);
-	if (customFont) {
+void Learn::initializeOutput(LearnOutputParameter *output, bool sendOsc, bool receiveOsc) {
+    if (customFont) {
         output->setFont(fontPath);
         output->setFontSizes(fontSmall, fontMedium, fontLarge);
     }
     output->setGuiPosition(420, 80+55*outputs.size());
     output->setInputParameters(inputs);
     output->setVisible(outputsVisible);
-    
     output->addParameterChangedListener(this, &Learn::outputParameterChanged);
     output->addParameterDeletedListener(this, &Learn::outputParameterDeleted);
     output->addParameterSelectedListener(this, &Learn::parameterSelected);
     output->addParameterViewedListener(this, &Learn::outputParameterViewed);
-
     if (inputGroups.size() > 0) {
         output->setInputGroups(inputGroups);
     }
-    
-    
-    /* OPTIONAL ??? */
-    
-    
-    if (oscManager.getSending()) {
-        //oscManager.registerToOsc(output, true);
+    if (oscManager.getSending() && sendOsc) {
+        oscManager.registerToOsc(output, true);
     }
-    if (oscManager.getReceiving()) {
-        //oscManager.registerToOsc(output, false);
+    if (oscManager.getReceiving() && receiveOsc) {
+        oscManager.registerToOsc(output, false);
     }
+    outputs.push_back(output);
 }
-
 
 //-------
 LearnInputParameter * Learn::addInput(string name, float min, float max) {
@@ -294,6 +282,22 @@ void Learn::enableOscOutputs(bool enable) {
 void Learn::oscEventSetRecording(bool &b) {
     if (b)  startRecording();
     else    stopRecording();
+}
+
+//-------
+void Learn::oscEventSetTrainFast(bool &b) {
+    if (b) {
+        if (recording)  stopRecording();
+        trainClassifiers("fast");
+    }
+}
+
+//-------
+void Learn::oscEventSetTrainAccurate(bool &b) {
+    if (b) {
+        if (recording)  stopRecording();
+        trainClassifiers("accurate");
+    }
 }
 
 //-------
@@ -667,11 +671,17 @@ void Learn::saveInputsAndOutputsToTouchOsc() {
     // control page
     bool b;
     Parameter<bool> *recordButton = new Parameter<bool>("record", b);
+    Parameter<bool> *trainFButton = new Parameter<bool>("train fast", b);
+    Parameter<bool> *trainAButton = new Parameter<bool>("train accurate", b);
     Parameter<bool> *predictButton = new Parameter<bool>("predict", b);
     recordButton->setOscAddress("/toggleRecord");
+    trainFButton->setOscAddress("/toggleTrainFast");
+    trainAButton->setOscAddress("/toggleTrainAccurate");
     predictButton->setOscAddress("/togglePredict");
     vector<ParameterBase *> controlButtons;
     controlButtons.push_back(recordButton);
+    controlButtons.push_back(trainFButton);
+    controlButtons.push_back(trainAButton);
     controlButtons.push_back(predictButton);
     
     // setup touch osc layout

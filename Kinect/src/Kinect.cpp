@@ -1,6 +1,11 @@
 #include "Kinect.h"
 
 void Kinect::setup(){
+	
+	/*
+	erode/dialte to fill out contour
+	*/
+	
     control.setName("kinect");
     
     vector<string> choices;

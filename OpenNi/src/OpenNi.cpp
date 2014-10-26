@@ -3,6 +3,8 @@
 
 //-------
 void OpenNi::setup(){
+    control.setVisible(false);
+    
     kinect.setup();
     kinect.addImageGenerator();
     kinect.addDepthGenerator();
@@ -53,7 +55,6 @@ void OpenNi::setup(){
     jointNames.push_back("rightKnee");
     jointNames.push_back("rightFoot");
     
-    
     // setup control panel
     control.setName("OpenNi");
 }
@@ -61,24 +62,10 @@ void OpenNi::setup(){
 //-------
 void OpenNi::update(){
     kinect.update();
-}
-
-//-------
-void OpenNi::draw(){
-    
-    ofEnableBlendMode(OF_BLENDMODE_ALPHA);
     
     int numUsers = kinect.getNumTrackedUsers();
     for (int i = 0; i < numUsers; i++){
         ofxOpenNIUser & user = kinect.getTrackedUser(i);
-        user.drawMask();
-        
-        ofPushMatrix();
-        ofTranslate(320, 240);
-        user.drawPointCloud();
-        ofPopMatrix();
-        
-        // get joint positions:
         
         // head
         jointTorso = user.getJoint(JOINT_TORSO).getWorldPosition();
@@ -122,11 +109,24 @@ void OpenNi::draw(){
             joints[i]->set((joints[i]->x - pointMin.x) / (pointMax.x - pointMin.x),
                            (joints[i]->y - pointMin.y) / (pointMax.y - pointMin.y),
                            (joints[i]->z - pointMin.z) / (pointMax.z - pointMin.z) );
-            cout << joints[i]->x << ", " << joints[i]->y << ", " << joints[i]->z << endl;
         }
-        cout << " ========== "<<endl;
     }
     ofDisableBlendMode();
+}
+
+//-------
+void OpenNi::draw(int x, int y, int w, int h){
+    ofPushMatrix();
+    ofTranslate(x, y);
+    ofScale(w/640.0, h/480.0);
+    ofEnableBlendMode(OF_BLENDMODE_ALPHA);
+    int numUsers = kinect.getNumTrackedUsers();
+    for (int i = 0; i < numUsers; i++){
+        ofxOpenNIUser & user = kinect.getTrackedUser(i);
+        user.drawMask();
+    }
+    ofDisableBlendMode();
+    ofPopMatrix();
 }
 
 //-------

@@ -96,7 +96,7 @@ void BirlLearner::setupOscSender(string host, int port) {
 //-------
 BirlOutputParameter * BirlLearner::addOutput(string name, float *value, float min, float max) {
     BirlOutputParameter *newOutput = new BirlOutputParameter(name, value, min, max);
-	Learn::initializeOutput(newOutput);
+	Learn::initializeOutput(newOutput, true, false);
 	if (LEARN_TYPE == LearnOutputParameter::SVM)
         newOutput->setTrainingSvm();
     else
@@ -377,49 +377,55 @@ void BirlLearner::guiSettingsEvent(ofxUIEventArgs &e) {
         e.getName() == "target_rmse" ||
         e.getName() == "max_samples") {
         
-        int newEmbouchureMax = ofToInt(guiEmbouchureMax->getTextString());
-        int newKeysMax = ofToInt(guiKeysMax->getTextString());
-        float newKeysDiscreteMax = ofToFloat(guiKeysDiscreteMax->getTextString());
-        int newHiddenLayers = ofToInt(guiHiddenLayers->getTextString());
-        float newTargetRmse = ofToFloat(guiTargetRmse->getTextString());
-        int newMaxSamples = ofToInt(guiMaxSamples->getTextString());
-        
-        settingsChanged = "";
-        if (embouchureMax != newEmbouchureMax) {
-            settingsChanged += "\nChanged embouchure max from " + ofToString(embouchureMax) + " to " + ofToString(newEmbouchureMax);
-            embouchureMax  = newEmbouchureMax;
-            birl->setEmbouchureMax(embouchureMax);
-        }
-        if (keysMax != newKeysMax) {
-            settingsChanged = "\nChanged keys max from " + ofToString(keysMax) + " to " + ofToString(newKeysMax);
-            keysMax  = newKeysMax;
-            birl->setKeysMax(keysMax);
-        }
-        if (keysDiscreteMax != newKeysDiscreteMax) {
-            settingsChanged = "\nChanged keys discrete threshold from " + ofToString(keysDiscreteMax) + " to " + ofToString(newKeysDiscreteMax);
-            keysDiscreteMax  = newKeysDiscreteMax;
-            birl->setKeysDiscreteThreshold(keysDiscreteMax);
-        }
-        if (hiddenLayers != newHiddenLayers) {
-            settingsChanged = "\nChanged MLP hidden layers from " + ofToString(hiddenLayers) + " to " + ofToString(newHiddenLayers);
-            hiddenLayers  = newHiddenLayers;
-            setOutputTrainingSettings();
-        }
-        if (targetRmse != newTargetRmse) {
-            settingsChanged = "\nChanged MLP target RMSE from " + ofToString(targetRmse) + " to " + ofToString(newTargetRmse);
-            targetRmse  = newTargetRmse;
-            setOutputTrainingSettings();
-        }
-        if (maxSamples != newMaxSamples) {
-            settingsChanged = "\nChanged MLP max samples from " + ofToString(maxSamples) + " to " + ofToString(newMaxSamples);
-            maxSamples  = newMaxSamples;
-            setOutputTrainingSettings();
-        }
+        guiProcessSettings();
     }
     else if (e.getName() == "viewSettings") {
         if (e.getButton()->getValue()==0) {
             toggleViewPreferences();
+            if (!viewSettings)  guiProcessSettings();
         }
+    }
+}
+
+//--------
+void BirlLearner::guiProcessSettings() {
+    int newEmbouchureMax = ofToInt(guiEmbouchureMax->getTextString());
+    int newKeysMax = ofToInt(guiKeysMax->getTextString());
+    float newKeysDiscreteMax = ofToFloat(guiKeysDiscreteMax->getTextString());
+    int newHiddenLayers = ofToInt(guiHiddenLayers->getTextString());
+    float newTargetRmse = ofToFloat(guiTargetRmse->getTextString());
+    int newMaxSamples = ofToInt(guiMaxSamples->getTextString());
+    
+    settingsChanged = "";
+    if (embouchureMax != newEmbouchureMax) {
+        settingsChanged += "\nChanged embouchure max from " + ofToString(embouchureMax) + " to " + ofToString(newEmbouchureMax);
+        embouchureMax  = newEmbouchureMax;
+        birl->setEmbouchureMax(embouchureMax);
+    }
+    if (keysMax != newKeysMax) {
+        settingsChanged = "\nChanged keys max from " + ofToString(keysMax) + " to " + ofToString(newKeysMax);
+        keysMax  = newKeysMax;
+        birl->setKeysMax(keysMax);
+    }
+    if (keysDiscreteMax != newKeysDiscreteMax) {
+        settingsChanged = "\nChanged keys discrete threshold from " + ofToString(keysDiscreteMax) + " to " + ofToString(newKeysDiscreteMax);
+        keysDiscreteMax  = newKeysDiscreteMax;
+        birl->setKeysDiscreteThreshold(keysDiscreteMax);
+    }
+    if (hiddenLayers != newHiddenLayers) {
+        settingsChanged = "\nChanged MLP hidden layers from " + ofToString(hiddenLayers) + " to " + ofToString(newHiddenLayers);
+        hiddenLayers  = newHiddenLayers;
+        setOutputTrainingSettings();
+    }
+    if (targetRmse != newTargetRmse) {
+        settingsChanged = "\nChanged MLP target RMSE from " + ofToString(targetRmse) + " to " + ofToString(newTargetRmse);
+        targetRmse  = newTargetRmse;
+        setOutputTrainingSettings();
+    }
+    if (maxSamples != newMaxSamples) {
+        settingsChanged = "\nChanged MLP max samples from " + ofToString(maxSamples) + " to " + ofToString(newMaxSamples);
+        maxSamples  = newMaxSamples;
+        setOutputTrainingSettings();
     }
 }
 

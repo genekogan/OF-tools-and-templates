@@ -67,7 +67,7 @@ LearnParameter::~LearnParameter() {
 
 //-----------
 LearnOutputParameter::~LearnOutputParameter() {
-    clearInstances();
+    //clearInstances();
     ofRemoveListener(gui->newGUIEvent, this, &LearnOutputParameter::guiEvent);
     ofRemoveListener(guiInputSelect->newGUIEvent, this, &LearnOutputParameter::guiInputSelectEvent);
     guiInputSelect->clearWidgets();
