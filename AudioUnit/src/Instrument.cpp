@@ -14,14 +14,18 @@ Instrument::Instrument() {
 
 //-----------
 void Instrument::connectTo(ofxAudioUnitMixer &mixer, int channel) {
-    aalto.connectTo(mixer, channel);
+    au.connectTo(mixer, channel);
 }
 
 //-----------
-void Instrument::setup(){
-    aalto = ofxAudioUnitSampler('aumu','Aalt', 'MLbs');
-    aalto.showUI();
-    //kaivo = ofxAudioUnitSampler('aumu','Kaiv','MLbs');
+void Instrument::setup(InstrumentType type){
+    if (type == AALTO) {
+        au = ofxAudioUnitSampler('aumu','Aalt','MLbs');
+    }
+    else if (type == KAIVO) {
+        au = ofxAudioUnitSampler('aumu','Kaiv','MLbs');
+    }
+    au.showUI();
 
     // setup manta
     manta.setup();
@@ -39,7 +43,7 @@ void Instrument::setup(){
     setActive(true);
 
     // setup instrument parameters
-    vector<AudioUnitParameterInfo> params = aalto.getParameterList();
+    vector<AudioUnitParameterInfo> params = au.getParameterList();
     string newGroupName = "parameter group";
     for (int i=0; i<params.size(); i++) {
         ParameterMapping parameter;
@@ -93,23 +97,23 @@ void Instrument::update() {
     manta.update();
     
     if (mantaMap.count(54) > 0)
-        aalto.setParameter(mantaMap[54].parameterId, 0, ofMap(manta.getNumFingers(), 0, 10, mantaMap[54].rmin, mantaMap[54].rmax));
+        au.setParameter(mantaMap[54].parameterId, 0, ofMap(manta.getNumFingers(), 0, 10, mantaMap[54].rmin, mantaMap[54].rmax));
     if (mantaMap.count(55) > 0)
-        aalto.setParameter(mantaMap[55].parameterId, 0, ofMap(manta.getPadSum(), 0, 1024, mantaMap[55].rmin, mantaMap[55].rmax));
+        au.setParameter(mantaMap[55].parameterId, 0, ofMap(manta.getPadSum(), 0, 1024, mantaMap[55].rmin, mantaMap[55].rmax));
     if (mantaMap.count(56) > 0)
-        aalto.setParameter(mantaMap[56].parameterId, 0, ofMap(manta.getPadAverage(), 0, 196, mantaMap[56].rmin, mantaMap[56].rmax));
+        au.setParameter(mantaMap[56].parameterId, 0, ofMap(manta.getPadAverage(), 0, 196, mantaMap[56].rmin, mantaMap[56].rmax));
     if (mantaMap.count(57) > 0)
-        aalto.setParameter(mantaMap[57].parameterId, 0, ofMap(manta.getPerimeter(), 0, 2, mantaMap[57].rmin, mantaMap[57].rmax));
+        au.setParameter(mantaMap[57].parameterId, 0, ofMap(manta.getPerimeter(), 0, 2, mantaMap[57].rmin, mantaMap[57].rmax));
     if (mantaMap.count(58) > 0)
-        aalto.setParameter(mantaMap[58].parameterId, 0, ofMap(manta.getAverageInterFingerDistance(), 0, 1, mantaMap[58].rmin, mantaMap[58].rmax));
+        au.setParameter(mantaMap[58].parameterId, 0, ofMap(manta.getAverageInterFingerDistance(), 0, 1, mantaMap[58].rmin, mantaMap[58].rmax));
     if (mantaMap.count(59) > 0)
-        aalto.setParameter(mantaMap[59].parameterId, 0, ofMap(manta.getCentroidX(), 0, 1, mantaMap[59].rmin, mantaMap[59].rmax));
+        au.setParameter(mantaMap[59].parameterId, 0, ofMap(manta.getCentroidX(), 0, 1, mantaMap[59].rmin, mantaMap[59].rmax));
     if (mantaMap.count(60) > 0)
-        aalto.setParameter(mantaMap[60].parameterId, 0, ofMap(manta.getCentroidY(), 0, 1, mantaMap[60].rmin, mantaMap[60].rmax));
+        au.setParameter(mantaMap[60].parameterId, 0, ofMap(manta.getCentroidY(), 0, 1, mantaMap[60].rmin, mantaMap[60].rmax));
     if (mantaMap.count(61) > 0)
-        aalto.setParameter(mantaMap[61].parameterId, 0, ofMap(manta.getWeightedCentroidX(), 0, 1, mantaMap[61].rmin, mantaMap[61].rmax));
+        au.setParameter(mantaMap[61].parameterId, 0, ofMap(manta.getWeightedCentroidX(), 0, 1, mantaMap[61].rmin, mantaMap[61].rmax));
     if (mantaMap.count(62) > 0)
-        aalto.setParameter(mantaMap[62].parameterId, 0, ofMap(manta.getWeightedCentroidY(), 0, 1, mantaMap[62].rmin, mantaMap[62].rmax));
+        au.setParameter(mantaMap[62].parameterId, 0, ofMap(manta.getWeightedCentroidY(), 0, 1, mantaMap[62].rmin, mantaMap[62].rmax));
     
     if (sequencerManta) {
         for (int r=0; r<6; r++) {
@@ -134,15 +138,15 @@ void Instrument::update() {
 //-----------
 void Instrument::noteEvent(NoteType type, int note, int velocity) {
     if      (type == NOTE_ON) {
-        aalto.midiNoteOn(note, velocity);
+        au.midiNoteOn(note, velocity);
         noteStatus[note] = true;
     }
     else if (type == NOTE_OFF) {
-        aalto.midiNoteOff(note, velocity);
+        au.midiNoteOff(note, velocity);
         noteStatus[note] = false;
     }
     else if (type == NOTE_AUTO) {
-        aalto.midiNoteOn(note, velocity);
+        au.midiNoteOn(note, velocity);
         noteEvents[note] = ofGetFrameNum();
     }
 }
@@ -163,7 +167,7 @@ void Instrument::toggleSmooth(string &s) {
 void Instrument::mantaPadEvent(ofxMantaEvent &e) {
     int idx = e.col + 8 * e.row;
     if (mantaMap.count(idx) > 0) {
-        aalto.setParameter(mantaMap[idx].parameterId, 0, ofMap(e.value, 0, 196.0, mantaMap[idx].rmin, mantaMap[idx].rmax));
+        au.setParameter(mantaMap[idx].parameterId, 0, ofMap(e.value, 0, 196.0, mantaMap[idx].rmin, mantaMap[idx].rmax));
     }
 }
 
@@ -172,7 +176,7 @@ void Instrument::mantaSliderEvent(ofxMantaEvent &e) {
     if (e.value == -1)  return;
     int idx = 48 + e.id;
     if (mantaMap.count(idx) > 0) {
-        aalto.setParameter(mantaMap[idx].parameterId, 0, ofMap(e.value, 0, 4096, mantaMap[idx].rmin, mantaMap[idx].rmax));
+        au.setParameter(mantaMap[idx].parameterId, 0, ofMap(e.value, 0, 4096, mantaMap[idx].rmin, mantaMap[idx].rmax));
     }
 }
 
@@ -180,7 +184,7 @@ void Instrument::mantaSliderEvent(ofxMantaEvent &e) {
 void Instrument::mantaButtonEvent(ofxMantaEvent &e) {
     int idx = 50 + e.id;
     if (mantaMap.count(idx) > 0) {
-        aalto.setParameter(mantaMap[idx].parameterId, 0, ofMap(e.value, 0, 196.0, mantaMap[idx].rmin, mantaMap[idx].rmax));
+        au.setParameter(mantaMap[idx].parameterId, 0, ofMap(e.value, 0, 196.0, mantaMap[idx].rmin, mantaMap[idx].rmax));
     }
 }
 
@@ -441,7 +445,7 @@ void Instrument::processColumn(vector<float> &column) {
         int col = sequencer.getColumn();
         for (int r=0; r<column.size(); r++) {
             if (seqMap.count(r)) {
-                aalto.setParameter(seqMap[r].parameterId, 0,
+                au.setParameter(seqMap[r].parameterId, 0,
                                    ofMap(column[r], 0, 1,
                                          seqMap[r].rmin, seqMap[r].rmax));
             }
@@ -517,7 +521,7 @@ void Instrument::setupGuiPresets() {
 
 //-----------
 void Instrument::printParameterList() {
-    vector<AudioUnitParameterInfo> params = aalto.getParameterList();
+    vector<AudioUnitParameterInfo> params = au.getParameterList();
     for (int i=0; i<params.size(); i++) {
         cout << "parameter :: "<<params[i].name<<" :: "<< params[i].minValue << "->"<<params[i].maxValue << endl;
     }
@@ -532,7 +536,7 @@ void Instrument::savePreset(string filename) {
     string path = ofToDataPath("presetsAudio/"+filename+".xml");
     string aaltoPath = ofToDataPath("presetsAudio/aalto/"+filename+".aupreset");
 
-    aalto.saveCustomPresetAtPath(aaltoPath);
+    au.saveCustomPresetAtPath(aaltoPath);
     
     ofXml xml;
     xml.addChild("AudioPreset");
@@ -663,7 +667,7 @@ void Instrument::loadPreset(string &filename) {
     // aupreset
     if (xml.exists("Aupreset")) {
         string aaltoPath = xml.getValue<string>("Aupreset");
-        aalto.loadCustomPresetAtPath(aaltoPath);
+        au.loadCustomPresetAtPath(aaltoPath);
     }
 }
 

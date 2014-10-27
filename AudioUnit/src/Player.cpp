@@ -2,88 +2,74 @@
 
 
 //-----------
-void Player::setup() {
-    player.setFile("/Users/Gene/audio/my sounds/meditation.wav");
-    player.setFile("/Users/Gene/Desktop/test_wav.wav");
-//    player.setFile("/Users/Gene/Downloads/172667__underlineddesigns__military-rotor-loop.wav");
-    player.loop();
-    
-    
-    player.showUI();
-    
-    player.prime();
-    
-    
-    
-    fbo.allocate(400, 200);
-    fbo.begin();
-    ofClear(0, 0);
-    ofSetColor(0);
-    ofFill();
-    ofRect(0, 0, 400, 200);
-    fbo.end();
+void Player::setSelection(float _t1, float _t2) {
+    this->t1 = min(_t1, _t2);
+    this->t2 = max(_t1, _t2);
+    waveform.setSelection(t1, t2);
+    sample1 = t1 * player.getLength();
+    sample2 = t2 * player.getLength();
+    numSamples = sample2 - sample1;
+    player.playAtSampleTime(sample1);
 }
 
+//-----------
+void Player::setup() {
+    string path = "/Users/Gene/Desktop/test_wav.wav";
+    //string path = "/Users/Gene/Desktop/helloworld.wav";
+    //string path = "/Users/Gene/audio/my sounds/meditation.wav";
+
+    ofAddListener(waveform.selectionEvent, this, &Player::waveformSelectionEvent);
+    
+    player.setFile(path);
+    player.loop();
+
+    waveform.load(path); // supports mono or stereo .wav files
+	waveform.generateWaveForm();
+    setSelection(0, 1);
+}
 
 //-----------
 void Player::connectTo(ofxAudioUnitMixer &mixer, int channel) {
     player.connectTo(tap);
     tap.connectTo(mixer, channel);
-    
-    
+    mixer.setInputVolume(0, channel);
 
 }
 
+//-----------
+void Player::waveformSelectionEvent(ofPoint &e) {
+    setSelection(e.x, e.y);
+}
 
 //-----------
 void Player::update() {
-    t = (int) player.getCurrentTimestamp().mSampleTime % player.getLength();
-
-
-    
-    if (ofGetFrameNum() % 4 == 0) {
-        blah();
+    currentSample = player.getCurrentTimestamp().mSampleTime;
+    if (currentSample >= numSamples) {
+        player.playAtSampleTime(sample1);
     }
-    
-    /*
-    ofBeginShape();
-    ofNoFill();
-    ofSetColor(0);
-    for (int i=0; i<data.size(); i++) {
-        int x = ofMap(i, 0, data.size(), 100, 500);
-        int y = ofMap(data[i], -1, 1, 500, 700);
-        ofVertex(x, y);
-    }
-    ofEndShape();
-     */
-
 }
 
 //-----------
 void Player::draw() {
+    int x = 5;
+    int y = 500;
 
-    tap.getLeftWaveform(wave, ofGetWidth(), ofGetHeight());
-    wave.draw();
+    int width = ofGetWidth()-410;
+    int height = 100;
+    float amp = 2.0; // 1.0 + 3.0* (float) ofGetMouseY() / ofGetHeight();
+    
 
-    
-    float r =  (float) t / player.getLength();
-    
-    
-    tap.getLeftSamples(data);
-    
-    float rms = pow(0.5 + (tap.getLeftChannelRMS() + tap.getRightChannelRMS()), 2.0);
-    
-    
-    fbo.begin();
-    int x = ofMap(r, 0, 1, 0, fbo.getWidth());
-    int y = ofMap(rms, 0, 1, 0, 0.5 * fbo.getHeight());
-    ofSetColor(0, 255, 0, 100);
-    ofLine(x, fbo.getHeight()*0.5 - y, x, fbo.getHeight() * 0.5 + y);
-    ofSetColor(255);
-    fbo.end();
-    
-    fbo.draw(200, 500);
-
+    int cursor = ofMap(currentSample, 0, numSamples, x, x+width);
 
     
+    ofPushMatrix();
+    ofPushStyle();
+
+    waveform.drawWaveForm(x, y, width, height, amp);
+
+    ofSetColor(0, 255, 0);
+    ofLine(cursor, y-height/2, cursor, y+1.5*height);
+    
+    ofPopStyle();
+    ofPopMatrix();
 }

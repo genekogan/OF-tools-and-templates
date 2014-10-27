@@ -10,30 +10,30 @@ Control::Control() {
     headerSelected = false;
     setupGuiPresets();
     visible = true;
+    metaActive = false;
     setActive(true);
-    
+}
 
-    // meta-controller
-    /*
-      - control button to activate/display sequencer
-      - bind variables to rows
-    
-     */
+//-------
+void Control::setupMetaController() {
     meta = new MetaController();
     meta->setup(this);
+    metaActive = true;
 }
 
 //-------
 void Control::update(ofEventArgs &data) {
     if (active) {
         updateColors();
-        meta->update();
+        if (metaActive) {
+            meta->update();
+        }
     }
 }
 
 //-------
 void Control::draw(ofEventArgs &data) {
-    if (active) {
+    if (active && metaActive) {
         meta->draw();
     }
 }

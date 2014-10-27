@@ -15,8 +15,13 @@ public:
     void update();
     void draw();
     
+    void sequencerStepEvent(vector<float> &column);
+    void sequencerInterpolatedStepEvent(vector<float> &column);
+
+    
     Control *control;
     
     Sequencer *sequencer;
     
+    vector<ParameterBase *> seqParams;
 };

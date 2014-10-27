@@ -34,6 +34,8 @@ void Bubbles::setup() {
     
     
     
+    control.setupMetaController();
+    
     // NEEDS TO BE FIXED
     
     

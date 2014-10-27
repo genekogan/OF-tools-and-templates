@@ -11,6 +11,8 @@
 class Instrument
 {
 public:
+    enum InstrumentType { AALTO, KAIVO };
+    
     Instrument();
     ~Instrument();
     
@@ -25,7 +27,7 @@ public:
         float rmin, rmax;
     };
     
-    void setup();
+    void setup(InstrumentType type);
     void connectTo(ofxAudioUnitMixer &mixer, int channel=0);
     
     void update();
@@ -45,7 +47,7 @@ public:
     void savePreset(string filename="");
     void loadPreset(string &filename);
 
-    void showUI() {aalto.showUI();}
+    void showUI() {au.showUI();}
     void printParameterList();
 
 protected:
@@ -74,9 +76,7 @@ protected:
     Sequencer sequencer;
     Theory theory;
 
-    ofxAudioUnitSampler aalto; //, kaivo;
-//  ofxAudioUnitMixer mixer;
-//	ofxAudioUnitOutput output;
+    ofxAudioUnitSampler au;
     
     map<int, int> noteEvents;
     bool noteStatus[128];

@@ -2,31 +2,27 @@
 
 
 void AudioUnits::setup() {
-    aalto.setup();
-    
+//    aalto.setup(AALTO);
     
     player.setup();
     
-    
     player.connectTo(mixer, 0);
-    aalto.connectTo(mixer, 1);
+    //aalto.connectTo(mixer);
     
     mixer.connectTo(output);
     output.start();
     
-    
-
 }
 
 void AudioUnits::update() {
-    aalto.update();
+    //aalto.update();
     player.update();
     
     //cout << (int) player.getCurrentTimestamp().mSampleTime % (int)  player.getLength() << endl;
 }
 
 void AudioUnits::draw() {
-    aalto.draw();
+    //aalto.draw();
     player.draw();
 }
 

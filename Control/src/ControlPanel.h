@@ -6,6 +6,14 @@
 class MetaController;
 
 
+// meta-controller
+/*
+ - control button to activate/display sequencer
+ - bind variables to rows
+ */
+
+
+
 class Control
 {
 public:
@@ -48,6 +56,10 @@ public:
     
     void triggerMenuEvent(string menuName, string selection, bool trigger);
     bool headerSelected;
+    
+    /* meta controller */
+    void setupMetaController();
+    bool metaActive;
     
 private:
     
