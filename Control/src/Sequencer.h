@@ -27,7 +27,7 @@ public:
     float getValue(int row, int col);
     float getValueInterpolated(int row, int col);
     
-    void setActive(bool active) {this->active = active;}
+    void setActive(bool active) {this->active = active; active ? sequencer.start() : sequencer.stop();}
     void setDiscrete(bool discrete) {this->discrete = discrete;}
     void setBpm(int bpm) {this->bpm = bpm;}
 

@@ -20,12 +20,12 @@ void Sequencer::setup(int rows, int cols) {
     
     // setup gui
     gui = new ofxUICanvas("sequencer");
+    gui->setWidth(100);
     gui->clearWidgets();
-    gui->addLabel("Sequencer");
-    gui->addSpacer();
-    gui->addIntSlider("bpm", 60, 1500, &bpm);
+    gui->addIntSlider("bpm", 40, 300, &bpm);
     gui->addToggle("active", &active);
-    gui->addToggle("discrete", &discrete);
+    //gui->addToggle("discrete", &discrete);
+    gui->addToggle("smooth", &smooth);
     gui->addButton("reset", false);
     gui->addButton("randomize", false);
     gui->autoSizeToFitWidgets();
@@ -71,11 +71,6 @@ float Sequencer::getValueInterpolated(int row, int col) {
 //-------
 void Sequencer::draw() {
     sequencer.draw();
-    if (smooth) {
-        ofSetColor(0);
-        ofDrawBitmapString("smooth", x, y);
-        ofSetColor(255);
-    }
 }
 
 //-------
@@ -83,7 +78,6 @@ void Sequencer::setPosition(int x, int y, int w, int h) {
     this->x = x;
     this->y = y;
     sequencer.setPosition(x, y, w, h);
-    //control->setGuiPosition(x+w+5, y);
     gui->setPosition(x+w+5, y);
 }
 
@@ -91,7 +85,6 @@ void Sequencer::setPosition(int x, int y, int w, int h) {
 void Sequencer::setVisible(bool visible) {
     this->visible = visible;
     sequencer.setVisible(visible);
-    //control->setVisible(visible);
     gui->setVisible(visible);
 }
 
@@ -108,17 +101,21 @@ void Sequencer::playBeat(vector<float> &column) {
 //-------
 void Sequencer::guiEvent(ofxUIEventArgs &e) {
     if (e.getName() == "reset") {
-        sequencer.reset();
+        if (e.getButton()->getValue()==1) {
+            sequencer.reset();
+        }
     }
     else if (e.getName() == "randomize") {
-        sequencer.randomize();
+        if (e.getButton()->getValue()==0) {
+            sequencer.randomize();
+        }
     }
     else if (e.getName() == "bpm") {
         sequencer.setBpm(bpm);
         bpmInterval = 60000.0 / bpm;
     }
     else if (e.getName() == "active") {
-        active ? sequencer.start() : sequencer.stop();
+        setActive(active);
     }
     else if (e.getName() == "discrete") {
         sequencer.setDiscrete(discrete);
@@ -127,7 +124,6 @@ void Sequencer::guiEvent(ofxUIEventArgs &e) {
 
 //-------
 Sequencer::~Sequencer() {
-//    delete control;
     gui->disable();
     delete gui;
 }

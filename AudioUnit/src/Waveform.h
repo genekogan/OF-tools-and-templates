@@ -44,8 +44,11 @@ public:
     // public variables
     char* 	myData;
     
-    ofEvent<ofPoint> selectionEvent;
-    void setSelection(float sel1, float sel2);
+    void    setSelection(float sel1, float sel2);
+    void    resetSelection() {setSelection(0, 1);}
+    void    addSelection(float sel1, float sel2);
+    void    clearSelections() {selections.clear();}
+    ofEvent<ofPoint> selectionEvent, selectEvent;
     
 private:
 
@@ -89,4 +92,5 @@ private:
     float t1, t2;
     bool dragging;
     float select1, select2;
+    vector<ofPoint> selections;
 };

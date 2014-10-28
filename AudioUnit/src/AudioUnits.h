@@ -15,7 +15,7 @@ public:
     
     void savePreset();
     
-    Instrument aalto;
+    //Instrument aalto;
 
     Player player;
     

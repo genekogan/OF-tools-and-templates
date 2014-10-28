@@ -173,12 +173,19 @@ void Waveform::redraw() {
     ofRect(0, 0, width, height);
 
     ofSetColor(0, 255, 0);
-    
     if (dragging) {
         int selX = width * (select1-t1) / (t2 - t1);
         int selW = width * (select2-select1) / (t2 - t1);
         ofRect(selX, 0, selW, height);
     }
+    
+    ofSetColor(255, 255, 0);
+    for (int i=0; i<selections.size(); i++) {
+        int selX = width * (selections[i].x-t1) / (t2 - t1);
+        int selW = width * (selections[i].y-selections[i].x) / (t2 - t1);
+        ofRect(selX, 0, selW, height);
+    }
+    
     ofTranslate(0, h*0.5);
     
     float waveFormZoomX = (float)waveForm.size()/(float)w;
@@ -227,6 +234,11 @@ void Waveform::redraw() {
 void Waveform::setSelection(float sel1, float sel2) {
     t1 = sel1;
     t2 = sel2;
+    redraw();
+}
+
+void Waveform::addSelection(float sel1, float sel2) {
+    selections.push_back(ofPoint(sel1, sel2));
     redraw();
 }
 
@@ -441,9 +453,9 @@ bool Waveform::read()
 
 void Waveform::mousePressed(ofMouseEventArgs &evt) {
     if (waveformRect.inside(evt.x, evt.y)) {
-        dragging = true;
         select1 = ofMap(evt.x, waveformRect.getX(), waveformRect.getX()+waveformRect.getWidth(), t1, t2);
         select2 = select1;
+        dragging = true;
     }
 }
 
@@ -455,8 +467,18 @@ void Waveform::mouseDragged(ofMouseEventArgs &evt) {
 
 void Waveform::mouseReleased(ofMouseEventArgs &evt) {
     if (dragging) {
+        if (select1 == select2) {
+            for (int i=0; i<selections.size(); i++) {
+                if (select1 > selections[i].x && select1 < selections[i].y) {
+                    ofNotifyEvent(selectEvent, selections[i]);
+                    break;
+                }
+            }
+        }
+        else {
+            ofPoint selection(select1, select2);
+            ofNotifyEvent(selectionEvent, selection);
+        }
         dragging = false;
-        ofPoint selection(select1, select2);
-        ofNotifyEvent(selectionEvent, selection);
     }
 }
