@@ -1,9 +1,9 @@
 #include "MetaController.h"
 
 
+//-----------
 void MetaController::setup(Control *control) {
     this->control = control;
-    
     vector<ParameterBase*> parameters = control->getParameters();
     int n = 0;
     for (int i=0; i<parameters.size(); i++) {
@@ -30,11 +30,11 @@ void MetaController::setup(Control *control) {
     
     sequencer = new Sequencer();
     sequencer->setup(n, 8);
-    setPosition(86, ofGetHeight()-158, 200, 150);
-    
     sequencer->addBeatListener(this, &MetaController::sequencerStepEvent);
     sequencer->addInterpolatedBeatListener(this, &MetaController::sequencerInterpolatedStepEvent);
     sequencer->setSmooth(true);
+    
+    setPosition(86, ofGetHeight()-158, 200, 150);
     
     ofAddListener(ofEvents().mousePressed, this, &MetaController::mousePressed);
 }
@@ -73,39 +73,46 @@ void MetaController::processColumn(vector<float> &column) {
     int idx = 0;
     for (int p=0; p<seqParams.size(); p++) {
         if (seqParams[p]->getType() == ParameterBase::INT) {
-            int val = ofMap(column[idx], 0, 1, seqParams[p]->getMin<int>(), seqParams[p]->getMax<int>());
-            ((Parameter<int> *) seqParams[p])->set(val);
+            if (seqActive[idx]) {
+                int val = ofMap(column[idx], 0, 1, seqParams[p]->getMin<int>(), seqParams[p]->getMax<int>());
+                ((Parameter<int> *) seqParams[p])->set(val);
+            }
             idx += 1;
         }
         else if (seqParams[p]->getType() == ParameterBase::FLOAT) {
-            float val = ofMap(column[idx], 0, 1, seqParams[p]->getMin<float>(), seqParams[p]->getMax<float>());
-            ((Parameter<float> *) seqParams[p])->set(val);
+            if (seqActive[idx]) {
+                float val = ofMap(column[idx], 0, 1, seqParams[p]->getMin<float>(), seqParams[p]->getMax<float>());
+                ((Parameter<float> *) seqParams[p])->set(val);
+            }
             idx += 1;
         }
         else if (seqParams[p]->getType() == ParameterBase::VEC2F) {
             ofVec2f min = seqParams[p]->getMin<ofVec2f>();
             ofVec2f max = seqParams[p]->getMax<ofVec2f>();
-            ofVec2f val = ofVec2f(column[idx  ] * min.x + (1.0-column[idx  ]) * max.x,
-                                  column[idx+1] * min.y + (1.0-column[idx+1]) * max.y);
+            ofVec2f cur = seqParams[p]->get<ofVec2f>();
+            ofVec2f val = ofVec2f(seqActive[idx  ] ? column[idx  ] * min.x + (1.0-column[idx  ]) * max.x : cur.x,
+                                  seqActive[idx+1] ? column[idx+1] * min.y + (1.0-column[idx+1]) * max.y : cur.y);
             ((Parameter<ofVec2f> *) seqParams[p])->set(val);
             idx += 2;
         }
         else if (seqParams[p]->getType() == ParameterBase::VEC3F) {
             ofVec3f min = seqParams[p]->getMin<ofVec3f>();
             ofVec3f max = seqParams[p]->getMax<ofVec3f>();
-            ofVec3f val = ofVec3f(column[idx  ] * min.x + (1.0-column[idx  ]) * max.x,
-                                  column[idx+1] * min.y + (1.0-column[idx+1]) * max.y,
-                                  column[idx+2] * min.z + (1.0-column[idx+2]) * max.z);
+            ofVec3f cur = seqParams[p]->get<ofVec3f>();
+            ofVec3f val = ofVec3f(seqActive[idx  ] ? column[idx  ] * min.x + (1.0-column[idx  ]) * max.x : cur.x,
+                                  seqActive[idx+1] ? column[idx+1] * min.y + (1.0-column[idx+1]) * max.y : cur.y,
+                                  seqActive[idx+2] ? column[idx+2] * min.z + (1.0-column[idx+2]) * max.z : cur.z);
             ((Parameter<ofVec3f> *) seqParams[p])->set(val);
             idx += 3;
         }
         else if (seqParams[p]->getType() == ParameterBase::VEC4F) {
             ofVec4f min = seqParams[p]->getMin<ofVec4f>();
             ofVec4f max = seqParams[p]->getMax<ofVec4f>();
-            ofVec4f val = ofVec4f(column[idx  ] * min.x + (1.0-column[idx  ]) * max.x,
-                                  column[idx+1] * min.y + (1.0-column[idx+1]) * max.y,
-                                  column[idx+2] * min.z + (1.0-column[idx+2]) * max.z,
-                                  column[idx+3] * min.w + (1.0-column[idx+3]) * max.w);
+            ofVec4f cur = seqParams[p]->get<ofVec4f>();
+            ofVec4f val = ofVec4f(seqActive[idx  ] ? column[idx  ] * min.x + (1.0-column[idx  ]) * max.x : cur.x,
+                                  seqActive[idx+1] ? column[idx+1] * min.y + (1.0-column[idx+1]) * max.y : cur.y,
+                                  seqActive[idx+2] ? column[idx+2] * min.z + (1.0-column[idx+2]) * max.z : cur.z,
+                                  seqActive[idx+3] ? column[idx+3] * min.w + (1.0-column[idx+3]) * max.w : cur.w);
             ((Parameter<ofVec4f> *) seqParams[p])->set(val);
             idx += 4;
         }

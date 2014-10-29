@@ -10,7 +10,6 @@ class Sequencer;
 class MetaController
 {
 public:
-    
     void setup(Control *control);
     void update();
     void draw();
@@ -19,6 +18,10 @@ public:
     void setVisible(bool visible);
     void toggleVisible() {setVisible(!visible);}
     
+private:
+
+    void drawLabel(int paramIdx, int idx, string suffix="");
+
     void sequencerStepEvent(vector<float> &column);
     void sequencerInterpolatedStepEvent(vector<float> &column);
     void processColumn(vector<float> &column);
@@ -27,12 +30,8 @@ public:
     
     Control *control;
     Sequencer *sequencer;
-    
     vector<ParameterBase *> seqParams;
     vector<bool> seqActive;
-    
     int x, y, width, height;
     bool visible;
-    
-    void drawLabel(int paramIdx, int idx, string suffix="");
 };

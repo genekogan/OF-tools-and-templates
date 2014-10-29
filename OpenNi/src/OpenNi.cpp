@@ -106,6 +106,7 @@ void OpenNi::setup(){
     smoothingRate = 1;
     
     
+    kinect.startPlayer("/Users/Gene/Code/openFrameworks/templates/Kinect/openni_oniTestRecording/bin/data/test.oni");
 
 }
 
@@ -114,7 +115,7 @@ bool OpenNi::update(){
     kinect.update();
     if (kinect.isNewFrame()) {
         if (trackingBlobs) {
-            //updateContours();
+            updateContours();
         }
         if (trackingKeypoints) {
             //flow.calcOpticalFlow(kinect.getDepthPixelsRef());
@@ -177,6 +178,9 @@ void OpenNi::updateJoints(){
 
 //-------
 void OpenNi::draw(int x, int y, int w, int h){
+    
+    kinect.drawDepth(10, 5);    //drawDebug
+    
     ofPushMatrix();
     ofTranslate(x, y);
     ofScale(w/640.0, h/480.0);
@@ -307,6 +311,10 @@ void OpenNi::updateContours() {
     contourFinder.getTracker().setMaximumDistance(maxDistance);
     contourFinder.getTracker().setSmoothingRate(smoothingRate);
     
+    
+    contourFinder.findContours(kinect.getDepthPixels());
+    
+    /*
     int numUsers = kinect.getNumTrackedUsers();
     for (int i = 0; i < numUsers; i++){
         ofxOpenNIUser & user = kinect.getTrackedUser(i);
@@ -315,6 +323,6 @@ void OpenNi::updateContours() {
         //contourFinder.findContours(user.getMaskPixels());
         
     }
-
+     */
     
 }

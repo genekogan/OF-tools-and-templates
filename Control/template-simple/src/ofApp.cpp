@@ -37,6 +37,7 @@ void ofApp::setup(){
     resolution = 16;
     filled = true;
     
+    // setup metacontroller
     control.setupMetaController();
 }
 
