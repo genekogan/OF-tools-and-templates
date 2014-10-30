@@ -13,41 +13,83 @@ using namespace cv;
 
 enum ContourStrategy { BLOBS, SEGMENTATION };
 
+
+
+
+class Contour {
+public:
+    vector<cv::Point> points;
+    int label;
+    int age;
+    bool active;
+    
+    ofColor color;
+    
+    Contour(vector<cv::Point> & points, int label) {
+        this->points = points;
+        this->label = label;
+        age = 0;
+        active = true;
+        color = ofColor(ofRandom(60,255), ofRandom(60,255), ofRandom(60,255));
+    }
+    
+    void setPoints(vector<cv::Point> & points) {
+        this->points = points;
+    }
+    
+    void draw() {
+        ofPushStyle();
+        ofNoFill();
+        ofSetLineWidth(2);
+        ofSetColor(color);
+        ofBeginShape();
+        for (int j=0; j<points.size(); j++) {
+            ofVertex(points[j].x, points[j].y);
+        }
+        ofEndShape();
+        ofPopStyle();
+    }
+    
+};
+
+
+
 class OpenNi
 {
 public:
-    void setup();
+    void setup(string oni="");
+    
+    
+    
     void close();
+    
+    void setCalibration(string path);
     
     void setGuiPosition(int x, int y);
     void toggleGuiVisible();
 
     bool update();
+    
     void updateContours();
     void updateJoints();
-
+    
+    void recordContours();
     
     void draw(int x=0, int y=0, int w=640, int h=480);
     void drawCalibrated(int x=0, int y=0, int width=640, int height=480);
-    
-    void setCalibration(string path);
-    
+    void drawCalibratedSkeleton(int width, int height);
+
     vector<ofVec3f*> & getJoints(bool normalized=false);
     vector<ofVec2f>  & getProjectedJoints();
     string getJointName(int idx) {return jointNames[idx];}
     
     
-    
-    
-    //void                    setTrackingBlobs(bool t) {trackingBlobs = t;}
-    //void                    setTrackingKeypoints(bool t) {trackingKeypoints = t;}
-    
-
     ContourFinder&          getContourFinder();
     RectTracker&            getContourTracker();
     
-    
-    void drawCalibratedSkeleton(int width, int height);
+    vector<Contour *> contours;
+    //vector<Ribbon *> ribbons;
+
     
 private:
     
@@ -79,7 +121,7 @@ private:
 
     bool                    trackingBlobs;
     bool                    trackingKeypoints;
-    bool trackingJoints;
+    bool                    trackingJoints;
 
     
     float                   fade;
@@ -95,6 +137,9 @@ private:
     int                     smoothness;
     bool                    curved;
     float                   smoothingRate;
+    
+    
+    ofxCvGrayscaleImage grayImage;
 
 };
 

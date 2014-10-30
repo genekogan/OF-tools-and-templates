@@ -10,13 +10,21 @@ class Sequencer;
 class MetaController
 {
 public:
+    ~MetaController();
     void setup(Control *control);
+    void disable();
+    
     void update();
     void draw();
     
     void setPosition(int x, int y, int width=200, int height=150);
     void setVisible(bool visible);
     void toggleVisible() {setVisible(!visible);}
+    
+    void setSeqActive(int idx, bool active) { seqActive[idx] = active; }
+    
+    Sequencer * getSequencer() { return sequencer;}
+    vector<bool> getSeqActive() { return seqActive;}
     
 private:
 

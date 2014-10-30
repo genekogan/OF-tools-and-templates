@@ -1,0 +1,108 @@
+<Preset>
+	<Parameters>
+		<Parameter>
+			<Name>position</Name>
+			<OscAddress>/position</OscAddress>
+			<Type>Vec2f</Type>
+			<Value>345, 298</Value>
+			<Min>0, 0</Min>
+			<Max>1280, 720</Max>
+		</Parameter>
+		<Parameter>
+			<Name>radius</Name>
+			<OscAddress>/radius</OscAddress>
+			<Type>Float</Type>
+			<Value>100</Value>
+			<Min>20</Min>
+			<Max>200</Max>
+		</Parameter>
+		<Parameter>
+			<Name>filled</Name>
+			<OscAddress>/filled</OscAddress>
+			<Type>Bool</Type>
+			<Value>1</Value>
+		</Parameter>
+		<Parameter>
+			<Name>point</Name>
+			<OscAddress>/point</OscAddress>
+			<Type>Vec3f</Type>
+			<Value>0, 0, 0</Value>
+			<Min>0, 0, 0</Min>
+			<Max>1, 1, 1</Max>
+		</Parameter>
+		<Parameter>
+			<Name>vec3</Name>
+			<OscAddress>/vec3</OscAddress>
+			<Type>Vec3f</Type>
+			<Value>0, 0, 0</Value>
+			<Min>0, 0, 0</Min>
+			<Max>1, 1, 1</Max>
+		</Parameter>
+		<Parameter>
+			<Name>color</Name>
+			<OscAddress>/color</OscAddress>
+			<Type>Vec4f</Type>
+			<Value>255, 255, 255, 255</Value>
+			<Min>0, 0, 0, 0</Min>
+			<Max>255, 255, 255, 255</Max>
+		</Parameter>
+		<Parameter>
+			<Name>resolution</Name>
+			<OscAddress>/resolution</OscAddress>
+			<Type>Int</Type>
+			<Value>16</Value>
+			<Min>10</Min>
+			<Max>30</Max>
+		</Parameter>
+		<Parameter>
+			<Name>string</Name>
+			<OscAddress>/string</OscAddress>
+			<Type>String</Type>
+			<Value/>
+		</Parameter>
+	</Parameters>
+	<Menus>
+		<Menu>
+			<Name>dropdown1</Name>
+			<Items>
+				<Item>
+					<Name>menu1 item 1</Name>
+					<Value>0</Value>
+				</Item>
+				<Item>
+					<Name>menu1 item 2</Name>
+					<Value>0</Value>
+				</Item>
+				<Item>
+					<Name>menu1 item 3</Name>
+					<Value>0</Value>
+				</Item>
+			</Items>
+		</Menu>
+		<Menu>
+			<Name>dropdown2</Name>
+			<Items>
+				<Item>
+					<Name>menu2 item 1</Name>
+					<Value>0</Value>
+				</Item>
+				<Item>
+					<Name>menu2 item 2</Name>
+					<Value>0</Value>
+				</Item>
+				<Item>
+					<Name>menu2 item 3</Name>
+					<Value>0</Value>
+				</Item>
+			</Items>
+		</Menu>
+	</Menus>
+	<MetaController>
+		<Active>0</Active>
+		<Smooth>1</Smooth>
+		<Bpm>120</Bpm>
+		<Rows>14</Rows>
+		<Cols>8</Cols>
+		<Values>0.901762,0.906902,0.303875,0.227812,0.834667,0.250748,0.329497,0.863598,0.496583,0.062006,0.134764,0.972027,0.858384,0.864162,0.977446,0.938563,0.422071,0.741839,0.0897854,0.0224802,0.825528,0.656577,0.0881011,0.715982,0.506457,0.0156034,0.245809,0.31127,0.512794,0.530188,0.870328,0.59838,0.965133,0.9978,0.0222523,0.993942,0.175485,0.368093,0.536296,0.518968,0.290916,0.42487,0.796374,0.654203,0.190351,0.224243,0.847441,0.936776,0.39136,0.595737,0.55149,0.886924,0.536277,0.202493,0.297377,0.0124568,0.360989,0.145424,0.137733,0.881097,0.594885,0.228013,0.214727,0.92223,0.911652,0.141224,0.543843,0.374357,0.810659,0.744813,0.0694334,0.966754,0.238175,0.000747707,0.566715,0.779506,0.15419,0.471678,0.492673,0.356936,0.0227648,0.608364,0.766591,0.10139,0.0673026,0.155049,0.915634,0.0575807,0.759313,0.773736,0.18337,0.892919,0.292845,0.845519,0.636841,0.389737,0.316692,0.644783,0.868254,0.741954,0.0134756,0.484655,0.591303,0.0244032,0.143988,0.00814452,0.884944,0.247551,0.585178,0.0863205,0.789433,0.996777</Values>
+	</MetaController>
+</Preset>

@@ -20,13 +20,11 @@ void ofApp::setup(){
     items1.push_back("menu1 item 1");
     items1.push_back("menu1 item 2");
     items1.push_back("menu1 item 3");
-    items1.push_back("menu1 item 4");
 
     vector<string> items2;
     items2.push_back("menu2 item 1");
     items2.push_back("menu2 item 2");
     items2.push_back("menu2 item 3");
-    items2.push_back("menu2 item 4");
 
     control.addMenu("dropdown1", items1, this, &ofApp::menuEvent1);
     control.addMenu("dropdown2", items2, this, &ofApp::menuEvent2);
@@ -38,7 +36,7 @@ void ofApp::setup(){
     filled = true;
     
     // setup metacontroller
-    control.setupMetaController();
+    //control.setupMetaController();
 }
 
 //---------

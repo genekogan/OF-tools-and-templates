@@ -19,6 +19,29 @@ void Control::setupMetaController() {
     meta = new MetaController();
     meta->setup(this);
     metaActive = true;
+    setViewMeta(viewMeta);
+}
+
+//-------
+void Control::removeMetaController() {
+    if (metaActive) {
+        setViewMeta(false);
+        meta->disable();
+        delete meta;
+        metaActive = false;
+    }
+}
+
+//-------
+void Control::setViewMeta(bool viewMeta) {
+    this->viewMeta = viewMeta;
+    if (metaActive) {
+        meta->setVisible(viewMeta);
+    }
+    else {
+        setupMetaController();
+        setViewMeta(viewMeta);
+    }
 }
 
 //-------
@@ -130,12 +153,14 @@ vector<ofxUIDropDownList *> Control::getMenus() {
 void Control::setupGuiPresets() {
     guiPresets->clearWidgets();
     guiPresets->setWidth(width);
-    guiPresets->addLabelButton("controlHeader", false, (float)width-42.0f)->setLabelText("Presets");
+    guiPresets->addLabelButton("controlHeader", false)->setLabelText(name);
+    guiPresets->addLabelButton("Presets", false, 50.0f);
+    ((ofxUILabelButton *) guiPresets->getWidget("Presets"))->setName("controlPresetsView");
     guiPresets->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiPresets->addLabelButton("P", false, 16.0f);
-    ((ofxUILabelButton *) guiPresets->getWidget("P"))->setName("controlPresetsView");
-    guiPresets->addLabelButton("S", false, 16.0f);
-    ((ofxUILabelButton *) guiPresets->getWidget("S"))->setName("controlPresetsSave");
+    guiPresets->addLabelButton("Save", false, 40.0f);
+    ((ofxUILabelButton *) guiPresets->getWidget("Save"))->setName("controlPresetsSave");
+    guiPresets->addLabelToggle("Seq", false, 40.0f);
+    ((ofxUILabelToggle *) guiPresets->getWidget("Seq"))->setName("viewMeta");
     guiPresets->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
     guiPresets->addSpacer();
     guiPresets->addIntSlider("Lerp frames", 0, 120, &numLerpFrames);
@@ -157,12 +182,14 @@ void Control::setupGuiPresets() {
 void Control::setupGui() {
     gui->clearWidgets();
     gui->setWidth(width);
-    gui->addLabelButton("controlHeader", false, (float)width-42.0f)->setLabelText(name);
+    gui->addLabelButton("controlHeader", false)->setLabelText(name);
+    gui->addLabelButton("Presets", false, 50.0f);
+    ((ofxUILabelButton *) gui->getWidget("Presets"))->setName("controlPresetsView");
     gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    gui->addLabelButton("P", false, 16.0f);
-    ((ofxUILabelButton *) gui->getWidget("P"))->setName("controlPresetsView");
-    gui->addLabelButton("S", false, 16.0f);
-    ((ofxUILabelButton *) gui->getWidget("S"))->setName("controlPresetsSave");
+    gui->addLabelButton("Save", false, 40.0f);
+    ((ofxUILabelButton *) gui->getWidget("Save"))->setName("controlPresetsSave");
+    gui->addLabelToggle("Seq", false, 40.0f);
+    ((ofxUILabelToggle *) gui->getWidget("Seq"))->setName("viewMeta");
     gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
     gui->addSpacer();
     
@@ -223,7 +250,7 @@ void Control::guiEvent(ofxUIEventArgs &e) {
     else if (events.count(e.getName()) > 0) {
         if (e.getButton()->getValue() == 1) return;
         string state = e.getName();
-        ofNotifyEvent(*events[e.getName()], state, this);
+        ofNotifyEvent(*events[state], state, this);
     }
     
     // label callback
@@ -243,7 +270,12 @@ void Control::guiEvent(ofxUIEventArgs &e) {
         if (e.getButton()->getValue() == 1) return;
         savePreset();
     }
-    
+
+    // save preset
+    else if (e.getName() == "viewMeta") {
+        setViewMeta(e.getButton()->getValue() == 1);
+    }
+
     // color change
     else {
         string colorName = ofSplitString(e.getName(), "->")[0];
@@ -274,6 +306,9 @@ void Control::guiPresetsEvent(ofxUIEventArgs &e) {
     else if (e.getName() == "controlPresetsSave") {
         if (e.getButton()->getValue() == 1) return;
         savePreset();
+    }
+    else if (e.getName() == "viewMeta") {
+        setViewMeta(e.getButton()->getValue() == 1);
     }
     else if (e.getParentName() == "presets") {
         string path = ofToDataPath("presets/"+getName()+"/"+e.getName());
@@ -355,7 +390,7 @@ void Control::addColor(string name, ofColor *value) {
 
 //-------
 void Control::addParameterToGui(Parameter<string> *parameter) {
-    gui->addTextInput(parameter->getName(), *parameter->getReference());
+    gui->addTextInput(parameter->getName(), *parameter->getReference())->setAutoClear(false);
 }
 
 //-------

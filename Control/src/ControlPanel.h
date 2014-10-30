@@ -6,14 +6,6 @@
 class MetaController;
 
 
-// meta-controller
-/*
- - control button to activate/display sequencer
- - bind variables to rows
- */
-
-
-
 class Control
 {
 public:
@@ -58,8 +50,11 @@ public:
     bool headerSelected;
     
     /* meta controller */
+    MetaController * getMetaController() {return meta;}
     void setupMetaController();
-    bool metaActive;
+    void removeMetaController();
+    void setViewMeta(bool viewMeta);
+    bool getMetaActive() {return metaActive;}
     
 private:
     
@@ -100,8 +95,9 @@ private:
     map<string, ofEvent<string>*> menuEvents;
     map<string, GuiColorVecPair*> colors;
     
-    
     MetaController *meta;
+    bool metaActive;
+    bool viewMeta;
 };
 
 

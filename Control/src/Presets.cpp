@@ -38,7 +38,6 @@ void Presets::loadPreset(Control &control, ofXml &xml, int numFrames) {
     
     if (xml.exists("Parameter[0]")) {
         xml.setTo("Parameter[0]");
-
         do {
             string name = xml.getValue<string>("Name");
             string type = xml.getValue<string>("Type");
@@ -66,17 +65,13 @@ void Presets::loadPreset(Control &control, ofXml &xml, int numFrames) {
             }
         }
         while(xml.setToSibling());
-        
         xml.setToParent();
     }
-        
     xml.setToParent();
     
     xml.setTo("Menus");
-        
     if (xml.exists("Menu[0]")) {
         xml.setTo("Menu[0]");
-        
         do {
             string menuName = xml.getValue<string>("Name");
             xml.setTo("Items");
@@ -91,9 +86,38 @@ void Presets::loadPreset(Control &control, ofXml &xml, int numFrames) {
             xml.setToParent();
         }
         while (xml.setToSibling());
-        
         xml.setToParent();
     }
+    xml.setToParent();
+    
+    if (xml.exists("MetaController")) {
+        xml.setTo("MetaController");
+        int rows = xml.getValue<int>("Rows");
+        int cols = xml.getValue<int>("Cols");
+
+        if (!control.getMetaActive()) {
+            control.setupMetaController();
+        }
+        MetaController *meta = control.getMetaController();
+        Sequencer *seq = meta->getSequencer();
+        seq->setBpm(xml.getValue<int>("Bpm"));
+        seq->setActive(xml.getValue("Active") == "1");
+        seq->setSmooth(xml.getValue("Smooth") == "1");
+        seq->setDiscrete(xml.getValue("Discrete") == "1");
+        seq->setSize(rows, cols);
+        vector<string> values = ofSplitString(xml.getValue("Values"), ",");
+        for (int v=0; v<values.size(); v++) {
+            int r = floor(v / cols);
+            int c = v % cols;
+            seq->setValue(r, c, ofToFloat(values[v]));
+        }
+        vector<string> seqActiveValues = ofSplitString(xml.getValue("SeqActive"), ",");
+        for (int i=0; i<seqActiveValues.size(); i++) {
+            meta->setSeqActive(i, seqActiveValues[i]=="1");
+        }
+        xml.setToParent();
+    }
+    xml.setToParent();
 }
 
 //--------------
@@ -105,6 +129,10 @@ ofXml Presets::getXml(Control &control) {
     xml.setTo("Preset");
     xml.addXml(parametersXml);
     xml.addXml(menusXml);
+    if (control.getMetaActive()) {
+        ofXml metaXml = getXml(control.getMetaController());
+        xml.addXml(metaXml);
+    }
     return xml;
 }
 
@@ -117,6 +145,37 @@ ofXml Presets::getXml(vector<ParameterBase *> &parameters) {
         ofXml xmlp = getXml(parameters[i]);
         xml.addXml(xmlp);
     }
+    return xml;
+}
+
+//--------------
+ofXml Presets::getXml(MetaController *meta) {
+    Sequencer *seq = meta->getSequencer();
+    ofXml xml;
+    xml.addChild("MetaController");
+    xml.setTo("MetaController");
+    xml.addValue("Active", seq->getActive() ? "1" : "0");
+    xml.addValue("Smooth", seq->getSmooth() ? "1" : "0");
+    xml.addValue("Discrete", seq->getDiscrete() ? "1" : "0");
+    xml.addValue("Bpm", seq->getBpm());
+    xml.addValue("Rows", seq->getNumberRows());
+    xml.addValue("Cols", seq->getNumberCols());
+    int rows = seq->getNumberRows();
+    int cols = seq->getNumberCols();
+    string values = ofToString(seq->getValue(0, 0));
+    for (int r=0; r<rows; r++) {
+        for (int c=0; c<cols; c++) {
+            if (r==0 && c==0)   continue;
+            values += ","+ofToString(seq->getValue(r, c));
+        }
+    }
+    xml.addValue("Values", values);
+    vector<bool> seqActive = meta->getSeqActive();
+    string seqActiveValues = ofToString(seqActive[0] ? "1" : "0");
+    for (int i=1; i<seqActive.size(); i++) {
+        seqActiveValues += ","+ofToString(seqActive[i] ? "1" : "0");
+    }
+    xml.addValue("SeqActive", seqActiveValues);
     return xml;
 }
 

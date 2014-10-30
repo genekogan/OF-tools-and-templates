@@ -4,6 +4,9 @@
 
 
 class Control;
+class MetaController;
+class Sequencer;
+
 
 class Presets {
 public:    
@@ -16,6 +19,7 @@ public:
     ofXml getXml(ParameterBase * parameter);
     ofXml getXml(vector<ofxUIDropDownList *> menus);
     ofXml getXml(ofxUIDropDownList * menu);
+    ofXml getXml(MetaController *meta);
 
 protected:
     

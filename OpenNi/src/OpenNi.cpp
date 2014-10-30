@@ -2,95 +2,76 @@
 
 
 //-------
-void OpenNi::setup(){
-    control.setVisible(false);
+void OpenNi::setup(string oni){
     
-    kinect.setup();
-    kinect.addImageGenerator();
+    if (oni != "") {
+        kinect.setupFromONI(oni);
+    }
     kinect.addDepthGenerator();
+    kinect.addImageGenerator();
     kinect.setRegister(true);
     kinect.setMirror(true);
     kinect.addUserGenerator();
-    kinect.setMaxNumUsers(2);
+    kinect.setMaxNumUsers(1);
     kinect.start();
     
-    // set properties for all user masks and point clouds
-    //kinect.setUseMaskPixelsAllUsers(true); // if you just want pixels, use this set to true
-    kinect.setUseMaskTextureAllUsers(true); // this turns on mask pixels internally AND creates mask textures efficiently
-    kinect.setUsePointCloudsAllUsers(true);
-    kinect.setPointCloudDrawSizeAllUsers(2); // size of each 'point' in the point cloud
-    kinect.setPointCloudResolutionAllUsers(2); // resolution of the mesh created for the point cloud eg., this will use every second depth pixel
-        
-    // initialize joint array
-    joints.push_back(&jointHead);
-    joints.push_back(&jointNeck);
-    joints.push_back(&jointTorso);
-    joints.push_back(&jointLeftShoulder);
-    joints.push_back(&jointLeftElbow);
-    joints.push_back(&jointLeftHand);
-    joints.push_back(&jointRightShoulder);
-    joints.push_back(&jointRightElbow);
-    joints.push_back(&jointRightHand);
-    joints.push_back(&jointLeftHip);
-    joints.push_back(&jointLeftKnee);
-    joints.push_back(&jointLeftFoot);
-    joints.push_back(&jointRightHip);
-    joints.push_back(&jointRightKnee);
-    joints.push_back(&jointRightFoot);
     
-    // joint names
-    jointNames.push_back("head");
-    jointNames.push_back("neck");
-    jointNames.push_back("torso");
-    jointNames.push_back("leftShoulder");
-    jointNames.push_back("leftElbow");
-    jointNames.push_back("leftHand");
-    jointNames.push_back("rightShoulder");
-    jointNames.push_back("rightElbow");
-    jointNames.push_back("rightHand");
-    jointNames.push_back("leftHip");
-    jointNames.push_back("leftKnee");
-    jointNames.push_back("leftFoot");
-    jointNames.push_back("rightHip");
-    jointNames.push_back("rightKnee");
-    jointNames.push_back("rightFoot");
+    //kinect.setUseMaskPixelsAllUsers(true);
+    kinect.setUseMaskTextureAllUsers(true);
+    kinect.setUsePointCloudsAllUsers(true);
+    kinect.setPointCloudDrawSizeAllUsers(2);
+    kinect.setPointCloudResolutionAllUsers(2);
+    
+    
+    /*
+    colorImage.allocate(640, 480);
+    
+    grayImage.allocate(640, 480);
+    grayThreshNear.allocate(640, 480);
+    grayThreshFar.allocate(640, 480);
+    */
+    grayImage.allocate(640, 480);
+    
+    
+    
+    // initialize joint array
+    joints.push_back(&jointHead);           jointNames.push_back("head");
+    joints.push_back(&jointNeck);           jointNames.push_back("neck");
+    joints.push_back(&jointTorso);          jointNames.push_back("torso");
+    joints.push_back(&jointLeftShoulder);   jointNames.push_back("leftShoulder");
+    joints.push_back(&jointLeftElbow);      jointNames.push_back("leftElbow");
+    joints.push_back(&jointLeftHand);       jointNames.push_back("leftHand");
+    joints.push_back(&jointRightShoulder);  jointNames.push_back("rightShoulder");
+    joints.push_back(&jointRightElbow);     jointNames.push_back("rightElbow");
+    joints.push_back(&jointRightHand);      jointNames.push_back("rightHand");
+    joints.push_back(&jointLeftHip);        jointNames.push_back("leftHip");
+    joints.push_back(&jointLeftKnee);       jointNames.push_back("leftKnee");
+    joints.push_back(&jointLeftFoot);       jointNames.push_back("leftFoot");
+    joints.push_back(&jointRightHip);       jointNames.push_back("rightHip");
+    joints.push_back(&jointRightKnee);      jointNames.push_back("rightKnee");
+    joints.push_back(&jointRightFoot);      jointNames.push_back("rightFoot");
     
     // setup control panel
     control.setName("OpenNi");
+    control.setVisible(false);
     control.addParameter("lookForJoints", &trackingJoints);
-    
-    
-    
     control.addParameter("track blobs", &trackingBlobs);
     control.addParameter("track keypoints", &trackingKeypoints);
-    
-    //    control.registerLabel("blobs parameters");
     control.addParameter("farThreshold", &farThreshold, 0.0f, 255.0f);
     control.addParameter("nearThreshold", &nearThreshold, 0.0f, 255.0f);
-    
-    //    control.registerLabel("segmentation parameters");
     control.addParameter("fade", &fade, 0.0f, 255.0f);
     control.addParameter("numDilate", &numDilate, 0, 10);
     control.addParameter("numErode", &numErode, 0, 10);
-    
-    //    control.registerLabel("contour parameters");
     control.addParameter("minArea", &minArea, 0.0f, 100000.0f);
     control.addParameter("maxArea", &maxArea, 2500.0f, 150000.0f);
     control.addParameter("threshold", &threshold, 0.0f, 255.0f);
     control.addParameter("persistence", &persistence, 0.0f, 100.0f);
     control.addParameter("maxDistance", &maxDistance, 0.0f, 100.0f);
     control.addParameter("smoothingRate", &smoothingRate, 0.0f, 100.0f);
-    
-    //    control.registerLabel("output parameters");
     control.addParameter("smoothed", &smoothness, 0, 10);
     control.addParameter("curved", &curved);
 
-    
-    
-    trackingJoints = true;
-    trackingBlobs = true;
-    trackingKeypoints = false;
-    
+    // parameters
     fade = 200;
     minArea = 1000;
     maxArea = 70000;
@@ -105,9 +86,10 @@ void OpenNi::setup(){
     curved = false;
     smoothingRate = 1;
     
-    
-    kinect.startPlayer("/Users/Gene/Code/openFrameworks/templates/Kinect/openni_oniTestRecording/bin/data/test.oni");
-
+    // modes
+    trackingJoints = true;
+    trackingBlobs = true;
+    trackingKeypoints = false;
 }
 
 //-------
@@ -176,10 +158,51 @@ void OpenNi::updateJoints(){
     }
 }
 
+//---------
+void OpenNi::updateContours() {
+    grayImage.setFromPixels(kinect.getDepthPixels().getChannel(2));
+    contourFinder.setMinArea(640*480*0.1);
+    contourFinder.setMaxArea(640*480*0.4);
+    contourFinder.setThreshold(threshold);
+    contourFinder.getTracker().setPersistence(10);
+    contourFinder.getTracker().setMaximumDistance(43);
+    contourFinder.getTracker().setSmoothingRate(1);
+    contourFinder.findContours(grayImage);
+}
+
+void OpenNi::recordContours() {
+    RectTracker& tracker = contourFinder.getTracker();
+    vector<int> labels;
+    for(int i = 0; i < contourFinder.size(); i++) {
+        vector<cv::Point> points = contourFinder.getContour(i);
+        int label = contourFinder.getLabel(i);
+        ofPoint center = toOf(contourFinder.getCenter(i));
+        int age = tracker.getAge(label);
+        vector<cv::Point> fitPoints = contourFinder.getFitQuad(i);
+        cv::RotatedRect fitQuad = contourFinder.getFitEllipse(i);
+        
+        //int label = contourFinder.getLabel(i);
+        bool contourExists = false;
+        for (int c=0; c<contours.size(); c++) {
+            if (label == contours[c]->label) {
+                contours[c]->setPoints(contourFinder.getContour(i));
+                contourExists = true;
+                break;
+            }
+        }
+        if (!contourExists) {
+            contours.push_back(new Contour(contourFinder.getContour(i), label));
+        }
+        labels.push_back(label);
+    }
+}
+
+
+
 //-------
 void OpenNi::draw(int x, int y, int w, int h){
     
-    kinect.drawDepth(10, 5);    //drawDebug
+    //kinect.drawDepth(10, 5);    //drawDebug
     
     ofPushMatrix();
     ofTranslate(x, y);
@@ -302,27 +325,3 @@ void OpenNi::setGuiPosition(int x, int y){
 }
 
 
-//---------
-void OpenNi::updateContours() {
-    contourFinder.setMinArea(minArea);
-    contourFinder.setMaxArea(maxArea);
-    contourFinder.setThreshold(threshold);
-    contourFinder.getTracker().setPersistence(persistence);
-    contourFinder.getTracker().setMaximumDistance(maxDistance);
-    contourFinder.getTracker().setSmoothingRate(smoothingRate);
-    
-    
-    contourFinder.findContours(kinect.getDepthPixels());
-    
-    /*
-    int numUsers = kinect.getNumTrackedUsers();
-    for (int i = 0; i < numUsers; i++){
-        ofxOpenNIUser & user = kinect.getTrackedUser(i);
-        //user.drawMask();
-        cout << "DO MASK " << i << endl;
-        //contourFinder.findContours(user.getMaskPixels());
-        
-    }
-     */
-    
-}

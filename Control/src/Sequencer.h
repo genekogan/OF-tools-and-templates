@@ -8,6 +8,7 @@ class Sequencer
 public:
     ~Sequencer();
     void setup(int rows, int cols);
+    void disable();
     
     void setPosition(int x, int y, int w=400, int h=200);
     void setVisible(bool visible);
@@ -20,13 +21,15 @@ public:
     void draw();
     
     void setSize(int rows, int cols);
-    int getNumberOfRows() {return rows;}
-    int getNumberOfCols() {return cols;}
+    int getNumberRows() {return rows;}
+    int getNumberCols() {return cols;}
     
     void setValue(int row, int col, float value);
     float getValue(int row, int col);
     float getValueInterpolated(int row, int col);
     
+    int getColumn() {return sequencer.getColumn();}
+
     void setActive(bool active) {this->active = active; active ? sequencer.start() : sequencer.stop();}
     void setDiscrete(bool discrete) {this->discrete = discrete;}
     void setBpm(int bpm) {this->bpm = bpm;}
@@ -34,10 +37,6 @@ public:
     bool getActive() {return active;}
     bool getDiscrete() {return discrete;}
     int getBpm() {return bpm;}
-    
-    int getColumn() {return sequencer.getColumn();}
-    int getNumberRows() {return sequencer.getNumberRows();}
-    int getNumberColumns() {return sequencer.getNumberColumns();}
     
     template<typename ListenerClass, typename ListenerMethod>
     void addBeatListener(ListenerClass *listener, ListenerMethod method) {

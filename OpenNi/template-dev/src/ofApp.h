@@ -12,7 +12,7 @@ public:
 	void update();
 	void draw();
     void exit();
-	void keyPressed  (int key);
+	void keyPressed (int key);
 
     OpenNi kinect;
 };

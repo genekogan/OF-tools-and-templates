@@ -33,10 +33,17 @@ void MetaController::setup(Control *control) {
     sequencer->addBeatListener(this, &MetaController::sequencerStepEvent);
     sequencer->addInterpolatedBeatListener(this, &MetaController::sequencerInterpolatedStepEvent);
     sequencer->setSmooth(true);
-    
     setPosition(86, ofGetHeight()-158, 200, 150);
     
     ofAddListener(ofEvents().mousePressed, this, &MetaController::mousePressed);
+}
+
+//-----------
+void MetaController::disable() {
+    setVisible(false);
+    sequencer->removeBeatListener(this, &MetaController::sequencerStepEvent);
+    sequencer->removeInterpolatedBeatListener(this, &MetaController::sequencerInterpolatedStepEvent);
+    ofRemoveListener(ofEvents().mousePressed, this, &MetaController::mousePressed);
 }
 
 //-----------
@@ -126,6 +133,7 @@ void MetaController::update() {
 
 //-----------
 void MetaController::draw() {
+    if (!visible)   return;
     ofPushStyle();
     ofSetColor(0, 150);
     ofRect(x-82, y-4, width + 195, height+8);
@@ -162,14 +170,20 @@ void MetaController::draw() {
 //-----------
 void MetaController::drawLabel(int paramIdx, int idx, string suffix) {
     ofSetColor(seqActive[idx] ? ofColor(0, 255, 0) : ofColor(255, 0, 0));
-    ofDrawBitmapString(seqParams[paramIdx]->getName() + suffix, x-80, ofMap(idx+0.5, 0, sequencer->getNumberOfRows(), y, y+height) + 3);
+    ofDrawBitmapString(seqParams[paramIdx]->getName() + suffix, x-80, ofMap(idx+0.5, 0, sequencer->getNumberRows(), y, y+height) + 3);
 }
 
 //-----------
 void MetaController::mousePressed(ofMouseEventArgs &evt) {
     ofRectangle rect(x-80, y, 80, height);
     if (rect.inside(evt.x, evt.y)) {
-        int idx = floor( (evt.y - y) / ((float) height / (float) (sequencer->getNumberOfRows())) );
+        int idx = floor( (evt.y - y) / ((float) height / (float) (sequencer->getNumberRows())) );
         seqActive[idx] = !seqActive[idx];
     }
+}
+
+//-----------
+MetaController::~MetaController() {
+    sequencer->disable();
+    delete sequencer;
 }

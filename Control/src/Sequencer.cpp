@@ -23,6 +23,7 @@ void Sequencer::setup(int rows, int cols) {
     gui->setWidth(100);
     gui->clearWidgets();
     gui->addIntSlider("bpm", 40, 300, &bpm);
+    gui->addButton("advance", false);
     gui->addToggle("active", &active);
     //gui->addToggle("discrete", &discrete);
     gui->addToggle("smooth", &smooth);
@@ -30,6 +31,14 @@ void Sequencer::setup(int rows, int cols) {
     gui->addButton("randomize", false);
     gui->autoSizeToFitWidgets();
     ofAddListener(gui->newGUIEvent, this, &Sequencer::guiEvent);
+}
+
+//-------
+void Sequencer::disable() {
+    setSmooth(false);
+    setVisible(false);
+    setActive(false);
+    ofRemoveListener(gui->newGUIEvent, this, &Sequencer::guiEvent);
 }
 
 //-------
@@ -48,7 +57,7 @@ void Sequencer::setSmooth(bool smooth) {
 
 //-------
 void Sequencer::update() {
-    if (smooth) {
+    if (smooth && active) {
         vector<float> column;
         for (int r=0; r<rows; r++) {
             column.push_back(getValueInterpolated(r, sequencer.getColumn()));
@@ -100,7 +109,13 @@ void Sequencer::playBeat(vector<float> &column) {
 
 //-------
 void Sequencer::guiEvent(ofxUIEventArgs &e) {
-    if (e.getName() == "reset") {
+    if (e.getName() == "advance") {
+        if (e.getButton()->getValue()==1 && !active) {
+            if (smooth) setSmooth(false);
+            sequencer.advance();
+        }
+    }
+    else if (e.getName() == "reset") {
         if (e.getButton()->getValue()==1) {
             sequencer.reset();
         }
@@ -119,6 +134,9 @@ void Sequencer::guiEvent(ofxUIEventArgs &e) {
     }
     else if (e.getName() == "discrete") {
         sequencer.setDiscrete(discrete);
+    }
+    else if (e.getName() == "smooth") {
+        setSmooth(smooth);
     }
 }
 
