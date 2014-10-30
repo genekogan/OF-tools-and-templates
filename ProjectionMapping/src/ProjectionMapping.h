@@ -25,12 +25,10 @@ public:
     void grabOutputCorner(int x, int y);
     void releaseOutputCorner();
     
-    void setDebug(bool debugging, bool debugMe) {
-        this->debugging = debugging;
-        this->debugMe = debugMe;
-    }
+    void setDebug(bool debugging, bool debugMe);
     
-private:
+protected:
+    
     bool debugging, debugMe;
     int selectedCorner;
     ofxQuad quad;
@@ -64,7 +62,8 @@ public:
     void loadPreset(string path);
     void savePreset(string path);
     
-private:
+protected:
+    
     vector<Quad *> quads;
     bool debug;
     int selected;

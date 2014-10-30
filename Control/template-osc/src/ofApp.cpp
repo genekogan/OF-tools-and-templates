@@ -22,7 +22,6 @@ void ofApp::setup(){
 
     /* convert control parameters into touchOsc layout */
     osc.saveTouchOscLayout("myLayout", control.getParameters());
-
     
     radius = 100;
     color = ofColor(0, 255, 0);

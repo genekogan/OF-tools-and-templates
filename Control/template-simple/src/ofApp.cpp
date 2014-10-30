@@ -1,9 +1,10 @@
 #include "ofApp.h"
 
+
 //--------------------------------------------------------------
 void ofApp::setup(){
 
-    control.setName("hello world");
+    control.setName("hello control");
     control.addParameter("position", &position, ofVec2f(0, 0), ofVec2f(1280, 720));
     control.addParameter("radius", &radius, 20.0f, 200.0f);
     control.addParameter("filled", &filled);
@@ -34,9 +35,6 @@ void ofApp::setup(){
     position = ofVec2f(345, 298);
     resolution = 16;
     filled = true;
-    
-    // setup metacontroller
-    //control.setupMetaController();
 }
 
 //---------
@@ -76,7 +74,6 @@ void ofApp::draw(){
 //---------
 void ofApp::keyPressed(int key){
     if (key=='s') control.savePreset();
-
 }
 
 //--------------------------------------------------------------

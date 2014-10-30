@@ -38,22 +38,9 @@ public:
     bool getDiscrete() {return discrete;}
     int getBpm() {return bpm;}
     
-    template<typename ListenerClass, typename ListenerMethod>
-    void addBeatListener(ListenerClass *listener, ListenerMethod method) {
-        sequencer.addBeatListener(listener, method);
-    }
-    template<typename ListenerClass, typename ListenerMethod>
-    void removeBeatListener(ListenerClass *listener, ListenerMethod method) {
-        sequencer.removeBeatListener(listener, method);
-    }
-    template<typename ListenerClass, typename ListenerMethod>
-    void addInterpolatedBeatListener(ListenerClass *listener, ListenerMethod method) {
-        ofAddListener(interpolatedSequencerEvent, listener, method);
-    }
-    template<typename ListenerClass, typename ListenerMethod>
-    void removeInterpolatedBeatListener(ListenerClass *listener, ListenerMethod method) {
-        ofRemoveListener(interpolatedSequencerEvent, listener, method);
-    }
+    ofxSequencer & getSequencer() { return sequencer; }
+    
+    ofEvent<vector<float> > interpolatedSequencerEvent;
     
 protected:
     
@@ -62,7 +49,6 @@ protected:
     
     ofxSequencer sequencer;
     ofxUICanvas *gui;
-    ofEvent<vector<float> > interpolatedSequencerEvent;
     
     bool smooth;
     bool active, pActive;

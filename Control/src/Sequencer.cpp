@@ -51,8 +51,8 @@ void Sequencer::setSize(int rows, int cols) {
 //-------
 void Sequencer::setSmooth(bool smooth) {
     this->smooth = smooth;
-    if (smooth) sequencer.addBeatListener(this, &Sequencer::playBeat);
-    else        sequencer.removeBeatListener(this, &Sequencer::playBeat);
+    if (smooth) ofAddListener(sequencer.sequencerEvent, this, &Sequencer::playBeat);
+    else        ofRemoveListener(sequencer.sequencerEvent, this, &Sequencer::playBeat);
 }
 
 //-------

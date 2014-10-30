@@ -56,7 +56,6 @@
 		B036B76C19CB90A600CB0081 /* ofxUIWaveform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B036B73A19CB90A600CB0081 /* ofxUIWaveform.cpp */; };
 		B036B76D19CB90A600CB0081 /* ofxUIWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B036B73C19CB90A600CB0081 /* ofxUIWidget.cpp */; };
 		B036B76E19CB90A600CB0081 /* ofxUIWidgetWithLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B036B73F19CB90A600CB0081 /* ofxUIWidgetWithLabel.cpp */; };
-		B06E5D7D19FF33C40032B823 /* Control.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B06E5D7019FF33B50032B823 /* Control.cpp */; };
 		B06E5D7E19FF33C40032B823 /* ControlPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B06E5D7219FF33B50032B823 /* ControlPanel.cpp */; };
 		B06E5D7F19FF33C40032B823 /* MetaController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B06E5D7419FF33B50032B823 /* MetaController.cpp */; };
 		B06E5D8019FF33C40032B823 /* OscManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B06E5D7619FF33B50032B823 /* OscManager.cpp */; };
@@ -232,7 +231,6 @@
 		B036B73F19CB90A600CB0081 /* ofxUIWidgetWithLabel.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxUIWidgetWithLabel.cpp; sourceTree = "<group>"; };
 		B036B74019CB90A600CB0081 /* ofxUIWidgetWithLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxUIWidgetWithLabel.h; sourceTree = "<group>"; };
 		B036B74119CB90A600CB0081 /* ofxUIWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxUIWrapper.h; sourceTree = "<group>"; };
-		B06E5D7019FF33B50032B823 /* Control.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Control.cpp; sourceTree = "<group>"; };
 		B06E5D7119FF33B50032B823 /* Control.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Control.h; sourceTree = "<group>"; };
 		B06E5D7219FF33B50032B823 /* ControlPanel.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ControlPanel.cpp; sourceTree = "<group>"; };
 		B06E5D7319FF33B50032B823 /* ControlPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ControlPanel.h; sourceTree = "<group>"; };
@@ -491,7 +489,6 @@
 		B06E5D6F19FF33B50032B823 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				B06E5D7019FF33B50032B823 /* Control.cpp */,
 				B06E5D7119FF33B50032B823 /* Control.h */,
 				B06E5D7219FF33B50032B823 /* ControlPanel.cpp */,
 				B06E5D7319FF33B50032B823 /* ControlPanel.h */,
@@ -841,7 +838,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B06E5D7D19FF33C40032B823 /* Control.cpp in Sources */,
 				B06E5D7E19FF33C40032B823 /* ControlPanel.cpp in Sources */,
 				B06E5D7F19FF33C40032B823 /* MetaController.cpp in Sources */,
 				B06E5D8019FF33C40032B823 /* OscManager.cpp in Sources */,

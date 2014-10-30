@@ -113,7 +113,7 @@ void OscManager::oscReceiveChanges() {
             oscReceiveProcessMessage(address, msg);
         }
         else if (eventTrackers.count(address) > 0) {
-            bool b = msg.getArgAsInt32(0) ? true : false;
+            bool b = msg.getArgAsInt32(0) == 1 ? true : false;
             ofNotifyEvent(*eventTrackers[address], b, this);
         }
         else {

@@ -36,6 +36,9 @@ public:
     bool savePreset(string filename="");
     void savePresetFromGui(string &s);
     
+    int getWidth() {return width;}
+    int getHeight() {return height;}
+    
 protected:
     
     void setupGui();

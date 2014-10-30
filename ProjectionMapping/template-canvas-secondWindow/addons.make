@@ -1,0 +1,8 @@
+ofxBlurShader
+ofxDelaunay
+ofxGui
+ofxPostGlitch
+ofxPostProcessing
+ofxSyphon
+ofxTwistedRibbon
+ofxVideoMapping

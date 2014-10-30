@@ -2,9 +2,6 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    mapping.addQuad(800, 600);
-    mapping.addQuad(800, 600);
-    
     canvas1.setup(800, 600);
     canvas1.addLayer(CANVAS_CREATOR);
     canvas1.addLayer(CANVAS_POST_FX);
@@ -15,19 +12,24 @@ void ofApp::setup(){
     
     canvas1.setVisible(true);
     canvas2.setVisible(false);
+    
+    mapping.addCanvas(&canvas1);
+    mapping.addCanvas(&canvas2);
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    if (ofGetFrameNum() % 60 == 0)
-        cout << "fps: "<< ofGetFrameRate() << endl;
-    
     canvas1.update();
     canvas2.update();
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    mapping.draw();
+    
+    // or manually
+    
+    /*
     mapping.begin(0);
     canvas1.draw(0, 0);
     mapping.end(0);
@@ -35,6 +37,7 @@ void ofApp::draw(){
     mapping.begin(1);
     canvas2.draw(0, 0);
     mapping.end(1);
+     */
 }
 
 //--------------------------------------------------------------

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ProjectionMapping.h"
+#include "CanvasMapper.h"
 #include "Canvas.h"
 
 
@@ -23,5 +23,5 @@ class ofApp : public ofBaseApp
         void gotMessage(ofMessage msg);
         
     Canvas canvas1, canvas2;
-    ProjectionMapping mapping;
+    CanvasMapper mapping;
 };

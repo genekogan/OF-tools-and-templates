@@ -125,6 +125,9 @@ void Control::setVisible(bool visible) {
     }
     gui->setVisible(visible);
     guiPresets->setVisible(false);
+    if (metaActive) {
+        meta->setVisible(visible);
+    }
 }
 
 //-------
@@ -174,6 +177,7 @@ void Control::setupGuiPresets() {
     presetNames = guiPresets->addDropDownList("presets", filenames);
     presetNames->setAutoClose(false);
     presetNames->open();
+    guiPresets->addLabelButton(" > TouchOsc", false);
     guiPresets->autoSizeToFitWidgets();
     guiPresets->setVisible(!visible);
 }
@@ -275,7 +279,7 @@ void Control::guiEvent(ofxUIEventArgs &e) {
     else if (e.getName() == "viewMeta") {
         setViewMeta(e.getButton()->getValue() == 1);
     }
-
+    
     // color change
     else {
         string colorName = ofSplitString(e.getName(), "->")[0];
@@ -314,6 +318,11 @@ void Control::guiPresetsEvent(ofxUIEventArgs &e) {
         string path = ofToDataPath("presets/"+getName()+"/"+e.getName());
         loadPreset(path);
         togglePresetsVisible();
+    }
+    else if (e.getName() == " > TouchOsc") {
+        if (e.getButton()->getValue() == 1) return;
+        OscManager osc;
+        osc.saveTouchOscLayout("myLayout", getParameters());
     }
 }
 

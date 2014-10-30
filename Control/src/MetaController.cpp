@@ -30,19 +30,19 @@ void MetaController::setup(Control *control) {
     
     sequencer = new Sequencer();
     sequencer->setup(n, 8);
-    sequencer->addBeatListener(this, &MetaController::sequencerStepEvent);
-    sequencer->addInterpolatedBeatListener(this, &MetaController::sequencerInterpolatedStepEvent);
     sequencer->setSmooth(true);
     setPosition(86, ofGetHeight()-158, 200, 150);
     
+    ofAddListener(sequencer->getSequencer().sequencerEvent, this, &MetaController::sequencerStepEvent);
+    ofAddListener(sequencer->interpolatedSequencerEvent, this, &MetaController::sequencerInterpolatedStepEvent);
     ofAddListener(ofEvents().mousePressed, this, &MetaController::mousePressed);
 }
 
 //-----------
 void MetaController::disable() {
     setVisible(false);
-    sequencer->removeBeatListener(this, &MetaController::sequencerStepEvent);
-    sequencer->removeInterpolatedBeatListener(this, &MetaController::sequencerInterpolatedStepEvent);
+    ofRemoveListener(sequencer->getSequencer().sequencerEvent, this, &MetaController::sequencerStepEvent);
+    ofRemoveListener(sequencer->interpolatedSequencerEvent, this, &MetaController::sequencerInterpolatedStepEvent);
     ofRemoveListener(ofEvents().mousePressed, this, &MetaController::mousePressed);
 }
 
@@ -185,5 +185,6 @@ void MetaController::mousePressed(ofMouseEventArgs &evt) {
 //-----------
 MetaController::~MetaController() {
     sequencer->disable();
+    disable();
     delete sequencer;
 }

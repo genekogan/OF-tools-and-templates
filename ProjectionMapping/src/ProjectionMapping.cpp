@@ -9,6 +9,12 @@ Quad::Quad() {
 }
 
 //--------
+void Quad::setDebug(bool debugging, bool debugMe) {
+    this->debugging = debugging;
+    this->debugMe = debugMe;
+}
+
+//--------
 void Quad::begin() {
     quad.beginDraw();
 }
