@@ -2,8 +2,9 @@
 
 #include "ofMain.h"
 #include "Control.h"
-
+#include "SuperCollider.h"
 #include "ModuleOpenNi.h"
+
 
 class ofApp : public ofBaseApp{
 
@@ -23,5 +24,6 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 		
     ModuleOpenNi learn;
+    SuperCollider sc3;
     
 };

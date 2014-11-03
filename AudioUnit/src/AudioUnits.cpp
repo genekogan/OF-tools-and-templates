@@ -1,31 +1,61 @@
 #include "AudioUnits.h"
 
 
-void AudioUnits::setup() {
-//    aalto.setup(AALTO);
-    
-    player.setup();
-    
-    player.connectTo(mixer, 0);
-    //aalto.connectTo(mixer);
-    
+//-------
+AudioUnits::AudioUnits() {
     mixer.connectTo(output);
-    output.start();
-    
+    idxMixer = 0;
+    instrumentSetup = false;
+    filePlayerSetup = false;
 }
 
+//-------
+void AudioUnits::setupInstrument(Instrument::InstrumentType type) {
+    instrument.setup(type);
+    instrument.connectTo(mixer, idxMixer);
+    idxMixer++;
+    instrumentSetup = true;
+}
+
+//-------
+void AudioUnits::setupFilePlayer() {
+    player.setup();
+    player.connectTo(mixer, idxMixer);
+    player.setGuiPosition(5, 500);
+    idxMixer++;
+    filePlayerSetup = true;
+}
+
+//-------
 void AudioUnits::update() {
-    //aalto.update();
-    player.update();
-    
-    //cout << (int) player.getCurrentTimestamp().mSampleTime % (int)  player.getLength() << endl;
+    if (instrumentSetup) {
+        instrument.update();
+    }
+    if (filePlayerSetup) {
+        player.update();
+    }
 }
 
+//-------
 void AudioUnits::draw() {
-    //aalto.draw();
-    player.draw();
+    if (visible) {
+        if (instrumentSetup) {
+            instrument.draw();
+        }
+        if (filePlayerSetup) {
+            player.draw();
+        }
+    }
 }
 
+//-------
+void AudioUnits::setVisible(bool visible) {
+    this->visible = visible;
+    player.setVisible(visible);
+    instrument.setVisible(visible);
+}
+
+//-------
 void AudioUnits::savePreset() {
     //aalto.savePreset();
 }

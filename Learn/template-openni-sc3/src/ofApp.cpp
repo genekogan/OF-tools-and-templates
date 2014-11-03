@@ -2,23 +2,16 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    
-    // decide which manta inputs are available
-    /*
-    learn.addAllPadsAsInput();
-    learn.addSlidersAsInput();
-    learn.addButtonsAsInput();
-    learn.addNumFingersAsInput();
-    learn.addPadSumAsInput();
-    learn.addPadAverageAsInput();
-    learn.addPerimterAsInput();
-    learn.addAverageInterFingerDistanceAsInput();
-    learn.addCentroidAsInput();
-    learn.addWeightedCentroidAsInput();
-     */
+    // setup sc3
+    string synthFile = "/Users/Gene/Code/openFrameworks/tools/SuperCollider/synths.scd";
+    SuperColliderLayer *layer1 = sc3.addLayer("source", synthFile);
+    layer1->setBusOutSelf();
+    sc3.setGuiPosition(200, 200);
+
+    // add inputs
+    learn.addJointsAsInput();
     
     // add outputs
-    
     /*
     learn.addOutput("h1x/", 1, 30);
     learn.addOutput("h1y/", 0.001, 0.99);
@@ -48,6 +41,7 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    sc3.update();
     learn.update();
 }
 

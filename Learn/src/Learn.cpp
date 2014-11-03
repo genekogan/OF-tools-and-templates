@@ -25,6 +25,8 @@ Learn::Learn(bool init) {
     gui2 = new ofxUICanvas("train");
     gui3 = new ofxUICanvas("perform");
 
+    customFont = false;
+    
     oscManager.registerOscEventListener("/toggleRecord", this, &Learn::oscEventSetRecording);
     oscManager.registerOscEventListener("/toggleTrainFast", this, &Learn::oscEventSetTrainFast);
     oscManager.registerOscEventListener("/toggleTrainAccurate", this, &Learn::oscEventSetTrainAccurate);

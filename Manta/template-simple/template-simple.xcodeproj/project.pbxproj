@@ -53,10 +53,14 @@
 		ADE7C2AFC51E3F7E5E389026 /* ofxUISortableList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5613D5D24B00D8AD909F7E6A /* ofxUISortableList.cpp */; };
 		AE281BEBF3A00F1FC37F3DA0 /* ofxUIWaveform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9345327AA463407B3DADBADE /* ofxUIWaveform.cpp */; };
 		B05C3E7219EB7D7100658007 /* ofxConvexHull.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B05C3E7019EB7D7100658007 /* ofxConvexHull.cpp */; };
+		B0E994F11A03076400F5F941 /* ofxBpm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0E994EF1A03076400F5F941 /* ofxBpm.cpp */; };
+		B0E994F61A03076B00F5F941 /* ofxSequencer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0E994F41A03076B00F5F941 /* ofxSequencer.cpp */; };
+		B0E994F71A0307A100F5F941 /* ControlPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0E994E21A03076000F5F941 /* ControlPanel.cpp */; };
+		B0E994F81A0307A100F5F941 /* MetaController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0E994E41A03076000F5F941 /* MetaController.cpp */; };
+		B0E994F91A0307A100F5F941 /* OscManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0E994E61A03076000F5F941 /* OscManager.cpp */; };
+		B0E994FA1A0307A100F5F941 /* Presets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0E994E91A03076000F5F941 /* Presets.cpp */; };
+		B0E994FB1A0307A100F5F941 /* Sequencer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0E994EB1A03076000F5F941 /* Sequencer.cpp */; };
 		B0FC0B7619E8A14B00D3A177 /* MantaController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0FC0B6C19E8A13000D3A177 /* MantaController.cpp */; };
-		B0FC0B7719E8A14B00D3A177 /* Control.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0FC0B6F19E8A13A00D3A177 /* Control.cpp */; };
-		B0FC0B7819E8A14B00D3A177 /* OscManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0FC0B7119E8A13A00D3A177 /* OscManager.cpp */; };
-		B0FC0B7919E8A14B00D3A177 /* Presets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0FC0B7419E8A13A00D3A177 /* Presets.cpp */; };
 		B0FC0B8019E8A2B800D3A177 /* Base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0FC0B7C19E8A2B800D3A177 /* Base64.cpp */; };
 		B0FC0B8119E8A2B800D3A177 /* ofxTouchOsc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0FC0B7E19E8A2B800D3A177 /* ofxTouchOsc.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
@@ -239,15 +243,24 @@
 		AEFCF7E549ACA862C022AD40 /* ofxUIDefines.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxUIDefines.h; path = ../../../addons/ofxUI/src/ofxUIDefines.h; sourceTree = SOURCE_ROOT; };
 		B05C3E7019EB7D7100658007 /* ofxConvexHull.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxConvexHull.cpp; sourceTree = "<group>"; };
 		B05C3E7119EB7D7100658007 /* ofxConvexHull.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxConvexHull.h; sourceTree = "<group>"; };
+		B0E994E11A03076000F5F941 /* Control.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Control.h; sourceTree = "<group>"; };
+		B0E994E21A03076000F5F941 /* ControlPanel.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ControlPanel.cpp; sourceTree = "<group>"; };
+		B0E994E31A03076000F5F941 /* ControlPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ControlPanel.h; sourceTree = "<group>"; };
+		B0E994E41A03076000F5F941 /* MetaController.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MetaController.cpp; sourceTree = "<group>"; };
+		B0E994E51A03076000F5F941 /* MetaController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MetaController.h; sourceTree = "<group>"; };
+		B0E994E61A03076000F5F941 /* OscManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OscManager.cpp; sourceTree = "<group>"; };
+		B0E994E71A03076000F5F941 /* OscManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OscManager.h; sourceTree = "<group>"; };
+		B0E994E81A03076000F5F941 /* Parameter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Parameter.h; sourceTree = "<group>"; };
+		B0E994E91A03076000F5F941 /* Presets.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Presets.cpp; sourceTree = "<group>"; };
+		B0E994EA1A03076000F5F941 /* Presets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Presets.h; sourceTree = "<group>"; };
+		B0E994EB1A03076000F5F941 /* Sequencer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Sequencer.cpp; sourceTree = "<group>"; };
+		B0E994EC1A03076000F5F941 /* Sequencer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sequencer.h; sourceTree = "<group>"; };
+		B0E994EF1A03076400F5F941 /* ofxBpm.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxBpm.cpp; sourceTree = "<group>"; };
+		B0E994F01A03076400F5F941 /* ofxBpm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxBpm.h; sourceTree = "<group>"; };
+		B0E994F41A03076B00F5F941 /* ofxSequencer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxSequencer.cpp; sourceTree = "<group>"; };
+		B0E994F51A03076B00F5F941 /* ofxSequencer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxSequencer.h; sourceTree = "<group>"; };
 		B0FC0B6C19E8A13000D3A177 /* MantaController.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MantaController.cpp; sourceTree = "<group>"; };
 		B0FC0B6D19E8A13000D3A177 /* MantaController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MantaController.h; sourceTree = "<group>"; };
-		B0FC0B6F19E8A13A00D3A177 /* Control.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Control.cpp; sourceTree = "<group>"; };
-		B0FC0B7019E8A13A00D3A177 /* Control.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Control.h; sourceTree = "<group>"; };
-		B0FC0B7119E8A13A00D3A177 /* OscManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OscManager.cpp; sourceTree = "<group>"; };
-		B0FC0B7219E8A13A00D3A177 /* OscManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OscManager.h; sourceTree = "<group>"; };
-		B0FC0B7319E8A13A00D3A177 /* Parameter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Parameter.h; sourceTree = "<group>"; };
-		B0FC0B7419E8A13A00D3A177 /* Presets.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Presets.cpp; sourceTree = "<group>"; };
-		B0FC0B7519E8A13A00D3A177 /* Presets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Presets.h; sourceTree = "<group>"; };
 		B0FC0B7C19E8A2B800D3A177 /* Base64.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Base64.cpp; sourceTree = "<group>"; };
 		B0FC0B7D19E8A2B800D3A177 /* Base64.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Base64.h; sourceTree = "<group>"; };
 		B0FC0B7E19E8A2B800D3A177 /* ofxTouchOsc.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxTouchOsc.cpp; sourceTree = "<group>"; };
@@ -478,10 +491,66 @@
 			path = ../../../addons/ofxConvexHull/src;
 			sourceTree = "<group>";
 		};
+		B0E994E01A03076000F5F941 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B0E994E11A03076000F5F941 /* Control.h */,
+				B0E994E21A03076000F5F941 /* ControlPanel.cpp */,
+				B0E994E31A03076000F5F941 /* ControlPanel.h */,
+				B0E994E41A03076000F5F941 /* MetaController.cpp */,
+				B0E994E51A03076000F5F941 /* MetaController.h */,
+				B0E994E61A03076000F5F941 /* OscManager.cpp */,
+				B0E994E71A03076000F5F941 /* OscManager.h */,
+				B0E994E81A03076000F5F941 /* Parameter.h */,
+				B0E994E91A03076000F5F941 /* Presets.cpp */,
+				B0E994EA1A03076000F5F941 /* Presets.h */,
+				B0E994EB1A03076000F5F941 /* Sequencer.cpp */,
+				B0E994EC1A03076000F5F941 /* Sequencer.h */,
+			);
+			name = src;
+			path = ../../Control/src;
+			sourceTree = "<group>";
+		};
+		B0E994ED1A03076400F5F941 /* ofxBpm */ = {
+			isa = PBXGroup;
+			children = (
+				B0E994EE1A03076400F5F941 /* src */,
+			);
+			name = ofxBpm;
+			sourceTree = "<group>";
+		};
+		B0E994EE1A03076400F5F941 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B0E994EF1A03076400F5F941 /* ofxBpm.cpp */,
+				B0E994F01A03076400F5F941 /* ofxBpm.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxBpm/src;
+			sourceTree = "<group>";
+		};
+		B0E994F21A03076B00F5F941 /* ofxSequencer */ = {
+			isa = PBXGroup;
+			children = (
+				B0E994F31A03076B00F5F941 /* src */,
+			);
+			name = ofxSequencer;
+			sourceTree = "<group>";
+		};
+		B0E994F31A03076B00F5F941 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B0E994F41A03076B00F5F941 /* ofxSequencer.cpp */,
+				B0E994F51A03076B00F5F941 /* ofxSequencer.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxSequencer/src;
+			sourceTree = "<group>";
+		};
 		B0FC0B6919E8A12400D3A177 /* Control */ = {
 			isa = PBXGroup;
 			children = (
-				B0FC0B6E19E8A13A00D3A177 /* src */,
+				B0E994E01A03076000F5F941 /* src */,
 			);
 			name = Control;
 			sourceTree = "<group>";
@@ -502,21 +571,6 @@
 			);
 			name = src;
 			path = ../src;
-			sourceTree = "<group>";
-		};
-		B0FC0B6E19E8A13A00D3A177 /* src */ = {
-			isa = PBXGroup;
-			children = (
-				B0FC0B6F19E8A13A00D3A177 /* Control.cpp */,
-				B0FC0B7019E8A13A00D3A177 /* Control.h */,
-				B0FC0B7119E8A13A00D3A177 /* OscManager.cpp */,
-				B0FC0B7219E8A13A00D3A177 /* OscManager.h */,
-				B0FC0B7319E8A13A00D3A177 /* Parameter.h */,
-				B0FC0B7419E8A13A00D3A177 /* Presets.cpp */,
-				B0FC0B7519E8A13A00D3A177 /* Presets.h */,
-			);
-			name = src;
-			path = ../../Control/src;
 			sourceTree = "<group>";
 		};
 		B0FC0B7A19E8A2B800D3A177 /* ofxTouchOsc */ = {
@@ -551,6 +605,8 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				B0E994F21A03076B00F5F941 /* ofxSequencer */,
+				B0E994ED1A03076400F5F941 /* ofxBpm */,
 				B0FC0B6A19E8A12900D3A177 /* Manta */,
 				B0FC0B6919E8A12400D3A177 /* Control */,
 				B05C3E6E19EB7D7100658007 /* ofxConvexHull */,
@@ -900,12 +956,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0E994F71A0307A100F5F941 /* ControlPanel.cpp in Sources */,
+				B0E994F81A0307A100F5F941 /* MetaController.cpp in Sources */,
+				B0E994F91A0307A100F5F941 /* OscManager.cpp in Sources */,
+				B0E994FA1A0307A100F5F941 /* Presets.cpp in Sources */,
+				B0E994FB1A0307A100F5F941 /* Sequencer.cpp in Sources */,
 				B0FC0B7619E8A14B00D3A177 /* MantaController.cpp in Sources */,
 				B0FC0B8119E8A2B800D3A177 /* ofxTouchOsc.cpp in Sources */,
-				B0FC0B7719E8A14B00D3A177 /* Control.cpp in Sources */,
-				B0FC0B7819E8A14B00D3A177 /* OscManager.cpp in Sources */,
-				B0FC0B7919E8A14B00D3A177 /* Presets.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
+				B0E994F11A03076400F5F941 /* ofxBpm.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				72A929D3561B8232A182ABFC /* ofxOscBundle.cpp in Sources */,
 				5864AD82E20F15536D054EA3 /* ofxOscMessage.cpp in Sources */,
@@ -959,6 +1018,7 @@
 				E3D59A6B55F05669B3FBF8BD /* ofxUINumberDialer.cpp in Sources */,
 				D60E54E7FD6E19BC8636E0D2 /* ofxUIRadio.cpp in Sources */,
 				1587708E3CAC72997E43504E /* ofxUIRangeSlider.cpp in Sources */,
+				B0E994F61A03076B00F5F941 /* ofxSequencer.cpp in Sources */,
 				B0FC0B8019E8A2B800D3A177 /* Base64.cpp in Sources */,
 				59C5F2F5D7254C33C00F97CB /* ofxUIRectangle.cpp in Sources */,
 				FE0F1DB69ACCD163E9DA2A15 /* ofxUIRotarySlider.cpp in Sources */,

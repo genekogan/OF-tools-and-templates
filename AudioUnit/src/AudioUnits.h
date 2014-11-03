@@ -2,24 +2,42 @@
 
 #include "ofMain.h"
 #include "Instrument.h"
-#include "Player.h"
-
+#include "FilePlayer.h"
 #include "ofxAudioUnit.h"
 
 
 class AudioUnits {
 public:
-    void setup();
+    AudioUnits();
     void update();
     void draw();
     
-    void savePreset();
+    void setupInstrument(Instrument::InstrumentType type);
+    void setupFilePlayer();
     
-    //Instrument aalto;
+    void start() {output.start();}
+    void stop() {output.stop();}
+    
+    void savePreset();
 
-    Player player;
+    void setVisible(bool visible);
+    void toggleVisible() {setVisible(!visible);}
+
+    Instrument & getInstrument() { return instrument; }
+    void blah() {
+        instrument.blah();
+    }
+protected:
+    
+    Instrument instrument;
+    FilePlayer player;
     
     ofxAudioUnitMixer mixer;
 	ofxAudioUnitOutput output;
+    
+    bool instrumentSetup, filePlayerSetup;
 
+    int idxMixer;
+
+    bool visible;
 };

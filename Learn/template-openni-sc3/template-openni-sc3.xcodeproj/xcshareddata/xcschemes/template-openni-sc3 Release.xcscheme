@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-               BuildableName = "template-openni.app"
+               BuildableName = "template-openni-sc3.app"
                BlueprintName = "template-openni-sc3"
                ReferencedContainer = "container:template-openni-sc3.xcodeproj">
             </BuildableReference>
@@ -33,7 +33,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-            BuildableName = "template-openni.app"
+            BuildableName = "template-openni-sc3.app"
             BlueprintName = "template-openni-sc3"
             ReferencedContainer = "container:template-openni-sc3.xcodeproj">
          </BuildableReference>
@@ -52,7 +52,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-            BuildableName = "template-openni.app"
+            BuildableName = "template-openni-sc3.app"
             BlueprintName = "template-openni-sc3"
             ReferencedContainer = "container:template-openni-sc3.xcodeproj">
          </BuildableReference>
@@ -70,7 +70,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-            BuildableName = "template-openni.app"
+            BuildableName = "template-openni-sc3.app"
             BlueprintName = "template-openni-sc3"
             ReferencedContainer = "container:template-openni-sc3.xcodeproj">
          </BuildableReference>

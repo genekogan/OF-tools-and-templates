@@ -14,18 +14,8 @@ public:
     void update();
     void draw();
     
-    /*
-    void addAllPadsAsInput();
-    void addSlidersAsInput();
-    void addButtonsAsInput();
-    void addNumFingersAsInput();
-    void addPadSumAsInput();
-    void addPadAverageAsInput();
-    void addPerimterAsInput();
-    void addAverageInterFingerDistanceAsInput();
-    void addCentroidAsInput();
-    void addWeightedCentroidAsInput();
-     */
+    void addLeftHandFingerTipsAsInput();
+    void addRightHandFingerTipsAsInput();
     
 protected:
     

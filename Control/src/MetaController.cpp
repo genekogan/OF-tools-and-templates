@@ -31,7 +31,8 @@ void MetaController::setup(Control *control) {
     sequencer = new Sequencer();
     sequencer->setup(n, 8);
     sequencer->setSmooth(true);
-    setPosition(86, ofGetHeight()-158, 200, 150);
+    //setPosition(86, ofGetHeight()-158, 200, 150);
+    setPosition(240, ofGetHeight()-262, 240, 260);
     
     ofAddListener(sequencer->getSequencer().sequencerEvent, this, &MetaController::sequencerStepEvent);
     ofAddListener(sequencer->interpolatedSequencerEvent, this, &MetaController::sequencerInterpolatedStepEvent);

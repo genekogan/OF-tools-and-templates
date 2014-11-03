@@ -20,7 +20,7 @@ public:
     void            drawVelocityGraph(Handedness hand, int x, int y, int w, int h);
     
     vector<ofPoint> getFingerTips(Handedness hand, bool isNormalized=false);
-    ofPoint         getFingerTip (Handedness hand, fingerType finger);
+    ofPoint         getFingerTip(Handedness hand, fingerType finger);
     ofPoint         getHandVelocity(Handedness hand);
     float           getOpenHandSize(Handedness hand);
     ofPoint         getHandNormal(Handedness hand);
@@ -29,7 +29,17 @@ public:
     float           getHandPitch(Handedness hand);
     float           getHandYaw(Handedness hand);
     
+    
+    vector<ofPoint> * getLeftHandFingerTipsRef() { return &leftHandTips; }
+    vector<ofPoint> * getRightHandFingerTipsRef() { return &rightHandTips; }
+    
 private:
+    
+    void            updateFingerTips(bool isNormalized=false);
+
+    vector<ofPoint> leftHandTips, rightHandTips;
+    
+    
 
     ofEasyCam       cam;
     ofFbo           fbo;

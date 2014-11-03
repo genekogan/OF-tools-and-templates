@@ -3,7 +3,7 @@
 //---------
 void ofApp::setup() {
     ofSetLogLevel(OF_LOG_VERBOSE);
-    kinect.setup();
+    kinect.setup("/Users/Gene/Downloads/hometest_single.oni");
 }
 
 //---------

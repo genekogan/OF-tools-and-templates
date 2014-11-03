@@ -52,6 +52,8 @@ public:
     void setGuiInputsVisible(bool visible);
     void setGuiOutputsVisible(bool visible);
     void toggleVisible() {setVisible(!visible);}
+    void toggleGuiInputsVisible() {setGuiInputsVisible(!inputsVisible);}
+    void toggleGuiOutputsVisible() {setGuiOutputsVisible(!outputsVisible);}
     
     // touch osc
     void saveInputsToTouchOsc();

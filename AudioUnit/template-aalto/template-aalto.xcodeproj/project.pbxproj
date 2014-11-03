@@ -32,9 +32,8 @@
 		B05C3E6D19EB7B0A00658007 /* ofxConvexHull.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B05C3E6B19EB7B0A00658007 /* ofxConvexHull.cpp */; };
 		B05C3E7619EC081900658007 /* Theory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B05C3E7419EC081900658007 /* Theory.cpp */; };
 		B06E5D6D19FDFF6F0032B823 /* Waveform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B06E5D6B19FDFF6F0032B823 /* Waveform.cpp */; };
+		B0A6DDD81A040F32000F7516 /* FilePlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0A6DDD61A040F32000F7516 /* FilePlayer.cpp */; };
 		B0F7070B19FB74A3005A4A84 /* AudioUnits.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0F7070919FB74A3005A4A84 /* AudioUnits.cpp */; };
-		B0F7070E19FB7B26005A4A84 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0F7070C19FB7B26005A4A84 /* Player.cpp */; };
-		B0F7073E19FD6177005A4A84 /* Control.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0F7073119FD6161005A4A84 /* Control.cpp */; };
 		B0F7073F19FD6177005A4A84 /* ControlPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0F7073319FD6161005A4A84 /* ControlPanel.cpp */; };
 		B0F7074019FD6177005A4A84 /* MetaController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0F7073519FD6162005A4A84 /* MetaController.cpp */; };
 		B0F7074119FD6177005A4A84 /* OscManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0F7073719FD6162005A4A84 /* OscManager.cpp */; };
@@ -221,11 +220,10 @@
 		B05C3E7519EC081900658007 /* Theory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Theory.h; sourceTree = "<group>"; };
 		B06E5D6B19FDFF6F0032B823 /* Waveform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Waveform.cpp; sourceTree = "<group>"; };
 		B06E5D6C19FDFF6F0032B823 /* Waveform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Waveform.h; sourceTree = "<group>"; };
+		B0A6DDD61A040F32000F7516 /* FilePlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FilePlayer.cpp; sourceTree = "<group>"; };
+		B0A6DDD71A040F32000F7516 /* FilePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilePlayer.h; sourceTree = "<group>"; };
 		B0F7070919FB74A3005A4A84 /* AudioUnits.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioUnits.cpp; sourceTree = "<group>"; };
 		B0F7070A19FB74A3005A4A84 /* AudioUnits.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioUnits.h; sourceTree = "<group>"; };
-		B0F7070C19FB7B26005A4A84 /* Player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Player.cpp; sourceTree = "<group>"; };
-		B0F7070D19FB7B26005A4A84 /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
-		B0F7073119FD6161005A4A84 /* Control.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Control.cpp; sourceTree = "<group>"; };
 		B0F7073219FD6161005A4A84 /* Control.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Control.h; sourceTree = "<group>"; };
 		B0F7073319FD6161005A4A84 /* ControlPanel.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ControlPanel.cpp; sourceTree = "<group>"; };
 		B0F7073419FD6162005A4A84 /* ControlPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ControlPanel.h; sourceTree = "<group>"; };
@@ -656,7 +654,6 @@
 		B0F7073019FD6161005A4A84 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				B0F7073119FD6161005A4A84 /* Control.cpp */,
 				B0F7073219FD6161005A4A84 /* Control.h */,
 				B0F7073319FD6161005A4A84 /* ControlPanel.cpp */,
 				B0F7073419FD6162005A4A84 /* ControlPanel.h */,
@@ -685,10 +682,10 @@
 		B0FC0C1319E98B6400D3A177 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				B0A6DDD61A040F32000F7516 /* FilePlayer.cpp */,
+				B0A6DDD71A040F32000F7516 /* FilePlayer.h */,
 				B0F7070919FB74A3005A4A84 /* AudioUnits.cpp */,
 				B0F7070A19FB74A3005A4A84 /* AudioUnits.h */,
-				B0F7070C19FB7B26005A4A84 /* Player.cpp */,
-				B0F7070D19FB7B26005A4A84 /* Player.h */,
 				B0FC0C1419E98B6400D3A177 /* Instrument.cpp */,
 				B0FC0C1519E98B6400D3A177 /* Instrument.h */,
 				B05C3E7419EC081900658007 /* Theory.cpp */,
@@ -1149,7 +1146,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0F7073E19FD6177005A4A84 /* Control.cpp in Sources */,
 				B0F7073F19FD6177005A4A84 /* ControlPanel.cpp in Sources */,
 				B0F7074019FD6177005A4A84 /* MetaController.cpp in Sources */,
 				B0F7074119FD6177005A4A84 /* OscManager.cpp in Sources */,
@@ -1168,8 +1164,8 @@
 				B0FC0CA419E9ABE300D3A177 /* ofxUIImageSampler.cpp in Sources */,
 				B0FC0D0019E9ABF000D3A177 /* Base64.cpp in Sources */,
 				B0F7070B19FB74A3005A4A84 /* AudioUnits.cpp in Sources */,
+				B0A6DDD81A040F32000F7516 /* FilePlayer.cpp in Sources */,
 				B0FC0CBF19E9ABE300D3A177 /* ofxUIValuePlotter.cpp in Sources */,
-				B0F7070E19FB7B26005A4A84 /* Player.cpp in Sources */,
 				B0FC0CEF19E9ABEA00D3A177 /* ofxOscMessage.cpp in Sources */,
 				B0FC0C9719E9ABE300D3A177 /* ofxUI2DPad.cpp in Sources */,
 				B0FC0CB619E9ABE300D3A177 /* ofxUISortableList.cpp in Sources */,

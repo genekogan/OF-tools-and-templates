@@ -23,13 +23,9 @@ void ofApp::update(){
         string address = msg.getAddress();
         if (address == "/1/toggle1") {
             int val = msg.getArgAsInt32(0);
-            
             recording = (val == 1) ? true : false;
         }
     }
-
-    
-    
     
     bool kinectNew = kinect.update();
 

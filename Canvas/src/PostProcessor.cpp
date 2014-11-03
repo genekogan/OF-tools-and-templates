@@ -393,6 +393,8 @@ void PostProcessingLayer::render() {
 
 //-----------
 PostProcessingLayer::~PostProcessingLayer() {
+    gui.clear();
     gui.setActive(false);
+    gui.setVisible(false);
     gui.~Control();
 }

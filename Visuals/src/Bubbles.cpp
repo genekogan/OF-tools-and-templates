@@ -24,17 +24,13 @@ void Bubbles::setup() {
     control.addParameter("maxSize", &maxSize, 10, 800);
     control.addColor("baseColor", &baseColor);
     control.addParameter("varColor", &varColor, ofVec3f(0,0,0), ofVec3f(255,255,255));
-    control.addParameter("position_NoiseMargin", &positionNoiseMargin, ofVec2f(0, 0), ofVec2f(300, 300));
-    control.addParameter("position_NoiseFactor", &positionNoiseFactor, ofVec2f(0, 0), ofVec2f(0.1, 0.1));
-    control.addParameter("position_SineMargin", &positionSineMargin, ofVec2f(0, 0), ofVec2f(300, 300));
-    control.addParameter("position_SineFreq", &positionSineFreq, ofVec2f(0, 0), ofVec2f(0.1, 0.1));
-    control.addParameter("position_TimeConstant", &positionTimeConstant, ofVec2f(-10, -10), ofVec2f(10, 10));
+    control.addParameter("noiseMargin", &positionNoiseMargin, ofVec2f(0, 0), ofVec2f(300, 300));
+    control.addParameter("noiseFactor", &positionNoiseFactor, ofVec2f(0, 0), ofVec2f(0.1, 0.1));
+    control.addParameter("sineMargin", &positionSineMargin, ofVec2f(0, 0), ofVec2f(300, 300));
+    control.addParameter("sineFreq", &positionSineFreq, ofVec2f(0, 0), ofVec2f(0.1, 0.1));
+    control.addParameter("timeConstant", &positionTimeConstant, ofVec2f(-10, -10), ofVec2f(10, 10));
     control.addParameter("maxPasses", &maxPasses, 3, 50);
     control.addParameter("blurAmt", &blurAmt, 0, 20);
-    
-    
-    
-    control.setupMetaController();
     
     // NEEDS TO BE FIXED
     

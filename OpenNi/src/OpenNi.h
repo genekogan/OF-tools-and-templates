@@ -58,12 +58,11 @@ class OpenNi
 {
 public:
     void setup(string oni="");
-    
-    
-    
-    void close();
-    
+    void setMaxUsers(int maxUsers);
+    void setNormalizeJoints(bool normalizeJoints) {this->normalizeJoints = normalizeJoints;}
+    void setTrackingBlobs(bool trackingBlobs) {this->trackingBlobs = trackingBlobs; }
     void setCalibration(string path);
+    void close();
     
     void setGuiPosition(int x, int y);
     void toggleGuiVisible();
@@ -72,24 +71,21 @@ public:
     
     void updateContours();
     void updateJoints();
-    
     void recordContours();
     
-    void draw(int x=0, int y=0, int w=640, int h=480);
-    void drawCalibrated(int x=0, int y=0, int width=640, int height=480);
-    void drawCalibratedSkeleton(int width, int height);
+    void draw(int x=0, int y=0, int w=1280, int h=960);
+    void drawCalibratedContours(int width=640, int height=480);
+    void drawCalibratedSkeleton(int idx, int width=640, int height=480);
 
-    vector<ofVec3f*> & getJoints(bool normalized=false);
-    vector<ofVec2f>  & getProjectedJoints();
+    vector<ofVec3f*> & getJoints(int idxUser);
+    vector<ofVec3f*> & getNormalizedJoints(int idxUser);
+    vector<ofVec2f>  & getProjectedJoints(int idxUser);
     string getJointName(int idx) {return jointNames[idx];}
     
+    int getNumUsers() {return kinect.getNumTrackedUsers();}
     
-    ContourFinder&          getContourFinder();
-    RectTracker&            getContourTracker();
-    
-    vector<Contour *> contours;
-    //vector<Ribbon *> ribbons;
-
+    ContourFinder & getContourFinder() {return contourFinder;}
+    RectTracker & getContourTracker() {return contourFinder.getTracker();}
     
 private:
     
@@ -98,10 +94,11 @@ private:
     // kinect
     ofxOpenNI kinect;
     ofxKinectProjectorToolkit kpt;
+    ContourFinder contourFinder;
 
     // kinect data
     vector<string> jointNames;
-    vector<ofVec3f*> joints;
+    vector<vector<ofVec3f*> > joints, normalizedJoints;
     vector<ofVec2f> projectedJoints;
     ofVec3f userBoundingBoxMin, userBoundingBoxMax;
     ofVec3f jointTorso, jointNeck, jointHead,
@@ -110,37 +107,36 @@ private:
         jointLeftHip, jointLeftKnee, jointLeftFoot,
         jointRightHip, jointRightKnee, jointRightFoot;
 
-    // parameters
+    vector<Contour *> contours;
+    //vector<Ribbon *> ribbons;
+
     Control control;
-    
-    
-    
-    
-    /* blob tracking */
-    ContourFinder           contourFinder;
 
-    bool                    trackingBlobs;
-    bool                    trackingKeypoints;
-    bool                    trackingJoints;
+    bool trackingBlobs;
+    bool trackingKeypoints;
+    bool trackingJoints;
 
     
-    float                   fade;
-    float                   minArea;
-    float                   maxArea;
-    float                   threshold;
-    float                   persistence;
-    float                   maxDistance;
-    int                     numDilate;
-    int                     numErode;
-    float                   nearThreshold;
-    float                   farThreshold;
-    int                     smoothness;
-    bool                    curved;
-    float                   smoothingRate;
-    
+    float fade;
+    float minArea;
+    float maxArea;
+    float threshold;
+    float persistence;
+    float maxDistance;
+    int numDilate;
+    int numErode;
+    float nearThreshold;
+    float farThreshold;
+    int smoothness;
+    bool curved;
+    float smoothingRate;
+    int maxUsers;
+    bool normalizeJoints;
     
     ofxCvGrayscaleImage grayImage;
-
+	ofxCvGrayscaleImage grayThreshNear;
+	ofxCvGrayscaleImage grayThreshFar;
+    
 };
 
 

@@ -11,6 +11,7 @@
 class Instrument
 {
 public:
+    void blah();
     enum InstrumentType { AALTO, KAIVO };
     
     Instrument();
@@ -50,6 +51,13 @@ public:
     void showUI() {au.showUI();}
     void printParameterList();
 
+    ofxAudioUnitSampler & getAudioUnit() {return au;}
+    
+    void setGuiPosition(int x, int y);
+    void setVisible(bool visible);
+    void toggleVisible() {setVisible(!visible);}
+
+    
 protected:
     
     void noteEvent(NoteType type, int note, int velocity=127);
@@ -98,5 +106,7 @@ protected:
     bool guiActiveIsSequencer;
     bool guiToSwitchParameters;
     string guiToSwitchParametersName;
+    
+    bool visible;
 };
 

@@ -15,6 +15,10 @@ public:
     void draw();
     
     void addJointsAsInput();
+    void addUpperBodyAsInput();
+    
+    void toggleVisible();
+    void toggleOpenNiVisible() {openNi.toggleGuiVisible();}
     
 protected:
     

@@ -62,10 +62,14 @@
 		B0881D6619E0F2DF00166692 /* libscsynth.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B0881D6419E0F2CA00166692 /* libscsynth.a */; };
 		B0881D6719E0F2DF00166692 /* libsndfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B0881D6519E0F2CA00166692 /* libsndfile.a */; };
 		B0881D7519E0F30A00166692 /* SuperCollider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0881D7319E0F2FA00166692 /* SuperCollider.cpp */; };
-		B0881D7619E0F30A00166692 /* Control.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0881D6B19E0F2F400166692 /* Control.cpp */; };
-		B0881D7719E0F30A00166692 /* OscManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0881D6D19E0F2F400166692 /* OscManager.cpp */; };
-		B0881D7819E0F30A00166692 /* Presets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0881D7019E0F2F400166692 /* Presets.cpp */; };
 		B0881D7D19E0F47900166692 /* ofxRegex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0881D7B19E0F47900166692 /* ofxRegex.cpp */; };
+		B0E9949C1A0304FE00F5F941 /* ofxBpm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0E9949A1A0304FE00F5F941 /* ofxBpm.cpp */; };
+		B0E994A11A03050500F5F941 /* ofxSequencer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0E9949F1A03050500F5F941 /* ofxSequencer.cpp */; };
+		B0E994A21A03051700F5F941 /* ControlPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0E9948D1A0304FC00F5F941 /* ControlPanel.cpp */; };
+		B0E994A31A03051700F5F941 /* MetaController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0E9948F1A0304FC00F5F941 /* MetaController.cpp */; };
+		B0E994A41A03051700F5F941 /* OscManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0E994911A0304FC00F5F941 /* OscManager.cpp */; };
+		B0E994A51A03051700F5F941 /* Presets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0E994941A0304FC00F5F941 /* Presets.cpp */; };
+		B0E994A61A03051700F5F941 /* Sequencer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0E994961A0304FC00F5F941 /* Sequencer.cpp */; };
 		B26AAF6694320D2F661F6699 /* Base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 91900D7E1196099B4EAB1DDE /* Base64.cpp */; };
 		BB896DB80D22F8F1CAAC31B5 /* ofxSCBus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E140AE13532DC8E2A04D7940 /* ofxSCBus.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
@@ -298,17 +302,26 @@
 		B04C494319E2275700ABA9D2 /* Instrument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Instrument.h; sourceTree = "<group>"; };
 		B0881D6419E0F2CA00166692 /* libscsynth.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libscsynth.a; sourceTree = "<group>"; };
 		B0881D6519E0F2CA00166692 /* libsndfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libsndfile.a; sourceTree = "<group>"; };
-		B0881D6B19E0F2F400166692 /* Control.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Control.cpp; sourceTree = "<group>"; };
-		B0881D6C19E0F2F400166692 /* Control.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Control.h; sourceTree = "<group>"; };
-		B0881D6D19E0F2F400166692 /* OscManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OscManager.cpp; sourceTree = "<group>"; };
-		B0881D6E19E0F2F400166692 /* OscManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OscManager.h; sourceTree = "<group>"; };
-		B0881D6F19E0F2F400166692 /* Parameter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Parameter.h; sourceTree = "<group>"; };
-		B0881D7019E0F2F400166692 /* Presets.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Presets.cpp; sourceTree = "<group>"; };
-		B0881D7119E0F2F400166692 /* Presets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Presets.h; sourceTree = "<group>"; };
 		B0881D7319E0F2FA00166692 /* SuperCollider.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SuperCollider.cpp; sourceTree = "<group>"; };
 		B0881D7419E0F2FA00166692 /* SuperCollider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SuperCollider.h; sourceTree = "<group>"; };
 		B0881D7B19E0F47900166692 /* ofxRegex.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxRegex.cpp; sourceTree = "<group>"; };
 		B0881D7C19E0F47900166692 /* ofxRegex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxRegex.h; sourceTree = "<group>"; };
+		B0E9948C1A0304FC00F5F941 /* Control.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Control.h; sourceTree = "<group>"; };
+		B0E9948D1A0304FC00F5F941 /* ControlPanel.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ControlPanel.cpp; sourceTree = "<group>"; };
+		B0E9948E1A0304FC00F5F941 /* ControlPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ControlPanel.h; sourceTree = "<group>"; };
+		B0E9948F1A0304FC00F5F941 /* MetaController.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MetaController.cpp; sourceTree = "<group>"; };
+		B0E994901A0304FC00F5F941 /* MetaController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MetaController.h; sourceTree = "<group>"; };
+		B0E994911A0304FC00F5F941 /* OscManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OscManager.cpp; sourceTree = "<group>"; };
+		B0E994921A0304FC00F5F941 /* OscManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OscManager.h; sourceTree = "<group>"; };
+		B0E994931A0304FC00F5F941 /* Parameter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Parameter.h; sourceTree = "<group>"; };
+		B0E994941A0304FC00F5F941 /* Presets.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Presets.cpp; sourceTree = "<group>"; };
+		B0E994951A0304FC00F5F941 /* Presets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Presets.h; sourceTree = "<group>"; };
+		B0E994961A0304FC00F5F941 /* Sequencer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Sequencer.cpp; sourceTree = "<group>"; };
+		B0E994971A0304FC00F5F941 /* Sequencer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sequencer.h; sourceTree = "<group>"; };
+		B0E9949A1A0304FE00F5F941 /* ofxBpm.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxBpm.cpp; sourceTree = "<group>"; };
+		B0E9949B1A0304FE00F5F941 /* ofxBpm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxBpm.h; sourceTree = "<group>"; };
+		B0E9949F1A03050500F5F941 /* ofxSequencer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxSequencer.cpp; sourceTree = "<group>"; };
+		B0E994A01A03050500F5F941 /* ofxSequencer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxSequencer.h; sourceTree = "<group>"; };
 		B21E7E5F548EEA92F368040B /* tinyxml.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = tinyxml.h; path = ../../../addons/ofxXmlSettings/libs/tinyxml.h; sourceTree = SOURCE_ROOT; };
 		B31C608870ECEB2490A93736 /* ofxOscParameterSync.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOscParameterSync.h; path = ../../../addons/ofxOsc/src/ofxOscParameterSync.h; sourceTree = SOURCE_ROOT; };
 		B3832A72DE390F50EF294C50 /* SC_WorldOptions.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = SC_WorldOptions.h; path = ../../../addons/ofxSuperColliderServer/libs/supercollider/include/plugin_interface/SC_WorldOptions.h; sourceTree = SOURCE_ROOT; };
@@ -614,7 +627,7 @@
 		B0881D6819E0F2E300166692 /* Control */ = {
 			isa = PBXGroup;
 			children = (
-				B0881D6A19E0F2F400166692 /* src */,
+				B0E9948B1A0304FC00F5F941 /* src */,
 			);
 			name = Control;
 			sourceTree = "<group>";
@@ -625,21 +638,6 @@
 				B0881D7219E0F2FA00166692 /* src */,
 			);
 			name = SuperCollider;
-			sourceTree = "<group>";
-		};
-		B0881D6A19E0F2F400166692 /* src */ = {
-			isa = PBXGroup;
-			children = (
-				B0881D6B19E0F2F400166692 /* Control.cpp */,
-				B0881D6C19E0F2F400166692 /* Control.h */,
-				B0881D6D19E0F2F400166692 /* OscManager.cpp */,
-				B0881D6E19E0F2F400166692 /* OscManager.h */,
-				B0881D6F19E0F2F400166692 /* Parameter.h */,
-				B0881D7019E0F2F400166692 /* Presets.cpp */,
-				B0881D7119E0F2F400166692 /* Presets.h */,
-			);
-			name = src;
-			path = ../../Control/src;
 			sourceTree = "<group>";
 		};
 		B0881D7219E0F2FA00166692 /* src */ = {
@@ -672,6 +670,62 @@
 			path = ../../../addons/ofxRegex/src;
 			sourceTree = "<group>";
 		};
+		B0E9948B1A0304FC00F5F941 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B0E9948C1A0304FC00F5F941 /* Control.h */,
+				B0E9948D1A0304FC00F5F941 /* ControlPanel.cpp */,
+				B0E9948E1A0304FC00F5F941 /* ControlPanel.h */,
+				B0E9948F1A0304FC00F5F941 /* MetaController.cpp */,
+				B0E994901A0304FC00F5F941 /* MetaController.h */,
+				B0E994911A0304FC00F5F941 /* OscManager.cpp */,
+				B0E994921A0304FC00F5F941 /* OscManager.h */,
+				B0E994931A0304FC00F5F941 /* Parameter.h */,
+				B0E994941A0304FC00F5F941 /* Presets.cpp */,
+				B0E994951A0304FC00F5F941 /* Presets.h */,
+				B0E994961A0304FC00F5F941 /* Sequencer.cpp */,
+				B0E994971A0304FC00F5F941 /* Sequencer.h */,
+			);
+			name = src;
+			path = ../../Control/src;
+			sourceTree = "<group>";
+		};
+		B0E994981A0304FE00F5F941 /* ofxBpm */ = {
+			isa = PBXGroup;
+			children = (
+				B0E994991A0304FE00F5F941 /* src */,
+			);
+			name = ofxBpm;
+			sourceTree = "<group>";
+		};
+		B0E994991A0304FE00F5F941 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B0E9949A1A0304FE00F5F941 /* ofxBpm.cpp */,
+				B0E9949B1A0304FE00F5F941 /* ofxBpm.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxBpm/src;
+			sourceTree = "<group>";
+		};
+		B0E9949D1A03050500F5F941 /* ofxSequencer */ = {
+			isa = PBXGroup;
+			children = (
+				B0E9949E1A03050500F5F941 /* src */,
+			);
+			name = ofxSequencer;
+			sourceTree = "<group>";
+		};
+		B0E9949E1A03050500F5F941 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B0E9949F1A03050500F5F941 /* ofxSequencer.cpp */,
+				B0E994A01A03050500F5F941 /* ofxSequencer.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxSequencer/src;
+			sourceTree = "<group>";
+		};
 		BA6760AC87647DD61A92BD41 /* win32 */ = {
 			isa = PBXGroup;
 			children = (
@@ -686,6 +740,8 @@
 			children = (
 				B0881D6919E0F2E800166692 /* SuperCollider */,
 				B0881D6819E0F2E300166692 /* Control */,
+				B0E9949D1A03050500F5F941 /* ofxSequencer */,
+				B0E994981A0304FE00F5F941 /* ofxBpm */,
 				B0881D7919E0F47900166692 /* ofxRegex */,
 				E6053AB7FEC63D5F83825B88 /* ofxOsc */,
 				1F4FB5C423662B96ADFDCC0B /* ofxXmlSettings */,
@@ -1114,10 +1170,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0E994A21A03051700F5F941 /* ControlPanel.cpp in Sources */,
+				B0E994A31A03051700F5F941 /* MetaController.cpp in Sources */,
+				B0E994A41A03051700F5F941 /* OscManager.cpp in Sources */,
+				B0E994A51A03051700F5F941 /* Presets.cpp in Sources */,
+				B0E994A61A03051700F5F941 /* Sequencer.cpp in Sources */,
 				B0881D7519E0F30A00166692 /* SuperCollider.cpp in Sources */,
-				B0881D7619E0F30A00166692 /* Control.cpp in Sources */,
-				B0881D7719E0F30A00166692 /* OscManager.cpp in Sources */,
-				B0881D7819E0F30A00166692 /* Presets.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				B0881D7D19E0F47900166692 /* ofxRegex.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
@@ -1126,6 +1184,7 @@
 				4ADB88E2FB52E76A471065DE /* ofxOscParameterSync.cpp in Sources */,
 				640279EE111671BD026CB013 /* ofxOscReceiver.cpp in Sources */,
 				8F5205AEF8861EF234F0651A /* ofxOscSender.cpp in Sources */,
+				B0E994A11A03050500F5F941 /* ofxSequencer.cpp in Sources */,
 				ADE367465D2A8EBAD4C7A8D9 /* IpEndpointName.cpp in Sources */,
 				67FE4C7B15C2F0478C8126C2 /* NetworkingUtils.cpp in Sources */,
 				510CAFE035E576A4E1502D52 /* UdpSocket.cpp in Sources */,
@@ -1155,6 +1214,7 @@
 				F1E8DE8734BA6F69A5112FA8 /* ofxUIBaseDraws.cpp in Sources */,
 				C381F2B7CFD84C0E540EB4BC /* ofxUIBiLabelSlider.cpp in Sources */,
 				7D393646FB859A930EF58917 /* ofxUIButton.cpp in Sources */,
+				B0E9949C1A0304FE00F5F941 /* ofxBpm.cpp in Sources */,
 				7BE46522B64E24FAEDE1A25D /* ofxUICanvas.cpp in Sources */,
 				DF0C851B244C4C867CEA8806 /* ofxUICircleSlider.cpp in Sources */,
 				9BE4AE0AA2B8C436BDFE9D4D /* ofxUIDragableLabelButton.cpp in Sources */,

@@ -12,6 +12,10 @@ Instrument::Instrument() {
     sequencerMode = NOTES;
 }
 
+void Instrument::blah() {
+    control.toggleVisible();
+}
+
 //-----------
 void Instrument::connectTo(ofxAudioUnitMixer &mixer, int channel) {
     au.connectTo(mixer, channel);
@@ -32,8 +36,8 @@ void Instrument::setup(InstrumentType type){
 
     // setup sequencer
     sequencer.setup(6, 8);
-    sequencer.addBeatListener(this, &Instrument::sequencerStepEvent);
-    sequencer.addInterpolatedBeatListener(this, &Instrument::sequencerInterpolatedStepEvent);
+    ofAddListener(sequencer.getSequencer().sequencerEvent, this, &Instrument::sequencerStepEvent);
+    ofAddListener(sequencer.interpolatedSequencerEvent, this, &Instrument::sequencerInterpolatedStepEvent);
     sequencer.setSmooth(sequencerSmooth);
     sequencer.setPosition(165, 225, 260, 120);
     
@@ -197,11 +201,8 @@ void Instrument::guiParametersEvent(ofxUIEventArgs &e) {
         }
     }
     else if (e.getParentName() == "parameters") {
-        cout << "1"<<endl;
         for (int i=0; i<parameters.size(); i++) {
-            cout << "2"<<endl;
             if (guiActiveIsSequencer) {
-                cout << "dsjlnfs" << endl;
                 if (parameters[i].name == e.getName()) {
                     seqMap[guiActiveSeq] = parameters[i];
                     setupGuiPadInspector();
@@ -209,10 +210,7 @@ void Instrument::guiParametersEvent(ofxUIEventArgs &e) {
                 }
             }
             else {
-                cout << parameters[i].name << " :: "<< e.getName() <<endl;
-
                 if (parameters[i].name == e.getName()) {
-                    cout <<" go here "<< endl;
                     if (guiActiveManta < 48)
                         manta.markPad(guiActiveManta / 8, guiActiveManta % 8, true);
                     else if (guiActiveManta < 50)
@@ -455,9 +453,11 @@ void Instrument::processColumn(vector<float> &column) {
 
 //-----------
 void Instrument::draw() {
-    manta.draw(165, 5, 260);
-    manta.drawStats(430, 5, 260);
-    sequencer.draw();
+    if (visible) {
+        manta.draw(165, 5, 260);
+        manta.drawStats(430, 5, 260);
+        sequencer.draw();
+    }
 }
 
 //-----------
@@ -549,7 +549,7 @@ void Instrument::savePreset(string filename) {
     bool active = sequencer.getActive();
     bool discrete = sequencer.getDiscrete();
     int bpm = sequencer.getBpm();
-    int cols = sequencer.getNumberColumns();
+    int cols = sequencer.getNumberCols();
     int rows = sequencer.getNumberRows();
     string values = ofToString(sequencer.getValue(0, 0));
     for (int r=0; r<rows; r++) {
@@ -672,10 +672,28 @@ void Instrument::loadPreset(string &filename) {
 }
 
 //-----------
+void Instrument::setGuiPosition(int x, int y) {
+    control.setGuiPosition(x, y);
+    sequencer.setPosition(x+165, y+225, 260, 120);
+    guiP->setPosition(x+810, y+5);
+    guiS->setPosition(x+695, y+5);
+}
+
+//-----------
+void Instrument::setVisible(bool visible) {
+    this->visible = visible;
+    control.setVisible(visible);
+    sequencer.setVisible(visible);
+    guiP->setVisible(visible);
+    guiS->setVisible(visible);
+    
+}
+
+//-----------
 Instrument::~Instrument() {
     setActive(false);
-    sequencer.removeInterpolatedBeatListener(this, &Instrument::sequencerInterpolatedStepEvent);
-    sequencer.removeBeatListener(this, &Instrument::sequencerStepEvent);
+    ofRemoveListener(sequencer.getSequencer().sequencerEvent, this, &Instrument::sequencerStepEvent);
+    ofRemoveListener(sequencer.interpolatedSequencerEvent, this, &Instrument::sequencerInterpolatedStepEvent);
     ofRemoveListener(guiS->newGUIEvent, this, &Instrument::guiStatsEvent);
     ofRemoveListener(guiP->newGUIEvent, this, &Instrument::guiParametersEvent);
     delete guiP;

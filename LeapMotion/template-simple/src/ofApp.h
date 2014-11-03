@@ -3,8 +3,9 @@
 #include "ofMain.h"
 #include "LeapMotion.h"
 
+
 class ofApp : public ofBaseApp
-{    
+{
 public:
     ~ofApp();
     void setup();

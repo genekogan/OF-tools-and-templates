@@ -4,10 +4,11 @@
 void ofApp::setup() {
     ofSetLogLevel(OF_LOG_VERBOSE);
     
-    kinect.setup();
+    kinect.setup("/Users/Gene/Downloads/hometest_single.oni");
     kinect.setCalibration("/Users/Gene/Desktop/calibration.xml");
+    kinect.setMaxUsers(2);
 
-    gfx.setup("main", ofGetScreenWidth(), 0, 1280, 800, true);
+    gfx.setup("main", ofGetScreenWidth(), 0, 1280, 800, false);
 }
 
 //--------
@@ -19,33 +20,34 @@ void ofApp::update(){
 void ofApp::draw(){
     kinect.draw();
     
-   
     gfx.begin();
-    
     
     ofSetColor(0, 150);
     ofRect(0, 0, gfx.getWidth(), gfx.getHeight());
     
-    //kinect.drawCalibratedSkeleton(gfx.getWidth(), gfx.getHeight());
-    drawSkeletonLines2(gfx.getWidth(), gfx.getHeight(), 1, 20);
+    //kinect.drawCalibratedSkeleton(0, gfx.getWidth(), gfx.getHeight());
+    drawSkeletonLines2(gfx.getWidth(), gfx.getHeight(), 3, 10);
     
     gfx.end();
 }
 
 //--------
 void ofApp::drawSkeletonLines(int width, int height, int iterations, float randomOffset){
-    vector<ofVec2f> joints = kinect.getProjectedJoints();
-    ofSetColor(255, 50);
-    ofSetLineWidth(2);
-    for (int i=0; i<joints.size(); i++) {
-        for (int j=i+1; j<joints.size(); j++) {
-            ofPoint p1(joints[i].x * width, joints[i].y * height);
-            ofPoint p2(joints[j].x * width, joints[j].y * height);
-            for (int k=0; k<iterations; k++) {
-                ofLine(p1.x + ofRandom(-randomOffset, randomOffset),
-                       p1.y + ofRandom(-randomOffset, randomOffset),
-                       p2.x + ofRandom(-randomOffset, randomOffset),
-                       p2.y + ofRandom(-randomOffset, randomOffset));
+    int numUsers = kinect.getNumUsers();
+    for (int user=0; user<numUsers; user++) {
+        vector<ofVec2f> joints = kinect.getProjectedJoints(user);
+        ofSetColor(255, 50);
+        ofSetLineWidth(2);
+        for (int i=0; i<joints.size(); i++) {
+            for (int j=i+1; j<joints.size(); j++) {
+                ofPoint p1(joints[i].x * width, joints[i].y * height);
+                ofPoint p2(joints[j].x * width, joints[j].y * height);
+                for (int k=0; k<iterations; k++) {
+                    ofLine(p1.x + ofRandom(-randomOffset, randomOffset),
+                           p1.y + ofRandom(-randomOffset, randomOffset),
+                           p2.x + ofRandom(-randomOffset, randomOffset),
+                           p2.y + ofRandom(-randomOffset, randomOffset));
+                }
             }
         }
     }
@@ -53,7 +55,7 @@ void ofApp::drawSkeletonLines(int width, int height, int iterations, float rando
 
 //--------
 void ofApp::drawSkeletonLines2(int width, int height, int iterations, float randomOffset){
-    vector<ofVec2f> joints = kinect.getProjectedJoints();
+    vector<ofVec2f> joints = kinect.getProjectedJoints(0);
     
     
     ofSetColor(255, 50);

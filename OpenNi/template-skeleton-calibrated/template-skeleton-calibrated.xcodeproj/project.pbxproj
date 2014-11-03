@@ -22,7 +22,6 @@
 		A6668C5B1272D7FCD5B5A16F /* Utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6CEC50DB3D06414010233963 /* Utilities.cpp */; };
 		B01D1EF719FD8A9E00D164A7 /* ofxBpm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B01D1EF519FD8A9E00D164A7 /* ofxBpm.cpp */; };
 		B01D1EFC19FD8AA400D164A7 /* ofxSequencer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B01D1EFA19FD8AA400D164A7 /* ofxSequencer.cpp */; };
-		B01D1F0E19FD8AF200D164A7 /* Control.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B01D1F0119FD8ADA00D164A7 /* Control.cpp */; };
 		B01D1F0F19FD8AF200D164A7 /* ControlPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B01D1F0319FD8ADA00D164A7 /* ControlPanel.cpp */; };
 		B01D1F1019FD8AF200D164A7 /* MetaController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B01D1F0519FD8ADA00D164A7 /* MetaController.cpp */; };
 		B01D1F1119FD8AF200D164A7 /* OscManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B01D1F0719FD8ADA00D164A7 /* OscManager.cpp */; };
@@ -258,7 +257,6 @@
 		B01D1EF619FD8A9E00D164A7 /* ofxBpm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxBpm.h; sourceTree = "<group>"; };
 		B01D1EFA19FD8AA400D164A7 /* ofxSequencer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxSequencer.cpp; sourceTree = "<group>"; };
 		B01D1EFB19FD8AA400D164A7 /* ofxSequencer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxSequencer.h; sourceTree = "<group>"; };
-		B01D1F0119FD8ADA00D164A7 /* Control.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Control.cpp; sourceTree = "<group>"; };
 		B01D1F0219FD8ADA00D164A7 /* Control.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Control.h; sourceTree = "<group>"; };
 		B01D1F0319FD8ADA00D164A7 /* ControlPanel.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ControlPanel.cpp; sourceTree = "<group>"; };
 		B01D1F0419FD8ADA00D164A7 /* ControlPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ControlPanel.h; sourceTree = "<group>"; };
@@ -1104,7 +1102,6 @@
 		B01D1F0019FD8ADA00D164A7 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				B01D1F0119FD8ADA00D164A7 /* Control.cpp */,
 				B01D1F0219FD8ADA00D164A7 /* Control.h */,
 				B01D1F0319FD8ADA00D164A7 /* ControlPanel.cpp */,
 				B01D1F0419FD8ADA00D164A7 /* ControlPanel.h */,
@@ -2069,7 +2066,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B01D1F1719FD8B2C00D164A7 /* OpenNi.cpp in Sources */,
-				B01D1F0E19FD8AF200D164A7 /* Control.cpp in Sources */,
 				B01D1F0F19FD8AF200D164A7 /* ControlPanel.cpp in Sources */,
 				B01D1F1019FD8AF200D164A7 /* MetaController.cpp in Sources */,
 				B01D1F1119FD8AF200D164A7 /* OscManager.cpp in Sources */,

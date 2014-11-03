@@ -12,6 +12,11 @@ void LeapMotion::setup(){
     
     trackVelocity = false;
     numFrames = 15;
+    
+    for (int i=0; i<5; i++) {
+        leftHandTips.push_back(ofPoint(0, 0, 0));
+        rightHandTips.push_back(ofPoint(0, 0, 0));
+    }
 }
 
 //-----------
@@ -62,6 +67,9 @@ void LeapMotion::update(){
         }
         idxFrame = (idxFrame+1) % numFrames;
     }
+    
+    // update stats
+    updateFingerTips();
 }
 
 //-----------
@@ -82,6 +90,36 @@ vector<ofPoint> LeapMotion::getFingerTips(Handedness hand, bool isNormalized) {
         }
     }
     return fingerTips;
+}
+
+//-----------
+void LeapMotion::updateFingerTips(bool isNormalized) {
+    for (int i = 0; i < simpleHands.size(); i++) {
+        if (simpleHands[i].isLeft) {
+            leftHandTips[0].set(simpleHands[i].fingers[THUMB].tip);
+            leftHandTips[1].set(simpleHands[i].fingers[INDEX].tip);
+            leftHandTips[2].set(simpleHands[i].fingers[MIDDLE].tip);
+            leftHandTips[3].set(simpleHands[i].fingers[RING].tip);
+            leftHandTips[4].set(simpleHands[i].fingers[PINKY].tip);
+            if (isNormalized) {
+                for (int j=0; j<leftHandTips.size(); j++) {
+                    leftHandTips[j] -= simpleHands[i].handPos;
+                }
+            }
+        }
+        else {
+            rightHandTips[0].set(simpleHands[i].fingers[THUMB].tip);
+            rightHandTips[1].set(simpleHands[i].fingers[INDEX].tip);
+            rightHandTips[2].set(simpleHands[i].fingers[MIDDLE].tip);
+            rightHandTips[3].set(simpleHands[i].fingers[RING].tip);
+            rightHandTips[4].set(simpleHands[i].fingers[PINKY].tip);
+            if (isNormalized) {
+                for (int j=0; j<rightHandTips.size(); j++) {
+                    rightHandTips[j] -= simpleHands[i].handPos;
+                }
+            }
+        }
+    }
 }
 
 //-----------

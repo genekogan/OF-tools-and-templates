@@ -12,28 +12,19 @@ void Kinect::setup(){
     choices.push_back("blobs");
     choices.push_back("segmentation");
     control.addMenu("strategy", choices, this, &Kinect::selectStrategy);
-
     control.addParameter("track blobs", &trackingBlobs);
     control.addParameter("track keypoints", &trackingKeypoints);
-    
-//    control.registerLabel("blobs parameters");
     control.addParameter("farThreshold", &farThreshold, 0.0f, 255.0f);
     control.addParameter("nearThreshold", &nearThreshold, 0.0f, 255.0f);
-    
-//    control.registerLabel("segmentation parameters");
     control.addParameter("fade", &fade, 0.0f, 255.0f);
     control.addParameter("numDilate", &numDilate, 0, 10);
     control.addParameter("numErode", &numErode, 0, 10);
-
-//    control.registerLabel("contour parameters");
     control.addParameter("minArea", &minArea, 0.0f, 100000.0f);
     control.addParameter("maxArea", &maxArea, 2500.0f, 150000.0f);
     control.addParameter("threshold", &threshold, 0.0f, 255.0f);
     control.addParameter("persistence", &persistence, 0.0f, 100.0f);
     control.addParameter("maxDistance", &maxDistance, 0.0f, 100.0f);
     control.addParameter("smoothingRate", &smoothingRate, 0.0f, 100.0f);
-    
-//    control.registerLabel("output parameters");
     control.addParameter("smoothed", &smoothness, 0, 10);
     control.addParameter("curved", &curved);
     control.setName("kinect");

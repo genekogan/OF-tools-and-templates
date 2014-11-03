@@ -2,7 +2,9 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    audio.setup();
+    
+    audio.setupInstrument(Instrument::AALTO);
+    audio.start();
     
     ofSetFrameRate(30);
 

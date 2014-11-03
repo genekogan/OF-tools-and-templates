@@ -11,7 +11,7 @@ void ofApp::setup(){
     
     poly.setup(points, ofColor(127, 127, 127));
     
-    int n = ofMap(ofGetMouseX(), 0, ofGetWidth(), 1, 20);
+    int n = ofMap(ofGetMouseX(), 0, ofGetWidth(), 2, 20);
     poly.subdivide(n);
     
     ofBackground(255);
