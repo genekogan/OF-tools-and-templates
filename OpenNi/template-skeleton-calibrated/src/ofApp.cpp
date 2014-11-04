@@ -4,7 +4,8 @@
 void ofApp::setup() {
     ofSetLogLevel(OF_LOG_VERBOSE);
     
-    kinect.setup("/Users/Gene/Downloads/hometest_single.oni");
+    //kinect.setup("/Users/Gene/Downloads/hometest_single.oni");
+    kinect.setup();
     kinect.setCalibration("/Users/Gene/Desktop/calibration.xml");
     kinect.setMaxUsers(2);
 
@@ -26,7 +27,7 @@ void ofApp::draw(){
     ofRect(0, 0, gfx.getWidth(), gfx.getHeight());
     
     //kinect.drawCalibratedSkeleton(0, gfx.getWidth(), gfx.getHeight());
-    drawSkeletonLines2(gfx.getWidth(), gfx.getHeight(), 3, 10);
+    drawSkeletonLines(gfx.getWidth(), gfx.getHeight(), 3, 10);
     
     gfx.end();
 }

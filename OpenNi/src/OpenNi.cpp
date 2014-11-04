@@ -2,17 +2,14 @@
 
 
 //-------
-void OpenNi::setup(string oni){
-    maxUsers = 2;    
-    fade = 200;
+OpenNi::OpenNi() {
+    maxUsers = 2;
     minArea = 1000;
     maxArea = 70000;
     threshold = 15;
     persistence = 15;
     maxDistance = 32;
-    numDilate = 2;
-    numErode = 0;
-    nearThreshold = 254;
+    nearThreshold = 255;
     farThreshold = 220;
     smoothness = 1;
     curved = false;
@@ -20,10 +17,16 @@ void OpenNi::setup(string oni){
     normalizeJoints = false;
     
     // modes
-    trackingJoints = true;
-    trackingBlobs = true;
+    trackingUsers = false;
+    trackingContours = false;
     trackingKeypoints = false;
+    pTrackingUsers = false;
+    pTrackingContours = false;
+    pTrackingKeypoints = false;
+}
 
+//-------
+void OpenNi::setup(string oni){
     if (oni != "") {
         kinect.setupFromONI(oni);
     }
@@ -31,32 +34,36 @@ void OpenNi::setup(string oni){
         kinect.setup();
     }
     kinect.addDepthGenerator();
-
-    kinect.addImageGenerator();
+    kinect.addImageGenerator();   // optional?
     kinect.setRegister(true);
     kinect.setMirror(true);
-    
-    
+    kinect.setUseDepthRawPixels(true);
+    setupControl();
+}
+
+//-------
+void OpenNi::disableUserTracking() {
+    trackingUsers = false;
+    pTrackingUsers = false;
+    kinect.setUseMaskPixelsAllUsers(false);
+    kinect.setUseMaskTextureAllUsers(false);
+    kinect.setUsePointCloudsAllUsers(false);
+    kinect.removeUserGenerator();
+    setupControl();
+}
+
+//-------
+void OpenNi::enableUserTracking(int maxUsers) {
+    this->maxUsers = maxUsers;
+    trackingUsers = true;
+    pTrackingUsers = true;
     kinect.addUserGenerator();
     kinect.setMaxNumUsers(maxUsers);
-    
     kinect.setUseMaskPixelsAllUsers(true);
     kinect.setUseMaskTextureAllUsers(true);
     kinect.setUsePointCloudsAllUsers(true);
     kinect.setPointCloudDrawSizeAllUsers(2);
     kinect.setPointCloudResolutionAllUsers(2);
-    
-    
-    
-    kinect.setUseDepthRawPixels(true);
-    
-    kinect.start();
-
-    
-    // setup resources
-    grayImage.allocate(kinect.getWidth(), kinect.getHeight());
-    grayThreshNear.allocate(kinect.getWidth(), kinect.getHeight());
-    grayThreshFar.allocate(kinect.getWidth(), kinect.getHeight());
     
     // setup joint structures
     jointNames.push_back("head");
@@ -74,7 +81,7 @@ void OpenNi::setup(string oni){
     jointNames.push_back("rightHip");
     jointNames.push_back("rightKnee");
     jointNames.push_back("rightFoot");
-
+    
     for (int i=0; i<maxUsers; i++) {
         vector<ofVec3f*> newJoints, newProjectedJoints;
         for (int j=0; j<jointNames.size(); j++) {
@@ -85,30 +92,56 @@ void OpenNi::setup(string oni){
         normalizedJoints.push_back(newProjectedJoints);
     }
     
-    for (int i=0; i<maxUsers; i++) {
-        cout << "JOINTS " << joints[i].size() << endl;
-    }
-    
-    // setup control panel
+    setupControl();
+}
+
+//-------
+void OpenNi::disableContourTracking() {
+    trackingContours = false;
+    pTrackingContours = false;
+    setupControl();
+}
+
+//-------
+void OpenNi::enableContourTracking() {
+    trackingContours = true;
+    pTrackingContours = true;
+    grayImage.allocate(kinect.getWidth(), kinect.getHeight());
+    grayThreshNear.allocate(kinect.getWidth(), kinect.getHeight());
+    grayThreshFar.allocate(kinect.getWidth(), kinect.getHeight());
+    setupControl();
+}
+
+//-------
+void OpenNi::setupControl() {
+    control.clear();
     control.setName("OpenNi");
     control.setVisible(true);
-    control.addParameter("lookForJoints", &trackingJoints);
-    control.addParameter("normalizeJoints", &normalizeJoints);
-    control.addParameter("track blobs", &trackingBlobs);
+    
+    control.addParameter("track contours", &trackingContours);
+    control.addParameter("track users", &trackingUsers);
     control.addParameter("track keypoints", &trackingKeypoints);
-    control.addParameter("farThreshold", &farThreshold, 0.0f, 255.0f);
-    control.addParameter("nearThreshold", &nearThreshold, 0.0f, 255.0f);
-    control.addParameter("fade", &fade, 0.0f, 255.0f);
-    control.addParameter("numDilate", &numDilate, 0, 10);
-    control.addParameter("numErode", &numErode, 0, 10);
-    control.addParameter("minArea", &minArea, 0.0f, 100000.0f);
-    control.addParameter("maxArea", &maxArea, 2500.0f, 150000.0f);
-    control.addParameter("threshold", &threshold, 0.0f, 255.0f);
-    control.addParameter("persistence", &persistence, 0.0f, 100.0f);
-    control.addParameter("maxDistance", &maxDistance, 0.0f, 100.0f);
-    control.addParameter("smoothingRate", &smoothingRate, 0.0f, 100.0f);
-    control.addParameter("smoothed", &smoothness, 0, 10);
-    control.addParameter("curved", &curved);
+    
+    if (trackingContours) {
+        control.addParameter("farThreshold", &farThreshold, 0.0f, 255.0f);
+        control.addParameter("nearThreshold", &nearThreshold, 0.0f, 255.0f);
+        control.addParameter("minArea", &minArea, 0.0f, 100000.0f);
+        control.addParameter("maxArea", &maxArea, 2500.0f, 150000.0f);
+        control.addParameter("threshold", &threshold, 0.0f, 255.0f);
+        control.addParameter("persistence", &persistence, 0.0f, 100.0f);
+        control.addParameter("maxDistance", &maxDistance, 0.0f, 100.0f);
+        control.addParameter("smoothingRate", &smoothingRate, 0.0f, 100.0f);
+        control.addParameter("smoothed", &smoothness, 0, 10);
+        control.addParameter("curved", &curved);
+    }
+    
+    if (trackingUsers) {
+        control.addParameter("normalizeJoints", &normalizeJoints);
+    }
+    
+    if (trackingKeypoints) {
+        
+    }
 }
 
 //-------
@@ -119,21 +152,41 @@ void OpenNi::setMaxUsers(int maxUsers) {
 
 //-------
 bool OpenNi::update(){
+    checkTrackingOptions();
+    
     kinect.update();
     if (kinect.isNewFrame()) {
-        if (trackingBlobs) {
+        
+        depthPixels = kinect.getDepthRawPixels();   // every frame?
+        
+        if (trackingContours) {
             updateContours();
         }
         if (trackingKeypoints) {
             //flow.calcOpticalFlow(kinect.getDepthPixelsRef());
         }
-        if (trackingJoints) {
-            updateJoints();
+        if (trackingUsers) {
+            updateUsers();
         }
         return true;
     }
     else {
         return false;
+    }
+}
+
+//---------
+void OpenNi::checkTrackingOptions() {
+    if (trackingContours != pTrackingContours) {
+        trackingContours ? enableContourTracking() : disableContourTracking();
+        pTrackingContours = trackingContours;
+    }
+    if (trackingUsers != pTrackingUsers) {
+        trackingUsers ? enableUserTracking() : disableUserTracking();
+        pTrackingUsers = trackingUsers;
+    }
+    if (trackingKeypoints != pTrackingKeypoints) {
+        pTrackingKeypoints = trackingKeypoints;
     }
 }
 
@@ -156,7 +209,7 @@ void OpenNi::updateContours() {
 }
 
 //-------
-void OpenNi::updateJoints(){
+void OpenNi::updateUsers(){
     int numUsers = kinect.getNumTrackedUsers();
     
     for (int i = 0; i < numUsers; i++){
@@ -243,23 +296,22 @@ void OpenNi::draw(int x, int y, int w, int h){
     ofPushMatrix();
     ofTranslate(x, y);
     ofScale(w/1280.0, h/960.0);
-
-    if (trackingBlobs) {
+    
+    if (trackingContours) {
         grayImage.draw(0, 0);
         ofSetColor(255, 0, 0);
         ofSetLineWidth(4);
         contourFinder.draw();
-        ofSetColor(255);
-        ofTranslate(640, 0);
-    }    
-    ofEnableBlendMode(OF_BLENDMODE_ALPHA);
-    int numUsers = kinect.getNumTrackedUsers();
-    for (int i = 0; i < numUsers; i++){
-        ofxOpenNIUser & user = kinect.getTrackedUser(i);
-        user.drawMask();
-        user.drawSkeleton();
     }
-    ofDisableBlendMode();
+    if (trackingUsers) {
+        int numUsers = kinect.getNumTrackedUsers();
+        for (int i = 0; i < numUsers; i++){
+            ofxOpenNIUser & user = kinect.getTrackedUser(i);
+            //user.drawMask();
+            user.drawSkeleton();
+        }
+    }
+    
     ofPopMatrix();
 }
 
@@ -310,146 +362,27 @@ void OpenNi::drawCalibratedContours(int width, int height){
         vector<cv::Point> points = contourFinder.getContour(i);
         ofBeginShape();
         for (int j=0; j<points.size(); j+=smoothness) {
-            ofPoint dp = ofPoint(points[j].x, points[j].y, kinect.getDepthPixels()[(int)(points[j].x + points[j].y*640.0)]);
-            ofVec3f wp = kinect.projectiveToWorld(dp);
-
-
+            ofPoint depthPoint = ofPoint(points[j].x, points[j].y,
+                                         depthPixels[(int)(points[j].x + points[j].y*640)]);
+            ofVec3f worldPoint = kinect.projectiveToWorld(depthPoint);
             
-            ofVec2f pp = kpt.getProjectedPoint(wp);
+            // discrepancy between ofxKinect (used for calibration) and ofxOpenNi
+            worldPoint.x *= -1.0;
+            worldPoint.y *= -1.0;
             
-            
-            ofPoint mp(ofMap(pp.x, 0, 1, 0, width),
-                       ofMap(pp.y, 0, 1, 0, height));
+            ofVec2f projectedPoint = kpt.getProjectedPoint(worldPoint);
+            ofPoint mappedPoint(ofMap(projectedPoint.x, 0, 1, 0, width),
+                                ofMap(projectedPoint.y, 0, 1, 0, height));
             if (curved) {
-                ofCurveVertex(mp.x, mp.y);
+                ofCurveVertex(mappedPoint.x, mappedPoint.y);
             } else {
-                ofVertex(mp.x, mp.y);
-            }
-            if (abs(wp.x) > 0) {
-                cout << ofToString(ofGetFrameNum()) << " " << ofToString(j) << " : " <<ofToString(mp) << endl;
+                ofVertex(mappedPoint.x, mappedPoint.y);
             }
         }
         ofEndShape();
     }
     ofPopStyle();
 }
-
-/*
-//-------
-void OpenNi::drawCalibratedContours(int width, int height){
-    ofPushStyle();
-    ofFill();
-    ofSetColor(255, 255, 0);
-    RectTracker& tracker = contourFinder.getTracker();
-    for(int i = 0; i < contourFinder.size(); i++) {
-        vector<cv::Point> points = contourFinder.getContour(i);
-        ofBeginShape();
-        for (int j=0; j<points.size(); j+=smoothness) {
-            //ofVec3f wp = kinect.projectiveToWorld(ofPoint((float)points[j].x, (float)points[j].y));
-            //ofVec3f wp = kinect.cameraToWorld(ofVec2f((float)points[j].x, (float)points[j].y/480.0));
-            
-            ofVec3f wp;
-
-            
-            int nPoints = 1;
-            
-            vector<XnPoint3D> projective(nPoints);
-            XnPoint3D *out = &projective[0];
-            
-            //	if(threaded) lock();
-//            const XnDepthPixel* d = depthPixels.getPixels();
-            const XnDepthPixel* d = (XnDepthPixel *) &kinect.getDepthPixels();
-            
-            unsigned int pixel;
-            pixel  = (int)points[i].x + (int)points[i].y * 640;
-            if (pixel >= 640*480)
-                continue;
-            
-            projective[i].X = points[i].x;
-            projective[i].Y = points[i].y;
-            projective[i].Z = float(d[pixel]) / 1000.0f;
-
-            //	if(threaded) unlock();
-            
-            kinect.getDepthGenerator().ConvertProjectiveToRealWorld(1, &projective[0], (XnPoint3D *) &wp);
-            //recordDepth.getXnDepthGenerator().ConvertProjectiveToRealWorld(nPoints, &projective[0], (XnPoint3D*)&w[0]);
-            
-            
-            cout << ofToString(wp) << endl;
-            ofVec2f pp = kpt.getProjectedPoint(wp);
-            cout << "pp " << ofToString(pp) << endl;
-            
-            
-            
-            ofPoint mp(ofMap(pp.x, 0, 1, 0, width),
-                       ofMap(pp.y, 0, 1, 0, height));
-            if (curved) {
-                ofCurveVertex(mp.x, mp.y);
-            } else {
-                ofVertex(mp.x, mp.y);
-            }
-        }
-        ofEndShape();
-    }
-    ofPopStyle();
-}
-*/
-
-
-/*
-//-------
-void OpenNi::drawCalibratedContours(int width, int height){
-    ofPushStyle();
-    ofFill();
-    ofSetColor(255, 255, 0);
-    RectTracker& tracker = contourFinder.getTracker();
-    for(int i = 0; i < contourFinder.size(); i++) {
-        vector<cv::Point> points = contourFinder.getContour(i);
-        ofBeginShape();
-        
-            
-        int nPoints = points.size();
-        
-        if (nPoints < 3) continue;
-        
-        
-//        vector<ofVec3f> wp(nPoints);
- //       wp.resize(nPoints);
-        vector<ofVec3f> wp;
-        for (int i=0; i<nPoints; i++) {
-            wp.push_back(ofVec3f(0, 0, 0));
-        }
-        
-        vector<XnPoint3D> projective(nPoints);
-        XnPoint3D *out = &projective[0];
-        
-        //	if(threaded) lock();
-        //            const XnDepthPixel* d = depthPixels.getPixels();
-        const XnDepthPixel* d = (XnDepthPixel *) &kinect.getDepthPixels();
-        
-        unsigned int pixel;
-        for (int j=0; j<nPoints; j++) {
-            pixel  = (int)points[j].x + (int)points[j].y * 640;
-            if (pixel >= 640*480)
-                continue;
-            
-            projective[j].X = points[j].x;
-            projective[j].Y = points[j].y;
-            projective[j].Z = float(d[pixel]) / 1000.0f;
-        }
-        
-        //	if(threaded) unlock();
-        
-//        kinect.getDepthGenerator().ConvertProjectiveToRealWorld(1, &projective, (XnPoint3D *) &wp);
-        kinect.getDepthGenerator().ConvertProjectiveToRealWorld(nPoints, (XnPoint3D *) &projective, (XnPoint3D *) &wp);
-//        kinect.getDepthGenerator().ConvertProjectiveToRealWorld(<#XnUInt32 nCount#>, <#const XnPoint3D *aProjective#>, <#XnPoint3D *aRealWorld#>)
-        //recordDepth.getXnDepthGenerator().ConvertProjectiveToRealWorld(nPoints, &projective[0], (XnPoint3D*)&w[0]);
-        
-    }
-    ofPopStyle();
-}
-*/
-
 
 //-------
 void OpenNi::drawCalibratedSkeleton(int idx, int width, int height) {

@@ -57,26 +57,42 @@ public:
 class OpenNi
 {
 public:
+    OpenNi();
     void setup(string oni="");
-    void setMaxUsers(int maxUsers);
-    void setNormalizeJoints(bool normalizeJoints) {this->normalizeJoints = normalizeJoints;}
-    void setTrackingBlobs(bool trackingBlobs) {this->trackingBlobs = trackingBlobs; }
-    void setCalibration(string path);
     void close();
+    
+    void enableUserTracking(int maxUsers=2);
+    void enableContourTracking();
+    
+    void disableUserTracking();
+    void disableContourTracking();
+    
+    void setupControl();
+    
+    void start() {kinect.start();}
+    void stop() {kinect.stop();}
+    
+    void setMaxUsers(int maxUsers);
+    
+    void setNormalizeJoints(bool normalizeJoints) {this->normalizeJoints = normalizeJoints;}
+    void setTrackingBlobs(bool trackingBlobs) {this->trackingUsers = trackingUsers; }
+    
+    void setCalibration(string path);
+    
     
     void setGuiPosition(int x, int y);
     void toggleGuiVisible();
-
+    
     bool update();
     
     void updateContours();
-    void updateJoints();
+    void updateUsers();
     void recordContours();
     
     void draw(int x=0, int y=0, int w=1280, int h=960);
     void drawCalibratedContours(int width=640, int height=480);
     void drawCalibratedSkeleton(int idx, int width=640, int height=480);
-
+    
     vector<ofVec3f*> & getJoints(int idxUser);
     vector<ofVec3f*> & getNormalizedJoints(int idxUser);
     vector<ofVec2f>  & getProjectedJoints(int idxUser);
@@ -89,42 +105,41 @@ public:
     
 private:
     
+    void checkTrackingOptions();    
     void userEvent(ofxOpenNIUserEvent & event);
-
+    
     // kinect
     ofxOpenNI kinect;
     ofxKinectProjectorToolkit kpt;
     ContourFinder contourFinder;
-
+    
     // kinect data
     vector<string> jointNames;
     vector<vector<ofVec3f*> > joints, normalizedJoints;
     vector<ofVec2f> projectedJoints;
     ofVec3f userBoundingBoxMin, userBoundingBoxMax;
     ofVec3f jointTorso, jointNeck, jointHead,
-        jointLeftShoulder, jointLeftElbow, jointLeftHand,
-        jointRightShoulder, jointRightElbow, jointRightHand,
-        jointLeftHip, jointLeftKnee, jointLeftFoot,
-        jointRightHip, jointRightKnee, jointRightFoot;
-
+    jointLeftShoulder, jointLeftElbow, jointLeftHand,
+    jointRightShoulder, jointRightElbow, jointRightHand,
+    jointLeftHip, jointLeftKnee, jointLeftFoot,
+    jointRightHip, jointRightKnee, jointRightFoot;
+    
     vector<Contour *> contours;
     //vector<Ribbon *> ribbons;
-
-    Control control;
-
-    bool trackingBlobs;
-    bool trackingKeypoints;
-    bool trackingJoints;
-
     
-    float fade;
+    Control control;
+    
+    bool trackingContours;
+    bool trackingUsers;
+    bool trackingKeypoints;
+    bool pTrackingContours, pTrackingUsers, pTrackingKeypoints;
+    
+    
     float minArea;
     float maxArea;
     float threshold;
     float persistence;
     float maxDistance;
-    int numDilate;
-    int numErode;
     float nearThreshold;
     float farThreshold;
     int smoothness;
@@ -136,7 +151,7 @@ private:
     ofxCvGrayscaleImage grayImage;
 	ofxCvGrayscaleImage grayThreshNear;
 	ofxCvGrayscaleImage grayThreshFar;
-    
+    ofShortPixels depthPixels;
 };
 
 
