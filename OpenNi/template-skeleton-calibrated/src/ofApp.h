@@ -4,6 +4,8 @@
 #include "OpenNi.h"
 #include "ofxSecondWindow.h"
 
+
+
 class ofApp : public ofBaseApp{
     
 public:
@@ -18,6 +20,5 @@ public:
     ofxSecondWindow gfx;
     
     
-    void drawSkeletonLines(int width, int height, int iterations=1, float randomOffset=0);
-    void drawSkeletonLines2(int width, int height, int iterations=1, float randomOffset=0);
+    
 };

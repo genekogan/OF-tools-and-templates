@@ -4,14 +4,12 @@
 void ofApp::setup() {
     ofSetLogLevel(OF_LOG_VERBOSE);
     
-    gfx.setup("main", ofGetScreenWidth()-640, 20, 640, 480, false);
+    gfx.setup("main", ofGetScreenWidth()-640, 20, 1024, 768, false);
 
     kinect.setup("/Users/Gene/Downloads/hometest_single.oni");
     kinect.enableContourTracking();
-//    kinect.enableUserTracking();
     kinect.setCalibration("/Users/Gene/Desktop/calibration.xml");
     kinect.setupContourVisuals(gfx.getWidth(), gfx.getHeight());
-//    kinect.setupSkeletonVisuals(gfx.getWidth(), gfx.getHeight());
     kinect.start();
 }
 
