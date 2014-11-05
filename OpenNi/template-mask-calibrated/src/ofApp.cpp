@@ -4,19 +4,21 @@
 void ofApp::setup() {
     ofSetLogLevel(OF_LOG_VERBOSE);
     
-    kinect.setup("/Users/Gene/Downloads/hometest_single.oni");
-    //kinect.setup();
-    kinect.setCalibration("/Users/Gene/Desktop/calibration.xml");
-    //kinect.enableContourTracking();
-    //kinect.enableUserTracking();
-    kinect.start();
+    gfx.setup("main", ofGetScreenWidth()-640, 20, 640, 480, false);
 
-    gfx.setup("main", ofGetScreenWidth()-800, 0, 1280, 800, false);
+    kinect.setup("/Users/Gene/Downloads/hometest_single.oni");
+    kinect.enableContourTracking();
+//    kinect.enableUserTracking();
+    kinect.setCalibration("/Users/Gene/Desktop/calibration.xml");
+    kinect.setupContourVisuals(gfx.getWidth(), gfx.getHeight());
+//    kinect.setupSkeletonVisuals(gfx.getWidth(), gfx.getHeight());
+    kinect.start();
 }
 
 //--------
 void ofApp::update(){
     kinect.update();
+    ofSetWindowTitle(ofToString(ofGetFrameRate()));
 }
 
 //--------
@@ -25,19 +27,19 @@ void ofApp::draw(){
     
     gfx.begin();
     ofClear(0, 0);
-    //ofEnableBlendMode(OF_BLENDMODE_MULTIPLY);
-    ofSetColor(255);
     kinect.drawCalibratedContours(gfx.getWidth(), gfx.getHeight());
-    //ofDisableBlendMode();
+    kinect.drawVisuals();
     gfx.end();
 }
 
 //--------
 void ofApp::exit(){
+    kinect.stop();
     kinect.close();
 }
 
 //--------
 void ofApp::keyPressed(int key){
+
     
 }

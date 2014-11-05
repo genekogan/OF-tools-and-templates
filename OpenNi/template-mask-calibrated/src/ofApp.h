@@ -4,6 +4,8 @@
 #include "OpenNi.h"
 #include "ofxSecondWindow.h"
 
+
+
 class ofApp : public ofBaseApp{
     
 public:
@@ -16,4 +18,7 @@ public:
     
 	OpenNi kinect;
     ofxSecondWindow gfx;
+    
+    
+    
 };

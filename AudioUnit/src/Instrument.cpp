@@ -45,6 +45,7 @@ void Instrument::setup(InstrumentType type){
     setupGui();
     setupGuiPresets();
     setActive(true);
+    setVisible(true);
 
     // setup instrument parameters
     vector<AudioUnitParameterInfo> params = au.getParameterList();

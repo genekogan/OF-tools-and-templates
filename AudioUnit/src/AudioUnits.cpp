@@ -7,6 +7,7 @@ AudioUnits::AudioUnits() {
     idxMixer = 0;
     instrumentSetup = false;
     filePlayerSetup = false;
+    visible = true;
 }
 
 //-------
@@ -51,8 +52,12 @@ void AudioUnits::draw() {
 //-------
 void AudioUnits::setVisible(bool visible) {
     this->visible = visible;
-    player.setVisible(visible);
-    instrument.setVisible(visible);
+    if (instrumentSetup) {
+        player.setVisible(visible);
+    }
+    if (filePlayerSetup) {
+        instrument.setVisible(visible);
+    }
 }
 
 //-------

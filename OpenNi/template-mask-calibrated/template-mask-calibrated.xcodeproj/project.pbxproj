@@ -27,7 +27,6 @@
 		B01D1F1119FD8AF200D164A7 /* OscManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B01D1F0719FD8ADA00D164A7 /* OscManager.cpp */; };
 		B01D1F1219FD8AF200D164A7 /* Presets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B01D1F0A19FD8ADA00D164A7 /* Presets.cpp */; };
 		B01D1F1319FD8AF200D164A7 /* Sequencer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B01D1F0C19FD8ADA00D164A7 /* Sequencer.cpp */; };
-		B01D1F1719FD8B2C00D164A7 /* OpenNi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B01D1F1519FD8B1400D164A7 /* OpenNi.cpp */; };
 		B098733A1962160A00B98589 /* libnimCodecs.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B098732C1962160A00B98589 /* libnimCodecs.dylib */; };
 		B098733B1962160B00B98589 /* libnimMockNodes.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B098732D1962160A00B98589 /* libnimMockNodes.dylib */; };
 		B098733C1962160B00B98589 /* libnimRecorder.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B098732E1962160A00B98589 /* libnimRecorder.dylib */; };
@@ -108,6 +107,9 @@
 		B0C5DE7C19DC824900AFAE23 /* OscReceivedElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C5DE6E19DC824900AFAE23 /* OscReceivedElements.cpp */; };
 		B0C5DE7D19DC824900AFAE23 /* OscTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C5DE7019DC824900AFAE23 /* OscTypes.cpp */; };
 		B0C5DE8219DC826700AFAE23 /* ofxSecondWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C5DE8019DC826700AFAE23 /* ofxSecondWindow.cpp */; };
+		B0DEE57B1A08C7E7005A4A69 /* ContourRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0DEE5791A08C7E7005A4A69 /* ContourRenderer.cpp */; };
+		B0DEE57E1A08CBD0005A4A69 /* OpenNiTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0DEE57C1A08CBD0005A4A69 /* OpenNiTracker.cpp */; };
+		B0DEE5821A08F126005A4A69 /* SkeletonRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0DEE5801A08F126005A4A69 /* SkeletonRenderer.cpp */; };
 		B6840996567E78436F7ECFAB /* ETF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B047FF96258DC01792B272DB /* ETF.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		C602002DE761F9B52DB4400A /* ObjectFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE75A3FBA2C2D87D14F06FE6 /* ObjectFinder.cpp */; };
@@ -269,7 +271,6 @@
 		B01D1F0B19FD8ADA00D164A7 /* Presets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Presets.h; sourceTree = "<group>"; };
 		B01D1F0C19FD8ADA00D164A7 /* Sequencer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Sequencer.cpp; sourceTree = "<group>"; };
 		B01D1F0D19FD8ADA00D164A7 /* Sequencer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sequencer.h; sourceTree = "<group>"; };
-		B01D1F1519FD8B1400D164A7 /* OpenNi.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OpenNi.cpp; sourceTree = "<group>"; };
 		B01D1F1619FD8B1400D164A7 /* OpenNi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenNi.h; sourceTree = "<group>"; };
 		B047FF96258DC01792B272DB /* ETF.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ETF.cpp; path = ../../../addons/ofxCv/libs/CLD/src/ETF.cpp; sourceTree = SOURCE_ROOT; };
 		B09872A21962160A00B98589 /* libusb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libusb.h; sourceTree = "<group>"; };
@@ -629,6 +630,12 @@
 		B0C5DE7119DC824900AFAE23 /* OscTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OscTypes.h; sourceTree = "<group>"; };
 		B0C5DE8019DC826700AFAE23 /* ofxSecondWindow.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxSecondWindow.cpp; sourceTree = "<group>"; };
 		B0C5DE8119DC826700AFAE23 /* ofxSecondWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxSecondWindow.h; sourceTree = "<group>"; };
+		B0DEE5791A08C7E7005A4A69 /* ContourRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContourRenderer.cpp; sourceTree = "<group>"; };
+		B0DEE57A1A08C7E7005A4A69 /* ContourRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContourRenderer.h; sourceTree = "<group>"; };
+		B0DEE57C1A08CBD0005A4A69 /* OpenNiTracker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenNiTracker.cpp; sourceTree = "<group>"; };
+		B0DEE57D1A08CBD0005A4A69 /* OpenNiTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenNiTracker.h; sourceTree = "<group>"; };
+		B0DEE5801A08F126005A4A69 /* SkeletonRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkeletonRenderer.cpp; sourceTree = "<group>"; };
+		B0DEE5811A08F126005A4A69 /* SkeletonRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkeletonRenderer.h; sourceTree = "<group>"; };
 		B683B7ADA51410A7F0B13E6A /* matrix_operations.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = matrix_operations.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/gpu/matrix_operations.hpp; sourceTree = SOURCE_ROOT; };
 		B7BF51E8E757FF8A162D3662 /* lsh_index.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = lsh_index.h; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/flann/lsh_index.h; sourceTree = SOURCE_ROOT; };
 		B8427966039B53A0FE69C1F0 /* cxcore.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = cxcore.h; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv/cxcore.h; sourceTree = SOURCE_ROOT; };
@@ -1122,8 +1129,13 @@
 		B01D1F1419FD8B1400D164A7 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				B01D1F1519FD8B1400D164A7 /* OpenNi.cpp */,
 				B01D1F1619FD8B1400D164A7 /* OpenNi.h */,
+				B0DEE57C1A08CBD0005A4A69 /* OpenNiTracker.cpp */,
+				B0DEE57D1A08CBD0005A4A69 /* OpenNiTracker.h */,
+				B0DEE5791A08C7E7005A4A69 /* ContourRenderer.cpp */,
+				B0DEE57A1A08C7E7005A4A69 /* ContourRenderer.h */,
+				B0DEE5801A08F126005A4A69 /* SkeletonRenderer.cpp */,
+				B0DEE5811A08F126005A4A69 /* SkeletonRenderer.h */,
 			);
 			name = src;
 			path = ../src;
@@ -2065,7 +2077,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B01D1F1719FD8B2C00D164A7 /* OpenNi.cpp in Sources */,
 				B01D1F0F19FD8AF200D164A7 /* ControlPanel.cpp in Sources */,
 				B01D1F1019FD8AF200D164A7 /* MetaController.cpp in Sources */,
 				B01D1F1119FD8AF200D164A7 /* OscManager.cpp in Sources */,
@@ -2097,8 +2108,10 @@
 				B0C5DDAE19DC823900AFAE23 /* tinyxmlerror.cpp in Sources */,
 				B0C5DE2319DC823C00AFAE23 /* ofxUILabel.cpp in Sources */,
 				B0C5DE7619DC824900AFAE23 /* ofxOscSender.cpp in Sources */,
+				B0DEE57E1A08CBD0005A4A69 /* OpenNiTracker.cpp in Sources */,
 				B0C5DE2419DC823C00AFAE23 /* ofxUILabelButton.cpp in Sources */,
 				B0C5DE2619DC823C00AFAE23 /* ofxUIMinimalIntSlider.cpp in Sources */,
+				B0DEE57B1A08C7E7005A4A69 /* ContourRenderer.cpp in Sources */,
 				B0C5DE3019DC823C00AFAE23 /* ofxUIScrollableCanvas.cpp in Sources */,
 				B0C5DE3B19DC823C00AFAE23 /* ofxUIValuePlotter.cpp in Sources */,
 				EBCDE831EFAE08274E799C97 /* Calibration.cpp in Sources */,
@@ -2147,6 +2160,7 @@
 				B0C5DE2119DC823C00AFAE23 /* ofxUIImageSlider.cpp in Sources */,
 				B0C5DE3219DC823C00AFAE23 /* ofxUISortableList.cpp in Sources */,
 				B0C5DDAF19DC823900AFAE23 /* tinyxmlparser.cpp in Sources */,
+				B0DEE5821A08F126005A4A69 /* SkeletonRenderer.cpp in Sources */,
 				B0C5DE7219DC824900AFAE23 /* ofxOscBundle.cpp in Sources */,
 				B0C5DE7719DC824900AFAE23 /* IpEndpointName.cpp in Sources */,
 				B0C5DE1B19DC823C00AFAE23 /* ofxUIEventArgs.cpp in Sources */,
@@ -2416,7 +2430,7 @@
 					"\"$(SRCROOT)/../../../addons/ofxOpenNI/mac/copy_to_data_openni_path/lib\"",
 				);
 				PRODUCT_NAME = "template-mask-calibratedDebug";
-				USER_HEADER_SEARCH_PATHS = ../../../addons/ofxOsc/libs/oscpack/src/;
+				USER_HEADER_SEARCH_PATHS = "../../../addons/ofxOsc/libs/oscpack/src/ ../../../addons/ofxShivaVG/libs/ShivaVG/include/";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2503,7 +2517,7 @@
 					"\"$(SRCROOT)/../../../addons/ofxOpenNI/mac/copy_to_data_openni_path/lib\"",
 				);
 				PRODUCT_NAME = "template-mask-calibrated";
-				USER_HEADER_SEARCH_PATHS = ../../../addons/ofxOsc/libs/oscpack/src/;
+				USER_HEADER_SEARCH_PATHS = "../../../addons/ofxOsc/libs/oscpack/src/ ../../../addons/ofxShivaVG/libs/ShivaVG/include/";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
