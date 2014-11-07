@@ -34,10 +34,8 @@ enum LayerType {
 class CanvasLayer
 {
 public:
-    ~CanvasLayer() {
-        delete scene;
-    }
-    
+    virtual ~CanvasLayer() { }
+
     virtual string getType() {return "CanvasLayer";}
     
     void setup(int width, int height, CanvasLayer *texLayer=NULL) {
@@ -105,17 +103,18 @@ public:
 //----------------
 class CreatorLayer : public CanvasLayer {
 public:
+    ~CreatorLayer();
     void setup();
     string getType() {return "CreatorLayer";}
     void render();
     void selectScene(string &s);
     void selectShader(string &s);
 
-private:
-    virtual void setupCreators();
-    virtual void setupChoices();
+protected:
     virtual void setupScene(string s);
     virtual void setupShader(string s);
+    virtual void setupCreators();
+    virtual void setupChoices();
 
     Scene *agents, *amoeba, *bubbles, *cubes,
           *debug, *gridfly, *letters, *meshy,
@@ -127,15 +126,20 @@ private:
 //----------------
 class ModifierLayer : public CanvasLayer {
 public:
+    ~ModifierLayer() {
+        control.setActive(false);
+        control.setVisible(false);
+        delete scene;
+    }
     void setup();
     string getType() {return "ModifierLayer";}
     void setTexLayer(CanvasLayer *texLayer=NULL);
     void render();
     void selectScene(string &s);
-
-private:
-    virtual void setupChoices();
     virtual void setupScene(string s);
+
+protected:
+    virtual void setupChoices();
 };
 
 

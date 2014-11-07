@@ -77,18 +77,6 @@ void Cubes::setup() {
     control.addColor("color", &color);
     control.addParameter("colorVar", &colorVar, 0, 200);
     
-    
-    vector<string> presetNames;
-    presetNames.push_back("preset1");
-    presetNames.push_back("preset2");
-    presetNames.push_back("preset3");
-    presetNames.push_back("preset4");
-    presetNames.push_back("preset5");
-    presetNames.push_back("preset6");
-    presetNames.push_back("preset7");
-
-    control.addMenu("Presets", presetNames, this, &Cubes::setPreset);
-    /*
     control.addEvent("preset1", this, &Cubes::preset1);
     control.addEvent("preset2", this, &Cubes::preset2);
     control.addEvent("preset3", this, &Cubes::preset3);
@@ -96,7 +84,7 @@ void Cubes::setup() {
     control.addEvent("preset5", this, &Cubes::preset5);
     control.addEvent("preset6", this, &Cubes::preset6);
     control.addEvent("preset7", this, &Cubes::preset7);
-    */
+    
     string s;
     preset1(s);
 }

@@ -20,6 +20,7 @@
 
 
 class PostFxLayer : public CanvasLayer{
+    ~PostFxLayer();
     void setup();
     string getType() {return "PostFxLayer";}
     void render();
@@ -41,7 +42,10 @@ private:
     string selection;
     ofDirectory dir;
 
-    ofxLUT lut;
+    vector<string> lutChoices;
+    vector<ofxLUT*> lut;
+    int active;
+    
     ofxBloom bloom;
     ofxGaussianBlur gaussianBlur;
     ofxBokeh bokeh;

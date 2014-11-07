@@ -16,4 +16,5 @@ public:
 private:
 
     Canvas canvas;
+    CanvasLayer *layer;
 };

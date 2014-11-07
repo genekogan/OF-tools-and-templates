@@ -40,6 +40,7 @@ void Canvas::setupGui() {
         filenames.push_back(dir.getName(i));
     }
     control.addMenu("presets", filenames, this, &Canvas::loadPreset);
+    control.addParameter("load skip creator", &skipCreator);
 }
 
 //----------------
@@ -109,24 +110,26 @@ void Canvas::setDeleteLayer(string &s) {
 
 //----------------
 void Canvas::deleteLayer() {
+    toDeleteLayer = false;
     CanvasLayer *layerToDelete = layers[idxLayer];
     layers.erase(layers.begin()+idxLayer);
     setupGui();
     delete layerToDelete;
-    toDeleteLayer = false;
 }
 
 //----------------
-void Canvas::clearLayers() {
-    for (int i=0; i<layers.size(); i++) {
+void Canvas::clearLayers(bool skipCreator) {
+    int idxStart = skipCreator ? 1 : 0;
+    for (int i=idxStart; i<layers.size(); i++) {
+        layers[i]->setVisible(false);
         delete layers[i];
     }
-    layers.clear();
+    layers.erase(layers.begin()+idxStart, layers.end());
 }
 
 //----------------
 Canvas::~Canvas() {
-    clearLayers();
+    clearLayers(false);
 }
 
 //----------------
@@ -139,12 +142,14 @@ void Canvas::loadPreset(string &filename) {
     if (!xmlLoaded) {
         cout << "failed to load preset " << "test.xml" << endl;
         return;
+        
     }
-    
-    clearLayers();
-    
+
+    clearLayers(skipCreator);
+
     xml.setTo("Layers");
-    xml.setTo("Layer[0]");
+    xml.setTo(skipCreator ? "Layer[1]" : "Layer[0]");
+    
     do {
         string name = xml.getValue<string>("Name");
         string type = xml.getValue<string>("Type");
@@ -247,4 +252,3 @@ void Canvas::savePresetFromGui(string &s) {
         setupGui();
     }
 }
-

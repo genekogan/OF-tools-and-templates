@@ -53,6 +53,7 @@ Bubbles::~Bubbles() {
     for (int i=0; i<position.size(); i++) {
         delete position[i];
     }
+    ofRemoveListener(ofEvents().update, (Scene*) this, &Scene::update);
 }
 
 //------------

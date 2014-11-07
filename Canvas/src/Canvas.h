@@ -27,7 +27,7 @@ public:
     void addPostProcessor(string &s) {addLayer(CANVAS_POST_PROCESSING);}
     void addPostGlitch(string &s) {addLayer(CANVAS_POST_GLITCH);}
     void addPostFx(string &s) {addLayer(CANVAS_POST_FX);}
-    void clearLayers();
+    void clearLayers(bool skipCreator);
     
     void setVisible(bool guiVisible);
     void toggleGuiVisible();
@@ -54,4 +54,6 @@ protected:
 
     int idxLayer;
     bool toDeleteLayer;
+    
+    bool skipCreator;
 };

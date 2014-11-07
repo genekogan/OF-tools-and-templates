@@ -89,6 +89,8 @@ void GridFly::draw(){
 
 //-------
 GridFly::~GridFly(){
+    cam.disableOrtho();
     cam.disableMouseMiddleButton();
     cam.disableMouseInput();
+    ofRemoveListener(ofEvents().update, (Scene*) this, &Scene::update);
 }

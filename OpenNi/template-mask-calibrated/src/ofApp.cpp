@@ -16,7 +16,6 @@ void ofApp::setup() {
 //--------
 void ofApp::update(){
     kinect.update();
-    ofSetWindowTitle(ofToString(ofGetFrameRate()));
 }
 
 //--------
@@ -25,7 +24,6 @@ void ofApp::draw(){
     
     gfx.begin();
     ofClear(0, 0);
-    kinect.drawCalibratedContours(gfx.getWidth(), gfx.getHeight());
     kinect.drawVisuals();
     gfx.end();
 }
@@ -38,6 +36,5 @@ void ofApp::exit(){
 
 //--------
 void ofApp::keyPressed(int key){
-
-    
+    if (key=='g')   kinect.toggleGuiVisible();
 }

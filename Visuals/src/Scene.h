@@ -17,7 +17,7 @@ public:
         active = false;
     }
     
-    ~Scene() {
+    virtual ~Scene() {
         ofRemoveListener(ofEvents().update, this, &Scene::update);
     }
 

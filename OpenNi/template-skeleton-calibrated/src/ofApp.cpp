@@ -25,7 +25,6 @@ void ofApp::draw(){
     
     gfx.begin();
     ofClear(0, 0);
-    kinect.drawCalibratedContours(gfx.getWidth(), gfx.getHeight());
     kinect.drawVisuals();
     gfx.end();
 }

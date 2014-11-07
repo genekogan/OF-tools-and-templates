@@ -189,3 +189,37 @@ void ModifierLayer::render() {
     scene->draw(0, 0);
     fbo.end();
 }
+
+//----------------
+CreatorLayer::~CreatorLayer() {
+    agents->setActive(false);
+    amoeba->setActive(false);
+    bubbles->setActive(false);
+    cubes->setActive(false);
+    debug->setActive(false);
+    gridfly->setActive(false);
+    letters->setActive(false);
+    meshy->setActive(false);
+    movie->setActive(false);
+    polar->setActive(false);
+    rivers->setActive(false);
+    shader->setActive(false);
+    shapespace->setActive(false);
+    subdivide->setActive(false);
+    syphon->setActive(false);
+    delete agents;
+    delete amoeba;
+    delete bubbles;
+    delete cubes;
+    delete debug;
+    delete gridfly;
+    delete letters;
+    delete meshy;
+    delete movie;
+    delete polar;
+    delete rivers;
+    delete shader;
+    delete shapespace;
+    delete subdivide;
+    delete syphon;
+}

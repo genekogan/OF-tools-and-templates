@@ -18,7 +18,4 @@ public:
     
 	OpenNi kinect;
     ofxSecondWindow gfx;
-    
-    
-    
 };

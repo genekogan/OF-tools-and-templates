@@ -45,7 +45,6 @@ void PostProcessingLayer::setup() {
     control.addParameter("ssao", &ssaoEnabled);
     control.addParameter("zoomBlur", &zoomBlurEnabled);
     
-    
     /* add all parameters to control, but make them invisible in main gui */
     /* they are accessible instead in the secondary gui */
     control.addParameter("aperture", &dofAperture, 0.0f, 1.0f, true);
@@ -385,16 +384,22 @@ void PostProcessingLayer::render() {
     update();
     
     fbo.begin();
-        post.begin();
-            texLayer->draw(0, 0);
-        post.end();
+    post.begin();
+    ofPushMatrix();
+    ofTranslate(texLayer->width, texLayer->height);
+    ofRotate(180);
+    texLayer->draw(0, 0);
+    ofPopMatrix();
+    post.end();
     fbo.end();
 }
 
 //-----------
 PostProcessingLayer::~PostProcessingLayer() {
+    control.clear();
+    control.setActive(false);
+    control.setVisible(false);
     gui.clear();
     gui.setActive(false);
     gui.setVisible(false);
-    gui.~Control();
 }

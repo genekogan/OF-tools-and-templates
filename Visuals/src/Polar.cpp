@@ -168,7 +168,7 @@ void Polar::draw() {
             float y = ofMap(j+0.5, 0, ny, 0, height);
             ofPushMatrix();
             ofTranslate(x, y);
-            polars[ofClamp(i*ny + j, 0, polars.size())]->draw();
+            polars[ofClamp(i*ny + j, 0, polars.size()-1)]->draw();
             ofPopMatrix();
         }
     }
@@ -186,4 +186,5 @@ Polar::~Polar(){
         delete polars[i];
     }
     polars.clear();
+    ofRemoveListener(ofEvents().update, (Scene*) this, &Scene::update);
 }

@@ -49,4 +49,5 @@ void ShapeSpace::draw() {
 ShapeSpace::~ShapeSpace(){
     cam.disableMouseMiddleButton();
     cam.disableMouseInput();
+    ofRemoveListener(ofEvents().update, (Scene*) this, &Scene::update);
 }
