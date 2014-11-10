@@ -57,8 +57,8 @@ void PostProcessingLayer::setup() {
     control.addParameter("resolution", &pixelateResolution, ofVec2f(0, 0), ofVec2f(100, 100), true);
     control.addParameter("hue", &edgesHue, 0.0f, 1.0f, true);
     control.addParameter("saturation", &edgesSaturation, 0.0f, 1.0f, true);
-    control.addParameter("V", &vTiltShiftV, 0.0f, 1.0f, true);
-    control.addParameter("R", &vTiltShiftR, 0.0f, 1.0f, true);
+    control.addParameter("V", &vTiltShiftV, 0.0f, 0.1f, true);
+    control.addParameter("R", &vTiltShiftR, 0.0f, 0.1f, true);
     control.addParameter("H", &hTiltShiftH, 0.0f, 0.1f, true);
     control.addParameter("R", &hTiltShiftR, 0.0f, 0.1f, true);
     control.addParameter("lightDirDOTviewDir", &godRayLightDirDOTviewDir, 0.0f, 1.0f, true);

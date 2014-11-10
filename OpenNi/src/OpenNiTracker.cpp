@@ -55,17 +55,23 @@ void OpenNi::setupSkeletonVisuals(int width, int height) {
 //-------
 void OpenNi::setup(string oni){
     if (oni != "") {
-        kinect.setupFromONI(oni);
+        //kinect.setupFromONI(oni);
     }
     else {
-        kinect.setup();
+        //kinect.setup();
     }
+    kinect.setup();
+    
     kinect.addDepthGenerator();
-    kinect.addImageGenerator();   // optional?
+    //kinect.addImageGenerator();   // optional?
     kinect.setRegister(true);
     kinect.setMirror(true);
     kinect.setUseDepthRawPixels(true);
+ 
     kinect.setDepthColoring(COLORING_GREY);
+    
+    
+    
     setupControl();
 }
 
@@ -111,13 +117,17 @@ void OpenNi::enableUserTracking(int maxUsers) {
     jointNames.push_back("rightFoot");
     
     for (int i=0; i<maxUsers; i++) {
-        vector<ofVec3f*> newJoints, newProjectedJoints;
+        vector<ofVec3f*> newJoints, newVJoints, newProjectedJoints;
         for (int j=0; j<jointNames.size(); j++) {
             newJoints.push_back(new ofVec3f(0, 0, 0));
+            newVJoints.push_back(new ofVec3f(0, 0, 0));
             newProjectedJoints.push_back(new ofVec3f(0, 0, 0));
         }
         joints.push_back(newJoints);
+        vjoints.push_back(newVJoints);
         normalizedJoints.push_back(newProjectedJoints);
+        userBoundingBoxMin.push_back(ofVec3f(0,0,0));
+        userBoundingBoxMax.push_back(ofVec3f(0,0,0));
     }
     
     setupControl();
@@ -247,6 +257,29 @@ void OpenNi::updateUsers(){
         ofxOpenNIUser & user = kinect.getTrackedUser(i);
         if (!user.isSkeleton()) continue;
         
+        /* VELOCITY */
+        float vLerpRate = 0.03;
+        vjoints[i][ 0]->set(*vjoints[i][ 0] * (1.0 - vLerpRate) + (user.getJoint(JOINT_HEAD).getWorldPosition() - *joints[i][ 0]) * vLerpRate);
+        vjoints[i][ 1]->set(*vjoints[i][ 1] * (1.0 - vLerpRate) + (user.getJoint(JOINT_NECK).getWorldPosition() - *joints[i][ 1]) * vLerpRate);
+        vjoints[i][ 2]->set(*vjoints[i][ 2] * (1.0 - vLerpRate) + (user.getJoint(JOINT_TORSO).getWorldPosition() - *joints[i][ 2]) * vLerpRate);
+        vjoints[i][ 3]->set(*vjoints[i][ 3] * (1.0 - vLerpRate) + (user.getJoint(JOINT_LEFT_SHOULDER).getWorldPosition() - *joints[i][ 3]) * vLerpRate);
+        vjoints[i][ 4]->set(*vjoints[i][ 4] * (1.0 - vLerpRate) + (user.getJoint(JOINT_LEFT_ELBOW).getWorldPosition() - *joints[i][ 4]) * vLerpRate);
+        vjoints[i][ 5]->set(*vjoints[i][ 5] * (1.0 - vLerpRate) + (user.getJoint(JOINT_LEFT_HAND).getWorldPosition() - *joints[i][ 5]) * vLerpRate);
+        vjoints[i][ 6]->set(*vjoints[i][ 6] * (1.0 - vLerpRate) + (user.getJoint(JOINT_RIGHT_SHOULDER).getWorldPosition() - *joints[i][ 6]) * vLerpRate);
+        vjoints[i][ 7]->set(*vjoints[i][ 7] * (1.0 - vLerpRate) + (user.getJoint(JOINT_RIGHT_ELBOW).getWorldPosition() - *joints[i][ 7]) * vLerpRate);
+        vjoints[i][ 8]->set(*vjoints[i][ 8] * (1.0 - vLerpRate) + (user.getJoint(JOINT_RIGHT_HAND).getWorldPosition() - *joints[i][ 8]) * vLerpRate);
+        vjoints[i][ 9]->set(*vjoints[i][ 9] * (1.0 - vLerpRate) + (user.getJoint(JOINT_LEFT_HIP).getWorldPosition() - *joints[i][ 9]) * vLerpRate);
+        vjoints[i][10]->set(*vjoints[i][10] * (1.0 - vLerpRate) + (user.getJoint(JOINT_LEFT_KNEE).getWorldPosition() - *joints[i][10]) * vLerpRate);
+        vjoints[i][11]->set(*vjoints[i][11] * (1.0 - vLerpRate) + (user.getJoint(JOINT_LEFT_FOOT).getWorldPosition() - *joints[i][11]) * vLerpRate);
+        vjoints[i][12]->set(*vjoints[i][12] * (1.0 - vLerpRate) + (user.getJoint(JOINT_RIGHT_HIP).getWorldPosition() - *joints[i][12]) * vLerpRate);
+        vjoints[i][13]->set(*vjoints[i][13] * (1.0 - vLerpRate) + (user.getJoint(JOINT_RIGHT_KNEE).getWorldPosition() - *joints[i][13]) * vLerpRate);
+        vjoints[i][14]->set(*vjoints[i][14] * (1.0 - vLerpRate) + (user.getJoint(JOINT_RIGHT_FOOT).getWorldPosition() - *joints[i][14]) * vLerpRate);
+        
+        /* JOINTS */
+        
+        
+        
+        
         joints[i][ 0]->set(user.getJoint(JOINT_HEAD).getWorldPosition());
         joints[i][ 1]->set(user.getJoint(JOINT_NECK).getWorldPosition());
         joints[i][ 2]->set(user.getJoint(JOINT_TORSO).getWorldPosition());
@@ -272,29 +305,27 @@ void OpenNi::updateUsers(){
         joints[i][14]->set(user.getJoint(JOINT_RIGHT_FOOT).getWorldPosition());
         
         // finding bounding box
-        userBoundingBoxMin = ofVec3f(10000, 10000, 10000);
-        userBoundingBoxMax = ofVec3f(-10000, -10000, -10000);
+        userBoundingBoxMin[i].set(10000, 10000, 10000);
+        userBoundingBoxMax[i].set(-10000, -10000, -10000);
         for (int j=0; j<joints[i].size(); j++) {
-            if      (joints[i][j]->x < userBoundingBoxMin.x) userBoundingBoxMin.x = joints[i][j]->x;
-            else if (joints[i][j]->x > userBoundingBoxMax.x) userBoundingBoxMax.x = joints[i][j]->x;
-            if      (joints[i][j]->y < userBoundingBoxMin.y) userBoundingBoxMin.y = joints[i][j]->y;
-            else if (joints[i][j]->y > userBoundingBoxMax.y) userBoundingBoxMax.y = joints[i][j]->y;
-            if      (joints[i][j]->z < userBoundingBoxMin.z) userBoundingBoxMin.z = joints[i][j]->z;
-            else if (joints[i][j]->z > userBoundingBoxMax.z) userBoundingBoxMax.z = joints[i][j]->z;
+            if      (joints[i][j]->x < userBoundingBoxMin[i].x) userBoundingBoxMin[i].x = joints[i][j]->x;
+            else if (joints[i][j]->x > userBoundingBoxMax[i].x) userBoundingBoxMax[i].x = joints[i][j]->x;
+            if      (joints[i][j]->y < userBoundingBoxMin[i].y) userBoundingBoxMin[i].y = joints[i][j]->y;
+            else if (joints[i][j]->y > userBoundingBoxMax[i].y) userBoundingBoxMax[i].y = joints[i][j]->y;
+            if      (joints[i][j]->z < userBoundingBoxMin[i].z) userBoundingBoxMin[i].z = joints[i][j]->z;
+            else if (joints[i][j]->z > userBoundingBoxMax[i].z) userBoundingBoxMax[i].z = joints[i][j]->z;
         }
         
         // normalize if requested
         if (normalizeJoints) {
             for (int j=0; j<joints[i].size(); j++) {
-                normalizedJoints[i][j]->set((joints[i][j]->x - userBoundingBoxMin.x) / (userBoundingBoxMax.x - userBoundingBoxMin.x),
-                                            (joints[i][j]->y - userBoundingBoxMin.y) / (userBoundingBoxMax.y - userBoundingBoxMin.y),
-                                            (joints[i][j]->z - userBoundingBoxMin.z) / (userBoundingBoxMax.z - userBoundingBoxMin.z) );
+                normalizedJoints[i][j]->set((joints[i][j]->x - userBoundingBoxMin[i].x) / (userBoundingBoxMax[i].x - userBoundingBoxMin[i].x),
+                                            (joints[i][j]->y - userBoundingBoxMin[i].y) / (userBoundingBoxMax[i].y - userBoundingBoxMin[i].y),
+                                            (joints[i][j]->z - userBoundingBoxMin[i].z) / (userBoundingBoxMax[i].z - userBoundingBoxMin[i].z) );
             }
         }
     }
 }
-
-
 
 //-------
 void OpenNi::draw(int x, int y, int w, int h){
@@ -470,3 +501,28 @@ void OpenNi::toggleGuiVisible() {
     control.toggleVisible();
 }
 
+
+
+
+void OpenNi::skeletonStats() {
+
+    // size bounding box
+    // skeleton velocity (magnitude / direction)
+    // wingspan
+    // symmetry
+    
+    
+    for (int i=0; i<14; i++) {
+        ofPushMatrix();
+        ofPushStyle();
+        ofTranslate(500, 40 + 18*i);
+        ofSetColor(0, 255, 0);
+        float w = ofMap(abs(vjoints[0][i]->x) + abs(vjoints[0][i]->y) + abs(vjoints[0][i]->z), 0, 20, 0, 400);
+        ofRect(0, 0, w, 16);
+        ofPopMatrix();
+        ofPopStyle();
+    }
+    
+    
+    
+}

@@ -14,22 +14,32 @@ public:
     void update();
     void draw();
 
-private:
-    void setupControl();
-    void setClipsHidden(bool clipsHidden);
-    void toggleClipsHidden(string & s);
+    void loadMovie(string path);
+    void loadImage(string path);
     
     void jumpBack(string &s);
     void jumpRandom(string &s);
     void selectMedia(string &s);
     void chooseMovie(string &s);
     
-    void loadMovie(string path);
-    void loadImage(string path);
-    
     void triggerMovie(int idx);
     void triggerMovie();
     void triggerCallback(string &s) {triggerMovie();}
+
+    void toggleClipsHidden(string & s);
+    void setClipsHidden(bool clipsHidden);
+    
+    void clearMovies();
+    
+    /*
+    void loadMovies1();
+    void loadMovies2();
+    void loadMovies3();
+     */
+    
+private:
+    
+    void setupControl();
     
     vector<ofVideoPlayer> player;
     vector<string> moviePaths;
@@ -46,6 +56,9 @@ private:
     bool centeredHoriz;
     
     bool clipsHidden;
+    
+    
+    int idxLoad;
 };
 
 

@@ -1,0 +1,18 @@
+<AudioPreset>
+	<Aupreset>../../../data/presetsAudio/aalto/kaivo_koto.aupreset</Aupreset>
+	<Sequencer>
+		<Active>0</Active>
+		<Discrete>0</Discrete>
+		<Bpm>120</Bpm>
+		<Rows>6</Rows>
+		<Cols>8</Cols>
+		<Values>0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0</Values>
+	</Sequencer>
+	<Manta/>
+	<Parameters>
+		<NoteManual>0</NoteManual>
+		<SequencerManta>0</SequencerManta>
+		<MantaSendNotes>1</MantaSendNotes>
+		<SequencerMode>Notes</SequencerMode>
+	</Parameters>
+</AudioPreset>

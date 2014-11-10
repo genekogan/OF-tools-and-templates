@@ -30,11 +30,3 @@ private:
     ofTrueTypeFont font, fontC;
     static const char * alphanum;
 };
-
-
-/*
- - chinese character sets
-   - embed quotes
- - other languages
- - different character orderings
-*/

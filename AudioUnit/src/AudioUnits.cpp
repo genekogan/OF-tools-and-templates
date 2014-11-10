@@ -62,5 +62,7 @@ void AudioUnits::setVisible(bool visible) {
 
 //-------
 void AudioUnits::savePreset() {
-    //aalto.savePreset();
+    if (instrumentSetup) {
+        instrument.savePreset();
+    }
 }

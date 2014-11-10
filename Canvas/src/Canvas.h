@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-
+#include "ofxLUT.h"
 #include "Control.h"
 #include "Layer.h"
 #include "PostProcessor.h"
@@ -10,7 +10,7 @@
 #include "Presets.h"
 
 
-class Canvas : public ofThread
+class Canvas
 {
 public:
     ~Canvas();
@@ -53,7 +53,10 @@ protected:
     int width, height;
 
     int idxLayer;
-    bool toDeleteLayer;
-    
+    bool toDeleteLayer;    
     bool skipCreator;
+ 
+    // preloading postprocessor LUT
+    void preLoadPostProcessorLUT();
+    vector<ofxLUT*> lut;
 };

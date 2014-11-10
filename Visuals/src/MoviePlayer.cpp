@@ -10,20 +10,11 @@ void MoviePlayer::setup() {
     
     clipsHidden = false;
     setupControl();
+
+    player.resize(22);
+    idxLoad = 0;
     
-    loadMovie("/Users/Gene/media/sinuses.mov");
-    loadMovie("/Users/Gene/Pictures/PhilippinesNov2014/MVI_0039.MOV");
-    loadMovie("/Users/Gene/Pictures/PhilippinesNov2014/MVI_0066.MOV");
-    loadMovie("/Users/Gene/Pictures/PhilippinesNov2014/MVI_0078.MOV");
-    loadMovie("/Users/Gene/Pictures/PhilippinesNov2014/MVI_0093.MOV");
-    loadMovie("/Users/Gene/Pictures/PhilippinesNov2014/MVI_0094.MOV");
-    loadMovie("/Users/Gene/Pictures/PhilippinesNov2014/MVI_0095.MOV");
-    loadMovie("/Users/Gene/Pictures/PhilippinesNov2014/MVI_0096.MOV");
-    loadMovie("/Users/Gene/Pictures/PhilippinesNov2014/MVI_0106.MOV");
-    loadMovie("/Users/Gene/Pictures/EcoHacker/build_day1+2+3+4.mov");
-    loadMovie("/Users/Gene/Pictures/EcoHacker/ecohacker-build-timelapse.mp4");
-    loadMovie("/Users/Gene/Pictures/EcoHacker/MVI_2524.MOV");
-    loadMovie("/Users/Gene/Pictures/EcoHacker/MVI_2571.MOV");
+    //loadMovie("/Users/Gene/media/sinuses.mov");
 }
 
 //--------
@@ -32,7 +23,7 @@ void MoviePlayer::setupControl() {
     control.addParameter("speed", &speed, -3.0f, 3.0f);
     control.addEvent("clipsHidden", this, &MoviePlayer::toggleClipsHidden);
     control.addEvent("jump", this, &MoviePlayer::jumpBack);
-    control.addEvent("random", this, &MoviePlayer::jumpRandom);
+    control.addEvent("random", this, &MoviePlayer::jumpRandom);;
     control.addEvent("load", this, &MoviePlayer::selectMedia);
     control.addEvent("next", this, &MoviePlayer::triggerCallback);
     
@@ -63,24 +54,46 @@ void MoviePlayer::selectMedia(string &s) {
 //--------
 void MoviePlayer::loadMovie(string path) {
     mode = MOVIE;
-
     playing = true;
     
-    ofVideoPlayer newPlayer;
+    //ofVideoPlayer newPlayer;
     
-    newPlayer.loadMovie(path);
+    //newPlayer.loadMovie(path);
     
+    /*
     for (int i=0; i<player.size(); i++) {
         player[active].stop();
-    }
+    }*/
+    
+    /*
     newPlayer.setLoopState(OF_LOOP_NORMAL);
     newPlayer.play();
+    newPlayer.update();
     newPlayer.setPaused(true);
-
-    player.push_back(newPlayer);
+     */
+    
+    
+    //player[idx].push_back(newPlayer);
+    //player[idxLoad] = newPlayer;
+    
+    
+    player[idxLoad].loadMovie(path);
+    player[idxLoad].setLoopState(OF_LOOP_NORMAL);
+    player[idxLoad].play();
+    player[idxLoad].update();
+    player[idxLoad].setPaused(true);
+    
+    
+    //player[idx].push_back(newPlayer);
+    //player[idxLoad] = newPlayer;
+    
+    
+    idxLoad++;
     moviePaths.push_back(path);
     
-    setupControl();
+    if (!clipsHidden) {
+        setupControl();
+    }
 }
 
 //--------
@@ -159,15 +172,26 @@ void MoviePlayer::draw() {
 
 //--------
 void MoviePlayer::chooseMovie(string &s) {
+    /*
     for (int i=0; i<moviePaths.size(); i++) {
         if (moviePaths[i] == s) {
             triggerMovie(i);
         }
     }
+     */
+    
+    for (int i=0; i<idxLoad; i++) {
+        if (moviePaths[i] == s) {
+            triggerMovie(i);
+        }
+    }
+
 }
 
 //--------
 void MoviePlayer::triggerMovie(int idx) {
+    //if (idx >= player.size())   return;
+    if (idx >= idxLoad)   return;
     player[active].setPaused(true);
     active = idx;
     player[active].setPaused(false);
@@ -189,3 +213,23 @@ void MoviePlayer::toggleClipsHidden(string & s) {
     clipsHidden = !clipsHidden;
     setupControl();
 }
+
+//--------
+void MoviePlayer::clearMovies() {
+    if (player.size() > 0) {
+        player[active].stop();
+    }
+    
+    for (int i=0; i<idxLoad; i++) {
+        player[i].stop();
+        player[i].close();
+        player[i].closeMovie();
+    }
+    
+    idxLoad = 0;
+    
+//    player.erase(player.begin(), player.end());
+//    player.clear();
+}
+
+

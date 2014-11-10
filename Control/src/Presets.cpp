@@ -30,6 +30,10 @@ void Presets::loadPreset(Control &control, string path, int numFrames) {
 
 //--------------
 void Presets::loadPreset(Control &control, ofXml &xml, int numFrames) {
+    
+    bool toUseMeta = true;
+    
+    
     vector<ParameterBase *> parameters = control.getParameters();
     vector<ofxUIDropDownList *> menus = control.getMenus();
     
@@ -90,7 +94,7 @@ void Presets::loadPreset(Control &control, ofXml &xml, int numFrames) {
     }
     xml.setToParent();
     
-    if (xml.exists("MetaController")) {
+    if (xml.exists("MetaController") && toUseMeta) {
         xml.setTo("MetaController");
         int rows = xml.getValue<int>("Rows");
         int cols = xml.getValue<int>("Cols");
@@ -112,7 +116,9 @@ void Presets::loadPreset(Control &control, ofXml &xml, int numFrames) {
             seq->setValue(r, c, ofToFloat(values[v]));
         }
         vector<string> seqActiveValues = ofSplitString(xml.getValue("SeqActive"), ",");
+        cout << ofToString(seqActiveValues) << endl;
         for (int i=0; i<seqActiveValues.size(); i++) {
+            cout << i << " setup " << endl;
             meta->setSeqActive(i, seqActiveValues[i]=="1");
         }
         xml.setToParent();

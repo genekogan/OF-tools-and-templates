@@ -8,6 +8,7 @@ void Canvas::setup(int width, int height) {
     guiVisible = true;
     guiPosition = ofPoint(5, 5);
     setupGui();
+    preLoadPostProcessorLUT();
 }
 
 //----------------
@@ -61,6 +62,9 @@ CanvasLayer* Canvas::addLayer(LayerType type) {
     else if (type == CANVAS_POST_PROCESSING) layer = new PostProcessingLayer();
     else if (type == CANVAS_POST_GLITCH)     layer = new PostGlitchLayer();
     else if (type == CANVAS_POST_FX)         layer = new PostFxLayer();
+
+    if (type == CANVAS_POST_FX) ((PostFxLayer*) layer)->setLutLookup(lut);
+
     if (layers.size() > 0)
         layer->setup(width, height, layers[layers.size()-1]);
     else
@@ -133,7 +137,7 @@ Canvas::~Canvas() {
 }
 
 //----------------
-void Canvas::loadPreset(string &filename) {
+void Canvas::loadPreset(string &filename) {\
     Presets presets;
     ofXml xml;
     
@@ -142,14 +146,14 @@ void Canvas::loadPreset(string &filename) {
     if (!xmlLoaded) {
         cout << "failed to load preset " << "test.xml" << endl;
         return;
-        
     }
 
-    clearLayers(skipCreator);
-
+    //clearLayers(skipCreator);
+    clearLayers(true);      // overwrite first layer instead of remaking
+    
     xml.setTo("Layers");
     xml.setTo(skipCreator ? "Layer[1]" : "Layer[0]");
-    
+    int idxLayer = 0;
     do {
         string name = xml.getValue<string>("Name");
         string type = xml.getValue<string>("Type");
@@ -162,20 +166,27 @@ void Canvas::loadPreset(string &filename) {
         xml.setToParent();
         
         CanvasLayer *newLayer;
-        if (type == "CreatorLayer")
-            newLayer = addLayer(CANVAS_CREATOR);
-        else if (type == "ModifierLayer")
-            newLayer = addLayer(CANVAS_MODIFIER);
-        else if (type == "PostProcessingLayer")
-            newLayer = addLayer(CANVAS_POST_PROCESSING);
-        else if (type == "PostGlitchLayer")
-            newLayer = addLayer(CANVAS_POST_GLITCH);
-        else if (type == "PostFxLayer")
-            newLayer = addLayer(CANVAS_POST_FX);
+        if (idxLayer == 0) {
+            presets.loadPreset(layers[0]->control, xmlControl);
+        }
+        else {
         
-        // load main control for new layer
-        presets.loadPreset(newLayer->control, xmlControl);
-        
+            if (type == "CreatorLayer")
+                newLayer = addLayer(CANVAS_CREATOR);
+            else if (type == "ModifierLayer")
+                newLayer = addLayer(CANVAS_MODIFIER);
+            else if (type == "PostProcessingLayer")
+                newLayer = addLayer(CANVAS_POST_PROCESSING);
+            else if (type == "PostGlitchLayer")
+                newLayer = addLayer(CANVAS_POST_GLITCH);
+            else if (type == "PostFxLayer") {
+                newLayer = addLayer(CANVAS_POST_FX);
+                ((PostFxLayer *) newLayer)->setLutLookup(lut);
+            }
+            
+            // load main control for new layer
+            presets.loadPreset(newLayer->control, xmlControl);
+        }
         xml.setToParent();
         
         if (type == "CreatorLayer" ||
@@ -188,10 +199,16 @@ void Canvas::loadPreset(string &filename) {
             xml.setToParent();
             
             // load scene for Creator/Modifier
-            presets.loadPreset(newLayer->scene->control, xmlControl);
+            if (idxLayer == 0) {
+                presets.loadPreset(layers[0]->scene->control, xmlControl);
+            }
+            else {
+                presets.loadPreset(newLayer->scene->control, xmlControl);
+            }
             
             xml.setToParent();
         }
+        idxLayer++;
     }
     while (xml.setToSibling());
     xml.setToParent();
@@ -250,5 +267,19 @@ void Canvas::savePresetFromGui(string &s) {
     bool saved = savePreset();
     if (saved) {
         setupGui();
+    }
+}
+
+//----------------
+void Canvas::preLoadPostProcessorLUT() {
+    ofDirectory dir;
+    dir.allowExt("cube");
+	dir.listDir("LUTs/");
+	dir.sort();
+    for (int i=0; i<dir.size(); i++) {
+        ofxLUT *newLut = new ofxLUT();
+        newLut->allocate(width, height);
+        newLut->loadLUT(dir.getPath(i));
+        lut.push_back(newLut);
     }
 }

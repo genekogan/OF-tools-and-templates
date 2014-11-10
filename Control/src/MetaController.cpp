@@ -80,6 +80,10 @@ void MetaController::sequencerInterpolatedStepEvent(vector<float> &column) {
 void MetaController::processColumn(vector<float> &column) {
     int idx = 0;
     for (int p=0; p<seqParams.size(); p++) {
+        
+        //cout << "TYPE IS " << ofToString(seqParams[p]->getType()) << endl;
+        
+        
         if (seqParams[p]->getType() == ParameterBase::INT) {
             if (seqActive[idx]) {
                 int val = ofMap(column[idx], 0, 1, seqParams[p]->getMin<int>(), seqParams[p]->getMax<int>());
@@ -179,6 +183,7 @@ void MetaController::mousePressed(ofMouseEventArgs &evt) {
     ofRectangle rect(x-80, y, 80, height);
     if (rect.inside(evt.x, evt.y)) {
         int idx = floor( (evt.y - y) / ((float) height / (float) (sequencer->getNumberRows())) );
+        idx = ofClamp(idx, 0, seqActive.size()-1);
         seqActive[idx] = !seqActive[idx];
     }
 }

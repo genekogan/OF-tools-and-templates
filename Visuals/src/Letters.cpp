@@ -1,12 +1,13 @@
 #include "Letters.h"
 
 
-
+//---------
 const char * Letters::alphanum = {
     "0123456789ABCDEFGHIJKLMNOPQR"
     "STUVWXYZabcdefghijklmnopqrst"
     "uvwxyz!@#$%^&*()_+;<>?~`"};
 
+//---------
 void Letters::setup() {
     setName("Letters");
 
@@ -39,6 +40,7 @@ void Letters::setup() {
     update();
 }
 
+//---------
 void Letters::update() {
     if (chars.size() != nrows * ncols) {
         chars.resize(nrows * ncols);
@@ -69,6 +71,7 @@ void Letters::update() {
     }
 }
 
+//---------
 void Letters::draw() {
     int idx = 0;
     float x, y;

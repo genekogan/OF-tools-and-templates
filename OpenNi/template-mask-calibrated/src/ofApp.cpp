@@ -4,9 +4,10 @@
 void ofApp::setup() {
     ofSetLogLevel(OF_LOG_VERBOSE);
     
-    gfx.setup("main", ofGetScreenWidth()-640, 20, 1024, 768, false);
+    gfx.setup("main", ofGetScreenWidth(), 0, 1280, 800, true);
 
-    kinect.setup("/Users/Gene/Downloads/hometest_single.oni");
+    //kinect.setup("/Users/Gene/Downloads/hometest_single.oni");
+    kinect.setup();
     kinect.enableContourTracking();
     kinect.setCalibration("/Users/Gene/Desktop/calibration.xml");
     kinect.setupContourVisuals(gfx.getWidth(), gfx.getHeight());

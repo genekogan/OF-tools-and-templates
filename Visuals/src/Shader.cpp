@@ -4,6 +4,8 @@
 //--------
 void Shader::setup() {
     setName("Shader");
+    width = 1280;
+    height = 800;
 }
 
 //--------
@@ -30,7 +32,7 @@ void Shader::update(){
 //--------
 void Shader::draw() {
     shader.begin();
-    
+
     shader.setUniform2f("resolution", width, height);
     shader.setUniform1f("time", ofGetElapsedTimef());
     
@@ -232,10 +234,10 @@ void Shader::setupBlur(){
 }
 void Shader::setupChannels(){
 	setShader("shaders_texture/standard.vert", "shaders_texture/channels.frag");
-    addParameter("biasx", ofVec3f(-200, -200, -200), ofVec3f(200, 200, 200));
-    addParameter("biasy", ofVec3f(-200, -200, -200), ofVec3f(200, 200, 200));
-	addParameter("multx", ofVec3f(0.8, 0.8, 0.8), ofVec3f(1.2, 1.2, 1.2));
-	addParameter("multy", ofVec3f(0.8, 0.8, 0.8), ofVec3f(1.2, 1.2, 1.2));
+    addParameter("biasx", ofVec3f(-40, -40, -40), ofVec3f(40, 40, 40));
+    addParameter("biasy", ofVec3f(-40, -40, -40), ofVec3f(40, 40, 40));
+	addParameter("multx", ofVec3f(0.9, 0.9, 0.9), ofVec3f(1.1, 1.1, 1.1));
+	addParameter("multy", ofVec3f(0.9, 0.9, 0.9), ofVec3f(1.1, 1.1, 1.1));
 }
 void Shader::setupDeform(){
 	setShader("shaders_texture/standard.vert", "shaders_texture/deform.frag");

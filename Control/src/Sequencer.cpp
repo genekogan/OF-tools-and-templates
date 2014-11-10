@@ -22,7 +22,7 @@ void Sequencer::setup(int rows, int cols) {
     gui = new ofxUICanvas("sequencer");
     gui->setWidth(100);
     gui->clearWidgets();
-    gui->addIntSlider("bpm", 40, 300, &bpm);
+    gui->addIntSlider("bpm", 1, 300, &bpm);
     gui->addButton("advance", false);
     gui->addToggle("active", &active);
     //gui->addToggle("discrete", &discrete);

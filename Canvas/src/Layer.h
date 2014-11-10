@@ -87,6 +87,8 @@ public:
         }
     }
     
+    Scene * getScene() {return scene;}
+    
     string getName() {return control.getName();}
     ofFbo *getFbo() {return &fbo;}
     
@@ -126,11 +128,7 @@ protected:
 //----------------
 class ModifierLayer : public CanvasLayer {
 public:
-    ~ModifierLayer() {
-        control.setActive(false);
-        control.setVisible(false);
-        delete scene;
-    }
+    ~ModifierLayer();
     void setup();
     string getType() {return "ModifierLayer";}
     void setTexLayer(CanvasLayer *texLayer=NULL);

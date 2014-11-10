@@ -16,6 +16,7 @@ void PostFxLayer::setup() {
     chromaGlitch.allocate(width, height);
     grayscale.allocate(width, height);
     
+    
     dir.allowExt("cube");
 	dir.listDir("LUTs/");
 	dir.sort();
@@ -29,12 +30,14 @@ void PostFxLayer::setup() {
                     "barrelChromaAb", "chromaAb", "chromaGlitch", "grayscale" };
     vector<string> fxChoices(fxStr, fxStr + sizeof(fxStr) / sizeof(fxStr[0]));
     
+    /*
     for (int i=0; i<lutChoices.size(); i++) {
         ofxLUT *newLut = new ofxLUT();
         newLut->allocate(width, height);
         newLut->loadLUT(lutChoices[i]);
         lut.push_back(newLut);
-    }
+    }*/
+    
     active = 0;
     
     control.setName("postFx");
@@ -166,7 +169,7 @@ void PostFxLayer::render() {
 //-----------
 PostFxLayer::~PostFxLayer() {
     for (int i=0; i<lut.size(); i++) {
-        lut[i]->clear();
-        delete lut[i];
+        //lut[i]->clear();
+        //delete lut[i];
     }
 }

@@ -20,8 +20,11 @@
 
 
 class PostFxLayer : public CanvasLayer{
+public:
     ~PostFxLayer();
     void setup();
+    void setLutLookup(vector<ofxLUT*> lut) {this->lut=lut;}
+    
     string getType() {return "PostFxLayer";}
     void render();
 

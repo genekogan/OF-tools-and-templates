@@ -54,6 +54,10 @@ public:
     
     int getNumUsers() {return kinect.getNumTrackedUsers();}
     
+    
+    
+    void skeletonStats();
+    
 private:
     
     void setupControl();
@@ -72,9 +76,9 @@ private:
     
     // kinect data
     vector<string> jointNames;
-    vector<vector<ofVec3f*> > joints, normalizedJoints;
+    vector<vector<ofVec3f*> > joints, vjoints, normalizedJoints;
     vector<ofVec2f> projectedJoints;
-    ofVec3f userBoundingBoxMin, userBoundingBoxMax;
+    vector<ofVec3f> userBoundingBoxMin, userBoundingBoxMax;
     ofVec3f jointTorso, jointNeck, jointHead,
         jointLeftShoulder, jointLeftElbow, jointLeftHand,
         jointRightShoulder, jointRightElbow, jointRightHand,
@@ -108,6 +112,10 @@ private:
     ContourRenderer *contourRenderer;
     SkeletonRenderer *skeletonRenderer;
     bool contourVisuals, skeletonVisuals;
+    
+    
+    // skeleton stats
+    //
 };
 
 

@@ -223,3 +223,10 @@ CreatorLayer::~CreatorLayer() {
     delete subdivide;
     delete syphon;
 }
+
+//----------------
+ModifierLayer::~ModifierLayer() {
+    control.setActive(false);
+    control.setVisible(false);
+    delete scene;
+}
