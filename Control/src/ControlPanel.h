@@ -27,7 +27,8 @@ public:
     void setVisible(bool visible);
     void toggleVisible();
     void togglePresetsVisible();
-    
+    bool getVisible() {return visible;}
+
     vector<ofxUIDropDownList *> getMenus();
     vector<ParameterBase *> & getParameters() {return parameters;}
     void clear();

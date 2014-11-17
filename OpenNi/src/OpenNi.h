@@ -6,6 +6,7 @@
 #include "ofxCv.h"
 #include "ofxOpenCv.h"
 #include "ofxKinectProjectorToolkit.h"
+#include "ofxKinectFeatures.h"
 
 using namespace ofxCv;
 using namespace cv;

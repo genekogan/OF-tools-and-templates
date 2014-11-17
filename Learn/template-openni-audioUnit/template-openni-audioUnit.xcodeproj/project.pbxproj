@@ -53,6 +53,9 @@
 		ADE367465D2A8EBAD4C7A8D9 /* IpEndpointName.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ADD194746185E2DA11468377 /* IpEndpointName.cpp */; };
 		ADE7C2AFC51E3F7E5E389026 /* ofxUISortableList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5613D5D24B00D8AD909F7E6A /* ofxUISortableList.cpp */; };
 		AE281BEBF3A00F1FC37F3DA0 /* ofxUIWaveform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9345327AA463407B3DADBADE /* ofxUIWaveform.cpp */; };
+		B029C2EC1A12B28400231100 /* ContourRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B029C2E51A12B27900231100 /* ContourRenderer.cpp */; };
+		B029C2ED1A12B28400231100 /* OpenNiTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B029C2E81A12B27900231100 /* OpenNiTracker.cpp */; };
+		B029C2EE1A12B28400231100 /* SkeletonRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B029C2EA1A12B27900231100 /* SkeletonRenderer.cpp */; };
 		B0312CD419F81AB9000D66EA /* ofxOpenNI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0312CCF19F81AB9000D66EA /* ofxOpenNI.cpp */; };
 		B0312CD519F81AB9000D66EA /* ofxOpenNITypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0312CD119F81AB9000D66EA /* ofxOpenNITypes.cpp */; };
 		B0312D7119F81E7A000D66EA /* libnimCodecs.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B0312D6219F81AEC000D66EA /* libnimCodecs.dylib */; };
@@ -69,7 +72,6 @@
 		B0312D7C19F81E7A000D66EA /* libXnVFeatures_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B0312D6D19F81AEC000D66EA /* libXnVFeatures_1_5_2.dylib */; };
 		B0312D7D19F81E7A000D66EA /* libXnVHandGenerator_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B0312D6E19F81AEC000D66EA /* libXnVHandGenerator_1_5_2.dylib */; };
 		B0312D7E19F81E7A000D66EA /* libXnVNite_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B0312D6F19F81AEC000D66EA /* libXnVNite_1_5_2.dylib */; };
-		B0312D8319F828D6000D66EA /* OpenNi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0312D8119F8288C000D66EA /* OpenNi.cpp */; };
 		B0312D8419F828D6000D66EA /* ModuleOpenNi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0312CCB19F81A9C000D66EA /* ModuleOpenNi.cpp */; };
 		B0A0144A1A0470A40008D385 /* OutputAudioUnit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0A014481A046CC40008D385 /* OutputAudioUnit.cpp */; };
 		B0A6D6091A040947000F7516 /* ofxManta.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0A6D5F81A040947000F7516 /* ofxManta.cpp */; };
@@ -310,6 +312,13 @@
 		ADD194746185E2DA11468377 /* IpEndpointName.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = IpEndpointName.cpp; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/IpEndpointName.cpp; sourceTree = SOURCE_ROOT; };
 		AE335EB4709BFD4671EEAC84 /* MessageMappingOscPacketListener.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = MessageMappingOscPacketListener.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/MessageMappingOscPacketListener.h; sourceTree = SOURCE_ROOT; };
 		AEFCF7E549ACA862C022AD40 /* ofxUIDefines.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxUIDefines.h; path = ../../../addons/ofxUI/src/ofxUIDefines.h; sourceTree = SOURCE_ROOT; };
+		B029C2E51A12B27900231100 /* ContourRenderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ContourRenderer.cpp; sourceTree = "<group>"; };
+		B029C2E61A12B27900231100 /* ContourRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContourRenderer.h; sourceTree = "<group>"; };
+		B029C2E71A12B27900231100 /* OpenNi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenNi.h; sourceTree = "<group>"; };
+		B029C2E81A12B27900231100 /* OpenNiTracker.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OpenNiTracker.cpp; sourceTree = "<group>"; };
+		B029C2E91A12B27900231100 /* OpenNiTracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenNiTracker.h; sourceTree = "<group>"; };
+		B029C2EA1A12B27900231100 /* SkeletonRenderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SkeletonRenderer.cpp; sourceTree = "<group>"; };
+		B029C2EB1A12B27900231100 /* SkeletonRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SkeletonRenderer.h; sourceTree = "<group>"; };
 		B0312CCB19F81A9C000D66EA /* ModuleOpenNi.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ModuleOpenNi.cpp; sourceTree = "<group>"; };
 		B0312CCC19F81A9C000D66EA /* ModuleOpenNi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModuleOpenNi.h; sourceTree = "<group>"; };
 		B0312CCF19F81AB9000D66EA /* ofxOpenNI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxOpenNI.cpp; sourceTree = "<group>"; };
@@ -460,8 +469,6 @@
 		B0312D6D19F81AEC000D66EA /* libXnVFeatures_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVFeatures_1_5_2.dylib; sourceTree = "<group>"; };
 		B0312D6E19F81AEC000D66EA /* libXnVHandGenerator_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVHandGenerator_1_5_2.dylib; sourceTree = "<group>"; };
 		B0312D6F19F81AEC000D66EA /* libXnVNite_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVNite_1_5_2.dylib; sourceTree = "<group>"; };
-		B0312D8119F8288C000D66EA /* OpenNi.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OpenNi.cpp; sourceTree = "<group>"; };
-		B0312D8219F8288C000D66EA /* OpenNi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenNi.h; sourceTree = "<group>"; };
 		B0A014481A046CC40008D385 /* OutputAudioUnit.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OutputAudioUnit.cpp; sourceTree = "<group>"; };
 		B0A014491A046CC40008D385 /* OutputAudioUnit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OutputAudioUnit.h; sourceTree = "<group>"; };
 		B0A6D5F21A04093C000F7516 /* MantaController.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MantaController.cpp; sourceTree = "<group>"; };
@@ -972,6 +979,21 @@
 			name = ofxUI;
 			sourceTree = "<group>";
 		};
+		B029C2E41A12B27900231100 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B029C2E51A12B27900231100 /* ContourRenderer.cpp */,
+				B029C2E61A12B27900231100 /* ContourRenderer.h */,
+				B029C2E71A12B27900231100 /* OpenNi.h */,
+				B029C2E81A12B27900231100 /* OpenNiTracker.cpp */,
+				B029C2E91A12B27900231100 /* OpenNiTracker.h */,
+				B029C2EA1A12B27900231100 /* SkeletonRenderer.cpp */,
+				B029C2EB1A12B27900231100 /* SkeletonRenderer.h */,
+			);
+			name = src;
+			path = ../../OpenNi/src;
+			sourceTree = "<group>";
+		};
 		B0312CCA19F81A9C000D66EA /* ModuleOpenNi */ = {
 			isa = PBXGroup;
 			children = (
@@ -1238,19 +1260,9 @@
 		B0312D7F19F82880000D66EA /* OpenNi */ = {
 			isa = PBXGroup;
 			children = (
-				B0312D8019F8288C000D66EA /* src */,
+				B029C2E41A12B27900231100 /* src */,
 			);
 			name = OpenNi;
-			sourceTree = "<group>";
-		};
-		B0312D8019F8288C000D66EA /* src */ = {
-			isa = PBXGroup;
-			children = (
-				B0312D8119F8288C000D66EA /* OpenNi.cpp */,
-				B0312D8219F8288C000D66EA /* OpenNi.h */,
-			);
-			name = src;
-			path = ../../OpenNi/src;
 			sourceTree = "<group>";
 		};
 		B0A014471A046CC40008D385 /* OutputAudioUnit */ = {
@@ -2491,6 +2503,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B029C2EC1A12B28400231100 /* ContourRenderer.cpp in Sources */,
+				B029C2ED1A12B28400231100 /* OpenNiTracker.cpp in Sources */,
+				B029C2EE1A12B28400231100 /* SkeletonRenderer.cpp in Sources */,
 				B0A0144A1A0470A40008D385 /* OutputAudioUnit.cpp in Sources */,
 				B0A6DDE41A0410D5000F7516 /* AudioUnits.cpp in Sources */,
 				B0A6DDE51A0410D5000F7516 /* FilePlayer.cpp in Sources */,
@@ -2509,7 +2524,6 @@
 				B0A6D64E1A04094C000F7516 /* ofxAudioUnitNetReceive.cpp in Sources */,
 				B0E98FED1A02DE5400F5F941 /* ContourFinder.cpp in Sources */,
 				B0A6D6091A040947000F7516 /* ofxManta.cpp in Sources */,
-				B0312D8319F828D6000D66EA /* OpenNi.cpp in Sources */,
 				B0312D8419F828D6000D66EA /* ModuleOpenNi.cpp in Sources */,
 				B0E98FEB1A02DE5400F5F941 /* fdog.cpp in Sources */,
 				B0BA149919CDDD3F00D64AAB /* Learn.cpp in Sources */,

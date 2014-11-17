@@ -54,6 +54,7 @@ protected:
     ofColor color2;
     int fillAlpha;
     int strokeAlpha;
+    float lineWidth;
     int cycle;
     float density;
     bool drawLines;

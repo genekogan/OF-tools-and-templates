@@ -50,3 +50,8 @@ void SkeletonRenderer::setupControl() {
     control.addParameter("radius", &radius, 0, 800);
 }
 
+//-------
+void SkeletonRenderer::setGuiVisible(bool visible) {
+    this->visible = visible;
+    control.setVisible(visible);
+}

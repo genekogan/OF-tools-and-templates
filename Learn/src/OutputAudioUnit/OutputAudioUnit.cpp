@@ -76,7 +76,6 @@ void OutputAudioUnit::update() {
         setupGuiParameterGroup(guiToSwitchParametersName);
         guiToSwitchParameters = false;
     }
-
     for (int i=0; i<activeParameters.size(); i++) {
         audioUnit->setParameter(activeParameters[i]->parameterId, 0, *activeParameters[i]->val);
     }
@@ -87,6 +86,11 @@ void OutputAudioUnit::draw() {
     if (visible) {
         
     }
+}
+
+//-----------
+void OutputAudioUnit::setGuiPosition(int x, int y) {
+    gui->setPosition(x, y);
 }
 
 //-----------

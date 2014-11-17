@@ -9,6 +9,7 @@
 class FilePlayer
 {
 public:
+    FilePlayer();
     void setup();
     void connectTo(ofxAudioUnitMixer &mixer, int channel);
 
@@ -33,12 +34,13 @@ private:
     ofPolyline wave;
     vector<float> data;
     
-    
     Waveform waveform;
     float t1, t2;
     int currentSample, sample1, sample2, numSamples;
     
     Control control;
+    
+    int x, y;
     bool visible;
 };
 

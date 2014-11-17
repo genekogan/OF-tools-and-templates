@@ -6,7 +6,7 @@ void ofApp::setup() {
     
     gfx.setup("main", ofGetScreenWidth()-640, 20, 1024, 768, false);
 
-    kinect.setup("/Users/Gene/Downloads/hometest_single.oni");
+    kinect.setup("/Users/Gene/Code/openFrameworks/templates/Kinect/openni_oniRecording/bin/data/alecsroom.oni");
     kinect.enableUserTracking();
     kinect.setCalibration("/Users/Gene/Desktop/calibration.xml");
     kinect.setupSkeletonVisuals(gfx.getWidth(), gfx.getHeight());

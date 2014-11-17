@@ -69,8 +69,13 @@
 		B0312D7C19F81E7A000D66EA /* libXnVFeatures_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B0312D6D19F81AEC000D66EA /* libXnVFeatures_1_5_2.dylib */; };
 		B0312D7D19F81E7A000D66EA /* libXnVHandGenerator_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B0312D6E19F81AEC000D66EA /* libXnVHandGenerator_1_5_2.dylib */; };
 		B0312D7E19F81E7A000D66EA /* libXnVNite_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B0312D6F19F81AEC000D66EA /* libXnVNite_1_5_2.dylib */; };
-		B0312D8319F828D6000D66EA /* OpenNi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0312D8119F8288C000D66EA /* OpenNi.cpp */; };
 		B0312D8419F828D6000D66EA /* ModuleOpenNi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0312CCB19F81A9C000D66EA /* ModuleOpenNi.cpp */; };
+		B07670581A19C96B00723B71 /* ofxKinectFeatures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07670521A19C96B00723B71 /* ofxKinectFeatures.cpp */; };
+		B07670591A19C96B00723B71 /* ofxKinectSkeleton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07670541A19C96B00723B71 /* ofxKinectSkeleton.cpp */; };
+		B076705A1A19C96B00723B71 /* ofxMocapElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07670561A19C96B00723B71 /* ofxMocapElement.cpp */; };
+		B076705B1A19C97C00723B71 /* ContourRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07670491A19C96600723B71 /* ContourRenderer.cpp */; };
+		B076705C1A19C97C00723B71 /* OpenNiTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B076704C1A19C96600723B71 /* OpenNiTracker.cpp */; };
+		B076705D1A19C97C00723B71 /* SkeletonRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B076704E1A19C96600723B71 /* SkeletonRenderer.cpp */; };
 		B0BA13E319CDDC6400D64AAB /* ofxLearn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0BA0FF319CDDC6200D64AAB /* ofxLearn.cpp */; };
 		B0BA149919CDDD3F00D64AAB /* Learn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0BA148F19CDDCAA00D64AAB /* Learn.cpp */; };
 		B0BA149A19CDDD3F00D64AAB /* LearnParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0BA149119CDDCAA00D64AAB /* LearnParameter.cpp */; };
@@ -423,8 +428,19 @@
 		B0312D6D19F81AEC000D66EA /* libXnVFeatures_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVFeatures_1_5_2.dylib; sourceTree = "<group>"; };
 		B0312D6E19F81AEC000D66EA /* libXnVHandGenerator_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVHandGenerator_1_5_2.dylib; sourceTree = "<group>"; };
 		B0312D6F19F81AEC000D66EA /* libXnVNite_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVNite_1_5_2.dylib; sourceTree = "<group>"; };
-		B0312D8119F8288C000D66EA /* OpenNi.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OpenNi.cpp; sourceTree = "<group>"; };
-		B0312D8219F8288C000D66EA /* OpenNi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenNi.h; sourceTree = "<group>"; };
+		B07670491A19C96600723B71 /* ContourRenderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ContourRenderer.cpp; sourceTree = "<group>"; };
+		B076704A1A19C96600723B71 /* ContourRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContourRenderer.h; sourceTree = "<group>"; };
+		B076704B1A19C96600723B71 /* OpenNi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenNi.h; sourceTree = "<group>"; };
+		B076704C1A19C96600723B71 /* OpenNiTracker.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OpenNiTracker.cpp; sourceTree = "<group>"; };
+		B076704D1A19C96600723B71 /* OpenNiTracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenNiTracker.h; sourceTree = "<group>"; };
+		B076704E1A19C96600723B71 /* SkeletonRenderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SkeletonRenderer.cpp; sourceTree = "<group>"; };
+		B076704F1A19C96600723B71 /* SkeletonRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SkeletonRenderer.h; sourceTree = "<group>"; };
+		B07670521A19C96B00723B71 /* ofxKinectFeatures.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxKinectFeatures.cpp; sourceTree = "<group>"; };
+		B07670531A19C96B00723B71 /* ofxKinectFeatures.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxKinectFeatures.h; sourceTree = "<group>"; };
+		B07670541A19C96B00723B71 /* ofxKinectSkeleton.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxKinectSkeleton.cpp; sourceTree = "<group>"; };
+		B07670551A19C96B00723B71 /* ofxKinectSkeleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxKinectSkeleton.h; sourceTree = "<group>"; };
+		B07670561A19C96B00723B71 /* ofxMocapElement.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMocapElement.cpp; sourceTree = "<group>"; };
+		B07670571A19C96B00723B71 /* ofxMocapElement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxMocapElement.h; sourceTree = "<group>"; };
 		B0BA0FF319CDDC6200D64AAB /* ofxLearn.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxLearn.cpp; sourceTree = "<group>"; };
 		B0BA0FF419CDDC6200D64AAB /* ofxLearn.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxLearn.h; sourceTree = "<group>"; };
 		B0BA148F19CDDCAA00D64AAB /* Learn.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Learn.cpp; sourceTree = "<group>"; };
@@ -1121,19 +1137,46 @@
 		B0312D7F19F82880000D66EA /* OpenNi */ = {
 			isa = PBXGroup;
 			children = (
-				B0312D8019F8288C000D66EA /* src */,
+				B07670481A19C96600723B71 /* src */,
 			);
 			name = OpenNi;
 			sourceTree = "<group>";
 		};
-		B0312D8019F8288C000D66EA /* src */ = {
+		B07670481A19C96600723B71 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				B0312D8119F8288C000D66EA /* OpenNi.cpp */,
-				B0312D8219F8288C000D66EA /* OpenNi.h */,
+				B07670491A19C96600723B71 /* ContourRenderer.cpp */,
+				B076704A1A19C96600723B71 /* ContourRenderer.h */,
+				B076704B1A19C96600723B71 /* OpenNi.h */,
+				B076704C1A19C96600723B71 /* OpenNiTracker.cpp */,
+				B076704D1A19C96600723B71 /* OpenNiTracker.h */,
+				B076704E1A19C96600723B71 /* SkeletonRenderer.cpp */,
+				B076704F1A19C96600723B71 /* SkeletonRenderer.h */,
 			);
 			name = src;
 			path = ../../OpenNi/src;
+			sourceTree = "<group>";
+		};
+		B07670501A19C96B00723B71 /* ofxKinectFeatures */ = {
+			isa = PBXGroup;
+			children = (
+				B07670511A19C96B00723B71 /* src */,
+			);
+			name = ofxKinectFeatures;
+			sourceTree = "<group>";
+		};
+		B07670511A19C96B00723B71 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B07670521A19C96B00723B71 /* ofxKinectFeatures.cpp */,
+				B07670531A19C96B00723B71 /* ofxKinectFeatures.h */,
+				B07670541A19C96B00723B71 /* ofxKinectSkeleton.cpp */,
+				B07670551A19C96B00723B71 /* ofxKinectSkeleton.h */,
+				B07670561A19C96B00723B71 /* ofxMocapElement.cpp */,
+				B07670571A19C96B00723B71 /* ofxMocapElement.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxKinectFeatures/src;
 			sourceTree = "<group>";
 		};
 		B0BA0FF119CDDC6200D64AAB /* ofxLearn */ = {
@@ -1806,6 +1849,7 @@
 				B0312D7F19F82880000D66EA /* OpenNi */,
 				B0BA148C19CDDC8C00D64AAB /* Learn */,
 				B0BA148B19CDDC8700D64AAB /* Control */,
+				B07670501A19C96B00723B71 /* ofxKinectFeatures */,
 				B0E9915E1A02DEC900F5F941 /* ofxOpenCv */,
 				B0E991081A02DE6600F5F941 /* ofxKinectProjectorToolkit */,
 				B0E98FC01A02DE5400F5F941 /* ofxCv */,
@@ -2171,6 +2215,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B076705B1A19C97C00723B71 /* ContourRenderer.cpp in Sources */,
+				B076705C1A19C97C00723B71 /* OpenNiTracker.cpp in Sources */,
+				B076705D1A19C97C00723B71 /* SkeletonRenderer.cpp in Sources */,
 				B0E98FB11A02DE3600F5F941 /* ControlPanel.cpp in Sources */,
 				B0E98FB21A02DE3600F5F941 /* MetaController.cpp in Sources */,
 				B0E98FB31A02DE3600F5F941 /* OscManager.cpp in Sources */,
@@ -2178,7 +2225,6 @@
 				B0E98FB41A02DE3600F5F941 /* Presets.cpp in Sources */,
 				B0E98FB51A02DE3600F5F941 /* Sequencer.cpp in Sources */,
 				B0E98FED1A02DE5400F5F941 /* ContourFinder.cpp in Sources */,
-				B0312D8319F828D6000D66EA /* OpenNi.cpp in Sources */,
 				B0312D8419F828D6000D66EA /* ModuleOpenNi.cpp in Sources */,
 				B0E98FEB1A02DE5400F5F941 /* fdog.cpp in Sources */,
 				B0BA149919CDDD3F00D64AAB /* Learn.cpp in Sources */,
@@ -2187,6 +2233,7 @@
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				72A929D3561B8232A182ABFC /* ofxOscBundle.cpp in Sources */,
 				5864AD82E20F15536D054EA3 /* ofxOscMessage.cpp in Sources */,
+				B07670591A19C96B00723B71 /* ofxKinectSkeleton.cpp in Sources */,
 				4ADB88E2FB52E76A471065DE /* ofxOscParameterSync.cpp in Sources */,
 				B0E9926B1A02DEC900F5F941 /* ofxCvImage.cpp in Sources */,
 				640279EE111671BD026CB013 /* ofxOscReceiver.cpp in Sources */,
@@ -2196,6 +2243,7 @@
 				510CAFE035E576A4E1502D52 /* UdpSocket.cpp in Sources */,
 				A29D8C96AE042ECEAA1BD4F3 /* NetworkingUtilsWin.cpp in Sources */,
 				B0E992681A02DEC900F5F941 /* ofxCvFloatImage.cpp in Sources */,
+				B07670581A19C96B00723B71 /* ofxKinectFeatures.cpp in Sources */,
 				28090DEB5109115003E8F1C5 /* UdpSocketWin.cpp in Sources */,
 				62545D179C94265CA1389D4A /* OscOutboundPacketStream.cpp in Sources */,
 				C4782ECC372420ACE0615B74 /* OscPrintReceivedElements.cpp in Sources */,
@@ -2253,6 +2301,7 @@
 				F9C20834354ACC8337320B8C /* ofxUIMultiImageToggle.cpp in Sources */,
 				E3D59A6B55F05669B3FBF8BD /* ofxUINumberDialer.cpp in Sources */,
 				D60E54E7FD6E19BC8636E0D2 /* ofxUIRadio.cpp in Sources */,
+				B076705A1A19C96B00723B71 /* ofxMocapElement.cpp in Sources */,
 				1587708E3CAC72997E43504E /* ofxUIRangeSlider.cpp in Sources */,
 				59C5F2F5D7254C33C00F97CB /* ofxUIRectangle.cpp in Sources */,
 				FE0F1DB69ACCD163E9DA2A15 /* ofxUIRotarySlider.cpp in Sources */,

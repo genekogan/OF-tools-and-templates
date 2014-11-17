@@ -50,13 +50,23 @@ void AudioUnits::draw() {
 }
 
 //-------
+void AudioUnits::setGuiPosition(int x, int y) {
+    if (instrumentSetup) {
+        instrument.setGuiPosition(x, y);
+    }
+    if (filePlayerSetup) {
+        player.setGuiPosition(x, y);
+    }
+}
+
+//-------
 void AudioUnits::setVisible(bool visible) {
     this->visible = visible;
     if (instrumentSetup) {
-        player.setVisible(visible);
+        instrument.setVisible(visible);
     }
     if (filePlayerSetup) {
-        instrument.setVisible(visible);
+        player.setVisible(visible);
     }
 }
 

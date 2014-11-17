@@ -103,7 +103,7 @@
 						<Name>lineWidth</Name>
 						<OscAddress>/lineWidth</OscAddress>
 						<Type>Float</Type>
-						<Value>3.04225</Value>
+						<Value>5.1831</Value>
 						<Min>0</Min>
 						<Max>16</Max>
 					</Parameter>
@@ -143,7 +143,7 @@
 						<Name>rad</Name>
 						<OscAddress>/rad</OscAddress>
 						<Type>Float</Type>
-						<Value>59.8592</Value>
+						<Value>70.4225</Value>
 						<Min>0</Min>
 						<Max>500</Max>
 					</Parameter>
@@ -230,7 +230,7 @@
 						<Name>radius</Name>
 						<OscAddress>/radius</OscAddress>
 						<Type>Float</Type>
-						<Value>0</Value>
+						<Value>-7.8169</Value>
 						<Min>-15</Min>
 						<Max>15</Max>
 					</Parameter>
@@ -238,7 +238,7 @@
 						<Name>fade</Name>
 						<OscAddress>/fade</OscAddress>
 						<Type>Float</Type>
-						<Value>0</Value>
+						<Value>0.647887</Value>
 						<Min>-1</Min>
 						<Max>1</Max>
 					</Parameter>
@@ -490,5 +490,147 @@
 				<Menus/>
 			</Preset>
 		</Scene>
+	</Layer>
+	<Layer>
+		<Name>postFx</Name>
+		<Type>PostFxLayer</Type>
+		<Control>
+			<Preset>
+				<Parameters>
+					<Parameter>
+						<Name>radius</Name>
+						<OscAddress>/radius</OscAddress>
+						<Type>Float</Type>
+						<Value>8.23944</Value>
+						<Min>-15</Min>
+						<Max>15</Max>
+					</Parameter>
+					<Parameter>
+						<Name>fade</Name>
+						<OscAddress>/fade</OscAddress>
+						<Type>Float</Type>
+						<Value>0.380282</Value>
+						<Min>-1</Min>
+						<Max>1</Max>
+					</Parameter>
+				</Parameters>
+				<Menus>
+					<Menu>
+						<Name>Fx</Name>
+						<Items>
+							<Item>
+								<Name>none</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>bloom</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>gaussian_blur</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>bokeh</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>glow</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>blur</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>median</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>oldtv</Name>
+								<Value>1</Value>
+							</Item>
+							<Item>
+								<Name>inverse</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>barrelChromaAb</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>chromaAb</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>chromaGlitch</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>grayscale</Name>
+								<Value>0</Value>
+							</Item>
+						</Items>
+					</Menu>
+					<Menu>
+						<Name>LUT</Name>
+						<Items>
+							<Item>
+								<Name>None</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>LUTs/Brannan.cube</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>LUTs/Earlybird.cube</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>LUTs/Gotham.cube</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>LUTs/Hefe.cube</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>LUTs/Inkwell.cube</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>LUTs/Lomo-fi.cube</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>LUTs/Lord Kelvin.cube</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>LUTs/Nashville.cube</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>LUTs/Sutro.cube</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>LUTs/Toaster.cube</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>LUTs/Walden.cube</Name>
+								<Value>0</Value>
+							</Item>
+							<Item>
+								<Name>LUTs/X Pro II.cube</Name>
+								<Value>0</Value>
+							</Item>
+						</Items>
+					</Menu>
+				</Menus>
+			</Preset>
+		</Control>
 	</Layer>
 </Layers>

@@ -54,6 +54,7 @@ public:
     void toggleVisible() {setVisible(!visible);}
     void toggleGuiInputsVisible() {setGuiInputsVisible(!inputsVisible);}
     void toggleGuiOutputsVisible() {setGuiOutputsVisible(!outputsVisible);}
+    void setGuiSummaryView(bool viewSummary);
     
     // touch osc
     void saveInputsToTouchOsc();
@@ -92,6 +93,11 @@ protected:
     void gui1Event(ofxUIEventArgs &e);
     void gui2Event(ofxUIEventArgs &e);
     void gui3Event(ofxUIEventArgs &e);
+    void mousePressed(ofMouseEventArgs &e);
+    void mouseDragged(ofMouseEventArgs &e);
+    void mouseReleased(ofMouseEventArgs &e);
+    void summaryClickParameters(int x, int y);
+    void drawSummary();
     
     // record + learn
     void startRecording();
@@ -127,6 +133,8 @@ protected:
     ofxUIDropDownList *guiSelector;
     ofxUILabel *guiStatusLabel;
     bool visible, inputsVisible, outputsVisible;
+    int summaryX, summaryY;
+    bool viewSummary, dragging;
     
     // recording variables
     float startTime, trainCountdown, trainDuration;

@@ -13,6 +13,7 @@ Instrument::Instrument() {
 }
 
 void Instrument::blah() {
+    cout << "blah " << endl;
     control.toggleVisible();
 }
 
@@ -455,8 +456,8 @@ void Instrument::processColumn(vector<float> &column) {
 //-----------
 void Instrument::draw() {
     if (visible) {
-        manta.draw(165, 5, 260);
-        manta.drawStats(430, 5, 260);
+        manta.draw(x+165, y+5, 260);
+        manta.drawStats(x+430, y+5, 260);
         sequencer.draw();
     }
 }
@@ -674,8 +675,10 @@ void Instrument::loadPreset(string &filename) {
 
 //-----------
 void Instrument::setGuiPosition(int x, int y) {
-    control.setGuiPosition(x, y);
-    sequencer.setPosition(x+165, y+225, 260, 120);
+    this->x = x;
+    this->y = y;
+    control.setGuiPosition(x+5, y+5);
+    sequencer.setPosition(x+165, y+210, 260, 130);
     guiP->setPosition(x+810, y+5);
     guiS->setPosition(x+695, y+5);
 }

@@ -28,13 +28,15 @@ OpenNi::OpenNi() {
     contourVisuals = false;
     skeletonVisuals = false;
     calibrationLoaded = false;
+    
+    setGuiPosition(0, 0);
 }
 
 //-------
 void OpenNi::setupContourVisuals(int width, int height) {
     contourRenderer = new ContourRenderer();
     contourRenderer->setup(this, width, height);
-    contourRenderer->setGuiPosition(skeletonVisuals ? 400 : 200, 0);
+    contourRenderer->setGuiPosition(skeletonVisuals ? 300 : 150, 0);
     if (calibrationLoaded) {
         contourRenderer->setCalibration(&kpt);
     }
@@ -45,7 +47,7 @@ void OpenNi::setupContourVisuals(int width, int height) {
 void OpenNi::setupSkeletonVisuals(int width, int height) {
     skeletonRenderer = new SkeletonRenderer();
     skeletonRenderer->setup(this, width, height);
-    skeletonRenderer->setGuiPosition(contourVisuals ? 400 : 200, 0);
+    skeletonRenderer->setGuiPosition(contourVisuals ? 300 : 150, 0);
     if (calibrationLoaded) {
         skeletonRenderer->setCalibration(&kpt);
     }
@@ -55,22 +57,17 @@ void OpenNi::setupSkeletonVisuals(int width, int height) {
 //-------
 void OpenNi::setup(string oni){
     if (oni != "") {
-        //kinect.setupFromONI(oni);
+        kinect.setupFromONI(oni);
     }
     else {
-        //kinect.setup();
+        kinect.setup();
     }
-    kinect.setup();
-    
     kinect.addDepthGenerator();
-    //kinect.addImageGenerator();   // optional?
+    kinect.addImageGenerator();   // optional?
     kinect.setRegister(true);
     kinect.setMirror(true);
     kinect.setUseDepthRawPixels(true);
- 
     kinect.setDepthColoring(COLORING_GREY);
-    
-    
     
     setupControl();
 }
@@ -117,14 +114,12 @@ void OpenNi::enableUserTracking(int maxUsers) {
     jointNames.push_back("rightFoot");
     
     for (int i=0; i<maxUsers; i++) {
-        vector<ofVec3f*> newJoints, newVJoints, newProjectedJoints;
+        vector<ofVec3f*> newJoints, newProjectedJoints;
         for (int j=0; j<jointNames.size(); j++) {
             newJoints.push_back(new ofVec3f(0, 0, 0));
-            newVJoints.push_back(new ofVec3f(0, 0, 0));
             newProjectedJoints.push_back(new ofVec3f(0, 0, 0));
         }
         joints.push_back(newJoints);
-        vjoints.push_back(newVJoints);
         normalizedJoints.push_back(newProjectedJoints);
         userBoundingBoxMin.push_back(ofVec3f(0,0,0));
         userBoundingBoxMax.push_back(ofVec3f(0,0,0));
@@ -208,6 +203,44 @@ bool OpenNi::update(){
             if (skeletonVisuals) {
                 skeletonRenderer->update();
             }
+            
+            
+            
+            
+            //------------------
+            int numUsers = kinect.getNumTrackedUsers();
+            
+            for (int i = 0; i < numUsers; i++) {
+                ofxOpenNIUser user = kinect.getTrackedUser(i);
+                //The following "if" statement is a hard-coded alternative for if(kinect.getUserGenerator().IsNewDataAvailable()), which doesn't work properly in ofxOpenNI
+                if (user.getJoint((Joint)0).getWorldPosition() != ofPoint(0,0,0) &&
+                    (!featExtractor.skeletonExists(0) ||
+                     user.getJoint((Joint)0).getWorldPosition() != featExtractor.getSkeleton(0)->getPosition(0) )) {
+                        map<int, ofPoint> joints;
+                        for (int j = 0; j < user.getNumJoints(); j++) {
+                            joints[j] = user.getJoint((Joint)j).getWorldPosition();
+                        }
+                        featExtractor.updateSkeleton(i, joints);
+                    }
+            }
+            
+            
+            /*
+            for (int i = 0; i < numUsers; i++) {
+                for (int j=0; j < JOINT_COUNT; j++) {
+                    featExtractor.getSkeleton(0)->getVelocityMean((Joint) j);
+                    featExtractor.getSkeleton(0)->get
+                }
+            }
+             .*/
+            
+            
+            //------------------
+            
+            
+            
+            
+            
         }
         return true;
     }
@@ -256,30 +289,7 @@ void OpenNi::updateUsers(){
     for (int i = 0; i < numUsers; i++){
         ofxOpenNIUser & user = kinect.getTrackedUser(i);
         if (!user.isSkeleton()) continue;
-        
-        /* VELOCITY */
-        float vLerpRate = 0.03;
-        vjoints[i][ 0]->set(*vjoints[i][ 0] * (1.0 - vLerpRate) + (user.getJoint(JOINT_HEAD).getWorldPosition() - *joints[i][ 0]) * vLerpRate);
-        vjoints[i][ 1]->set(*vjoints[i][ 1] * (1.0 - vLerpRate) + (user.getJoint(JOINT_NECK).getWorldPosition() - *joints[i][ 1]) * vLerpRate);
-        vjoints[i][ 2]->set(*vjoints[i][ 2] * (1.0 - vLerpRate) + (user.getJoint(JOINT_TORSO).getWorldPosition() - *joints[i][ 2]) * vLerpRate);
-        vjoints[i][ 3]->set(*vjoints[i][ 3] * (1.0 - vLerpRate) + (user.getJoint(JOINT_LEFT_SHOULDER).getWorldPosition() - *joints[i][ 3]) * vLerpRate);
-        vjoints[i][ 4]->set(*vjoints[i][ 4] * (1.0 - vLerpRate) + (user.getJoint(JOINT_LEFT_ELBOW).getWorldPosition() - *joints[i][ 4]) * vLerpRate);
-        vjoints[i][ 5]->set(*vjoints[i][ 5] * (1.0 - vLerpRate) + (user.getJoint(JOINT_LEFT_HAND).getWorldPosition() - *joints[i][ 5]) * vLerpRate);
-        vjoints[i][ 6]->set(*vjoints[i][ 6] * (1.0 - vLerpRate) + (user.getJoint(JOINT_RIGHT_SHOULDER).getWorldPosition() - *joints[i][ 6]) * vLerpRate);
-        vjoints[i][ 7]->set(*vjoints[i][ 7] * (1.0 - vLerpRate) + (user.getJoint(JOINT_RIGHT_ELBOW).getWorldPosition() - *joints[i][ 7]) * vLerpRate);
-        vjoints[i][ 8]->set(*vjoints[i][ 8] * (1.0 - vLerpRate) + (user.getJoint(JOINT_RIGHT_HAND).getWorldPosition() - *joints[i][ 8]) * vLerpRate);
-        vjoints[i][ 9]->set(*vjoints[i][ 9] * (1.0 - vLerpRate) + (user.getJoint(JOINT_LEFT_HIP).getWorldPosition() - *joints[i][ 9]) * vLerpRate);
-        vjoints[i][10]->set(*vjoints[i][10] * (1.0 - vLerpRate) + (user.getJoint(JOINT_LEFT_KNEE).getWorldPosition() - *joints[i][10]) * vLerpRate);
-        vjoints[i][11]->set(*vjoints[i][11] * (1.0 - vLerpRate) + (user.getJoint(JOINT_LEFT_FOOT).getWorldPosition() - *joints[i][11]) * vLerpRate);
-        vjoints[i][12]->set(*vjoints[i][12] * (1.0 - vLerpRate) + (user.getJoint(JOINT_RIGHT_HIP).getWorldPosition() - *joints[i][12]) * vLerpRate);
-        vjoints[i][13]->set(*vjoints[i][13] * (1.0 - vLerpRate) + (user.getJoint(JOINT_RIGHT_KNEE).getWorldPosition() - *joints[i][13]) * vLerpRate);
-        vjoints[i][14]->set(*vjoints[i][14] * (1.0 - vLerpRate) + (user.getJoint(JOINT_RIGHT_FOOT).getWorldPosition() - *joints[i][14]) * vLerpRate);
-        
-        /* JOINTS */
-        
-        
-        
-        
+
         joints[i][ 0]->set(user.getJoint(JOINT_HEAD).getWorldPosition());
         joints[i][ 1]->set(user.getJoint(JOINT_NECK).getWorldPosition());
         joints[i][ 2]->set(user.getJoint(JOINT_TORSO).getWorldPosition());
@@ -328,29 +338,26 @@ void OpenNi::updateUsers(){
 }
 
 //-------
-void OpenNi::draw(int x, int y, int w, int h){
+void OpenNi::draw() {
     ofPushMatrix();
-    ofTranslate(x, y);
-    ofScale(w/1280.0, h/960.0);
+    ofPushStyle();
     
+    ofTranslate(guiX+120, guiY);
+    ofScale(0.5, 0.5);
+    
+    kinect.drawImage();
+    if (trackingUsers) {
+        kinect.drawSkeletons();
+    }
     if (trackingContours) {
+        ofTranslate(640, 0);
         grayImage.draw(0, 0);
         ofSetColor(255, 0, 0);
         ofSetLineWidth(4);
         contourFinder.draw();
-        ofSetColor(255);
     }
-    if (trackingUsers) {
-        int numUsers = kinect.getNumTrackedUsers();
-        for (int i = 0; i < numUsers; i++){
-            ofxOpenNIUser & user = kinect.getTrackedUser(i);
-            //user.drawMask();
-            user.drawSkeleton();
-        }
-    }
-    ofTranslate(640, 0);
-    kinect.drawDepth();
-    
+
+    ofPopStyle();
     ofPopMatrix();
 }
 
@@ -492,37 +499,25 @@ void OpenNi::drawCalibratedSkeleton(int idx, int width, int height) {
 }
 
 //---------
-void OpenNi::setGuiPosition(int x, int y){
-    control.setGuiPosition(x, y);
+void OpenNi::setGuiPosition(int guiX, int guiY) {
+    this->guiX = guiX;
+    this->guiY = guiY;
+    control.setGuiPosition(guiX, guiY);
+    if (contourVisuals) {
+        contourRenderer->setGuiPosition(guiX+150, guiY);
+    }
+    if (skeletonVisuals) {
+        skeletonRenderer->setGuiPosition(guiX+150, guiY);
+    }
 }
 
 //---------
 void OpenNi::toggleGuiVisible() {
     control.toggleVisible();
-}
-
-
-
-
-void OpenNi::skeletonStats() {
-
-    // size bounding box
-    // skeleton velocity (magnitude / direction)
-    // wingspan
-    // symmetry
-    
-    
-    for (int i=0; i<14; i++) {
-        ofPushMatrix();
-        ofPushStyle();
-        ofTranslate(500, 40 + 18*i);
-        ofSetColor(0, 255, 0);
-        float w = ofMap(abs(vjoints[0][i]->x) + abs(vjoints[0][i]->y) + abs(vjoints[0][i]->z), 0, 20, 0, 400);
-        ofRect(0, 0, w, 16);
-        ofPopMatrix();
-        ofPopStyle();
+    if (contourVisuals) {
+        contourRenderer->setGuiVisible(control.getVisible());
     }
-    
-    
-    
+    if (skeletonVisuals) {
+        skeletonRenderer->setGuiVisible(control.getVisible());
+    }
 }

@@ -30,7 +30,7 @@ public:
     
     bool update();
     
-    void draw(int x=0, int y=0, int w=1280, int h=960);
+    void draw();
     void drawCalibratedContours(int width=640, int height=480);
     void drawCalibratedSkeleton(int idx, int width=640, int height=480);
     
@@ -39,13 +39,8 @@ public:
     void setMaxUsers(int maxUsers);
     void setNormalizeJoints(bool normalizeJoints) {this->normalizeJoints = normalizeJoints;}
     
-    void setGuiPosition(int x, int y);
+    void setGuiPosition(int guiX, int guiY);
     void toggleGuiVisible();
-    
-    vector<ofVec3f*> & getJoints(int idxUser);
-    vector<ofVec3f*> & getNormalizedJoints(int idxUser);
-    vector<ofVec2f>  & getProjectedJoints(int idxUser);
-    string getJointName(int idx) {return jointNames[idx];}
     
     void getCalibratedContour(vector<cv::Point> &points, vector<ofVec2f> &calibratedPoints, int width, int height);
 
@@ -54,9 +49,11 @@ public:
     
     int getNumUsers() {return kinect.getNumTrackedUsers();}
     
+    vector<ofVec3f*> & getJoints(int idxUser);
+    vector<ofVec3f*> & getNormalizedJoints(int idxUser);
+    vector<ofVec2f>  & getProjectedJoints(int idxUser);
     
-    
-    void skeletonStats();
+    string getJointName(int idx) {return jointNames[idx];}
     
 private:
     
@@ -72,11 +69,12 @@ private:
     ofxOpenNI kinect;
     ofxKinectProjectorToolkit kpt;
     ContourFinder contourFinder;
+    ofxKinectFeatures featExtractor;
     bool calibrationLoaded;
     
     // kinect data
     vector<string> jointNames;
-    vector<vector<ofVec3f*> > joints, vjoints, normalizedJoints;
+    vector<vector<ofVec3f*> > joints, normalizedJoints;
     vector<ofVec2f> projectedJoints;
     vector<ofVec3f> userBoundingBoxMin, userBoundingBoxMax;
     ofVec3f jointTorso, jointNeck, jointHead,
@@ -86,6 +84,7 @@ private:
         jointRightHip, jointRightKnee, jointRightFoot;
     
     Control control;
+    int guiX, guiY;
     
     bool trackingContours, trackingUsers, trackingKeypoints;
     bool pTrackingContours, pTrackingUsers, pTrackingKeypoints;
@@ -112,10 +111,6 @@ private:
     ContourRenderer *contourRenderer;
     SkeletonRenderer *skeletonRenderer;
     bool contourVisuals, skeletonVisuals;
-    
-    
-    // skeleton stats
-    //
 };
 
 

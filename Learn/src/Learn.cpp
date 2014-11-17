@@ -25,6 +25,11 @@ Learn::Learn(bool init) {
     gui2 = new ofxUICanvas("train");
     gui3 = new ofxUICanvas("perform");
 
+    summaryX = 5;
+    summaryY = 70;
+    viewSummary = false;
+    dragging = false;
+    
     customFont = false;
     
     oscManager.registerOscEventListener("/toggleRecord", this, &Learn::oscEventSetRecording);
@@ -100,8 +105,90 @@ void Learn::draw(){
     else if (training) {
         guiStatusLabel->setLabel(" => classifying "+ofToString(threadedLearn.getTrainingIndex()));
     }
+    
+    if (viewSummary) {
+        drawSummary();
+    }
 }
 
+//-------
+void Learn::drawSummary(){
+    ofPushMatrix();
+    ofPushStyle();
+    ofTranslate(summaryX, summaryY);
+    ofSetColor(155);
+    ofRect(0, 0, 255, 26 + 15 * max(inputs.size(), outputs.size()));
+    ofSetColor(255);
+    ofDrawBitmapString("Learn summary", 4, 17);
+    ofTranslate(0, 22);
+    for (int i=0; i<inputs.size(); i++) {
+        float rv = (inputs[i]->get() - inputs[i]->getMin()) / (inputs[i]->getMax() - inputs[i]->getMin());
+        ofPushMatrix();
+        ofTranslate(5, 15*i);
+        ofSetColor(100);
+        ofRect(0, 0, 120, 14);
+        ofSetColor(50);
+        ofRect(0, 0, 120 * rv, 14);
+        ofSetColor(255);
+        ofDrawBitmapString(inputs[i]->getName(), 0, 12);
+        ofPopMatrix();
+    }
+    ofTranslate(125, 0);
+    for (int i=0; i<outputs.size(); i++) {
+        float rv = (outputs[i]->get() - outputs[i]->getMin()) / (outputs[i]->getMax() - outputs[i]->getMin());
+        ofPushMatrix();
+        ofTranslate(5, 15*i);
+        ofSetColor(100);
+        ofRect(0, 0, 120, 14);
+        ofSetColor(50);
+        ofRect(0, 0, 120 * rv, 14);
+        ofSetColor(255);
+        ofDrawBitmapString(outputs[i]->getName(), 0, 12);
+        ofPopMatrix();
+    }
+    ofPopStyle();
+    ofPopMatrix();
+}
+
+
+//-------
+void Learn::summaryClickParameters(int x, int y) {
+    int idx = (int) ((y - summaryY - 22.0) / 15.0);
+    if (x > 5+summaryX && x <= 125+summaryX) {
+        if (idx >= 0 && idx < inputs.size()) {
+            float val = (x - summaryX - 5.0) / 120.0;
+            inputs[idx]->set(ofLerp(inputs[idx]->getMin(), inputs[idx]->getMax(), val));
+        }
+    }
+    else if (x > 130+summaryX && x <= 250+summaryX) {
+        if (idx >= 0 && idx < outputs.size()) {
+            float val = (x - summaryX - 130.0) / 120.0;
+            outputs[idx]->set(ofLerp(outputs[idx]->getMin(), outputs[idx]->getMax(), val));
+        }
+    }
+}
+
+//-------
+void Learn::mousePressed(ofMouseEventArgs &e) {
+    ofRectangle rect(summaryX, summaryY, 255, 26 + 15 * max(inputs.size(), outputs.size()));
+    if (rect.inside(e.x, e.y)) {
+        summaryClickParameters(e.x, e.y);
+        dragging = true;
+    }
+}
+
+//-------
+void Learn::mouseDragged(ofMouseEventArgs &e) {
+    ofRectangle rect(summaryX, summaryY, 255, 26 + 15 * max(inputs.size(), outputs.size()));
+    if (dragging && rect.inside(e.x, e.y)) {
+        summaryClickParameters(e.x, e.y);
+    }
+}
+
+//-------
+void Learn::mouseReleased(ofMouseEventArgs &e) {
+    dragging = false;
+}
 
 
 
@@ -347,6 +434,7 @@ void Learn::setupGui() {
     gui2->addWidgetEastOf(new ofxUISlider("countdown", 0.0, 5.0, &trainCountdown, 100.0f, 9.0f), "train fast")->setPadding(2);
     gui2->addWidgetSouthOf(new ofxUISlider("duration", 0.0, 5.0, &trainDuration, 100.0f, 9.0f), "countdown")->setPadding(2);
     gui2->addWidgetEastOf(new ofxUIIntSlider("instanceRate", 1, 30, &instanceRate, 100.0f, 9.0f), "countdown")->setPadding(2);
+    gui2->addWidgetEastOf(new ofxUILabelToggle("summary", &viewSummary), "duration")->setPadding(2);
     gui2->addWidgetSouthOf(guiStatusLabel, "instanceRate")->setPadding(4);
     
     gui3->setColorOutline(ofColor(255,200));
@@ -413,6 +501,9 @@ void Learn::gui2Event(ofxUIEventArgs &e) {
         if (e.getButton()->getValue() == 1) return;
         if (recording)  stopRecording();
         trainClassifiers("accurate");
+    }
+    else if (e.getName() == "summary") {
+        setGuiSummaryView(viewSummary);
     }
 }
 
@@ -501,7 +592,22 @@ void Learn::setGuiOutputsVisible(bool visible) {
     }
 }
 
-
+//-------
+void Learn::setGuiSummaryView(bool viewSummary) {
+    this->viewSummary = viewSummary;
+    setGuiInputsVisible(!viewSummary);
+    setGuiOutputsVisible(!viewSummary);
+    if (viewSummary) {
+        ofAddListener(ofEvents().mousePressed, this, &Learn::mousePressed);
+        ofAddListener(ofEvents().mouseDragged, this, &Learn::mouseDragged);
+        ofAddListener(ofEvents().mouseReleased, this, &Learn::mouseReleased);
+    }
+    else {
+        ofRemoveListener(ofEvents().mousePressed, this, &Learn::mousePressed);
+        ofRemoveListener(ofEvents().mouseDragged, this, &Learn::mouseDragged);
+        ofRemoveListener(ofEvents().mouseReleased, this, &Learn::mouseReleased);
+    }
+}
 
 
 //===========================================
@@ -1093,6 +1199,7 @@ void Learn::setFontSizes(int small, int medium, int large) {
 
 //-------
 Learn::~Learn() {
+    setGuiSummaryView(false);
     for (int i=0; i<inputs.size(); i++) {
         delete inputs[i];
     }

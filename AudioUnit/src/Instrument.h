@@ -107,6 +107,7 @@ protected:
     bool guiToSwitchParameters;
     string guiToSwitchParametersName;
     
+    int x, y;
     bool visible;
 };
 

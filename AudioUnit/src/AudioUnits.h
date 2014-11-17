@@ -20,13 +20,12 @@ public:
     
     void savePreset();
 
+    void setGuiPosition(int x, int y);
     void setVisible(bool visible);
     void toggleVisible() {setVisible(!visible);}
 
     Instrument & getInstrument() { return instrument; }
-    void blah() {
-        instrument.blah();
-    }
+
 protected:
     
     Instrument instrument;

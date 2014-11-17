@@ -80,12 +80,12 @@ void Ribbon::update() {
 //-------
 void Ribbon::addPoint(int p) {
     if (dilate != 1.0) {
-        points.push_back(ofVec2f(contour->center.x + dilate * (contour->points[p].x - contour->center.x) + margin * ofSignedNoise(p * noiseFactor, ageFactor * age, 5),
-                                 contour->center.y + dilate * (contour->points[p].y - contour->center.y) + margin * ofSignedNoise(p * noiseFactor, ageFactor * age, 10)));
+        points.push_back(ofVec2f(contour->center.x + dilate * (contour->points[p].x - contour->center.x) + margin * ofSignedNoise(p * noiseFactor + 25, ageFactor * age - 9, -22),
+                                 contour->center.y + dilate * (contour->points[p].y - contour->center.y) + margin * ofSignedNoise(p * noiseFactor + 17, ageFactor * age + 6, -50)));
     }
     else {
-        points.push_back(ofVec2f(contour->points[p].x + margin * ofSignedNoise(p * noiseFactor, ageFactor * age, 5),
-                                 contour->points[p].y + margin * ofSignedNoise(p * noiseFactor, ageFactor * age, 10)));
+        points.push_back(ofVec2f(contour->points[p].x + margin * ofSignedNoise(p * noiseFactor + 25, ageFactor * age - 9, -22),
+                                 contour->points[p].y + margin * ofSignedNoise(p * noiseFactor + 17, ageFactor * age + 6, -50)));
     }
     lookup.push_back(p);
     lookupMatched.push_back((float) p / contour->points.size());
@@ -134,6 +134,8 @@ void ContourRenderer::setCalibration(ofxKinectProjectorToolkit *kpt) {
 
 //-------
 void ContourRenderer::update() {
+    checkChanges();
+    
     recordContours();
 
     if (drawRibbons) {
@@ -141,73 +143,17 @@ void ContourRenderer::update() {
         manageRibbons();
     }
     if (drawOutwardLines) {
-        manageOutwardLines();
+        
     }
 }
 
 //-------
-void ContourRenderer::manageOutwardLines() {
-    // update linesets
-    if (contours.size() > 0 && labels.size() > 0) {
-        for (int i=0; i<contours.size(); i++) {
-            bool foundContour = false;
-            for (int j=0; j<lines.size(); j++) {
-                if (lines[j]->getContour() == contours[i]) {
-                    foundContour = true;
-                    break;
-                }
-            }
-            if (!foundContour) {
-                LineSet *newLine = new LineSet(contours[i]);
-                newLine->addLine();
-                lines.push_back(newLine);
-            }
-        }
-    }
-    
-    // remove lines from line sets whose contour is missing
-    vector<LineSet *>::iterator it = lines.begin();
-    while (it != lines.end()) {
-        bool foundContour = false;
-        for (int i=0; i<labels.size(); i++) {
-            if ((*it)->getContour()->label == labels[i]) {
-                foundContour = true;
-                break;
-            }
-        }
-        if (!foundContour) {
-            (*it)->removeLine();
-        }
-        it++;
-    }
-    
-    // erase old contours
-    vector<Contour *>::iterator cit = contours.begin();
-    while (cit != contours.end()) {
-        bool foundLine = false;
-        for (int r=0; r<lines.size(); r++) {
-            if ((*cit) == lines[r]->getContour()) {
-                foundLine = true;
-            }
-        }
-        if (foundLine) {
-            ++cit;
-        }
-        else {
-            contours.erase(cit);
-        }
-    }
-    
-    // erase line sets
-    it = lines.begin();
-    while (it != lines.end()) {
-        if ((*it)->getActive()) {
-            (*it)->update();
-            ++it;
-        }
-        else {
-            lines.erase(it);
-        }
+void ContourRenderer::checkChanges() {
+    if ((pDrawOutwardLines != drawOutwardLines) ||
+        (pDrawRibbons != drawRibbons)) {
+        setupControl();
+        pDrawOutwardLines = drawOutwardLines;
+        pDrawRibbons = drawRibbons;
     }
 }
 
@@ -316,8 +262,12 @@ void ContourRenderer::recordContours() {
 
 //-------
 void ContourRenderer::draw() {
-    if (drawRibbons)        renderRibbons();
-    if (drawOutwardLines)   renderOutwardLines();
+    if (drawRibbons) {
+        renderRibbons();
+    }
+    if (drawOutwardLines) {
+        renderOutwardLines();
+    }
 }
 
 //-------
@@ -330,65 +280,107 @@ void ContourRenderer::renderRibbons() {
 
 //-------
 void ContourRenderer::renderOutwardLines() {
-    ofSetColor(255, 50);
-    ofSetLineWidth(2);
-    for(int i = 0; i < lines.size(); i++) {
-        lines[i]->draw();
+    ContourFinder & contourFinder = openNi->getContourFinder();
+    RectTracker & tracker = openNi->getContourTracker();
+
+    ofPushMatrix();
+    ofPushStyle();
+    for(int i = 0; i < contourFinder.size(); i++) {
+        vector<cv::Point> points = contourFinder.getContour(i);
+        int label = contourFinder.getLabel(i);
+        ofPoint center = toOf(contourFinder.getCenter(i));
+        int age = tracker.getAge(label);
+        ofSetColor(color);
+        ofSetLineWidth(lineWidth);
+        for (int k=0; k<points.size(); k+=smooth) {
+            float ang = offset + atan2(points[k].y - center.y, points[k].x - center.x);
+            float x, y;
+            if (centered) {
+                x = width * 0.5 + length * cos(ang);
+                y = height * 0.5 + length * sin(ang);
+            }
+            else {
+                x = ((float) width  / 640.0) * center.x * 0.5 + length * cos(ang);
+                y = ((float) height / 480.0) * center.y * 0.5 + length * sin(ang);
+            }
+            ofLine(x, y, points[k].x, points[k].y);
+        }
     }
+    ofPopStyle();
+    ofPopMatrix();
 }
 
 //-------
 void ContourRenderer::setupControl() {
+    control.clear();
     control.setName("contour render");
 
     control.addParameter("drawRibbons", &drawRibbons);
     control.addParameter("drawOutwardLines", &drawOutwardLines);
 
-    control.addParameter("threshold", &threshold, 100, 255);
-    control.addParameter("numNew", &numNew, 1, 10);
-    control.addParameter("frameSkip", &frameSkip, 1, 10);
+    if (drawOutwardLines) {
+        control.addParameter("offset", &offset, 0.0f, float(TWO_PI));
+        control.addParameter("smooth", &smooth, 1, 10);
+        control.addParameter("lineWidth", &lineWidth, 0.0f, 5.0f);
+        control.addParameter("length", &length, 0, 1000);
+        control.addColor("color", &color);
+        control.addParameter("centered", &centered);
+    }
     
-    control.addParameter("maxAgeMin", &maxAgeMin, 5, 50);
-    control.addParameter("maxAgeMax", &maxAgeMax, 20, 100);
-    
-    control.addParameter("speedMin", &speedMin, 1, 5);
-    control.addParameter("speedMax", &speedMax, 3, 20);
-    
-    control.addParameter("lengthMin", &lengthMin, 5, 30);
-    control.addParameter("lengthMax", &lengthMax, 20, 120);
-    
-    control.addParameter("skipMin", &skipMin, 1, 10);
-    control.addParameter("skipMax", &skipMax, 5, 30);
-    
-    control.addParameter("marginMin", &marginMin, 0, 40);
-    control.addParameter("marginMax", &marginMax, 0, 100);
-    
-    control.addParameter("noiseFactorMin", &noiseFactorMin, 0.001f, 0.02f);
-    control.addParameter("noiseFactorMax", &noiseFactorMax, 0.02f, 0.1f);
-    
-    control.addParameter("ageFactorMin", &ageFactorMin, 0.0f, 0.01f);
-    control.addParameter("ageFactorMax", &ageFactorMax, 0.0f, 0.02f);
-    
-    control.addParameter("lineWidthMin", &lineWidthMin, 0.0f, 3.0f);
-    control.addParameter("lineWidthMax", &lineWidthMax, 1.0f, 8.0f);
-    
-    control.addParameter("maxAlphaMin", &maxAlphaMin, 0, 200);
-    control.addParameter("maxAlphaMax", &maxAlphaMax, 100, 255);
-    
-    control.addParameter("updateRateMin", &updateRateMin, 1, 5);
-    control.addParameter("updateRateMax", &updateRateMax, 2, 10);
-    
-    control.addParameter("lerpRateMin", &lerpRateMin, 0.0f, 1.0f);
-    control.addParameter("lerpRateMax", &lerpRateMax, 0.0f, 1.0f);
-    
-    control.addParameter("dilate", &dilate, 0.0f, 2.0f);
-    
-    control.addParameter("curved", &curved);
-    control.addParameter("match", &match);
+    if (drawRibbons) {
+        control.addParameter("threshold", &threshold, 100, 255);
+        control.addParameter("numNew", &numNew, 1, 10);
+        control.addParameter("frameSkip", &frameSkip, 1, 10);
+        
+        control.addParameter("maxAgeMin", &maxAgeMin, 5, 50);
+        control.addParameter("maxAgeMax", &maxAgeMax, 20, 100);
+        
+        control.addParameter("speedMin", &speedMin, 1, 5);
+        control.addParameter("speedMax", &speedMax, 3, 20);
+        
+        control.addParameter("lengthMin", &lengthMin, 5, 30);
+        control.addParameter("lengthMax", &lengthMax, 20, 120);
+        
+        control.addParameter("skipMin", &skipMin, 1, 10);
+        control.addParameter("skipMax", &skipMax, 5, 30);
+        
+        control.addParameter("marginMin", &marginMin, 0, 40);
+        control.addParameter("marginMax", &marginMax, 0, 100);
+        
+        control.addParameter("noiseFactorMin", &noiseFactorMin, 0.001f, 0.02f);
+        control.addParameter("noiseFactorMax", &noiseFactorMax, 0.02f, 0.1f);
+        
+        control.addParameter("ageFactorMin", &ageFactorMin, 0.0f, 0.01f);
+        control.addParameter("ageFactorMax", &ageFactorMax, 0.0f, 0.02f);
+        
+        control.addParameter("lineWidthMin", &lineWidthMin, 0.0f, 3.0f);
+        control.addParameter("lineWidthMax", &lineWidthMax, 1.0f, 8.0f);
+        
+        control.addParameter("maxAlphaMin", &maxAlphaMin, 0, 200);
+        control.addParameter("maxAlphaMax", &maxAlphaMax, 100, 255);
+        
+        control.addParameter("updateRateMin", &updateRateMin, 1, 5);
+        control.addParameter("updateRateMax", &updateRateMax, 2, 10);
+        
+        control.addParameter("lerpRateMin", &lerpRateMin, 0.0f, 1.0f);
+        control.addParameter("lerpRateMax", &lerpRateMax, 0.0f, 1.0f);
+        
+        control.addParameter("dilate", &dilate, 0.0f, 2.0f);
+        
+        control.addParameter("curved", &curved);
+        control.addParameter("match", &match);
+    }
     
     threshold = 240;
     frameSkip = 3;
     numNew = 1;
+    
+    smooth = 1;
+    offset = 0;
+    lineWidth = 1;
+    length = 600;
+    centered = false;
+    color = ofColor(255);
     
     maxAgeMin = 50;         maxAgeMax = 100;
     speedMin = 1;           speedMax = 4;
@@ -404,4 +396,10 @@ void ContourRenderer::setupControl() {
     dilate = 1.0;
     curved = true;
     match = true;
+}
+
+//-------
+void ContourRenderer::setGuiVisible(bool visible) {
+    this->visible = visible;
+    control.setVisible(visible);
 }

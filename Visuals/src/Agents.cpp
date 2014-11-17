@@ -14,6 +14,7 @@ void Agents::setup() {
     color2 = ofColor(255);
     fillAlpha = 25;
     strokeAlpha = 25;
+    lineWidth = 1.0;
     cycle = 100;
     density = 0.7;
     drawLines = false;
@@ -26,6 +27,7 @@ void Agents::setup() {
     control.addColor("colorTri", &color2);
     control.addParameter("fillAlpha", &fillAlpha, 0, 255);
     control.addParameter("strokeAlpha", &strokeAlpha, 0, 255);
+    control.addParameter("lineWidth", &lineWidth, 0.0f, 5.0f);
     control.addParameter("cycle", &cycle, 4, 1000);
     control.addParameter("density", &density, 0.0f, 1.0f);
     control.addParameter("wrap", &wrapping);
@@ -99,6 +101,7 @@ void Agents::draw(){
                 float t = (float) ((ofGetFrameNum() + a->tOffset) % cycle) / cycle;
                 if (t < density) {
                     ofSetColor(color1, strokeAlpha);
+                    ofSetLineWidth(lineWidth);
                     ofLine(agents[i].pos.x, agents[i].pos.y, a->pos.x, a->pos.y);
                 }
             }

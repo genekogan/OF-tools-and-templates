@@ -6,10 +6,9 @@
 
 
 
-class ofApp : public ofBaseApp{
-    
+class ofApp : public ofBaseApp
+{
 public:
-    
 	void setup();
 	void update();
 	void draw();
@@ -18,7 +17,4 @@ public:
     
 	OpenNi kinect;
     ofxSecondWindow gfx;
-    
-    
-    
 };

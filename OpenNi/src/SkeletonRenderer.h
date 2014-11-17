@@ -16,6 +16,8 @@ public:
     }
     
     void setGuiPosition(int x, int y) {control.setGuiPosition(x, y);}
+    void setGuiVisible(bool visible);
+    void toggleGuiVisible() {setGuiVisible(!visible);}
 
     void setCalibration(ofxKinectProjectorToolkit *kpt) {
         this->kpt = kpt;
@@ -27,8 +29,14 @@ public:
     }
     
     void draw() {
+        ofPushMatrix();
+        ofPushStyle();
+        
         if (drawJointLines)     renderJointLines();
         if (drawOutwardLines)   renderOutwardLines();
+        
+        ofPopStyle();
+        ofPopMatrix();
     }
     
     void renderJointLines();
@@ -57,4 +65,6 @@ private:
     float lineWidth;
     int numLines;
     int radius;
+    
+    bool visible;
 };

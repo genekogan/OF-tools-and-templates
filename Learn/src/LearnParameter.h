@@ -213,7 +213,6 @@ template <typename T> vector<T> LearnOutputParameter::grabFeatureVector(bool lab
     vector<T> instance;
     if (labelFirst) instance.push_back((T) get());
     for (int i=0; i<activeInputs.size(); i++) {
-        //instance.push_back(activeInputs[i]->get());
         if (normalize) {
             float val = (activeInputs[i]->get() - activeInputs[i]->getMin()) / (activeInputs[i]->getMax() - activeInputs[i]->getMin());
             instance.push_back(val);

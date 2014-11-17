@@ -25,7 +25,7 @@ void Kinect::setup(){
     control.addParameter("persistence", &persistence, 0.0f, 100.0f);
     control.addParameter("maxDistance", &maxDistance, 0.0f, 100.0f);
     control.addParameter("smoothingRate", &smoothingRate, 0.0f, 100.0f);
-    control.addParameter("smoothed", &smoothness, 0, 10);
+    control.addParameter("smoothness", &smoothness, 0, 10);
     control.addParameter("curved", &curved);
     control.setName("kinect");
     
@@ -315,10 +315,10 @@ void Kinect::setKeypointROI(ofPoint topLeft, ofPoint bottomRight) {
 //---------
 void Kinect::drawCalibratedContours(int width, int height) {
     ofFill();
-    ofSetColor(255);
     RectTracker& tracker = contourFinder.getTracker();
     for(int i = 0; i < contourFinder.size(); i++) {
         vector<cv::Point> points = contourFinder.getContour(i);
+        ofSetColor(blobColors[contourFinder.getLabel(i) % 12]);
         ofBeginShape();
         for (int j=0; j<points.size(); j+=smoothness) {
             ofVec3f wp = kinect.getWorldCoordinateAt(points[j].x, points[j].y);

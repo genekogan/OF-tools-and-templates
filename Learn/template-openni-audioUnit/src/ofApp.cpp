@@ -6,13 +6,16 @@ void ofApp::setup(){
 
     // setup audio
     audio.setupInstrument(Instrument::AALTO);
+    audio.setGuiPosition(0, 420);
     audio.start();
     
     // setup audio unit
     output.setupLearn(&learn);
     output.setupAudioUnit(&audio.getInstrument().getAudioUnit());
+    output.setGuiPosition(5, 205);
     
     // add inputs to learn
+    learn.setGuiPosition(0, 65);
     learn.addJointsAsInput();
     learn.addUpperBodyAsInput();
     
@@ -41,9 +44,6 @@ void ofApp::keyPressed(int key){
     else if (key=='@')  learn.toggleOpenNiVisible();
     else if (key=='#')  learn.toggleGuiInputsVisible();
     else if (key=='$')  audio.toggleVisible();
-    
-    
-    else if (key=='%')  audio.blah();
 }
 
 //--------------------------------------------------------------

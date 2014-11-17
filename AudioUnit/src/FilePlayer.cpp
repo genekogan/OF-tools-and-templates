@@ -2,11 +2,17 @@
 
 
 //-----------
+FilePlayer::FilePlayer() {
+    control.setVisible(false);
+}
+
+//-----------
 void FilePlayer::setup() {
     visible = true;
     ofAddListener(waveform.selectionEvent, this, &FilePlayer::waveformSelectionEvent);
     ofAddListener(waveform.selectEvent, this, &FilePlayer::waveformSelectEvent);
     
+    control.setVisible(true);
     control.setName("AudioPlayer");
     vector<string> items;
     items.push_back("/Users/Gene/Desktop/test_wav.wav");
@@ -84,9 +90,13 @@ void FilePlayer::update() {
 void FilePlayer::draw() {
     if (!visible)  return;
     
+    /*
     int x = 5;
     int y = 500;
-
+     */
+    x = 5;
+    y = 500;
+    
     int width = ofGetWidth()-410;
     int height = 100;
     float amp = 2.0; // 1.0 + 3.0* (float) ofGetMouseY() / ofGetHeight();
@@ -109,6 +119,8 @@ void FilePlayer::draw() {
 
 //-----------
 void FilePlayer::setGuiPosition(int x, int y) {
+    this->x = x;
+    this->y = y;
     control.setGuiPosition(x, y);
 }
 

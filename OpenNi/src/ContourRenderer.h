@@ -19,70 +19,6 @@ public:
 };
 
 
-class LineSet {
-public:
-    LineSet(Contour *contour) {
-        this->contour = contour;
-        active = true;
-    }
-    
-    void update() {
-        if (lines.size() < 50) {
-            addLine();
-        }
-        for (int i=0; i<lines.size(); i++) {
-            float t = (float) i / 50;
-            float width = 640;
-            float height = 480;
-            int idx = floor(contour->points.size() * t);
-            float ang = t * TWO_PI;
-            int x1 = width * 0.5 + width * cos(ang);
-            int y1 = height * 0.5 + height * sin(ang);
-            int x2 = contour->points[idx].x;
-            int y2 = contour->points[idx].y;
-            lines[i].z = ofLerp(lines[i].z, x2, 0.1);
-            lines[i].w = ofLerp(lines[i].w, y2, 0.1);
-        }
-    }
-    
-    void draw() {
-        for (int i=0; i<lines.size(); i++) {
-            ofLine(lines[i].x, lines[i].y, lines[i].z, lines[i].w);
-        }
-    }
-    
-    void addLine() {
-        float t = (float) lines.size() / 50;
-        float width = 640;
-        float height = 480;
-        int idx = floor(contour->points.size() * t);
-        float ang = t * TWO_PI;
-        int x1 = width * 0.5 + width * cos(ang);
-        int y1 = height * 0.5 + height * sin(ang);
-        int x2 = contour->points[idx].x;
-        int y2 = contour->points[idx].y;
-        ofVec4f newLine = ofVec4f(x1, y1, x2, y2);
-        lines.push_back(newLine);
-    }
-    
-    void removeLine() {
-        if (lines.size() != 0) {
-            lines.erase(lines.begin());
-        }
-        if (lines.size() == 0) {
-            active = false;
-        }
-    }
-    
-    Contour *getContour() {return contour;}
-    bool getActive() {return active;}
-    
-private:
-    
-    Contour *contour;
-    vector<ofVec4f> lines;
-    bool active;
-};
 
 
 class Ribbon {
@@ -127,23 +63,25 @@ private:
 class ContourRenderer {
 public:
     void setup(OpenNi *openNi, int width, int height);
-    void setGuiPosition(int x, int y) {control.setGuiPosition(x, y);}
     void setCalibration(ofxKinectProjectorToolkit *kpt);
     void update();
     void draw();
 
+    void setGuiPosition(int x, int y) {control.setGuiPosition(x, y);}
+    void setGuiVisible(bool visible);
+    void toggleGuiVisible() {setGuiVisible(!visible);}
+    
 private:
-
+    
+    void checkChanges();
     void setupControl();
     
     void recordContours();
-    
     void manageContours();
+    
     void manageRibbons();
-    
-    void manageOutwardLines();
-    
     void renderRibbons();
+    
     void renderOutwardLines();
     
     // tracking
@@ -157,11 +95,16 @@ private:
     vector<Ribbon *> ribbons;
     vector<int> labels;
     
-    // outward lines
-    vector<LineSet *> lines;
-    
     // parameters
     Control control;
+    
+    int smooth;
+    float offset;
+    float lineWidth;
+    int length;
+    ofColor color;
+    bool centered;
+    
     int maxAgeMin, maxAgeMax;
     int speedMin, speedMax;
     int lengthMin, lengthMax;
@@ -180,6 +123,8 @@ private:
     int frameSkip;
     
     // drawing modes
-    bool drawRibbons;
-    bool drawOutwardLines;
+    bool drawRibbons, pDrawRibbons;
+    bool drawOutwardLines, pDrawOutwardLines;
+    
+    bool visible;
 };

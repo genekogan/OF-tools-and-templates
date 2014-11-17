@@ -4,13 +4,14 @@
 //-----------
 ModuleOpenNi::ModuleOpenNi() : Learn() {
     setGuiInputsVisible(false);
+    x = 5;
+    y = 65;
 
-    openNi.setup();
-    //openNi.setup("/Users/Gene/Downloads/hometest_single.oni");
-    openNi.setMaxUsers(1);
-    openNi.setTrackingBlobs(false);
+    //openNi.setup();
+    openNi.setup("/Users/Gene/Code/openFrameworks/templates/Kinect/openni_oniRecording/bin/data/alecsroom.oni");
+    openNi.enableUserTracking(1);
     openNi.setNormalizeJoints(true);
-    openNi.setGuiPosition(5, 75);
+    openNi.setGuiPosition(x, y);
 }
 
 //-----------
@@ -23,7 +24,7 @@ void ModuleOpenNi::update() {
 void ModuleOpenNi::draw() {
     if (visible) {
         Learn::draw();
-        openNi.draw(5, 515, 640, 480);
+        openNi.draw();
     }
 }
 

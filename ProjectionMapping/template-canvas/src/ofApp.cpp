@@ -2,19 +2,21 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    canvas1.setup(800, 600);
+    canvas1.setup(1280, 800);
     canvas1.addLayer(CANVAS_CREATOR);
-    canvas1.addLayer(CANVAS_POST_FX);
+//    canvas1.addLayer(CANVAS_POST_FX);
     
+    /*
     canvas2.setup(800, 600);
     canvas2.addLayer(CANVAS_CREATOR);
     canvas2.addLayer(CANVAS_POST_GLITCH);
+    */
     
     canvas1.setVisible(true);
-    canvas2.setVisible(false);
+    //canvas2.setVisible(false);
     
     mapping.addCanvas(&canvas1);
-    mapping.addCanvas(&canvas2);
+    //mapping.addCanvas(&canvas2);
 }
 
 //--------------------------------------------------------------
@@ -44,15 +46,15 @@ void ofApp::draw(){
 void ofApp::keyPressed(int key){
     if (key=='1') {
         canvas1.setVisible(true);
-        canvas2.setVisible(false);
+        //canvas2.setVisible(false);
     }
     else if (key=='2') {
         canvas1.setVisible(false);
-        canvas2.setVisible(true);
+        //canvas2.setVisible(true);
     }
     else if (key=='3') {
         canvas1.setVisible(false);
-        canvas2.setVisible(false);
+        //canvas2.setVisible(false);
     }
 
     if (key=='c')   mapping.toggleDebug();

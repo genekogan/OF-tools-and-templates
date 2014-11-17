@@ -22,6 +22,6 @@ class ofApp : public ofBaseApp
         void dragEvent(ofDragInfo dragInfo);
         void gotMessage(ofMessage msg);
         
-    Canvas canvas1, canvas2;
+    Canvas canvas1; //, canvas2;
     CanvasMapper mapping;
 };
