@@ -18,7 +18,7 @@ void Canvas::setupGui() {
     control.setGuiPosition(guiPosition.x+170*layers.size(), guiPosition.y);
 
     // canvas management
-    control.addEvent("savePreset", this, &Canvas::savePresetFromGui);
+    control.addLabel("layers");
     control.addEvent(" +creator", this, &Canvas::addCreator);
     if (layers.size() > 0) {
         control.addEvent(" +modifier", this, &Canvas::addModifier);
@@ -40,8 +40,10 @@ void Canvas::setupGui() {
     for(int i = 0; i < dir.numFiles(); i++) {
         filenames.push_back(dir.getName(i));
     }
-    control.addMenu("presets", filenames, this, &Canvas::loadPreset);
+    control.addLabel("presets");
+    control.addEvent("savePreset", this, &Canvas::savePresetFromGui);
     control.addParameter("load skip creator", &skipCreator);
+    control.addMenu("presets", filenames, this, &Canvas::loadPreset);
 }
 
 //----------------

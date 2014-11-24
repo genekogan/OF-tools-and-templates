@@ -5,28 +5,32 @@
 void ofApp::setup(){
 
     control.setName("hello control");
+    
+    control.addLabel("circle stuff");
+
     control.addParameter("position", &position, ofVec2f(0, 0), ofVec2f(1280, 720));
     control.addParameter("radius", &radius, 20.0f, 200.0f, 2.0);    // <- extra "warp" parameter
     control.addParameter("filled", &filled);
     control.addParameter("point", &point, ofPoint(0,0,0), ofPoint(1,1,1));
-    control.addParameter("vec3", &vec3, ofVec3f(0,0,0), ofVec3f(1,1,1));
     control.addColor("color", &color);
     control.addParameter("resolution", &resolution, 10, 30);
-    control.addParameter("string", &myString);
     
+    control.addLabel("events");
     control.addEvent("event1", this, &ofApp::event1);
     control.addEvent("event2", this, &ofApp::event2);
+
+    control.addLabel("unused");
+    control.addParameter("vec3", &vec3, ofVec3f(0,0,0), ofVec3f(1,1,1));
+    control.addParameter("string", &myString);
     
-    vector<string> items1;
+    control.addLabel("menus");
+    vector<string> items1, items2;
     items1.push_back("menu1 item 1");
     items1.push_back("menu1 item 2");
     items1.push_back("menu1 item 3");
-
-    vector<string> items2;
     items2.push_back("menu2 item 1");
     items2.push_back("menu2 item 2");
     items2.push_back("menu2 item 3");
-
     control.addMenu("dropdown1", items1, this, &ofApp::menuEvent1);
     control.addMenu("dropdown2", items2, this, &ofApp::menuEvent2);
     
@@ -69,6 +73,8 @@ void ofApp::draw(){
     ofSetCircleResolution(resolution);
     ofSetColor(color.r, color.g, color.b);
     ofCircle(position.x, position.y, radius);
+    ofSetColor(0);
+    ofDrawBitmapString(myString, position.x, position.y);
 }
 
 //---------

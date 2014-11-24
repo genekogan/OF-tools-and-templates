@@ -195,49 +195,57 @@ void Control::setupGui() {
     gui->addLabelToggle("Seq", false, 40.0f);
     ((ofxUILabelToggle *) gui->getWidget("Seq"))->setName("viewMeta");
     gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    gui->addSpacer();
     
-    /* add parameters */
-    for (int i=0; i<parameters.size(); i++) {
-        if (!parametersVisible[parameters[i]])   continue;
-        ParameterBase::Type type = parameters[i]->getType();
-        if      (type == ParameterBase::BOOL) {
-            addParameterToGui((Parameter<bool> *) parameters[i]);
+    for (int i=0; i<guiElements.size(); i++) {
+        if      (guiElements[i]->type == GuiElement::GUI_PARAMETER) {
+            int idx = guiElements[i]->idxElement;
+            if (!parametersVisible[parameters[idx]])   continue;
+            ParameterBase::Type type = parameters[idx]->getType();
+            if      (type == ParameterBase::BOOL) {
+                addParameterToGui((Parameter<bool> *) parameters[idx]);
+            }
+            else if (type == ParameterBase::STRING) {
+                addParameterToGui((Parameter<string> *) parameters[idx]);
+            }
+            else if (type == ParameterBase::INT) {
+                addParameterToGui((Parameter<int> *) parameters[idx]);
+            }
+            else if (type == ParameterBase::FLOAT) {
+                addParameterToGui((Parameter<float> *) parameters[idx]);
+            }
+            else if (type == ParameterBase::VEC2F) {
+                addParameterToGui((Parameter<ofVec2f> *) parameters[idx]);
+            }
+            else if (type == ParameterBase::VEC3F) {
+                addParameterToGui((Parameter<ofVec3f> *) parameters[idx]);
+            }
+            else if (type == ParameterBase::VEC4F) {
+                addParameterToGui((Parameter<ofVec4f> *) parameters[idx]);
+            }
         }
-        else if (type == ParameterBase::STRING) {
-            addParameterToGui((Parameter<string> *) parameters[i]);
+        else if (guiElements[i]->type == GuiElement::GUI_EVENT) {
+            string name = guiElements[i]->nameElement;
+            gui->addButton(name, false);
         }
-        else if (type == ParameterBase::INT) {
-            addParameterToGui((Parameter<int> *) parameters[i]);
+        else if (guiElements[i]->type == GuiElement::GUI_MENU) {
+            string name = guiElements[i]->nameElement;
+            ofxUIDropDownList *menu = gui->addDropDownList(name, menus[name]);
+            menu->setAutoClose(false);
+            menu->open();
+            menu->setPadding(1);
         }
-        else if (type == ParameterBase::FLOAT) {
-            addParameterToGui((Parameter<float> *) parameters[i]);
+        else if (guiElements[i]->type == GuiElement::GUI_LABEL) {
+            string name = guiElements[i]->nameElement;
+            gui->addSpacer();
+            gui->addLabel(name);
+            gui->addSpacer();
         }
-        else if (type == ParameterBase::VEC2F) {
-            addParameterToGui((Parameter<ofVec2f> *) parameters[i]);
-        }
-        else if (type == ParameterBase::VEC3F) {
-            addParameterToGui((Parameter<ofVec3f> *) parameters[i]);
-        }
-        else if (type == ParameterBase::VEC4F) {
-            addParameterToGui((Parameter<ofVec4f> *) parameters[i]);
+        else if (guiElements[i]->type == GuiElement::GUI_SPACER) {
+            gui->addSpacer();
         }
     }
     
-    /* add menus */
-    for (map<string,vector<string> >::iterator it=menus.begin(); it!=menus.end(); ++it){
-        ofxUIDropDownList *menu = gui->addDropDownList(it->first, it->second);
-        menu->setAutoClose(false);
-        menu->open();
-        menu->setPadding(1);
-    }
-    
-    /* add events */
-    for (map<string,ofEvent<string>*>::iterator it=events.begin(); it!=events.end(); ++it){
-        gui->addButton(it->first, false);
-    }
-    
-    /* set color of color sliders */
+    // set color of color sliders
     updateColors();
     
     gui->autoSizeToFitWidgets();
@@ -245,6 +253,7 @@ void Control::setupGui() {
 
 //-------
 void Control::guiEvent(ofxUIEventArgs &e) {
+
     // menu select notification
     if (menus.count(e.getParentName()) > 0) {
         triggerMenuEvent(e.getParentName(), e.getName(), e.getToggle()->getValue());
@@ -278,6 +287,12 @@ void Control::guiEvent(ofxUIEventArgs &e) {
     // save preset
     else if (e.getName() == "viewMeta") {
         setViewMeta(e.getButton()->getValue() == 1);
+    }
+    
+    // change string value
+    else if (stringEvents.count(e.getName()) != 0) {
+        string newString = ((ofxUITextInput *) e.widget)->getTextString();
+        ((Parameter<string> *)stringEvents[e.getName()])->set(newString);
     }
     
     // color change
@@ -411,12 +426,25 @@ void Control::addColor(string name, ofColor *value) {
     ParameterBase *parameter = new Parameter<ofVec4f>(name, *vec, ofVec4f(0, 0, 0, 0), ofVec4f(255, 255, 255, 255), parameter->getWarp());
     parameters.push_back(parameter);
     parametersVisible[parameter] = true;
+    guiElements.push_back(new GuiElement(GuiElement::GUI_PARAMETER, parameters.size()-1));
     setupGui();
 }
 
 //-------
+void Control::addLabel(string name) {
+    guiElements.push_back(new GuiElement(GuiElement::GUI_LABEL, 0, name));
+}
+
+//-------
+void Control::addSpacer() {
+    guiElements.push_back(new GuiElement(GuiElement::GUI_SPACER, 0, ""));
+}
+
+//-------
 void Control::addParameterToGui(Parameter<string> *parameter) {
-    gui->addTextInput(parameter->getName(), *parameter->getReference())->setAutoClear(false);
+    gui->addLabel(parameter->getName()+":");
+    ofxUITextInput *textInput = gui->addTextInput(parameter->getName(), *parameter->getReference());
+    textInput->setAutoClear(false);
 }
 
 //-------
@@ -443,12 +471,16 @@ void Control::clear() {
     for (int i=0; i<parameters.size(); i++) {
         delete parameters[i];
     }
+    for (int i=0; i<guiElements.size(); i++) {
+        delete guiElements[i];
+    }
     colors.clear();
     menuEvents.clear();
     menus.clear();
     events.clear();
     parameters.clear();
     parametersVisible.clear();
+    guiElements.clear();
 }
 
 //-------

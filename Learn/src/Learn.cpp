@@ -30,6 +30,7 @@ Learn::Learn(bool init) {
     summaryY = 70;
     viewSummary = false;
     dragging = false;
+    activeOutput = -1;
     
     customFont = false;
     
@@ -61,7 +62,7 @@ void Learn::update(){
     else if (recording) {
         float elapsed = ofGetElapsedTimef() - trainCountdown - startTime;
         if (elapsed < trainDuration) {
-            if (ofGetFrameNum() % framesPerInstance == 0) {
+            if (ofGetFrameNum() % max(1,framesPerInstance) == 0) {
                 recordInstance();
             }
         }
@@ -118,12 +119,13 @@ void Learn::drawSummary(){
     ofPushStyle();
     ofTranslate(summaryX, summaryY);
     ofSetColor(155);
-    ofRect(0, 0, 255, 26 + 15 * max(inputs.size(), outputs.size()));
+    ofRect(0, 0, 265, 26 + 15 * max(activeInputs.size(), outputs.size()));
     ofSetColor(255);
     ofDrawBitmapString("Learn summary", 4, 17);
     ofTranslate(0, 22);
-    for (int i=0; i<inputs.size(); i++) {
-        float rv = (inputs[i]->get() - inputs[i]->getMin()) / (inputs[i]->getMax() - inputs[i]->getMin());
+    for (int i=0; i<activeInputs.size(); i++) {
+        int idx = activeInputs[i];
+        float rv = (inputs[idx]->get() - inputs[idx]->getMin()) / (inputs[idx]->getMax() - inputs[idx]->getMin());
         ofPushMatrix();
         ofTranslate(5, 15*i);
         ofSetColor(100);
@@ -131,7 +133,7 @@ void Learn::drawSummary(){
         ofSetColor(50);
         ofRect(0, 0, 120 * rv, 14);
         ofSetColor(255);
-        ofDrawBitmapString(inputs[i]->getName(), 0, 12);
+        ofDrawBitmapString(inputs[idx]->getName(), 0, 12);
         ofPopMatrix();
     }
     ofTranslate(125, 0);
@@ -143,7 +145,9 @@ void Learn::drawSummary(){
         ofRect(0, 0, 120, 14);
         ofSetColor(50);
         ofRect(0, 0, 120 * rv, 14);
-        ofSetColor(255);
+        outputs[i]->getRecording() ? ofSetColor(255, 0, 0) : ofSetColor(255);
+        ofCircle(128, 7, 6);
+        activeOutput == i ? ofSetColor(255, 0, 0) : ofSetColor(255);
         ofDrawBitmapString(outputs[i]->getName(), 0, 12);
         ofPopMatrix();
     }
@@ -156,31 +160,71 @@ void Learn::drawSummary(){
 void Learn::summaryClickParameters(int x, int y) {
     int idx = (int) ((y - summaryY - 22.0) / 15.0);
     if (x > 5+summaryX && x <= 125+summaryX) {
-        if (idx >= 0 && idx < inputs.size()) {
+        if (idx >= 0 && idx < activeInputs.size()) {
             float val = (x - summaryX - 5.0) / 120.0;
-            inputs[idx]->set(ofLerp(inputs[idx]->getMin(), inputs[idx]->getMax(), val));
+            inputs[activeInputs[idx]]->set(ofLerp(inputs[activeInputs[idx]]->getMin(), inputs[activeInputs[idx]]->getMax(), val));
         }
     }
     else if (x > 130+summaryX && x <= 250+summaryX) {
         if (idx >= 0 && idx < outputs.size()) {
-            float val = (x - summaryX - 130.0) / 120.0;
-            outputs[idx]->set(ofLerp(outputs[idx]->getMin(), outputs[idx]->getMax(), val));
+            if (draggedFrames > 1) {
+                float val = (x - summaryX - 130.0) / 120.0;
+                outputs[idx]->set(ofLerp(outputs[idx]->getMin(), outputs[idx]->getMax(), val));
+            }
         }
+    }
+    else if (x > 250+summaryX && x <= 265+summaryX) {
+        if (idx >= 0 && idx < outputs.size()) {
+            outputs[idx]->toggleRecording();
+        }
+    }
+}
+
+//-------
+void Learn::summaryActiveParameter(int x, int y) {
+    int idx = (int) ((y - summaryY - 22.0) / 15.0);
+    if (x > 130+summaryX && x <= 250+summaryX) {
+        if (idx >= 0 && idx < outputs.size() && idx != activeOutput) {
+            summaryActivateParameter(idx);
+        }
+        else {
+            summaryActivateParameter(-1);
+        }
+    }
+    else {
+        summaryActivateParameter(-1);
+    }
+}
+
+//-------
+void Learn::summaryActivateParameter(int idx) {
+    activeOutput = idx;
+    activeInputs.clear();
+    for (int i=0; i<inputs.size(); i++) {
+        if (activeOutput == -1) {
+            activeInputs.push_back(i);
+        }
+        else if (outputs[activeOutput]->getInputActive(inputs[i])) {
+            activeInputs.push_back(i);
+        }
+
     }
 }
 
 //-------
 void Learn::mousePressed(ofMouseEventArgs &e) {
-    ofRectangle rect(summaryX, summaryY, 255, 26 + 15 * max(inputs.size(), outputs.size()));
+    ofRectangle rect(summaryX, summaryY, 265, 26 + 15 * max(inputs.size(), outputs.size()));
     if (rect.inside(e.x, e.y)) {
         summaryClickParameters(e.x, e.y);
         dragging = true;
+        draggedFrames = 0;
     }
 }
 
 //-------
 void Learn::mouseDragged(ofMouseEventArgs &e) {
-    ofRectangle rect(summaryX, summaryY, 255, 26 + 15 * max(inputs.size(), outputs.size()));
+    draggedFrames++;
+    ofRectangle rect(summaryX, summaryY, 265, 26 + 15 * max(inputs.size(), outputs.size()));
     if (dragging && rect.inside(e.x, e.y)) {
         summaryClickParameters(e.x, e.y);
     }
@@ -188,7 +232,11 @@ void Learn::mouseDragged(ofMouseEventArgs &e) {
 
 //-------
 void Learn::mouseReleased(ofMouseEventArgs &e) {
+    if (dragging && draggedFrames == 0) {
+        summaryActiveParameter(e.x, e.y);
+    }
     dragging = false;
+    draggedFrames = 0;
 }
 
 
@@ -521,7 +569,6 @@ void Learn::gui3Event(ofxUIEventArgs &e) {
         loadPresetDialog(e.getName());
     }
     else if (e.getName() == "oscHost" || e.getName() == "oscPortOut") {
-        cout << "this " << endl;
         string newHost = ((ofxUITextInput *) gui3->getWidget("oscHost"))->getTextString();
         int newPort = ofToInt(((ofxUITextInput *) gui3->getWidget("oscPortOut"))->getTextString());
         if ((newHost != oscManager.getHost() || newPort != oscManager.getSenderPort())

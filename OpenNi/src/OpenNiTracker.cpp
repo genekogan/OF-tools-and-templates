@@ -70,6 +70,7 @@ void OpenNi::setup(string oni){
     kinect.setDepthColoring(COLORING_GREY);
     
     setupControl();
+    active = true;
 }
 
 //-------
@@ -178,6 +179,7 @@ void OpenNi::setupControl() {
     control.setName("OpenNi");
     control.setVisible(true);
     
+    control.addParameter("active", &active);
     control.addParameter("track contours", &trackingContours);
     control.addParameter("track users", &trackingUsers);
     control.addParameter("track keypoints", &trackingKeypoints);
@@ -212,6 +214,7 @@ void OpenNi::setMaxUsers(int maxUsers) {
 
 //-------
 bool OpenNi::update(){
+    if (!active)    return false;
     checkTrackingOptions();
     kinect.update();
     if (kinect.isNewFrame()) {

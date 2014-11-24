@@ -57,11 +57,12 @@ protected:
     void guiSetOscAddress();
     void guiSetMin();
     void guiSetMax();
+    void guiSetWarp();
     void guiSetValueText();
 
     ofxUICanvas *gui;
     ofxUISlider *guiValue;
-    ofxUITextInput *guiValueText, *guiMin, *guiMax, *guiOsc, *guiName;
+    ofxUITextInput *guiValueText, *guiMin, *guiMax, *guiWarp, *guiOsc, *guiName;
     bool visible;
     
     ofEvent<LearnParameter> pSelectedEvent, pChangedEvent, pDeletedEvent;
@@ -130,6 +131,7 @@ public:
 
     virtual void setTrained(bool trained);
     virtual void setRecording(bool record);
+    void toggleRecording() {setRecording(!record);}
     bool getRecording() {return record;}
     bool getTrained() {return trained;}
     

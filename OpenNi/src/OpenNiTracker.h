@@ -71,6 +71,8 @@ public:
     
     string getJointName(int idx) {return jointNames[idx];}
     
+    void toggleActive() {active = !active;}
+    
 private:
     
     void setupControl();
@@ -130,6 +132,7 @@ private:
     SkeletonRenderer *skeletonRenderer;
     bool contourVisuals, skeletonVisuals;
     
+    bool active;
     bool visible;
 };
 

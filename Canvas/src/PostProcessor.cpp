@@ -47,61 +47,61 @@ void PostProcessingLayer::setup() {
     
     /* add all parameters to control, but make them invisible in main gui */
     /* they are accessible instead in the secondary gui */
-    control.addParameter("aperture", &dofAperture, 0.0f, 1.0f, true);
-    control.addParameter("focus", &dofFocus, 0.95f, 1.0f, true);
-    control.addParameter("maxBlur", &dofMaxBlur, 0.0f, 1.0f, true);
-    control.addParameter("segments", &kaleidoscopeSegments, 0.0f, 16.0f, true);
-    control.addParameter("amplitude", &noiseWarpAmplitude, 0.0f, 1.0f, true);
-    control.addParameter("frequency", &noiseWarpFrequency, 0.0f, 1.0f, true);
-    control.addParameter("speed", &noiseWarpSpeed, 0.0f, 1.0f, true);
-    control.addParameter("resolution", &pixelateResolution, ofVec2f(0, 0), ofVec2f(100, 100), true);
-    control.addParameter("hue", &edgesHue, 0.0f, 1.0f, true);
-    control.addParameter("saturation", &edgesSaturation, 0.0f, 1.0f, true);
-    control.addParameter("V", &vTiltShiftV, 0.0f, 0.1f, true);
-    control.addParameter("R", &vTiltShiftR, 0.0f, 0.1f, true);
-    control.addParameter("H", &hTiltShiftH, 0.0f, 0.1f, true);
-    control.addParameter("R", &hTiltShiftR, 0.0f, 0.1f, true);
-    control.addParameter("lightDirDOTviewDir", &godRayLightDirDOTviewDir, 0.0f, 1.0f, true);
-    control.addParameter("lightPoisitonOnScreen", &godRayLightPoisitonOnScreen, ofVec3f(-1, -1, -1), ofVec3f(1, 1, 1), true);
-    control.addParameter("specularColor", &toonSpecularColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), true);
-    control.addParameter("shinyness", &toonShinyness, 0.0f, 1.0f, true);
-    control.addParameter("level", &toonLevel, 0.0f, 1.0f, true);
+    control.addParameter("aperture", &dofAperture, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("focus", &dofFocus, 0.95f, 1.0f, 1.0, true);
+    control.addParameter("maxBlur", &dofMaxBlur, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("segments", &kaleidoscopeSegments, 0.0f, 16.0f, 1.0, true);
+    control.addParameter("amplitude", &noiseWarpAmplitude, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("frequency", &noiseWarpFrequency, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("speed", &noiseWarpSpeed, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("resolution", &pixelateResolution, ofVec2f(0, 0), ofVec2f(100, 100), 1.0, true);
+    control.addParameter("hue", &edgesHue, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("saturation", &edgesSaturation, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("V", &vTiltShiftV, 0.0f, 0.1f, 1.0, true);
+    control.addParameter("R", &vTiltShiftR, 0.0f, 0.1f, 1.0, true);
+    control.addParameter("H", &hTiltShiftH, 0.0f, 0.1f, 1.0, true);
+    control.addParameter("R", &hTiltShiftR, 0.0f, 0.1f, 1.0, true);
+    control.addParameter("lightDirDOTviewDir", &godRayLightDirDOTviewDir, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("lightPoisitonOnScreen", &godRayLightPoisitonOnScreen, ofVec3f(-1, -1, -1), ofVec3f(1, 1, 1), 1.0, true);
+    control.addParameter("specularColor", &toonSpecularColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), 1.0, true);
+    control.addParameter("shinyness", &toonShinyness, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("level", &toonLevel, 0.0f, 1.0f, 1.0, true);
     control.addParameter("enableSpecular", &toonEnableSpecular, true);
-    control.addParameter("edgeThreshold", &toonEdgeThreshold, 0.0f, 1.0f, true);
-    control.addParameter("diffuseColor", &toonDiffuseColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), true);
-    control.addParameter("ambientColor", &toonAmbientColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), true);
-    control.addParameter("bypassOpacity", &bleachBypassOpacity, 0.0f, 1.0f, true);
-    control.addParameter("attenuationOffset", &fakeSSSAttenuationOffset, 0.0f, 1.0f, true);
-    control.addParameter("baseColor", &fakeSSSBaseColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), true);
-    control.addParameter("extinctionCoefficient", &fakeSSSExtinctionCoefficient, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), true);
-    control.addParameter("lightColor", &fakeSSSLightColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), true);
-    control.addParameter("lightPosition", &fakeSSSLightPosition, ofPoint(0, 0), ofPoint(1, 1), true);
-    control.addParameter("materialThickness", &fakeSSSMaterialThickness, 0.0f, 1.0f, true);
-    control.addParameter("rimScale", &fakeSSSRimScale, 0.0f, 1.0f, true);
-    control.addParameter("specular", &fakeSSSSpecular, 0.0f, 1.0f, true);
-    control.addParameter("specularColor", &fakeSSSSpecularColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), true);
-    control.addParameter("brightness", &limbDarkenBrightness, 0.0f, 1.0f, true);
-    control.addParameter("endColor", &limbDarkenEndColor, ofVec3f(0, 0, 0), ofVec3f(1, 1, 1), true);
-    control.addParameter("radialScale", &limbDarkenRadialScale, 0.0f, 1.0f, true);
-    control.addParameter("startColor", &limbDarkenStartColor, ofVec3f(0, 0, 0), ofVec3f(1, 1, 1), true);
-    control.addParameter("amount", &shiftAmount, 0.0f, 1.0f, true);
-    control.addParameter("angle", &shiftAngle, 0.0f, 1.0f, true);
-    control.addParameter("cameraNear", &ssaoCameraNear, 0.0f, 1.0f, true);
-    control.addParameter("cameraFar", &ssaoCameraFar, 0.0f, 1.0f, true);
-    control.addParameter("fogNear", &ssaoFogNear, 0.0f, 1.0f, true);
-    control.addParameter("fogFar", &ssaoFogFar, 0.0f, 1.0f, true);
+    control.addParameter("edgeThreshold", &toonEdgeThreshold, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("diffuseColor", &toonDiffuseColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), 1.0, true);
+    control.addParameter("ambientColor", &toonAmbientColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), 1.0, true);
+    control.addParameter("bypassOpacity", &bleachBypassOpacity, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("attenuationOffset", &fakeSSSAttenuationOffset, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("baseColor", &fakeSSSBaseColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), 1.0, true);
+    control.addParameter("extinctionCoefficient", &fakeSSSExtinctionCoefficient, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), 1.0, true);
+    control.addParameter("lightColor", &fakeSSSLightColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), 1.0, true);
+    control.addParameter("lightPosition", &fakeSSSLightPosition, ofPoint(0, 0), ofPoint(1, 1), 1.0, true);
+    control.addParameter("materialThickness", &fakeSSSMaterialThickness, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("rimScale", &fakeSSSRimScale, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("specular", &fakeSSSSpecular, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("specularColor", &fakeSSSSpecularColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1), 1.0, true);
+    control.addParameter("brightness", &limbDarkenBrightness, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("endColor", &limbDarkenEndColor, ofVec3f(0, 0, 0), ofVec3f(1, 1, 1), 1.0, true);
+    control.addParameter("radialScale", &limbDarkenRadialScale, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("startColor", &limbDarkenStartColor, ofVec3f(0, 0, 0), ofVec3f(1, 1, 1), 1.0, true);
+    control.addParameter("amount", &shiftAmount, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("angle", &shiftAngle, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("cameraNear", &ssaoCameraNear, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("cameraFar", &ssaoCameraFar, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("fogNear", &ssaoFogNear, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("fogFar", &ssaoFogFar, 0.0f, 1.0f, 1.0, true);
     control.addParameter("fogEnabled", &ssaoFogEnabled, true);
     control.addParameter("onlyAO", &ssaoOnlyAO, true);
-    control.addParameter("aoClamp", &ssaoAoClamp, 0.0f, 1.0f, true);
-    control.addParameter("lumInfluence", &ssaoLumInfluence, 0.0f, 1.0f, true);
-    control.addParameter("centerX", &zoomBlurCenterX, 0.0f, 1.0f, true);
-    control.addParameter("centerY", &zoomBlurCenterY, 0.0f, 1.0f, true);
-    control.addParameter("exposure", &zoomBlurExposure, 0.0f, 1.0f, true);
-    control.addParameter("decay", &zoomBlurDecay, 0.0f, 1.0f, true);
-    control.addParameter("density", &zoomBlurDensity, 0.0f, 1.0f, true);
-    control.addParameter("weight", &zoomBlurWeight, 0.0f, 1.0f, true);
-    control.addParameter("clamp", &zoomBlurClamp, 0.0f, 1.0f, true);
-
+    control.addParameter("aoClamp", &ssaoAoClamp, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("lumInfluence", &ssaoLumInfluence, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("centerX", &zoomBlurCenterX, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("centerY", &zoomBlurCenterY, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("exposure", &zoomBlurExposure, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("decay", &zoomBlurDecay, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("density", &zoomBlurDensity, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("weight", &zoomBlurWeight, 0.0f, 1.0f, 1.0, true);
+    control.addParameter("clamp", &zoomBlurClamp, 0.0f, 1.0f, 1.0, true);
+    
     /*
      // if to use menu instead of radio list
      string pp[] = {"alias", "bloom", "dof", "kaleidoscope", "noiseWarp",
@@ -141,53 +141,53 @@ void PostProcessingLayer::setupParameterGui() {
     gui.clear();
     gui.setName("parameters");
     if (alias->getEnabled()) {
-        //gui.registerLabel("alias");
+        gui.addLabel("alias");
     }
     if (bloom->getEnabled()) {
-        //gui.registerLabel("bloom");
+        gui.addLabel("bloom");
     }
     if (dof->getEnabled()) {
-        //gui.registerLabel("dof");
+        gui.addLabel("dof");
         gui.addParameter("aperture", &dofAperture, 0.0f, 1.0f);
         gui.addParameter("focus", &dofFocus, 0.95f, 1.0f);
         gui.addParameter("maxBlur", &dofMaxBlur, 0.0f, 1.0f);
     }
     if (kaleidoscope->getEnabled()) {
-        //gui.registerLabel("kaleidoscope");
+        gui.addLabel("kaleidoscope");
         gui.addParameter("segments", &kaleidoscopeSegments, 0.0f, 16.0f);
     }
     if (noiseWarp->getEnabled()) {
-        //gui.registerLabel("noiseWarp");
+        gui.addLabel("noiseWarp");
         gui.addParameter("amplitude", &noiseWarpAmplitude, 0.0f, 1.0f);
         gui.addParameter("frequency", &noiseWarpFrequency, 0.0f, 1.0f);
         gui.addParameter("speed", &noiseWarpSpeed, 0.0f, 1.0f);
     }
     if (pixelate->getEnabled()) {
-        //gui.registerLabel("pixelate");
+        gui.addLabel("pixelate");
         gui.addParameter("resolution", &pixelateResolution, ofVec2f(0, 0), ofVec2f(100, 100));
     }
     if (edges->getEnabled()) {
-        //gui.registerLabel("edges");
+        gui.addLabel("edges");
         gui.addParameter("hue", &edgesHue, 0.0f, 1.0f);
         gui.addParameter("saturation", &edgesSaturation, 0.0f, 1.0f);
     }
     if (vTiltShift->getEnabled()) {
-        //gui.registerLabel("vTiltShift");
+        gui.addLabel("vTiltShift");
         gui.addParameter("V", &vTiltShiftV, 0.0f, 1.0f);
         gui.addParameter("R", &vTiltShiftR, 0.0f, 1.0f);
     }
     if (hTiltShift->getEnabled()) {
-        //gui.registerLabel("hTiltShift");
+        gui.addLabel("hTiltShift");
         gui.addParameter("H", &hTiltShiftH, 0.0f, 0.1f);
         gui.addParameter("R", &hTiltShiftR, 0.0f, 0.1f);
     }
     if (godRay->getEnabled()) {
-        //gui.registerLabel("godRay");
+        gui.addLabel("godRay");
         gui.addParameter("lightDirDOTviewDir", &godRayLightDirDOTviewDir, 0.0f, 1.0f);
         gui.addParameter("lightPoisitonOnScreen", &godRayLightPoisitonOnScreen, ofVec3f(-1, -1, -1), ofVec3f(1, 1, 1));
     }
     if (toon->getEnabled()) {
-        //gui.registerLabel("toon");
+        gui.addLabel("toon");
         gui.addParameter("specularColor", &toonSpecularColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1));
         gui.addParameter("shinyness", &toonShinyness, 0.0f, 1.0f);
         gui.addParameter("level", &toonLevel, 0.0f, 1.0f);
@@ -197,14 +197,14 @@ void PostProcessingLayer::setupParameterGui() {
         gui.addParameter("ambientColor", &toonAmbientColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1));
     }
     if (bleachBypass->getEnabled()) {
-        //gui.registerLabel("bleachBypass");
+        gui.addLabel("bleachBypass");
         gui.addParameter("bypassOpacity", &bleachBypassOpacity, 0.0f, 1.0f);
     }
     if (convolve->getEnabled()) {
-        //gui.registerLabel("convolve");
+        gui.addLabel("convolve");
     }
     if (fakeSSS->getEnabled()) {
-        //gui.registerLabel("fakeSSS");
+        gui.addLabel("fakeSSS");
         gui.addParameter("attenuationOffset", &fakeSSSAttenuationOffset, 0.0f, 1.0f);
         gui.addParameter("baseColor", &fakeSSSBaseColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1));
         gui.addParameter("extinctionCoefficient", &fakeSSSExtinctionCoefficient, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1));
@@ -216,22 +216,22 @@ void PostProcessingLayer::setupParameterGui() {
         gui.addParameter("specularColor", &fakeSSSSpecularColor, ofVec4f(0, 0, 0, 0), ofVec4f(1, 1, 1, 1));
     }
     if (limbDarken->getEnabled()) {
-        //gui.registerLabel("limbDarken");
+        gui.addLabel("limbDarken");
         gui.addParameter("brightness", &limbDarkenBrightness, 0.0f, 1.0f);
         gui.addParameter("endColor", &limbDarkenEndColor, ofVec3f(0, 0, 0), ofVec3f(1, 1, 1));
         gui.addParameter("radialScale", &limbDarkenRadialScale, 0.0f, 1.0f);
         gui.addParameter("startColor", &limbDarkenStartColor, ofVec3f(0, 0, 0), ofVec3f(1, 1, 1));
     }
     if (shift->getEnabled()) {
-        //gui.registerLabel("shift");
+        gui.addLabel("shift");
         gui.addParameter("amount", &shiftAmount, 0.0f, 1.0f);
         gui.addParameter("angle", &shiftAngle, 0.0f, 1.0f);
     }
     if (rimHighlight->getEnabled()) {
-        //gui.registerLabel("rimHighlight");
+        gui.addLabel("rimHighlight");
     }
     if (ssao->getEnabled()) {
-        //gui.registerLabel("ssao");
+        gui.addLabel("ssao");
         gui.addParameter("cameraNear", &ssaoCameraNear, 0.0f, 1.0f);
         gui.addParameter("cameraFar", &ssaoCameraFar, 0.0f, 1.0f);
         gui.addParameter("fogNear", &ssaoFogNear, 0.0f, 1.0f);
@@ -242,7 +242,7 @@ void PostProcessingLayer::setupParameterGui() {
         gui.addParameter("lumInfluence", &ssaoLumInfluence, 0.0f, 1.0f);
     }
     if (zoomBlur->getEnabled()) {
-        //gui.registerLabel("zoomBlur");
+        gui.addLabel("zoomBlur");
         gui.addParameter("centerX", &zoomBlurCenterX, 0.0f, 1.0f);
         gui.addParameter("centerY", &zoomBlurCenterY, 0.0f, 1.0f);
         gui.addParameter("exposure", &zoomBlurExposure, 0.0f, 1.0f);

@@ -35,7 +35,7 @@ public:
     
     template <typename T>
     void addParameter(string name, T *value, T min, T max, float warp=1.0, bool invisible=false);
-    
+
     template <typename T>
     void addParameter(string name, T *value, bool invisible=false);
     
@@ -47,10 +47,13 @@ public:
     
     void addColor(string name, ofColor *value);
     
+    void addLabel(string name);
+    void addSpacer();
+    
     void triggerMenuEvent(string menuName, string selection, bool trigger);
     bool headerSelected;
     
-    /* meta controller */
+    // meta controller
     MetaController * getMetaController() {return meta;}
     void setupMetaController();
     void removeMetaController();
@@ -59,6 +62,18 @@ public:
     
 private:
     
+    struct GuiElement {
+        enum GuiType { GUI_PARAMETER, GUI_EVENT, GUI_MENU, GUI_LABEL, GUI_SPACER };
+        int idxElement;
+        string nameElement;
+        GuiType type;
+        GuiElement(GuiType type, int idxElement=0, string nameElement="") {
+            this->type = type;
+            this->idxElement = idxElement;
+            this->nameElement = nameElement;
+        }
+    };
+
     struct GuiColorVecPair {
         ofColor *color;
         ofVec4f *vec;
@@ -89,10 +104,12 @@ private:
     int width, spacing;
     int numLerpFrames;
     
+    vector<GuiElement *> guiElements;
     vector<ParameterBase *> parameters;
     map<ParameterBase *, bool> parametersVisible;
     map<string, ofEvent<string>*> events;
     map<string, vector<string> > menus;
+    map<string, ParameterBase*> stringEvents;
     map<string, ofEvent<string>*> menuEvents;
     map<string, GuiColorVecPair*> colors;
     
@@ -101,11 +118,11 @@ private:
     bool viewMeta;
 };
 
-
 template <typename T> void Control::addParameter(string name, T *value, T min, T max, float warp, bool invisible) {
     ParameterBase *parameter = new Parameter<T>(name, *value, min, max, warp);
     parameters.push_back(parameter);
     parametersVisible[parameter] = !invisible;
+    guiElements.push_back(new GuiElement(GuiElement::GUI_PARAMETER, parameters.size()-1));
     setupGui();
 }
 
@@ -113,6 +130,10 @@ template <typename T> void Control::addParameter(string name, T *value, bool inv
     ParameterBase *parameter = new Parameter<T>(name, *value);
     parameters.push_back(parameter);
     parametersVisible[parameter] = !invisible;
+    if (parameter->getType() == ParameterBase::STRING) {
+        stringEvents[name] = parameter;
+    }
+    guiElements.push_back(new GuiElement(GuiElement::GUI_PARAMETER, parameters.size()-1));
     setupGui();
 }
 
@@ -120,6 +141,7 @@ template <typename ListenerClass, typename ListenerMethod>
 void Control::addEvent(string name, ListenerClass *listener, ListenerMethod method) {
     events[name] = new ofEvent<string>();
     ofAddListener(*events[name], listener, method);
+    guiElements.push_back(new GuiElement(GuiElement::GUI_EVENT, 0, name));
     setupGui();
 }
 
@@ -129,6 +151,7 @@ void Control::addMenu(string name, vector<string> items, ListenerClass *listener
         menus[name] = items;
         menuEvents[name] = new ofEvent<string>();
         ofAddListener(*menuEvents[name], listener, method);
+        guiElements.push_back(new GuiElement(GuiElement::GUI_MENU, 0, name));
         setupGui();
     }
     else {

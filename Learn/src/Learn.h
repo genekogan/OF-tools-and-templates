@@ -82,6 +82,8 @@ protected:
     void mouseDragged(ofMouseEventArgs &e);
     void mouseReleased(ofMouseEventArgs &e);
     void summaryClickParameters(int x, int y);
+    void summaryActiveParameter(int x, int y);
+    void summaryActivateParameter(int idx);
     void drawSummary();
     
     // record + learn
@@ -120,6 +122,9 @@ protected:
     bool visible, inputsVisible, outputsVisible;
     int summaryX, summaryY;
     bool viewSummary, dragging;
+    int draggedFrames;
+    int activeOutput;
+    vector<int> activeInputs;
     
     // recording variables
     float startTime, trainCountdown, trainDuration;

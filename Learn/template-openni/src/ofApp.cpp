@@ -2,29 +2,29 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    learn.setGuiPosition(260, 70);
+    learn.setGuiPosition(275, 70);
     learn.toggleSummaryView();
     learn.setup("/Users/Gene/Code/openFrameworks/templates/Kinect/openni_oniRecording/bin/data/alecsroom.oni");
 
     // decide which openni inputs are available
-//    learn.addJointsAsInput();
+    learn.addJointsAsInput();
     learn.addNormalizedJointsAsInput();
-//    learn.addRelativeJointsAsInput();
-//    learn.addVelocityJointsAsInput();
-//    learn.addAccelerationJointsAsInput();
-//    
-//    learn.addRelativeDistanceJointsAsInput();
-//    learn.addVelocityMagnitudeJointsAsInput();
-//    learn.addVelocityMeanJointsAsInput();
-//    learn.addAccelerationMagnitudeJointsAsInput();
-//    learn.addAccelerationMeanJointsAsInput();
-//    learn.addAccelerationTrajectoryJointsAsInput();
-// 
-//    learn.addSymmetryAsInput();
-//    learn.addQomAsInput();
-//    learn.addCiAsInput();
-//    learn.addDepthAsInput();
-//    learn.addYMaxHandsAsInput();
+    learn.addRelativeJointsAsInput();
+    learn.addVelocityJointsAsInput();
+    learn.addAccelerationJointsAsInput();
+    
+    learn.addRelativeDistanceJointsAsInput();
+    learn.addVelocityMagnitudeJointsAsInput();
+    learn.addVelocityMeanJointsAsInput();
+    learn.addAccelerationMagnitudeJointsAsInput();
+    learn.addAccelerationMeanJointsAsInput();
+    learn.addAccelerationTrajectoryJointsAsInput();
+ 
+    learn.addSymmetryAsInput();
+    learn.addQomAsInput();
+    learn.addCiAsInput();
+    learn.addDepthAsInput();
+    learn.addYMaxHandsAsInput();
 
     // add outputs
     learn.addOutput("output1", 20, 50);

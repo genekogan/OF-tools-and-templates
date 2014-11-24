@@ -457,16 +457,19 @@ void LearnOutputParameter::setupGui() {
     guiExamples->setLabelText(ofToString(getNumInstances())+" examples");
     gui->addLabelToggle("record", &record, 56.0f);
     gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    guiValue = gui->addSlider("value", getMin(), getMax(), getReference(), 250.0f, 18.0f);
+    guiValue = gui->addSlider("value", getMin(), getMax(), getReference(), 240.0f, 18.0f);
     guiValue->setLabelVisible(false);
     gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiValueText = gui->addTextInput("valueText", ofToString(get()), 80.0f);
+    guiValueText = gui->addTextInput("valueText", ofToString(get()), 75.0f);
     guiValueText->setAutoClear(false);
+    gui->addLabel("w:");
+    guiWarp = gui->addTextInput("warp", ofToString(getWarp()), 28.0f);
+    guiWarp->setAutoClear(false);
     gui->addLabel("min:");
-    guiMin = gui->addTextInput("min", ofToString(getMin()), 80.0f);
-    gui->addLabel("max:");
-    guiMax = gui->addTextInput("max", ofToString(getMax()), 80.0f);
+    guiMin = gui->addTextInput("min", ofToString(getMin()), 52.0f);
     guiMin->setAutoClear(false);
+    gui->addLabel("max:");
+    guiMax = gui->addTextInput("max", ofToString(getMax()), 52.0f);
     guiMax->setAutoClear(false);
     gui->autoSizeToFitWidgets();
     guiData->setVisible(viewInputs);
@@ -545,6 +548,11 @@ void LearnParameter::guiEvent(ofxUIEventArgs &e) {
             ofNotifyEvent(pSelectedEvent, *this, this);
         guiSetMax();
     }
+    else if (e.getName() == "warp") {
+        if (guiWarp->isFocused())
+            ofNotifyEvent(pSelectedEvent, *this, this);
+        guiSetWarp();
+    }
     else if (e.getName() == "value") {
         guiValueText->setTextString(ofToString(guiValue->getValue()));
     }
@@ -588,6 +596,13 @@ void LearnParameter::guiSetMax() {
     float newValue = ofToFloat(guiMax->getTextString());
     setMax(newValue);
     guiValue->setMax(ofToFloat(guiMax->getTextString()));
+    set(currentValue);
+}
+
+//-----------
+void LearnParameter::guiSetWarp() {
+    float currentValue = *getReference();
+    guiValue->setWarp(ofToFloat(guiWarp->getTextString()));
     set(currentValue);
 }
 
@@ -640,13 +655,15 @@ void LearnOutputParameter::guiEvent(ofxUIEventArgs &e) {
         setInputsVisible(viewInputs);
         ofNotifyEvent(pViewedEvent, *this, this);
     }
-    else if (e.getName() == "min" || e.getName() == "max") {
+    else if (e.getName() == "min" || e.getName() == "max" || e.getName() == "warp") {
         if ((ofToFloat(guiMin->getTextString()) != getMin() ||
-            ofToFloat(guiMax->getTextString()) != getMax()) &&
+            ofToFloat(guiMax->getTextString()) != getMax() ||
+            ofToFloat(guiWarp->getTextString()) != getWarp()) &&
             getNumInstances() > 0) {
             if (!ofSystemChoiceDialog("Warning: this will overwrite all recorded examples and trained classifiers. Proceed?")) {
                 guiMin->setTextString(ofToString(getMin()));
                 guiMax->setTextString(ofToString(getMax()));
+                guiWarp->setTextString(ofToString(getWarp()));
                 return;
             }
             else {
@@ -729,6 +746,7 @@ bool LearnOutputParameter::removeInput(LearnInputParameter * input) {
 //-----------
 bool LearnOutputParameter::getInputActive(LearnInputParameter * input) {
     for (int i=0; i<activeInputs.size(); i++) {
+        if (input == activeInputs[i])   cout << "FOUND ITAdfkjsdg " << endl;
         if (input == activeInputs[i])   return true;
     }
     return false;
