@@ -24,10 +24,13 @@ public:
     template<class T> T* getReference();
     template<class T> T getMin();
     template<class T> T getMax();
+
+    float getWarp() {return warp;}
     
     string name;
     string oscAddress;
     Type type;
+    float warp;
 };
 
 
@@ -46,11 +49,12 @@ public:
         value = &val;
     }
     
-    Parameter(string name, T &val, T min, T max) : minValue(min), maxValue(max) {
+    Parameter(string name, T &val, T min, T max, float warp_=1.0) : minValue(min), maxValue(max) {
         this->name = name;
         this->oscAddress = "/"+name;
         setType<T>();
         value = &val;
+        warp = warp_;
     }
     
     T get() {return *value;}

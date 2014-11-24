@@ -2,10 +2,30 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    
-    // decide which manta inputs are available
-    learn.addJointsAsInput();
-    
+    learn.setGuiPosition(260, 70);
+    learn.toggleSummaryView();
+    learn.setup("/Users/Gene/Code/openFrameworks/templates/Kinect/openni_oniRecording/bin/data/alecsroom.oni");
+
+    // decide which openni inputs are available
+//    learn.addJointsAsInput();
+    learn.addNormalizedJointsAsInput();
+//    learn.addRelativeJointsAsInput();
+//    learn.addVelocityJointsAsInput();
+//    learn.addAccelerationJointsAsInput();
+//    
+//    learn.addRelativeDistanceJointsAsInput();
+//    learn.addVelocityMagnitudeJointsAsInput();
+//    learn.addVelocityMeanJointsAsInput();
+//    learn.addAccelerationMagnitudeJointsAsInput();
+//    learn.addAccelerationMeanJointsAsInput();
+//    learn.addAccelerationTrajectoryJointsAsInput();
+// 
+//    learn.addSymmetryAsInput();
+//    learn.addQomAsInput();
+//    learn.addCiAsInput();
+//    learn.addDepthAsInput();
+//    learn.addYMaxHandsAsInput();
+
     // add outputs
     learn.addOutput("output1", 20, 50);
 
@@ -26,9 +46,9 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    if      (key=='!')  learn.toggleVisible();
-    else if (key=='@')  learn.toggleOpenNiVisible();
-    else if (key=='#')  learn.toggleGuiInputsVisible();
+    if      (key=='!') {
+        learn.toggleSummaryView();
+    }
 }
 
 //--------------------------------------------------------------

@@ -13,12 +13,6 @@
 
 
 
-// spreadhseet, normalization, etc
-// what to do about svm
-
-
-
-
 
 //-----------
 class LearnParameter : public Parameter<float>

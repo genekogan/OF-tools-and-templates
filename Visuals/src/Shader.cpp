@@ -4,7 +4,7 @@
 //--------
 void Shader::setup() {
     setName("Shader");
-    width = 800;
+    width = 1280;
     height = 800;
 }
 

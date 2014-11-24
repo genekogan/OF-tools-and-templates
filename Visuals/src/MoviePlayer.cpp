@@ -122,7 +122,8 @@ void MoviePlayer::jumpBack(string &s) {
 
 //--------
 void MoviePlayer::jumpRandom(string &s) {
-    player[active].setFrame(ofRandom(player[active].getTotalNumFrames()));
+    //player[active].setFrame(ofRandom(player[active].getTotalNumFrames()));
+    player[active].setFrame((int)(0.034*(float)player[active].getTotalNumFrames()));
 }
 
 //--------

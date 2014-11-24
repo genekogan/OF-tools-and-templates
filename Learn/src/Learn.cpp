@@ -25,6 +25,7 @@ Learn::Learn(bool init) {
     gui2 = new ofxUICanvas("train");
     gui3 = new ofxUICanvas("perform");
 
+    visible = true;
     summaryX = 5;
     summaryY = 70;
     viewSummary = false;
@@ -407,7 +408,7 @@ void Learn::setupGui() {
     bTouchOscInOut->setName("touchOscInOut");
     
     vector<string> presets;
-    guiSelector = new ofxUIDropDownList("Load Preset", presets, 216, 0, 0, OFX_UI_FONT_SMALL);
+    guiSelector = new ofxUIDropDownList("Load Preset", presets, 130, 0, 0, OFX_UI_FONT_SMALL);
     guiSelector->setAllowMultiple(false);
     guiSelector->setAutoClose(true);
 
@@ -434,7 +435,6 @@ void Learn::setupGui() {
     gui2->addWidgetEastOf(new ofxUISlider("countdown", 0.0, 5.0, &trainCountdown, 100.0f, 9.0f), "train fast")->setPadding(2);
     gui2->addWidgetSouthOf(new ofxUISlider("duration", 0.0, 5.0, &trainDuration, 100.0f, 9.0f), "countdown")->setPadding(2);
     gui2->addWidgetEastOf(new ofxUIIntSlider("instanceRate", 1, 30, &instanceRate, 100.0f, 9.0f), "countdown")->setPadding(2);
-    gui2->addWidgetEastOf(new ofxUILabelToggle("summary", &viewSummary), "duration")->setPadding(2);
     gui2->addWidgetSouthOf(guiStatusLabel, "instanceRate")->setPadding(4);
     
     gui3->setColorOutline(ofColor(255,200));
@@ -452,7 +452,8 @@ void Learn::setupGui() {
     gui3->addTextInput("oscPortOut", ofToString(oscOutputPort), 46.0f)->setAutoClear(false);
     gui3->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
     gui3->addWidgetSouthOf(new ofxUISpacer(0, 5, "gui3Spacer"), "oscLabel");
-    gui3->addWidgetSouthOf(guiSelector, "gui3Spacer");
+    gui3->addWidgetSouthOf(new ofxUILabelToggle("summary", &viewSummary), "gui3Spacer")->setPadding(2);
+    gui3->addWidgetEastOf(guiSelector, "summary");
     gui3->addWidgetSouthOf(new ofxUILabelToggle("osc <", &oscInActive, 46, 22, 0, 0, OFX_UI_FONT_SMALL), "predict");
     gui3->addWidgetEastOf(new ofxUILabelToggle("osc >", &oscOutActive, 46, 22, 0, 0, OFX_UI_FONT_SMALL), "osc <");
     

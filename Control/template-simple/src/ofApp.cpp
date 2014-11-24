@@ -6,7 +6,7 @@ void ofApp::setup(){
 
     control.setName("hello control");
     control.addParameter("position", &position, ofVec2f(0, 0), ofVec2f(1280, 720));
-    control.addParameter("radius", &radius, 20.0f, 200.0f);
+    control.addParameter("radius", &radius, 20.0f, 200.0f, 2.0);    // <- extra "warp" parameter
     control.addParameter("filled", &filled);
     control.addParameter("point", &point, ofPoint(0,0,0), ofPoint(1,1,1));
     control.addParameter("vec3", &vec3, ofVec3f(0,0,0), ofVec3f(1,1,1));

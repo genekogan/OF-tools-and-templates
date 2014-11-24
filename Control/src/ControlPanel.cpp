@@ -342,20 +342,25 @@ void Control::addParameterToGui(Parameter<bool> *parameter) {
 
 //-------
 void Control::addParameterToGui(Parameter<int> *parameter) {
-    gui->addMinimalIntSlider(parameter->getName(), parameter->getMin(), parameter->getMax(), parameter->getReference());
+    ofxUIMinimalIntSlider *slider = gui->addMinimalIntSlider(parameter->getName(), parameter->getMin(), parameter->getMax(), parameter->getReference());
+    slider->setWarp(parameter->getWarp());
 }
 
 //-------
 void Control::addParameterToGui(Parameter<float> *parameter) {
-    gui->addMinimalSlider(parameter->getName(), parameter->getMin(), parameter->getMax(), parameter->getReference());
+    ofxUIMinimalSlider *slider = gui->addMinimalSlider(parameter->getName(), parameter->getMin(), parameter->getMax(), parameter->getReference());
+    slider->setWarp(parameter->getWarp());
 }
 
 //-------
 void Control::addParameterToGui(Parameter<ofVec2f> *parameter) {
     gui->addSpacer();
     gui->setWidgetSpacing(0.1);
-    gui->addMinimalSlider(parameter->getName()+"->x", parameter->getMin().x, parameter->getMax().x, &parameter->getReference()->x);
-    gui->addMinimalSlider(parameter->getName()+"->y", parameter->getMin().y, parameter->getMax().y, &parameter->getReference()->y)->setLabelVisible(false);
+    ofxUIMinimalSlider *sliderX = gui->addMinimalSlider(parameter->getName()+"->x", parameter->getMin().x, parameter->getMax().x, &parameter->getReference()->x);
+    ofxUIMinimalSlider *sliderY = gui->addMinimalSlider(parameter->getName()+"->y", parameter->getMin().y, parameter->getMax().y, &parameter->getReference()->y);
+    sliderY->setLabelVisible(false);
+    sliderX->setWarp(parameter->getWarp());
+    sliderY->setWarp(parameter->getWarp());
     gui->addSpacer();
     gui->setWidgetSpacing(spacing);
 }
@@ -364,9 +369,14 @@ void Control::addParameterToGui(Parameter<ofVec2f> *parameter) {
 void Control::addParameterToGui(Parameter<ofVec3f> *parameter) {
     gui->addSpacer();
     gui->setWidgetSpacing(0.1);
-    gui->addMinimalSlider(parameter->getName()+"->x", parameter->getMin().x, parameter->getMax().x, &parameter->getReference()->x);
-    gui->addMinimalSlider(parameter->getName()+"->y", parameter->getMin().y, parameter->getMax().y, &parameter->getReference()->y)->setLabelVisible(false);
-    gui->addMinimalSlider(parameter->getName()+"->z", parameter->getMin().z, parameter->getMax().z, &parameter->getReference()->z)->setLabelVisible(false);
+    ofxUIMinimalSlider *sliderX = gui->addMinimalSlider(parameter->getName()+"->x", parameter->getMin().x, parameter->getMax().x, &parameter->getReference()->x);
+    ofxUIMinimalSlider *sliderY = gui->addMinimalSlider(parameter->getName()+"->y", parameter->getMin().y, parameter->getMax().y, &parameter->getReference()->y);
+    ofxUIMinimalSlider *sliderZ = gui->addMinimalSlider(parameter->getName()+"->z", parameter->getMin().z, parameter->getMax().z, &parameter->getReference()->z);
+    sliderY->setLabelVisible(false);
+    sliderZ->setLabelVisible(false);
+    sliderX->setWarp(parameter->getWarp());
+    sliderY->setWarp(parameter->getWarp());
+    sliderZ->setWarp(parameter->getWarp());
     gui->addSpacer();
     gui->setWidgetSpacing(spacing);
 }
@@ -375,10 +385,17 @@ void Control::addParameterToGui(Parameter<ofVec3f> *parameter) {
 void Control::addParameterToGui(Parameter<ofVec4f> *parameter) {
     gui->addSpacer();
     gui->setWidgetSpacing(0.1);
-    gui->addMinimalSlider(parameter->getName()+"->x", parameter->getMin().x, parameter->getMax().x, &parameter->getReference()->x);
-    gui->addMinimalSlider(parameter->getName()+"->y", parameter->getMin().y, parameter->getMax().y, &parameter->getReference()->y)->setLabelVisible(false);
-    gui->addMinimalSlider(parameter->getName()+"->z", parameter->getMin().z, parameter->getMax().z, &parameter->getReference()->z)->setLabelVisible(false);
-    gui->addMinimalSlider(parameter->getName()+"->w", parameter->getMin().w, parameter->getMax().w, &parameter->getReference()->w)->setLabelVisible(false);
+    ofxUIMinimalSlider *sliderX = gui->addMinimalSlider(parameter->getName()+"->x", parameter->getMin().x, parameter->getMax().x, &parameter->getReference()->x);
+    ofxUIMinimalSlider *sliderY = gui->addMinimalSlider(parameter->getName()+"->y", parameter->getMin().y, parameter->getMax().y, &parameter->getReference()->y);
+    ofxUIMinimalSlider *sliderZ = gui->addMinimalSlider(parameter->getName()+"->z", parameter->getMin().z, parameter->getMax().z, &parameter->getReference()->z);
+    ofxUIMinimalSlider *sliderW = gui->addMinimalSlider(parameter->getName()+"->w", parameter->getMin().w, parameter->getMax().w, &parameter->getReference()->w);
+    sliderY->setLabelVisible(false);
+    sliderZ->setLabelVisible(false);
+    sliderW->setLabelVisible(false);
+    sliderX->setWarp(parameter->getWarp());
+    sliderY->setWarp(parameter->getWarp());
+    sliderZ->setWarp(parameter->getWarp());
+    sliderW->setWarp(parameter->getWarp());
     gui->addSpacer();
     gui->setWidgetSpacing(spacing);
 }
@@ -391,7 +408,7 @@ void Control::addColor(string name, ofColor *value) {
     color->color = value;
     color->vec = vec;
     colors[name] = color;
-    ParameterBase *parameter = new Parameter<ofVec4f>(name, *vec, ofVec4f(0, 0, 0, 0), ofVec4f(255, 255, 255, 255));
+    ParameterBase *parameter = new Parameter<ofVec4f>(name, *vec, ofVec4f(0, 0, 0, 0), ofVec4f(255, 255, 255, 255), parameter->getWarp());
     parameters.push_back(parameter);
     parametersVisible[parameter] = true;
     setupGui();

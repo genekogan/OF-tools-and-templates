@@ -8,21 +8,6 @@
 
 
 
-/* Constants?
- 
- trainDuration = 2;
- trainCountdown = 2;
- instanceRate = 15;
- ---
- inputs/outputs X, Y
- ---
- osc default ports, default host
-
- */
-
-
-
-
 class Learn
 {
 public:

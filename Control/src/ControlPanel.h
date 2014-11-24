@@ -34,7 +34,7 @@ public:
     void clear();
     
     template <typename T>
-    void addParameter(string name, T *value, T min, T max, bool invisible=false);
+    void addParameter(string name, T *value, T min, T max, float warp=1.0, bool invisible=false);
     
     template <typename T>
     void addParameter(string name, T *value, bool invisible=false);
@@ -102,8 +102,8 @@ private:
 };
 
 
-template <typename T> void Control::addParameter(string name, T *value, T min, T max, bool invisible) {
-    ParameterBase *parameter = new Parameter<T>(name, *value, min, max);
+template <typename T> void Control::addParameter(string name, T *value, T min, T max, float warp, bool invisible) {
+    ParameterBase *parameter = new Parameter<T>(name, *value, min, max, warp);
     parameters.push_back(parameter);
     parametersVisible[parameter] = !invisible;
     setupGui();

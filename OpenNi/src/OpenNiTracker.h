@@ -40,7 +40,8 @@ public:
     void setNormalizeJoints(bool normalizeJoints) {this->normalizeJoints = normalizeJoints;}
     
     void setGuiPosition(int guiX, int guiY);
-    void toggleGuiVisible();
+    void setVisible(bool visible);
+    void toggleVisible();
     
     void getCalibratedContour(vector<cv::Point> &points, vector<ofVec2f> &calibratedPoints, int width, int height);
 
@@ -51,7 +52,22 @@ public:
     
     vector<ofVec3f*> & getJoints(int idxUser);
     vector<ofVec3f*> & getNormalizedJoints(int idxUser);
-    vector<ofVec2f>  & getProjectedJoints(int idxUser);
+    vector<ofVec3f*> & getRelativeJoints(int idxUser);
+    vector<ofVec3f*> & getVelocityJoints(int idxUser);
+    vector<ofVec3f*> & getAccelerationJoints(int idxUser);
+    vector<float*> & getRelativeDistanceJoints(int idxUser);
+    vector<float*> & getVelocityMagnitudeJoints(int idxUser);
+    vector<float*> & getVelocityMeanJoints(int idxUser);
+    vector<float*> & getAccelerationMagnitudeJoints(int idxUser);
+    vector<float*> & getAccelerationMeanJoints(int idxUser);
+    vector<float*> & getAccelerationTrajectoryJoints(int idxUser);
+    float * getSymmetry(int idxUser);
+    float * getQom(int idxUser);
+    float * getCi(int idxUser);
+    float * getDepth(int idxUser);
+    float * getYMaxHands(int idxUser);
+    
+    vector<ofVec2f> & getProjectedJoints(int idxUser);
     
     string getJointName(int idx) {return jointNames[idx];}
     
@@ -74,7 +90,9 @@ private:
     
     // kinect data
     vector<string> jointNames;
-    vector<vector<ofVec3f*> > joints, normalizedJoints;
+    vector<vector<ofVec3f*> > pJoints, rJoints, vJoints, aJoints, normalizedJoints;
+    vector<vector<float*> > dJoints, vJointsMag, vJointsMean, aJointsMag, aJointsMean, aJointsTrajectory;
+    vector<float*> symmetry, qom, ci, depth, ymaxHands;
     vector<ofVec2f> projectedJoints;
     vector<ofVec3f> userBoundingBoxMin, userBoundingBoxMax;
     ofVec3f jointTorso, jointNeck, jointHead,
@@ -111,6 +129,8 @@ private:
     ContourRenderer *contourRenderer;
     SkeletonRenderer *skeletonRenderer;
     bool contourVisuals, skeletonVisuals;
+    
+    bool visible;
 };
 
 

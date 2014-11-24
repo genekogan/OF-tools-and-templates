@@ -11,24 +11,44 @@ public:
     ~ModuleOpenNi() {openNi.close();}
     ModuleOpenNi();
     
+    void setup(string oni="");
     void update();
     void draw();
     
     void addJointsAsInput();
-    void addUpperBodyAsInput();
+    void addNormalizedJointsAsInput();
+    void addRelativeJointsAsInput();
+    void addVelocityJointsAsInput();
+    void addAccelerationJointsAsInput();
     
-    void setGuiPosition(int x, int y) {
-        this->x = x;
-        this->y = y;
-        openNi.setGuiPosition(x, y);
-    }
-    void toggleVisible();
-    void toggleOpenNiVisible() {openNi.toggleGuiVisible();}
+    void addRelativeDistanceJointsAsInput();
+    void addVelocityMagnitudeJointsAsInput();
+    void addVelocityMeanJointsAsInput();
+    void addAccelerationMagnitudeJointsAsInput();
+    void addAccelerationMeanJointsAsInput();
+    void addAccelerationTrajectoryJointsAsInput();
+
+    void addSymmetryAsInput();
+    void addQomAsInput();
+    void addCiAsInput();
+    void addDepthAsInput();
+    void addYMaxHandsAsInput();
+
+    void setGuiPosition(int x, int y);
+    void setVisible(bool visible);
+    void toggleVisible() {setVisible(!visible);}
+    void setOpenNiVisible(bool v) {openNi.setVisible(v);}
+    void toggleOpenNiVisible() {openNi.toggleVisible();}
+    void toggleSummaryView();
     
 protected:
     
+    void addVectorVec3AsInput(string descriptor, string prefix, vector<ofVec3f *> *vec, float min, float max);
+    void addVectorFloatAsInput(string descriptor, string prefix, vector<float *> *vec, float min, float max);
+    void addIndividualAsInput(string descriptor, float *value, float min, float max);
+
     OpenNi openNi;
     
+    bool visible, summary;
     int x, y;
-
 };
