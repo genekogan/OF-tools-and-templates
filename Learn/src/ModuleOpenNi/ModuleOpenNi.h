@@ -39,7 +39,7 @@ public:
     void toggleVisible() {setVisible(!visible);}
     void setOpenNiVisible(bool v) {openNi.setVisible(v);}
     void toggleOpenNiVisible() {openNi.toggleVisible();}
-    void toggleSummaryView();
+    void toggleGuiSummaryView();
     
 protected:
     
@@ -49,6 +49,5 @@ protected:
 
     OpenNi openNi;
     
-    bool visible, summary;
     int x, y;
 };

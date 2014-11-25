@@ -746,7 +746,6 @@ bool LearnOutputParameter::removeInput(LearnInputParameter * input) {
 //-----------
 bool LearnOutputParameter::getInputActive(LearnInputParameter * input) {
     for (int i=0; i<activeInputs.size(); i++) {
-        if (input == activeInputs[i])   cout << "FOUND ITAdfkjsdg " << endl;
         if (input == activeInputs[i])   return true;
     }
     return false;

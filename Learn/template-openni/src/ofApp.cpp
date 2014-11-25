@@ -3,7 +3,7 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     learn.setGuiPosition(275, 70);
-    learn.toggleSummaryView();
+    learn.toggleGuiSummaryView();
     learn.setup("/Users/Gene/Code/openFrameworks/templates/Kinect/openni_oniRecording/bin/data/alecsroom.oni");
 
     // decide which openni inputs are available
@@ -47,7 +47,7 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     if      (key=='!') {
-        learn.toggleSummaryView();
+        learn.toggleGuiSummaryView();
     }
 }
 

@@ -2,7 +2,9 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    
+    learn.setGuiPosition(275, 70);
+    learn.toggleGuiSummaryView();
+
     // add inputs
     learn.addPositionAsInput();
     learn.addScaleAsInput();
@@ -33,6 +35,10 @@ void ofApp::keyPressed(int key){
     if (key=='g') {
         learn.toggleVisible();
     }
+    if (key=='!') {
+        learn.toggleGuiSummaryView();
+    }
+
 }
 
 //--------------------------------------------------------------

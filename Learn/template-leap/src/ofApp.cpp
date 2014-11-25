@@ -2,6 +2,9 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    learn.setGuiPosition(275, 70);
+    learn.toggleGuiSummaryView();
+
     
     // add inputs
     learn.addLeftHandFingerTipsAsInput();
@@ -30,6 +33,10 @@ void ofApp::keyPressed(int key){
     if (key=='g') {
         learn.toggleVisible();
     }
+    else if (key=='!') {
+        learn.toggleGuiSummaryView();
+    }
+
 }
 
 //--------------------------------------------------------------

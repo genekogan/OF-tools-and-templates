@@ -21,8 +21,13 @@ public:
     void addScaleAsInput();
     void addOrientationAsInput();
     void addRotationAsInput();
-    
     void addFaceMeshAsInput();
+    
+    void setGuiPosition(int x, int y);
+    void setVisible(bool visible);
+    void toggleVisible() {setVisible(!visible);}
+    void toggleGuiSummaryView();
+
     
 protected:
     
@@ -42,5 +47,6 @@ protected:
         leftEyebrow, rightEyebrow,
         noseBridge, noseBase,
         innerMouth, outerMouth, jaw;
-
+    
+    int x, y;
 };

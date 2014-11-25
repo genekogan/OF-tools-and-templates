@@ -6,8 +6,9 @@ LeapLearn::LeapLearn() : Learn() {
     setGuiInputsVisible(false);
 
     leap.setup();
-    leap.setGuiPosition(4, 80);
     leap.setVelocityTracking(true, 15);
+    
+    setGuiPosition(2, 65);
 }
 
 //-----------
@@ -19,9 +20,9 @@ void LeapLearn::update() {
 //-----------
 void LeapLearn::draw() {
     if (visible) {
-        leap.draw(2, 80, 400, 330);
-        leap.drawVelocityGraph(LEFT, 2, 430, 180, 180);
-        leap.drawVelocityGraph(RIGHT, 195, 430, 180, 180);
+        leap.draw(x, y, 400, 330);
+        leap.drawVelocityGraph(LEFT, x, y+350, 180, 180);
+        leap.drawVelocityGraph(RIGHT, x+190, y+350, 180, 180);
         Learn::draw();
     }
 }
@@ -48,6 +49,25 @@ void LeapLearn::addRightHandFingerTipsAsInput() {
         newInputs.push_back(addInput("left_"+ofToString(i)+"_z", &right->at(i).z, 0, 10));
     }
     addParametersAsInput("right fingertips", newInputs);
+}
+
+//-----------
+void LeapLearn::setGuiPosition(int x, int y) {
+    this->x = x;
+    this->y = y;
+    leap.setGuiPosition(x, y);
+}
+
+//-----------
+void LeapLearn::setVisible(bool visible) {
+    this->visible = visible;
+    Learn::setVisible(visible);
+}
+
+//-----------
+void LeapLearn::toggleGuiSummaryView() {
+    Learn::toggleGuiSummaryView();
+    visible = summaryVisible;
 }
 
 //-----------

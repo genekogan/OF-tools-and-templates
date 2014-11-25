@@ -130,8 +130,7 @@ void ModuleOpenNi::setVisible(bool visible) {
 }
 
 //-----------
-void ModuleOpenNi::toggleSummaryView() {
-    summary = !summary;
-    openNi.setVisible(summary);
-    Learn::setGuiSummaryView(summary);
+void ModuleOpenNi::toggleGuiSummaryView() {
+    Learn::setGuiSummaryView(!summaryVisible);
+    openNi.setVisible(summaryVisible);
 }

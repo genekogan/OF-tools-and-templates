@@ -28,7 +28,7 @@ Learn::Learn(bool init) {
     visible = true;
     summaryX = 5;
     summaryY = 70;
-    viewSummary = false;
+    summaryVisible = false;
     dragging = false;
     activeOutput = -1;
     
@@ -80,11 +80,24 @@ void Learn::update(){
         }
     }
     
+    // mapping inputs
+    else if (inMapping) {
+        setInputMapping();
+    }
+    
     // prediction procedure
     if (predicting) {
         for (int i=0; i<outputs.size(); i++) {
-            if (outputs[i]->getTrained())
+            if (outputs[i]->getTrained()) {
                 outputs[i]->predict();
+            }
+        }
+    }
+    
+    // update gui values
+    if (inputsVisible) {
+        for (int i=0; i<inputs.size(); i++) {
+            inputs[i]->deselect();
         }
     }
 }
@@ -108,7 +121,7 @@ void Learn::draw(){
         guiStatusLabel->setLabel(" => classifying "+ofToString(threadedLearn.getTrainingIndex()));
     }
     
-    if (viewSummary) {
+    if (summaryVisible) {
         drawSummary();
     }
 }
@@ -251,7 +264,7 @@ LearnInputParameter * Learn::addInput(string name, float *value, float min, floa
         newInput->setFont(fontPath);
         newInput->setFontSizes(fontSmall, fontMedium, fontLarge);
     }
-    newInput->setGuiPosition(10, 80+55*inputs.size());
+    newInput->setGuiPosition(10, 75+55*inputs.size());
     newInput->setVisible(inputsVisible);
     newInput->addParameterChangedListener(this, &Learn::inputParameterChanged);
     newInput->addParameterDeletedListener(this, &Learn::inputParameterDeleted);
@@ -274,7 +287,7 @@ void Learn::initializeOutput(LearnOutputParameter *output, bool sendOsc, bool re
         output->setFont(fontPath);
         output->setFontSizes(fontSmall, fontMedium, fontLarge);
     }
-    output->setGuiPosition(420, 80+55*outputs.size());
+    output->setGuiPosition(420, 75+55*outputs.size());
     output->setInputParameters(inputs);
     output->setVisible(outputsVisible);
     output->addParameterChangedListener(this, &Learn::outputParameterChanged);
@@ -476,9 +489,10 @@ void Learn::setupGui() {
     gui2->setPosition(130, 5);
     gui2->setWidth(450);
     gui2->setHeight(60);
-    gui2->addLabelToggle("record", &inRecording, 100, 50);
+    gui2->addLabelToggle("map inputs", &inMapping, 100, 22);
     gui2->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
     gui2->addLabelButton("train fast", false, 100, 22);
+    gui2->addWidgetSouthOf(new ofxUILabelToggle("record", &inRecording,  100, 22, 0, 0, OFX_UI_FONT_SMALL), "map inputs")->setPadding(2);
     gui2->addWidgetSouthOf(new ofxUILabelButton("train accurate", false,  100, 22, 0, 0, OFX_UI_FONT_SMALL), "train fast")->setPadding(2);
     gui2->addWidgetEastOf(new ofxUISlider("countdown", 0.0, 5.0, &trainCountdown, 100.0f, 9.0f), "train fast")->setPadding(2);
     gui2->addWidgetSouthOf(new ofxUISlider("duration", 0.0, 5.0, &trainDuration, 100.0f, 9.0f), "countdown")->setPadding(2);
@@ -500,8 +514,12 @@ void Learn::setupGui() {
     gui3->addTextInput("oscPortOut", ofToString(oscOutputPort), 46.0f)->setAutoClear(false);
     gui3->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
     gui3->addWidgetSouthOf(new ofxUISpacer(0, 5, "gui3Spacer"), "oscLabel");
-    gui3->addWidgetSouthOf(new ofxUILabelToggle("summary", &viewSummary), "gui3Spacer")->setPadding(2);
-    gui3->addWidgetEastOf(guiSelector, "summary");
+    gui3->addWidgetSouthOf(new ofxUILabelToggle("I", &inputsVisible), "gui3Spacer")->setPadding(2);
+    gui3->addWidgetEastOf(new ofxUILabelToggle("O", &outputsVisible), "I")->setPadding(2);
+    gui3->addWidgetEastOf(new ofxUILabelToggle("S", &summaryVisible), "O")->setPadding(2);
+    gui3->addWidgetEastOf(guiSelector, "S");
+
+    
     gui3->addWidgetSouthOf(new ofxUILabelToggle("osc <", &oscInActive, 46, 22, 0, 0, OFX_UI_FONT_SMALL), "predict");
     gui3->addWidgetEastOf(new ofxUILabelToggle("osc >", &oscOutActive, 46, 22, 0, 0, OFX_UI_FONT_SMALL), "osc <");
     
@@ -551,8 +569,8 @@ void Learn::gui2Event(ofxUIEventArgs &e) {
         if (recording)  stopRecording();
         trainClassifiers("accurate");
     }
-    else if (e.getName() == "summary") {
-        setGuiSummaryView(viewSummary);
+    else if (e.getName() == "map inputs") {
+        e.getButton()->getValue() ? startInputMapping() : stopInputMapping();
     }
 }
 
@@ -592,15 +610,27 @@ void Learn::gui3Event(ofxUIEventArgs &e) {
     else if (e.getName() == "osc >") {
         enableOscOutputs(e.getToggle()->getValue());
     }
+    else if (e.getName() == "I") {
+        setGuiInputsVisible(inputsVisible);
+        if (inputsVisible) {
+            setGuiSummaryView(false);
+        }
+    }
+    else if (e.getName() == "O") {
+        setGuiOutputsVisible(outputsVisible);
+    }
+    else if (e.getName() == "S") {
+        setGuiSummaryView(summaryVisible);
+    }
 }
 
 //-------
 void Learn::resetGuiPositions() {
     for (int i=0; i<inputs.size(); i++) {
-        inputs[i]->setGuiPosition(10, 80+55*i);
+        inputs[i]->setGuiPosition(10, 75+55*i);
     }
     for (int i=0; i<outputs.size(); i++) {
-        outputs[i]->setGuiPosition(420, 80+55*i);
+        outputs[i]->setGuiPosition(420, 75+55*i);
     }
 }
 
@@ -641,11 +671,10 @@ void Learn::setGuiOutputsVisible(bool visible) {
 }
 
 //-------
-void Learn::setGuiSummaryView(bool viewSummary) {
-    this->viewSummary = viewSummary;
-    setGuiInputsVisible(!viewSummary);
-    setGuiOutputsVisible(!viewSummary);
-    if (viewSummary) {
+void Learn::setGuiSummaryView(bool summaryVisible) {
+    this->summaryVisible = summaryVisible;
+    if (summaryVisible) {
+        setGuiInputsVisible(false);
         ofAddListener(ofEvents().mousePressed, this, &Learn::mousePressed);
         ofAddListener(ofEvents().mouseDragged, this, &Learn::mouseDragged);
         ofAddListener(ofEvents().mouseReleased, this, &Learn::mouseReleased);
@@ -735,6 +764,49 @@ void Learn::parameterSelected(LearnParameter & parameter) {
     for (int i=0; i<outputs.size(); i++) {
         if (outputs[i] == &parameter)   continue;
         outputs[i]->deselect();
+    }
+}
+
+
+
+
+//===========================================
+//  INPUT MAPPING PROCEDURE
+
+//-------
+void Learn::startInputMapping() {
+    inMapping = true;
+    bool confirm = ofSystemChoiceDialog("Warning: this will erase all output classifiers and examples. Proceed?");
+    if (!confirm) {
+        inMapping = false;
+        return;
+    }
+    for (int i=0; i<outputs.size(); i++) {
+        outputs[i]->clearInstances();
+    }
+    for (int i=0; i<inputs.size(); i++) {
+        inputs[i]->setMax(-9999999);
+        inputs[i]->setMin( 9999999);
+    }
+}
+
+//-------
+void Learn::stopInputMapping() {
+    inMapping = false;
+    for (int i=0; i<inputs.size(); i++) {
+        inputs[i]->deselect();
+    }
+}
+
+//-------
+void Learn::setInputMapping() {
+    for (int i=0; i<inputs.size(); i++) {
+        if (inputs[i]->get() > inputs[i]->getMax()) {
+            inputs[i]->setMax(inputs[i]->get());
+        }
+        if (inputs[i]->get() < inputs[i]->getMin()) {
+            inputs[i]->setMin(inputs[i]->get());
+        }
     }
 }
 

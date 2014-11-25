@@ -17,7 +17,15 @@ public:
     void addLeftHandFingerTipsAsInput();
     void addRightHandFingerTipsAsInput();
     
+    void setGuiPosition(int x, int y);
+    void setVisible(bool visible);
+    void toggleVisible() {setVisible(!visible);}
+    void toggleGuiSummaryView();
+
 protected:
     
     LeapMotion leap;
+    
+    bool visible;
+    int x, y;
 };

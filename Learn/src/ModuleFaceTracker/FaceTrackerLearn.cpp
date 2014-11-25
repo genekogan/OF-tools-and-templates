@@ -53,8 +53,8 @@ void FaceTrackerLearn::draw() {
         Learn::draw();
         
         ofPushMatrix();
-        ofTranslate(5, 80);
-        ofScale(0.6, 0.6);
+        ofTranslate(x, y);
+        ofScale(0.5, 0.5);
         cam.draw(0, 0);
         if(tracker.getFound()) {
             tracker.draw();
@@ -102,6 +102,24 @@ void FaceTrackerLearn::addFaceMeshAsInput() {
         newInputs.push_back(addInput("faceMesh-"+ofToString(i)+"-y", &faceMeshVertices->at(i).y, -20.0, 20.0));
     }
     addParametersAsInput("face mesh", newInputs);
+}
+
+//-----------
+void FaceTrackerLearn::setGuiPosition(int x, int y) {
+    this->x = x;
+    this->y = y;
+}
+
+//-----------
+void FaceTrackerLearn::setVisible(bool visible) {
+    this->visible = visible;
+    Learn::setVisible(visible);
+}
+
+//-----------
+void FaceTrackerLearn::toggleGuiSummaryView() {
+    Learn::setGuiSummaryView(!summaryVisible);
+    visible = summaryVisible;
 }
 
 //-----------

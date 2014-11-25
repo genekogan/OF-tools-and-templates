@@ -40,6 +40,7 @@ public:
     void toggleGuiInputsVisible() {setGuiInputsVisible(!inputsVisible);}
     void toggleGuiOutputsVisible() {setGuiOutputsVisible(!outputsVisible);}
     void setGuiSummaryView(bool viewSummary);
+    void toggleGuiSummaryView() {setGuiSummaryView(!summaryVisible);}
     
     // touch osc
     void saveInputsToTouchOsc();
@@ -86,6 +87,11 @@ protected:
     void summaryActivateParameter(int idx);
     void drawSummary();
     
+    // get input mappings
+    void startInputMapping();
+    void stopInputMapping();
+    void setInputMapping();
+    
     // record + learn
     void startRecording();
     void stopRecording();
@@ -121,7 +127,7 @@ protected:
     ofxUILabel *guiStatusLabel;
     bool visible, inputsVisible, outputsVisible;
     int summaryX, summaryY;
-    bool viewSummary, dragging;
+    bool summaryVisible, dragging;
     int draggedFrames;
     int activeOutput;
     vector<int> activeInputs;
@@ -129,7 +135,7 @@ protected:
     // recording variables
     float startTime, trainCountdown, trainDuration;
     int instanceRate, framesPerInstance, currentNewInstances;
-    bool inRecording, countingDown, recording, predicting, training;
+    bool inRecording, inMapping, countingDown, recording, predicting, training;
     int newInputCounter, newOutputCounter;
     
     // style
