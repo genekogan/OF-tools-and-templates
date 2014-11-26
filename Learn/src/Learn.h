@@ -32,8 +32,8 @@ public:
     void addParameterAsInput(string name, LearnInputParameter* newInput);
     void addParametersAsInput(string name, vector<LearnInputParameter*> &newInputs);
     void initializeOutput(LearnOutputParameter *output, bool sendOsc=true, bool receiveOsc=true);
-    vector<LearnInputParameter*> & getInputs() {return inputs;}
-    vector<LearnOutputParameter*> & getOutputs() {return outputs;}
+    vector<LearnInputParameter*> * getInputs() {return &inputs;}
+    vector<LearnOutputParameter*> * getOutputs() {return &outputs;}
     
     // osc
     void setupOscSender(string host, int port);
@@ -65,8 +65,8 @@ public:
     virtual void parameterSelected(LearnParameter & parameter);
     
     // presets
-    bool savePreset(string filename="");
-    void loadPreset(string path);
+    virtual bool savePreset(string filename="");
+    virtual void loadPreset(string path);
 
     
 protected:
@@ -114,8 +114,6 @@ protected:
     void loadInputs(ofXml &xml);
     void loadOutputs(ofXml &xml, bool loadExamples=true, bool loadClassifier=true);
     virtual void resetPresets();
-    virtual LearnInputParameter  * presetsAddNewInput(string name, float min, float max);
-    virtual LearnOutputParameter * presetsAddNewOutput(string name, float min, float max);
     
     // style
     void setFont(string path);

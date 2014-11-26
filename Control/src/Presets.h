@@ -46,9 +46,11 @@ template <typename T> void Presets::parameterToXml(ofXml &xml, Parameter<T> *par
     T value = parameter->get();
     T min = parameter->getMin();
     T max = parameter->getMax();
+    float warp = ((ParameterBase *) parameter)->getWarp();
     xml.addValue("Value", ofToString(value));
     xml.addValue("Min", ofToString(min));
     xml.addValue("Max", ofToString(max));
+    xml.addValue("Warp", ofToString(warp));
 }
 
 template <> inline void Presets::updateParameter<bool>(ofXml &xml, vector<ParameterBase *> &parameters, ParameterBase::Type type, int numFrames) {

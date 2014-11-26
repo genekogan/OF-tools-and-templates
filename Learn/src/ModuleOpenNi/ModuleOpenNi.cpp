@@ -37,18 +37,6 @@ void ModuleOpenNi::draw() {
 }
 
 //-----------
-LearnInputParameter  * ModuleOpenNi::presetsAddNewInput(string name, float min, float max) {
-    cout << "NAME " << name << endl;
-    return addInput(name, new float(), min, max);
-}
-
-//-----------
-LearnOutputParameter * ModuleOpenNi::presetsAddNewOutput(string name, float min, float max) {
-    cout << "NAME " << name << endl;
-    return addOutput(name, new float(), min, max);
-}
-
-//-----------
 void ModuleOpenNi::addVectorVec3AsInput(string descriptor, string prefix, vector<ofVec3f *> *vec, float min, float max) {
     vector<LearnInputParameter*> newInputs;
     for (int i=0; i<vec->size(); i++) {

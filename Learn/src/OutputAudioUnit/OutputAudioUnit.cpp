@@ -72,11 +72,13 @@ void OutputAudioUnit::guiEvent(ofxUIEventArgs &e) {
 
 //-----------
 void OutputAudioUnit::resetParameterMappings() {
-    vector<LearnOutputParameter*> learnOutputs = learn->getOutputs();
-    for (int i=0; i<learnOutputs.size(); i++) {
+    activeParameters.clear();
+    vector<LearnOutputParameter*> *learnOutputs = learn->getOutputs();
+    for (int i=0; i<learnOutputs->size(); i++) {
         for (int j=0; j<parameters.size(); j++) {
-            if (learnOutputs[i]->getName() == parameters[j].name) {
-                //learnOutputs[i]->set
+            if (learnOutputs->at(i)->getName() == parameters[j].name) {
+                learnOutputs->at(i)->setReference(parameters[j].val);
+                activeParameters.push_back(&parameters[j]);
                 break;
             }
         }

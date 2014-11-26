@@ -112,6 +112,19 @@ void LearnParameter::setMax(float max) {
 }
 
 //-----------
+void LearnParameter::setWarp(float warp) {
+    cout << "SET WARP " << warp << endl;
+    ParameterBase::setWarp(warp);
+    guiWarp->setTextString(ofToString(getWarp()));
+}
+
+//-----------
+void LearnParameter::setReference(float *value) {
+    Parameter<float>::setReference(value);
+    guiValue->setReference(value);
+}
+
+//-----------
 void LearnParameter::setVisible(bool visible){
     this->visible = visible;
     gui->setVisible(visible);
@@ -425,17 +438,20 @@ void LearnInputParameter::setupGui() {
     guiOsc = gui->addTextInput("osc", ofToString(getOscAddress()), 151.0f);
     guiOsc->setAutoClear(false);
     gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    guiValue = gui->addSlider("value", getMin(), getMax(), getReference(), 120.0f, 18.0f);
+    guiValue = gui->addSlider("value", getMin(), getMax(), getReference(), 100.0f, 18.0f);
     guiValue->setLabelVisible(false);
     gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiValueText = gui->addTextInput("valueText", ofToString(get()), 50.0f);
+    guiValueText = gui->addTextInput("valueText", ofToString(get()), 40.0f);
     guiValueText->setAutoClear(false);
     gui->addLabel("min:");
-    guiMin = gui->addTextInput("min", ofToString(getMin()), 52.0f);
+    guiMin = gui->addTextInput("min", ofToString(getMin()), 40.0f);
     gui->addLabel("max:");
-    guiMax = gui->addTextInput("max", ofToString(getMax()), 52.0f);
+    guiMax = gui->addTextInput("max", ofToString(getMax()), 40.0f);
+    gui->addLabel("w:");
+    guiWarp = gui->addTextInput("warp", ofToString(getWarp()), 28.0f);
     guiMin->setAutoClear(false);
     guiMax->setAutoClear(false);
+    guiWarp->setAutoClear(false);
     gui->autoSizeToFitWidgets();
 }
 

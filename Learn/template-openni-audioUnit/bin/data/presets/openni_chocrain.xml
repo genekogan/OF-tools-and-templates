@@ -3081,6 +3081,7 @@
 			<Value>0.00733555</Value>
 			<Min>0</Min>
 			<Max>1</Max>
+			<Warp>
 			<Inputs>
 				<Input>v_torso_x</Input>
 				<Input>v_torso_y</Input>

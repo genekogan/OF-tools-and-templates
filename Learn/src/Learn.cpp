@@ -1066,6 +1066,7 @@ void Learn::loadInputs(ofXml &xml) {
             float value = xml.getValue<float>("Value");
             float min = xml.getValue<float>("Min");
             float max = xml.getValue<float>("Max");
+            float warp = xml.getValue<float>("Warp");
             
             // input to load settings into
             LearnInputParameter * input;
@@ -1081,11 +1082,13 @@ void Learn::loadInputs(ofXml &xml) {
             }
             // ...or make new one if none found
             if (!inputExists) {
-                input = presetsAddNewInput(name, min, max);
+                input = addInput(name, new float(), min, max);
             }
+            
             input->setOscAddress(oscAddress);
             input->setMin(min);
             input->setMax(max);
+            input->setWarp(warp);
             input->set(value);
             inputsToDelete[name] = false;
         }
@@ -1145,6 +1148,7 @@ void Learn::loadOutputs(ofXml &xml, bool loadExamples, bool loadClassifier) {
             float value = xml.getValue<float>("Value");
             float min = xml.getValue<float>("Min");
             float max = xml.getValue<float>("Max");
+            float warp = xml.getValue<float>("Warp");
             
             // output to load settings into
             LearnOutputParameter * output;
@@ -1161,13 +1165,14 @@ void Learn::loadOutputs(ofXml &xml, bool loadExamples, bool loadClassifier) {
 
             // ...or make new one if none found
             if (!outputExists) {
-                output = presetsAddNewOutput(name, min, max);
+                output = addOutput(name, new float(), min, max);
             }
             outputsToDelete[name] = false;
             
             output->setOscAddress(oscAddress);
             output->setMin(min);
             output->setMax(max);
+            output->setWarp(warp);
             output->set(value);
             output->setInputParameters(inputs);
             
@@ -1284,15 +1289,6 @@ void Learn::resetPresets() {
     guiSelector->addToggles(presets);
 }
 
-//-------
-LearnInputParameter  * Learn::presetsAddNewInput(string name, float min, float max) {
-    return addInput(name, new float(), min, max);
-}
-
-//-------
-LearnOutputParameter * Learn::presetsAddNewOutput(string name, float min, float max) {
-    return addOutput(name, new float(), min, max);
-}
 
 
 

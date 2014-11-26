@@ -26,6 +26,8 @@ public:
     void setOscAddress(string oscAddress);
     void setMin(float min);
     void setMax(float max);
+    void setWarp(float warp);
+    void setReference(float *value);
     
     virtual void setVisible(bool visible);
     void setGuiPosition(int x, int y) {gui->setPosition(x, y);}

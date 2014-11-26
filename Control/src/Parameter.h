@@ -17,6 +17,7 @@ public:
     void setOscAddress(string oscAddress) {this->oscAddress = oscAddress; }
     template<class T> void setType();
 
+    template<class T> void setReference(T *val);
     template<class T> void setMin(T min);
     template<class T> void setMax(T max);
 
@@ -25,6 +26,7 @@ public:
     template<class T> T getMin();
     template<class T> T getMax();
 
+    void setWarp(float warp) {this->warp = warp;}
     float getWarp() {return warp;}
     
     string name;
@@ -62,6 +64,7 @@ public:
     T getMin() {return minValue;}
     T getMax() {return maxValue;}
     
+    void setReference(T *val) {value = val;}
     void set(const T& val) {*value=val;}
     void setMin(T min) {minValue=min;}
     void setMax(T max) {maxValue=max;}
@@ -101,6 +104,7 @@ template<class T> T ParameterBase::get() { return dynamic_cast<Parameter<T>&>(*t
 template<class T> T ParameterBase::getMin() { return dynamic_cast<Parameter<T>&>(*this).getMin(); }
 template<class T> T ParameterBase::getMax() { return dynamic_cast<Parameter<T>&>(*this).getMax(); }
 template<class T> T* ParameterBase::getReference() { return dynamic_cast<Parameter<T>&>(*this).getReference(); }
+template<class T> void ParameterBase::setReference(T *val) { return dynamic_cast<Parameter<T>&>(*this).setReference(); }
 template<class T> void ParameterBase::setMin(T min) { return dynamic_cast<Parameter<T>&>(*this).setMin(); }
 template<class T> void ParameterBase::setMax(T max) { return dynamic_cast<Parameter<T>&>(*this).setMax(); }
 

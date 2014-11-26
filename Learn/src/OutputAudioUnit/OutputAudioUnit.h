@@ -20,6 +20,8 @@ public:
 
     void setGuiPosition(int x, int y);
     
+    void resetParameterMappings();
+
 protected:
     
     struct ParameterMapping {
@@ -32,7 +34,6 @@ protected:
     void setupGui();
     void guiEvent(ofxUIEventArgs &e);
     void setupGuiParameterGroup(string parameterGroupName);
-    void resetParameterMappings();
     
     Learn *learn;
     ofxAudioUnitSampler *audioUnit;

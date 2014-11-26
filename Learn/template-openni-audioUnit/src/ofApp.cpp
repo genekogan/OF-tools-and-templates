@@ -15,11 +15,6 @@ void ofApp::setup(){
     output.setGuiPosition(1030, 5);
     
     // add inputs to learn
-    /*
-    learn.setGuiPosition(0, 65);
-    learn.addJointsAsInput();
-    learn.addUpperBodyAsInput();
-    */
     learn.setGuiPosition(275, 70);
     learn.toggleGuiSummaryView();
     learn.setup("/Users/Gene/Code/openFrameworks/templates/Kinect/openni_oniRecording/bin/data/alecsroom.oni");
@@ -70,6 +65,8 @@ void ofApp::keyPressed(int key){
     else if (key=='#')  learn.toggleGuiInputsVisible();
  */
     else if (key=='$')  audio.toggleVisible();
+    
+    else if (key=='z')  output.resetParameterMappings();
 }
 
 //--------------------------------------------------------------
