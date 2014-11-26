@@ -773,7 +773,7 @@ void LearnOutputParameter::setRecording(bool record) {
     this->record = record;
     if (record && activeInputs.size()==0) {
         ofSystemAlertDialog("Can't record: no inputs selected.");
-        record = false;
+        this->record = false;
         return;
     }
     gui->setColorBack(record ? ofColor(200,0,0,200) : trained ? ofColor(0,60,0,100) : ofColor(0,100));

@@ -73,6 +73,9 @@
 		B0312D7D19F81E7A000D66EA /* libXnVHandGenerator_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B0312D6E19F81AEC000D66EA /* libXnVHandGenerator_1_5_2.dylib */; };
 		B0312D7E19F81E7A000D66EA /* libXnVNite_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B0312D6F19F81AEC000D66EA /* libXnVNite_1_5_2.dylib */; };
 		B0312D8419F828D6000D66EA /* ModuleOpenNi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0312CCB19F81A9C000D66EA /* ModuleOpenNi.cpp */; };
+		B07AACD61A24B6C6001CF190 /* ofxKinectFeatures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07AACD01A24B6C6001CF190 /* ofxKinectFeatures.cpp */; };
+		B07AACD71A24B6C6001CF190 /* ofxKinectSkeleton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07AACD21A24B6C6001CF190 /* ofxKinectSkeleton.cpp */; };
+		B07AACD81A24B6C6001CF190 /* ofxMocapElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07AACD41A24B6C6001CF190 /* ofxMocapElement.cpp */; };
 		B0A0144A1A0470A40008D385 /* OutputAudioUnit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0A014481A046CC40008D385 /* OutputAudioUnit.cpp */; };
 		B0A6D6091A040947000F7516 /* ofxManta.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0A6D5F81A040947000F7516 /* ofxManta.cpp */; };
 		B0A6D60A1A040947000F7516 /* hid.c in Sources */ = {isa = PBXBuildFile; fileRef = B0A6D5FC1A040947000F7516 /* hid.c */; };
@@ -469,6 +472,12 @@
 		B0312D6D19F81AEC000D66EA /* libXnVFeatures_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVFeatures_1_5_2.dylib; sourceTree = "<group>"; };
 		B0312D6E19F81AEC000D66EA /* libXnVHandGenerator_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVHandGenerator_1_5_2.dylib; sourceTree = "<group>"; };
 		B0312D6F19F81AEC000D66EA /* libXnVNite_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVNite_1_5_2.dylib; sourceTree = "<group>"; };
+		B07AACD01A24B6C6001CF190 /* ofxKinectFeatures.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxKinectFeatures.cpp; sourceTree = "<group>"; };
+		B07AACD11A24B6C6001CF190 /* ofxKinectFeatures.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxKinectFeatures.h; sourceTree = "<group>"; };
+		B07AACD21A24B6C6001CF190 /* ofxKinectSkeleton.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxKinectSkeleton.cpp; sourceTree = "<group>"; };
+		B07AACD31A24B6C6001CF190 /* ofxKinectSkeleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxKinectSkeleton.h; sourceTree = "<group>"; };
+		B07AACD41A24B6C6001CF190 /* ofxMocapElement.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMocapElement.cpp; sourceTree = "<group>"; };
+		B07AACD51A24B6C6001CF190 /* ofxMocapElement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxMocapElement.h; sourceTree = "<group>"; };
 		B0A014481A046CC40008D385 /* OutputAudioUnit.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OutputAudioUnit.cpp; sourceTree = "<group>"; };
 		B0A014491A046CC40008D385 /* OutputAudioUnit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OutputAudioUnit.h; sourceTree = "<group>"; };
 		B0A6D5F21A04093C000F7516 /* MantaController.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MantaController.cpp; sourceTree = "<group>"; };
@@ -1263,6 +1272,28 @@
 				B029C2E41A12B27900231100 /* src */,
 			);
 			name = OpenNi;
+			sourceTree = "<group>";
+		};
+		B07AACCE1A24B6C6001CF190 /* ofxKinectFeatures */ = {
+			isa = PBXGroup;
+			children = (
+				B07AACCF1A24B6C6001CF190 /* src */,
+			);
+			name = ofxKinectFeatures;
+			sourceTree = "<group>";
+		};
+		B07AACCF1A24B6C6001CF190 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B07AACD01A24B6C6001CF190 /* ofxKinectFeatures.cpp */,
+				B07AACD11A24B6C6001CF190 /* ofxKinectFeatures.h */,
+				B07AACD21A24B6C6001CF190 /* ofxKinectSkeleton.cpp */,
+				B07AACD31A24B6C6001CF190 /* ofxKinectSkeleton.h */,
+				B07AACD41A24B6C6001CF190 /* ofxMocapElement.cpp */,
+				B07AACD51A24B6C6001CF190 /* ofxMocapElement.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxKinectFeatures/src;
 			sourceTree = "<group>";
 		};
 		B0A014471A046CC40008D385 /* OutputAudioUnit */ = {
@@ -2130,11 +2161,12 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
-				B0A6D5E51A04091F000F7516 /* MantaController */,
-				B0A6D5E41A040918000F7516 /* AudioUnit */,
 				B0312D7F19F82880000D66EA /* OpenNi */,
+				B0A6D5E41A040918000F7516 /* AudioUnit */,
+				B0A6D5E51A04091F000F7516 /* MantaController */,
 				B0BA148C19CDDC8C00D64AAB /* Learn */,
 				B0BA148B19CDDC8700D64AAB /* Control */,
+				B07AACCE1A24B6C6001CF190 /* ofxKinectFeatures */,
 				B0A6D6641A0409F8000F7516 /* ofxConvexHull */,
 				B0A6D60E1A04094C000F7516 /* ofxAudioUnit */,
 				B0A6D5F41A040947000F7516 /* ofxManta */,
@@ -2507,6 +2539,7 @@
 				B029C2ED1A12B28400231100 /* OpenNiTracker.cpp in Sources */,
 				B029C2EE1A12B28400231100 /* SkeletonRenderer.cpp in Sources */,
 				B0A0144A1A0470A40008D385 /* OutputAudioUnit.cpp in Sources */,
+				B07AACD61A24B6C6001CF190 /* ofxKinectFeatures.cpp in Sources */,
 				B0A6DDE41A0410D5000F7516 /* AudioUnits.cpp in Sources */,
 				B0A6DDE51A0410D5000F7516 /* FilePlayer.cpp in Sources */,
 				B0A6DDE61A0410D5000F7516 /* Instrument.cpp in Sources */,
@@ -2588,10 +2621,12 @@
 				9BE4AE0AA2B8C436BDFE9D4D /* ofxUIDragableLabelButton.cpp in Sources */,
 				B0E98FF61A02DE5400F5F941 /* Wrappers.cpp in Sources */,
 				F392A99D83698FC099127880 /* ofxUIDropDownList.cpp in Sources */,
+				B07AACD71A24B6C6001CF190 /* ofxKinectSkeleton.cpp in Sources */,
 				084025DA517D8329301FE1B6 /* ofxUIEventArgs.cpp in Sources */,
 				B0A6D64A1A04094C000F7516 /* ofxAudioUnitInput.cpp in Sources */,
 				B0E98FF21A02DE5400F5F941 /* ObjectFinder.cpp in Sources */,
 				B0E98FBF1A02DE4700F5F941 /* ofxSequencer.cpp in Sources */,
+				B07AACD81A24B6C6001CF190 /* ofxMocapElement.cpp in Sources */,
 				B0E992661A02DEC900F5F941 /* ofxCvColorImage.cpp in Sources */,
 				7252706DA14C1BE63950ADDA /* ofxUIFPS.cpp in Sources */,
 				22030CBDCC25D815E7ED6757 /* ofxUIFPSSlider.cpp in Sources */,

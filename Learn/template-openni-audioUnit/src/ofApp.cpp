@@ -6,18 +6,41 @@ void ofApp::setup(){
 
     // setup audio
     audio.setupInstrument(Instrument::AALTO);
-    audio.setGuiPosition(0, 420);
+    audio.setGuiPosition(265, 420);
     audio.start();
     
     // setup audio unit
     output.setupLearn(&learn);
     output.setupAudioUnit(&audio.getInstrument().getAudioUnit());
-    output.setGuiPosition(5, 205);
+    output.setGuiPosition(1030, 5);
     
     // add inputs to learn
+    /*
     learn.setGuiPosition(0, 65);
     learn.addJointsAsInput();
     learn.addUpperBodyAsInput();
+    */
+    learn.setGuiPosition(275, 70);
+    learn.toggleGuiSummaryView();
+    learn.setup("/Users/Gene/Code/openFrameworks/templates/Kinect/openni_oniRecording/bin/data/alecsroom.oni");
+
+    // inputs
+    learn.addJointsAsInput();
+    learn.addNormalizedJointsAsInput();
+    learn.addRelativeJointsAsInput();
+    learn.addVelocityJointsAsInput();
+    learn.addAccelerationJointsAsInput();
+    learn.addRelativeDistanceJointsAsInput();
+    learn.addVelocityMagnitudeJointsAsInput();
+    learn.addVelocityMeanJointsAsInput();
+    learn.addAccelerationMagnitudeJointsAsInput();
+    learn.addAccelerationMeanJointsAsInput();
+    learn.addAccelerationTrajectoryJointsAsInput();
+    learn.addSymmetryAsInput();
+    learn.addQomAsInput();
+    learn.addCiAsInput();
+    learn.addDepthAsInput();
+    learn.addYMaxHandsAsInput();
     
     // osc
     learn.setupOscSender("localhost", 1234);
@@ -40,9 +63,12 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    if      (key=='!')  learn.toggleGuiSummaryView();
+/*
     if      (key=='!')  learn.toggleVisible();
     else if (key=='@')  learn.toggleOpenNiVisible();
     else if (key=='#')  learn.toggleGuiInputsVisible();
+ */
     else if (key=='$')  audio.toggleVisible();
 }
 

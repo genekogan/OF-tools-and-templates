@@ -32,6 +32,7 @@ protected:
     void setupGui();
     void guiEvent(ofxUIEventArgs &e);
     void setupGuiParameterGroup(string parameterGroupName);
+    void resetParameterMappings();
     
     Learn *learn;
     ofxAudioUnitSampler *audioUnit;

@@ -43,6 +43,9 @@ public:
     
 protected:
     
+    LearnInputParameter  * presetsAddNewInput(string name, float min, float max);
+    LearnOutputParameter * presetsAddNewOutput(string name, float min, float max);
+
     void addVectorVec3AsInput(string descriptor, string prefix, vector<ofVec3f *> *vec, float min, float max);
     void addVectorFloatAsInput(string descriptor, string prefix, vector<float *> *vec, float min, float max);
     void addIndividualAsInput(string descriptor, float *value, float min, float max);

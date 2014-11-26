@@ -4,11 +4,26 @@
 void ofApp::setup(){
     learn.setGuiPosition(275, 70);
     learn.toggleGuiSummaryView();
-
     
     // add inputs
     learn.addLeftHandFingerTipsAsInput();
+    learn.addLeftHandIndexFingerTipAsInput();
+    learn.addLeftHandVelocityAsInput();
+    learn.addLeftOpenHandSizeAsInput();
+    learn.addLeftHandNormalAsInput();
+    learn.addLeftHandDirectionAsInput();
+    learn.addLeftHandRollAsInput();
+    learn.addLeftHandPitchAsInput();
+    learn.addLeftHandYawAsInput();
     learn.addRightHandFingerTipsAsInput();
+    learn.addRightHandIndexFingerTipAsInput();
+    learn.addRightHandVelocityAsInput();
+    learn.addRightOpenHandSizeAsInput();
+    learn.addRightHandNormalAsInput();
+    learn.addRightHandDirectionAsInput();
+    learn.addRightHandRollAsInput();
+    learn.addRightHandPitchAsInput();
+    learn.addRightHandYawAsInput();
     
     // add outputs
     learn.addOutput("output1", 20, 50);

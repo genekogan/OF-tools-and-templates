@@ -281,7 +281,7 @@ void OpenNi::updateUsers(){
     for (int i = 0; i < numUsers; i++){
         ofxOpenNIUser & user = kinect.getTrackedUser(i);
         
-        //if (!user.isSkeleton()) continue;
+        if (!user.isSkeleton()) continue;
         if (!(user.getJoint((Joint)0).getWorldPosition() != ofPoint(0,0,0) &&
             (!featExtractor.skeletonExists(0) || user.getJoint((Joint)0).getWorldPosition() != featExtractor.getSkeleton(0)->getPosition(0) ))) continue;
 

@@ -6,15 +6,7 @@ void ofApp::setup(){
     learn.toggleGuiSummaryView();
 
     // add inputs
-    learn.addPositionAsInput();
-    learn.addVelocityAsInput();
-    learn.addScaleAsInput();
-    learn.addScaleVelocityAsInput();
-    learn.addOrientationAsInput();
-    learn.addOrientationVelocityAsInput();
-    learn.addRotationAsInput();
-    learn.addRotationVelocityAsInput();
-    learn.addFaceMeshAsInput();
+    //learn.addPositionAsInput();
     
     // add outputs
     learn.addOutput("output1", 20, 50);

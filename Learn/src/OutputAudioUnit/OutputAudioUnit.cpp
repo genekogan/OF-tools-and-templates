@@ -71,6 +71,19 @@ void OutputAudioUnit::guiEvent(ofxUIEventArgs &e) {
 }
 
 //-----------
+void OutputAudioUnit::resetParameterMappings() {
+    vector<LearnOutputParameter*> learnOutputs = learn->getOutputs();
+    for (int i=0; i<learnOutputs.size(); i++) {
+        for (int j=0; j<parameters.size(); j++) {
+            if (learnOutputs[i]->getName() == parameters[j].name) {
+                //learnOutputs[i]->set
+                break;
+            }
+        }
+    }
+}
+
+//-----------
 void OutputAudioUnit::update() {
     if (guiToSwitchParameters) {
         setupGuiParameterGroup(guiToSwitchParametersName);

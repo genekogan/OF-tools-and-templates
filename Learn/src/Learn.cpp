@@ -343,6 +343,7 @@ void Learn::resetInputs() {
         oscManager.registerToOscReceiver((vector<ParameterBase *> &) outputs);
     }
     resetGuiPositions();
+    summaryActivateParameter(activeOutput);
 }
 
 //-------
@@ -518,8 +519,6 @@ void Learn::setupGui() {
     gui3->addWidgetEastOf(new ofxUILabelToggle("O", &outputsVisible), "I")->setPadding(2);
     gui3->addWidgetEastOf(new ofxUILabelToggle("S", &summaryVisible), "O")->setPadding(2);
     gui3->addWidgetEastOf(guiSelector, "S");
-
-    
     gui3->addWidgetSouthOf(new ofxUILabelToggle("osc <", &oscInActive, 46, 22, 0, 0, OFX_UI_FONT_SMALL), "predict");
     gui3->addWidgetEastOf(new ofxUILabelToggle("osc >", &oscOutActive, 46, 22, 0, 0, OFX_UI_FONT_SMALL), "osc <");
     
@@ -528,6 +527,7 @@ void Learn::setupGui() {
     ofAddListener(gui3->newGUIEvent, this, &Learn::gui3Event);
 
     resetPresets();
+    summaryActivateParameter(-1);
 }
 
 //-------
@@ -584,7 +584,8 @@ void Learn::gui3Event(ofxUIEventArgs &e) {
         }
     }
     else if (e.getParentName() == "Load Preset") {
-        loadPresetDialog(e.getName());
+        string filepath = loadPresetDialog(e.getName());
+        loadPreset(filepath);
     }
     else if (e.getName() == "oscHost" || e.getName() == "oscPortOut") {
         string newHost = ((ofxUITextInput *) gui3->getWidget("oscHost"))->getTextString();
@@ -1080,7 +1081,7 @@ void Learn::loadInputs(ofXml &xml) {
             }
             // ...or make new one if none found
             if (!inputExists) {
-                input = addInput(name, new float(), min, max);
+                input = presetsAddNewInput(name, min, max);
             }
             input->setOscAddress(oscAddress);
             input->setMin(min);
@@ -1109,9 +1110,15 @@ void Learn::loadInputs(ofXml &xml) {
 
 //-------
 void Learn::loadOutputs(ofXml &xml, bool loadExamples, bool loadClassifier) {
+
+    
+    
+    
     // store existing parameters to delete non-overwritten ones after loading done
     map<string, bool> outputsToDelete;
     for (int i=0; i<outputs.size(); i++) {
+        
+        
         
         
         /* HACK */
@@ -1122,6 +1129,11 @@ void Learn::loadOutputs(ofXml &xml, bool loadExamples, bool loadClassifier) {
         
         outputsToDelete[outputs[i]->getName()] = true;
     }
+    
+    cout << "load " << outputs.size() << endl;
+    
+    
+
 
     xml.setTo("Outputs");
     if (xml.exists("Parameter")) {
@@ -1146,9 +1158,10 @@ void Learn::loadOutputs(ofXml &xml, bool loadExamples, bool loadClassifier) {
                     break;
                 }
             }
+
             // ...or make new one if none found
             if (!outputExists) {
-                output = addOutput(name, new float(), min, max);
+                output = presetsAddNewOutput(name, min, max);
             }
             outputsToDelete[name] = false;
             
@@ -1271,6 +1284,15 @@ void Learn::resetPresets() {
     guiSelector->addToggles(presets);
 }
 
+//-------
+LearnInputParameter  * Learn::presetsAddNewInput(string name, float min, float max) {
+    return addInput(name, new float(), min, max);
+}
+
+//-------
+LearnOutputParameter * Learn::presetsAddNewOutput(string name, float min, float max) {
+    return addOutput(name, new float(), min, max);
+}
 
 
 

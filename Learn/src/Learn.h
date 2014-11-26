@@ -7,6 +7,13 @@
 #include "Control.h"
 
 
+/*
+analysis
+- mapping
+- GMM w/ N clusters
+- assign N clusters to N evenly distributed values
+*/
+
 
 class Learn
 {
@@ -25,6 +32,8 @@ public:
     void addParameterAsInput(string name, LearnInputParameter* newInput);
     void addParametersAsInput(string name, vector<LearnInputParameter*> &newInputs);
     void initializeOutput(LearnOutputParameter *output, bool sendOsc=true, bool receiveOsc=true);
+    vector<LearnInputParameter*> & getInputs() {return inputs;}
+    vector<LearnOutputParameter*> & getOutputs() {return outputs;}
     
     // osc
     void setupOscSender(string host, int port);
@@ -105,6 +114,8 @@ protected:
     void loadInputs(ofXml &xml);
     void loadOutputs(ofXml &xml, bool loadExamples=true, bool loadClassifier=true);
     virtual void resetPresets();
+    virtual LearnInputParameter  * presetsAddNewInput(string name, float min, float max);
+    virtual LearnOutputParameter * presetsAddNewOutput(string name, float min, float max);
     
     // style
     void setFont(string path);
