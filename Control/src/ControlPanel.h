@@ -28,14 +28,14 @@ public:
     void toggleVisible();
     void togglePresetsVisible();
     bool getVisible() {return visible;}
-
+    
     vector<ofxUIDropDownList *> getMenus();
     vector<ParameterBase *> & getParameters() {return parameters;}
     void clear();
     
     template <typename T>
     void addParameter(string name, T *value, T min, T max, float warp=1.0, bool invisible=false);
-
+    
     template <typename T>
     void addParameter(string name, T *value, bool invisible=false);
     
@@ -73,7 +73,7 @@ private:
             this->nameElement = nameElement;
         }
     };
-
+    
     struct GuiColorVecPair {
         ofColor *color;
         ofVec4f *vec;

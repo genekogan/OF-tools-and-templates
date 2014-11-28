@@ -9,18 +9,18 @@ class Sequencer;
 
 
 class Presets {
-public:    
+public:
     bool savePreset(Control &control, string filename="");
     void loadPreset(Control &control, string path, int numFrames = 0);
     void loadPreset(Control &control, ofXml &xml, int numFrames = 0);
-
+    
     ofXml getXml(Control &control);
     ofXml getXml(vector<ParameterBase *> &parameters);
     ofXml getXml(ParameterBase * parameter);
     ofXml getXml(vector<ofxUIDropDownList *> menus);
     ofXml getXml(ofxUIDropDownList * menu);
     ofXml getXml(MetaController *meta);
-
+    
 protected:
     
     template <typename T>

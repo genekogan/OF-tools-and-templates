@@ -9,6 +9,8 @@ void Canvas::setup(int width, int height) {
     guiPosition = ofPoint(5, 5);
     setupGui();
     preLoadPostProcessorLUT();
+    autoMode = false;
+    autoNumFrames = 16000;
 }
 
 //----------------
@@ -36,14 +38,15 @@ void Canvas::setupGui() {
     ofDirectory dir(ofToDataPath("presets/Canvas/"));
     dir.allowExt("xml");
     dir.listDir();
-    vector<string> filenames;
+    presetFilenames.clear();
     for(int i = 0; i < dir.numFiles(); i++) {
-        filenames.push_back(dir.getName(i));
+        presetFilenames.push_back(dir.getName(i));
     }
     control.addLabel("presets");
     control.addEvent("savePreset", this, &Canvas::savePresetFromGui);
     control.addParameter("load skip creator", &skipCreator);
-    control.addMenu("presets", filenames, this, &Canvas::loadPreset);
+    control.addParameter("autoMode", &autoMode);
+    control.addMenu("presets", presetFilenames, this, &Canvas::loadPreset);
 }
 
 //----------------
@@ -96,6 +99,9 @@ void Canvas::update() {
         deleteLayer();
         return;
     }
+    if (autoMode) {
+        runAutoMode();
+    }
     for (int i=0; i<layers.size(); i++) {
         layers[i]->checkGuiCalls();
         layers[i]->render();
@@ -134,6 +140,18 @@ void Canvas::clearLayers(bool skipCreator) {
 }
 
 //----------------
+void Canvas::runAutoMode() {
+    if ((ofGetFrameNum() - lastFrame) % autoNumFrames == 0) {
+        // load new preset
+        //idxAutoPreset = (idxAutoPreset+1) % presetFilenames.size();
+        idxAutoPreset = floor(ofRandom(presetFilenames.size()));
+        string newPreset = presetFilenames[idxAutoPreset];
+        lastFrame = ofGetFrameNum();
+        loadPreset(newPreset);
+    }
+}
+
+//----------------
 Canvas::~Canvas() {
     clearLayers(false);
 }
@@ -146,7 +164,7 @@ void Canvas::loadPreset(string &filename) {\
     string path = ofToDataPath("presets/Canvas/"+filename);
     bool xmlLoaded = xml.load(path);
     if (!xmlLoaded) {
-        cout << "failed to load preset " << "test.xml" << endl;
+        ofLog(OF_LOG_ERROR, "failed to load preset "+filename);
         return;
     }
 

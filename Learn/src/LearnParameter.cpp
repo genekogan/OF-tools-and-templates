@@ -113,7 +113,6 @@ void LearnParameter::setMax(float max) {
 
 //-----------
 void LearnParameter::setWarp(float warp) {
-    cout << "SET WARP " << warp << endl;
     ParameterBase::setWarp(warp);
     guiWarp->setTextString(ofToString(getWarp()));
 }

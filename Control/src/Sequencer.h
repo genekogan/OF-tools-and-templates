@@ -13,8 +13,8 @@ public:
     void setPosition(int x, int y, int w=400, int h=200);
     void setVisible(bool visible);
     void toggleVisible() {setVisible(!visible);}
-
-    void setSmooth(bool smooth);    
+    
+    void setSmooth(bool smooth);
     bool getSmooth() {return smooth;}
     
     void update();
@@ -29,11 +29,11 @@ public:
     float getValueInterpolated(int row, int col);
     
     int getColumn() {return sequencer.getColumn();}
-
+    
     void setActive(bool active) {this->active = active; active ? sequencer.start() : sequencer.stop();}
     void setDiscrete(bool discrete) {this->discrete = discrete;}
     void setBpm(int bpm) {this->bpm = bpm;}
-
+    
     bool getActive() {return active;}
     bool getDiscrete() {return discrete;}
     int getBpm() {return bpm;}

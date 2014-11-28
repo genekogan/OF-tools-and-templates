@@ -6,7 +6,7 @@ void Sequencer::setup(int rows, int cols) {
     this->rows = rows;
     this->cols = cols;
     sequencer.setup(rows, cols);
-
+    
     active = false;
     pActive = false;
     bpm = 120;
@@ -63,7 +63,7 @@ void Sequencer::update() {
             column.push_back(getValueInterpolated(r, sequencer.getColumn()));
         }
         ofNotifyEvent(interpolatedSequencerEvent, column, this);
-    }    
+    }
 }
 
 //-------

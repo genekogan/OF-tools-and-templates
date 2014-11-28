@@ -1,6 +1,6 @@
 #pragma once
 
-//#include "Control.h"
+
 
 class ParameterBase
 {
@@ -49,6 +49,7 @@ public:
         this->oscAddress = "/"+name;
         setType<T>();
         value = &val;
+        warp = 1.0;
     }
     
     Parameter(string name, T &val, T min, T max, float warp_=1.0) : minValue(min), maxValue(max) {

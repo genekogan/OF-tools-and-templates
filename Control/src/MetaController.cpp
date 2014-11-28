@@ -79,11 +79,7 @@ void MetaController::sequencerInterpolatedStepEvent(vector<float> &column) {
 //-----------
 void MetaController::processColumn(vector<float> &column) {
     int idx = 0;
-    for (int p=0; p<seqParams.size(); p++) {
-        
-        //cout << "TYPE IS " << ofToString(seqParams[p]->getType()) << endl;
-        
-        
+    for (int p=0; p<seqParams.size(); p++) {        
         if (seqParams[p]->getType() == ParameterBase::INT) {
             if (seqActive[idx]) {
                 int val = ofMap(column[idx], 0, 1, seqParams[p]->getMin<int>(), seqParams[p]->getMax<int>());

@@ -23,7 +23,7 @@ public:
     void registerToOscSender(vector<ParameterBase *> &parameters);
     void registerToOscReceiver(vector<ParameterBase *> &parameters);
     void registerToOsc(ParameterBase *parameter, bool send);
-
+    
     template<typename ListenerClass, typename ListenerMethod>
     void registerOscEventListener(string address, ListenerClass *listener, ListenerMethod method) {
         eventTrackers[address] = new ofEvent<bool>();
@@ -32,14 +32,14 @@ public:
     
     void sendMessageManually(string address, vector<int> val);
     void sendMessageManually(string address, vector<float> val);
-
+    
     ofxTouchOscPage * makeTouchOscPage(string name, vector<ParameterBase *> &parameters);
     void saveTouchOscLayout(string name, vector<ParameterBase *> &parameters);
     
     void clearInputTrackers();
     void clearOutputTrackers();
     void clearEventTrackers();
-
+    
     void listTrackedParameters();
     
 protected:
@@ -49,20 +49,20 @@ protected:
     
     template <typename T>
     void registerParameterToOsc(ParameterBase *parameter, bool send);
-
+    
     template <typename T>
     void checkIfToSendOscMessage(map<string, TrackerBase*>::iterator &it);
     
     template<typename T>
     void addOscArgs(ofxOscMessage &msg, T val);
-
+    
     void oscSendChanges();
     void oscReceiveChanges();
     void oscReceiveTouchOscChanges(ofxOscMessage &msg);
     
     void oscReceiveProcessMessage(string address, ofxOscMessage &msg);
     void oscReceiveProcessTouchOscMessage(string address, ofxOscMessage &msg, int idx);
-
+    
     map<string, TrackerBase* > outputTrackers;
     map<string, TrackerBase* > inputTrackers;
     map<string, ofEvent<bool>* > eventTrackers;
@@ -97,5 +97,3 @@ struct OscManager::Tracker : public TrackerBase {
         return isChanged;
     }
 };
-
-

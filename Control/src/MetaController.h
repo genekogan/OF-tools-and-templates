@@ -27,9 +27,9 @@ public:
     vector<bool> getSeqActive() { return seqActive;}
     
 private:
-
+    
     void drawLabel(int paramIdx, int idx, string suffix="");
-
+    
     void sequencerStepEvent(vector<float> &column);
     void sequencerInterpolatedStepEvent(vector<float> &column);
     void processColumn(vector<float> &column);

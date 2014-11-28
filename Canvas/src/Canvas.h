@@ -46,6 +46,8 @@ protected:
     void setDeleteLayer(string &s);
     void deleteLayer();
     
+    void runAutoMode();
+    
     Control control;
     bool guiVisible;
     ofPoint guiPosition;
@@ -55,8 +57,11 @@ protected:
     int idxLayer;
     bool toDeleteLayer;    
     bool skipCreator;
+    bool autoMode;
+    int autoNumFrames, lastFrame, idxAutoPreset;
  
-    // preloading postprocessor LUT
+    // preloading postprocessor LUT and presets
     void preLoadPostProcessorLUT();
     vector<ofxLUT*> lut;
+    vector<string> presetFilenames;
 };

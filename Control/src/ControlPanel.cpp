@@ -12,11 +12,16 @@ Control::Control() {
     visible = true;
     metaActive = false;
     setActive(true);
+    
+    
+    meta = new MetaController();
 }
 
 //-------
 void Control::setupMetaController() {
-    meta = new MetaController();
+    //if (meta == NULL) {
+    //    meta = new MetaController();
+    //}
     meta->setup(this);
     metaActive = true;
     setViewMeta(viewMeta);
@@ -27,7 +32,10 @@ void Control::removeMetaController() {
     if (metaActive) {
         setViewMeta(false);
         meta->disable();
-        delete meta;
+        
+        //delete meta;
+        
+        
         metaActive = false;
     }
 }
@@ -253,7 +261,7 @@ void Control::setupGui() {
 
 //-------
 void Control::guiEvent(ofxUIEventArgs &e) {
-
+    
     // menu select notification
     if (menus.count(e.getParentName()) > 0) {
         triggerMenuEvent(e.getParentName(), e.getName(), e.getToggle()->getValue());
@@ -283,7 +291,7 @@ void Control::guiEvent(ofxUIEventArgs &e) {
         if (e.getButton()->getValue() == 1) return;
         savePreset();
     }
-
+    
     // save preset
     else if (e.getName() == "viewMeta") {
         setViewMeta(e.getButton()->getValue() == 1);
@@ -423,7 +431,7 @@ void Control::addColor(string name, ofColor *value) {
     color->color = value;
     color->vec = vec;
     colors[name] = color;
-    ParameterBase *parameter = new Parameter<ofVec4f>(name, *vec, ofVec4f(0, 0, 0, 0), ofVec4f(255, 255, 255, 255), parameter->getWarp());
+    ParameterBase *parameter = new Parameter<ofVec4f>(name, *vec, ofVec4f(0, 0, 0, 0), ofVec4f(255, 255, 255, 255), 1.0);
     parameters.push_back(parameter);
     parametersVisible[parameter] = true;
     guiElements.push_back(new GuiElement(GuiElement::GUI_PARAMETER, parameters.size()-1));

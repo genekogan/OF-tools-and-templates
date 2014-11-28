@@ -98,12 +98,18 @@ void Presets::loadPreset(Control &control, ofXml &xml, int numFrames) {
         xml.setTo("MetaController");
         int rows = xml.getValue<int>("Rows");
         int cols = xml.getValue<int>("Cols");
-
+        
         if (!control.getMetaActive()) {
-            control.setupMetaController();
-        }
+            //control.setupMetaController();
+        }        
+        control.setupMetaController();
+        
+        
+        
         MetaController *meta = control.getMetaController();
         Sequencer *seq = meta->getSequencer();
+        
+        
         seq->setBpm(xml.getValue<int>("Bpm"));
         seq->setActive(xml.getValue("Active") == "1");
         seq->setSmooth(xml.getValue("Smooth") == "1");
@@ -116,9 +122,7 @@ void Presets::loadPreset(Control &control, ofXml &xml, int numFrames) {
             seq->setValue(r, c, ofToFloat(values[v]));
         }
         vector<string> seqActiveValues = ofSplitString(xml.getValue("SeqActive"), ",");
-        cout << ofToString(seqActiveValues) << endl;
         for (int i=0; i<seqActiveValues.size(); i++) {
-            cout << i << " setup " << endl;
             meta->setSeqActive(i, seqActiveValues[i]=="1");
         }
         xml.setToParent();
