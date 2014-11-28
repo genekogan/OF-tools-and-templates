@@ -19,12 +19,14 @@ To use these in an OF project, the best place to put this repo is in your OF roo
 Many of the tools and templates require additional addons to function. This is a complete list of addons used in any of the templates, though not all templates require all addons.
 
 Addons
- - [ofxUI](https://github.com/genekogan/ofxUI)
+ - [ofxUI (fork)](https://github.com/genekogan/ofxUI)
  - [ofxSecondWindow](https://github.com/genekogan/ofxSecondWindow)
  - [ofxCv](https://github.com/kylemcdonald/ofxCv)
  - [ofxOpenNi](https://github.com/gameoverhack/ofxOpenNI)
  - [ofxKinectProjectorToolkit](https://github.com/genekogan/ofxKinectProjectorToolkit)
+ - [ofxKinectFeatures](https://github.com/asarasua/ofxKinectFeatures)
  - [ofxLearn](https://github.com/genekogan/ofxLearn)
+ - [ofxSelfOrganizingMap](https://github.com/genekogan/ofxSelfOrganizingMap)
  - [ofxSpreadsheet](https://github.com/genekogan/ofxSpreadsheet)
  - [ofxPointInPolyline](https://github.com/genekogan/ofxPointInPolyline)
  - [ofxTouchOsc](https://github.com/genekogan/ofxTouchOsc)

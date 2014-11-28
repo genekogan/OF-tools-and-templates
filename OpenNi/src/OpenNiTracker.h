@@ -49,7 +49,21 @@ public:
     RectTracker & getContourTracker() {return contourFinder.getTracker();}
     
     int getNumUsers() {return kinect.getNumTrackedUsers();}
-    
+
+    // individual getters
+    ofVec3f * getJoint(int idxUser, int joint);
+    ofVec3f * getNormalizedJoint(int idxUser, int joint);
+    ofVec3f * getRelativeJoint(int idxUser, int joint);
+    ofVec3f * getVelocityJoint(int idxUser, int joint);
+    ofVec3f * getAccelerationJoint(int idxUser, int joint);
+    float * getRelativeDistanceJoint(int idxUser, int joint);
+    float * getVelocityMagnitudeJoint(int idxUser, int joint);
+    float * getVelocityMeanJoint(int idxUser, int joint);
+    float * getAccelerationMagnitudeJoint(int idxUser, int joint);
+    float * getAccelerationMeanJoint(int idxUser, int joint);
+    float * getAccelerationTrajectoryJoint(int idxUser, int joint);
+
+    // collective getters
     vector<ofVec3f*> & getJoints(int idxUser);
     vector<ofVec3f*> & getNormalizedJoints(int idxUser);
     vector<ofVec3f*> & getRelativeJoints(int idxUser);
@@ -61,6 +75,8 @@ public:
     vector<float*> & getAccelerationMagnitudeJoints(int idxUser);
     vector<float*> & getAccelerationMeanJoints(int idxUser);
     vector<float*> & getAccelerationTrajectoryJoints(int idxUser);
+    
+    // stat getters
     float * getSymmetry(int idxUser);
     float * getQom(int idxUser);
     float * getCi(int idxUser);
@@ -70,6 +86,7 @@ public:
     vector<ofVec2f> & getProjectedJoints(int idxUser);
     
     string getJointName(int idx) {return jointNames[idx];}
+    vector<string> getJointNames() {return jointNames;}
     
     void toggleActive() {active = !active;}
     

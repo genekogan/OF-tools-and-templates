@@ -385,6 +385,40 @@ void OpenNi::setCalibration(string path){
 }
 
 //-------
+ofVec3f * OpenNi::getJoint(int idxUser, int joint) {
+    return pJoints[idxUser][joint];
+}
+ofVec3f * OpenNi::getNormalizedJoint(int idxUser, int joint) {
+    return normalizedJoints[idxUser][joint];
+}
+ofVec3f * OpenNi::getRelativeJoint(int idxUser, int joint) {
+    return rJoints[idxUser][joint];
+}
+ofVec3f * OpenNi::getVelocityJoint(int idxUser, int joint) {
+    return vJoints[idxUser][joint];
+}
+ofVec3f * OpenNi::getAccelerationJoint(int idxUser, int joint) {
+    return aJoints[idxUser][joint];
+}
+float * OpenNi::getRelativeDistanceJoint(int idxUser, int joint) {
+    return dJoints[idxUser][joint];
+}
+float * OpenNi::getVelocityMagnitudeJoint(int idxUser, int joint) {
+    return vJointsMag[idxUser][joint];
+}
+float * OpenNi::getVelocityMeanJoint(int idxUser, int joint) {
+    return vJointsMean[idxUser][joint];
+}
+float * OpenNi::getAccelerationMagnitudeJoint(int idxUser, int joint) {
+    return aJointsMag[idxUser][joint];
+}
+float * OpenNi::getAccelerationMeanJoint(int idxUser, int joint) {
+    return aJointsMean[idxUser][joint];
+}
+float * OpenNi::getAccelerationTrajectoryJoint(int idxUser, int joint) {
+    return aJointsTrajectory[idxUser][joint];
+}
+//-------
 vector<ofVec3f*> & OpenNi::getJoints(int idxUser) {
     return pJoints[idxUser];
 }
@@ -418,6 +452,7 @@ vector<float*> & OpenNi::getAccelerationMeanJoints(int idxUser) {
 vector<float*> & OpenNi::getAccelerationTrajectoryJoints(int idxUser) {
     return aJointsTrajectory[idxUser];
 }
+//-------
 float * OpenNi::getSymmetry(int idxUser) {
     return symmetry[idxUser];
 }

@@ -19,23 +19,8 @@ void ofApp::setup(){
     learn.toggleGuiSummaryView();
     learn.setup("/Users/Gene/Code/openFrameworks/templates/Kinect/openni_oniRecording/bin/data/alecsroom.oni");
 
-    // inputs
-    learn.addJointsAsInput();
-    learn.addNormalizedJointsAsInput();
-    learn.addRelativeJointsAsInput();
-    learn.addVelocityJointsAsInput();
-    learn.addAccelerationJointsAsInput();
-    learn.addRelativeDistanceJointsAsInput();
-    learn.addVelocityMagnitudeJointsAsInput();
-    learn.addVelocityMeanJointsAsInput();
-    learn.addAccelerationMagnitudeJointsAsInput();
-    learn.addAccelerationMeanJointsAsInput();
-    learn.addAccelerationTrajectoryJointsAsInput();
-    learn.addSymmetryAsInput();
-    learn.addQomAsInput();
-    learn.addCiAsInput();
-    learn.addDepthAsInput();
-    learn.addYMaxHandsAsInput();
+    // inputs (manually)
+    //learn.addJointsAsInput();
     
     // osc
     learn.setupOscSender("localhost", 1234);
