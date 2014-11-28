@@ -28,6 +28,7 @@ LearnOutputParameter::LearnOutputParameter(string name, float *value, float min,
     guiInputSelect = new ofxUICanvas(name+"_inputs");
     guiData = new ofxUICanvas(name+"_data");
 
+    direct = false;
     record = false;
     trained = false;
     training = false;
@@ -37,6 +38,8 @@ LearnOutputParameter::LearnOutputParameter(string name, float *value, float min,
 
     dataWidth = 600;
     dataHeight = 300;
+    
+    directLerp = 1.0;
     
     if (DEFAULT_LEARN_TYPE == "SVM") {
         setTrainingSvm();
@@ -223,23 +226,7 @@ void LearnOutputParameter::addSpreadsheetDataToLearn() {
         }
     }
 }
-/*
-//-----------
-void LearnOutputParameter::addSpreadsheetDataToLearn() {
-    learn.clearTrainingInstances();
-    for (int p=0; p<data.size(); p++) {
-        vector<vector<float> > entries = data[p]->getEntries();
-        for (int i=0; i<entries.size(); i++) {
-            double normalizedLabel = (double) ofMap(entries[i][0], getMin(), getMax(), 0.0f, 1.0f);
-            vector<double> instance;
-            for (int j=1; j<entries[i].size(); j++) {
-                instance.push_back((double) entries[i][j]);
-            }
-            learn.addTrainingInstance(instance, normalizedLabel);
-        }
-    }
-}
-*/
+
 //-----------
 void LearnOutputParameter::setDataSize(int width, int height) {
     this->dataWidth = width;
@@ -327,6 +314,16 @@ void LearnOutputParameter::saveClassifier(string path) {
 }
 
 //-----------
+void LearnOutputParameter::predict() {
+    if (direct) {
+        setDirect();
+    }
+    else if (trained) {
+        predict(grabFeatureVector<double>(false, true));
+    }
+}
+
+//-----------
 void LearnOutputParameter::predict(vector<double> instance) {
     double normalizedPrediction;
     if (learnModel == SVM) {
@@ -365,6 +362,17 @@ double LearnOutputParameter::predictMlp(vector<double> example) {
         tmp2 += (mlpCoefficientsW3[j] * tmp1[j]);
     }
     return sigmoid(tmp2);
+}
+
+//-----------
+void LearnOutputParameter::setDirect() {
+    float newValue = 0.0;
+    float directWeight = 1.0 / activeInputs.size();
+    for (int i=0; i<activeInputs.size(); i++) {
+        newValue += directWeight * (((Parameter<float> *) activeInputs[i])->get() - activeInputs[i]->getMin()) / (activeInputs[i]->getMax() - activeInputs[i]->getMin());
+    }
+    set(ofLerp(get(), ofMap(newValue, 0.0, 1.0, getMin(), getMax()), directLerp));
+    guiValueText->setTextString(ofToString(guiValue->getValue()));
 }
 
 //-----------
@@ -426,6 +434,7 @@ void LearnOutputParameter::exportData(string filename) {
 //  GUI
 
 void LearnInputParameter::setupGui() {
+    gui->clearWidgets();
     gui->setColorOutline(ofColor(255,200));
     gui->setDrawOutline(true);
     gui->clearWidgets();
@@ -434,7 +443,7 @@ void LearnInputParameter::setupGui() {
     guiName = gui->addTextInput("name", ofToString(getName()), 155.0f);
     guiName->setAutoClear(false);
     gui->addLabel("osc:");
-    guiOsc = gui->addTextInput("osc", ofToString(getOscAddress()), 151.0f);
+    guiOsc = gui->addTextInput("osc", ofToString(getOscAddress()), 155.0f);
     guiOsc->setAutoClear(false);
     gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
     guiValue = gui->addSlider("value", getMin(), getMax(), getReference(), 100.0f, 18.0f);
@@ -447,30 +456,42 @@ void LearnInputParameter::setupGui() {
     gui->addLabel("max:");
     guiMax = gui->addTextInput("max", ofToString(getMax()), 40.0f);
     gui->addLabel("w:");
-    guiWarp = gui->addTextInput("warp", ofToString(getWarp()), 28.0f);
+    guiWarp = gui->addTextInput("warp", ofToString(getWarp()), 30.0f);
     guiMin->setAutoClear(false);
     guiMax->setAutoClear(false);
     guiWarp->setAutoClear(false);
     gui->autoSizeToFitWidgets();
+    gui->setWidth(GUI_INPUT_WIDTH);
 }
 
 //-----------
 void LearnOutputParameter::setupGui() {
+    gui->clearWidgets();
+    guiData->clearWidgets();
     gui->setColorOutline(ofColor(255,200));
     gui->setDrawOutline(true);
     gui->clearWidgets();
     gui->setWidth(800);
     gui->addLabelButton("X", false, 15.0f);
     gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiName = gui->addTextInput("name", ofToString(getName()), 125.0f);
+    guiName = gui->addTextInput("name", ofToString(getName()), 100.0f);
     guiName->setAutoClear(false);
     gui->addLabel("osc:");
-    guiOsc = gui->addTextInput("osc", ofToString(getOscAddress()), 155.0f);
+    guiOsc = gui->addTextInput("osc", ofToString(getOscAddress()), 145.0f);
     guiOsc->setAutoClear(false);
+    guiDirect = gui->addLabelToggle("D", &direct, 20.0f);
+    guiDirect->setName("direct");
     guiInputs = gui->addLabelToggle("inputs", &viewInputs, 60.0f);
-    guiExamples = gui->addLabelToggle("examples", &viewExamples, 105.0f);
-    guiExamples->setLabelText(ofToString(getNumInstances())+" examples");
-    gui->addLabelToggle("record", &record, 56.0f);
+    if (direct) {
+        gui->addLabel("lerp:");
+        guiLerpRate = gui->addMinimalSlider("lerpRate", 0.0f, 1.0f, &directLerp, 126.0f, 16.0f);
+        guiLerpRate->setLabelVisible(false);
+    }
+    else {
+        guiExamples = gui->addLabelToggle("examples", &viewExamples, 104.0f);
+        guiExamples->setLabelText(ofToString(getNumInstances())+" examples");
+        guiRecord = gui->addLabelToggle("record", &record, 56.0f);
+    }
     gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
     guiValue = gui->addSlider("value", getMin(), getMax(), getReference(), 240.0f, 18.0f);
     guiValue->setLabelVisible(false);
@@ -478,7 +499,7 @@ void LearnOutputParameter::setupGui() {
     guiValueText = gui->addTextInput("valueText", ofToString(get()), 75.0f);
     guiValueText->setAutoClear(false);
     gui->addLabel("w:");
-    guiWarp = gui->addTextInput("warp", ofToString(getWarp()), 28.0f);
+    guiWarp = gui->addTextInput("warp", ofToString(getWarp()), 30.0f);
     guiWarp->setAutoClear(false);
     gui->addLabel("min:");
     guiMin = gui->addTextInput("min", ofToString(getMin()), 52.0f);
@@ -503,6 +524,10 @@ void LearnOutputParameter::setupGui() {
     guiData->addLabelButton("csv", false, 30.0f);
     guiData->addLabelButton("clear all", false, 64.0f)->setColorBack(ofColor(255,0,0,100));
     guiData->autoSizeToFitWidgets();
+    gui->setWidth(GUI_OUTPUT_WIDTH);
+    if (direct) {
+        guiData->setVisible(false);
+    }
 }
 
 //-----------
@@ -686,6 +711,9 @@ void LearnOutputParameter::guiEvent(ofxUIEventArgs &e) {
                 setTrained(false);
             }
         }
+    }
+    else if (e.getName() == "direct") {
+        setupGui();
     }
     LearnParameter::guiEvent(e);
 }

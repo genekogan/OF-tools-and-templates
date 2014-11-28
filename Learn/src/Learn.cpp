@@ -44,7 +44,7 @@ Learn::Learn(bool init) {
 
 //-------
 void Learn::update(){
-    
+
     // send & receive osc
     if (oscInActive || oscOutActive) {
         oscManager.update();
@@ -88,9 +88,7 @@ void Learn::update(){
     // prediction procedure
     if (predicting) {
         for (int i=0; i<outputs.size(); i++) {
-            if (outputs[i]->getTrained()) {
-                outputs[i]->predict();
-            }
+            outputs[i]->predict();
         }
     }
     

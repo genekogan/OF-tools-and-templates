@@ -12,6 +12,9 @@
 #define DEFAULT_MLP_MAX_SAMPLES 1000000
 
 
+// hack to fix ofxUI rect width bug
+#define GUI_INPUT_WIDTH 386
+#define GUI_OUTPUT_WIDTH 586
 
 
 //-----------
@@ -156,9 +159,11 @@ public:
     
     void setupMlpCoefficients();
     double predictMlp(vector<double> example);
-    virtual void predict() {predict(grabFeatureVector<double>(false, true));}
+    virtual void predict();
     virtual void predict(vector<double> instance);
 
+    void setDirect();
+    
     void loadClassifierSvm(string path);
     void loadClassifierMlp(vector<double> w1, vector<double> w3);
     void saveClassifier(string path);
@@ -184,8 +189,9 @@ protected:
 
     ofxUICanvas *guiInputSelect, *guiData;
     ofxUIDropDownList *guiSelector;
-    ofxUILabelToggle *guiInputs, *guiExamples;
+    ofxUILabelToggle *guiDirect, *guiInputs, *guiExamples, *guiRecord;
     ofxUILabelButton *guiDataStatus, *guiDataPage;
+    ofxUISlider *guiLerpRate;
     
     ofxLearn learn;
     LearnModel learnModel;
@@ -198,9 +204,12 @@ protected:
     vector<ofxSpreadsheet *> data;
     int page, dataWidth, dataHeight;
     
+    bool direct;
     bool record, trained, training;
     bool viewExamples, viewInputs;
     bool inputGroupsEnabled;
+    
+    float directLerp;
     
     ofEvent<LearnOutputParameter> pViewedEvent;
 };
