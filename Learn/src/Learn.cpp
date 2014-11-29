@@ -39,6 +39,8 @@ Learn::Learn(bool init) {
     oscManager.registerOscEventListener("/toggleTrainAccurate", this, &Learn::oscEventSetTrainAccurate);
     oscManager.registerOscEventListener("/togglePredict", this, &Learn::oscEventSetPredicting);
     
+    analyze.setGuiPosition(275, 400);
+    
     if (init)   setupGui();
 }
 
@@ -81,8 +83,8 @@ void Learn::update(){
     }
     
     // mapping inputs
-    else if (inMapping) {
-        setInputMapping();
+    else if (analyzing) {
+        analyze.update();
     }
     
     // prediction procedure
@@ -121,6 +123,10 @@ void Learn::draw(){
     
     if (summaryVisible) {
         drawSummary();
+    }
+    
+    if (analyzing) {
+        analyze.draw();
     }
 }
 
@@ -488,10 +494,10 @@ void Learn::setupGui() {
     gui2->setPosition(130, 5);
     gui2->setWidth(450);
     gui2->setHeight(60);
-    gui2->addLabelToggle("map inputs", &inMapping, 100, 22);
+    gui2->addLabelToggle("analyzer", &analyzing, 100, 22);
     gui2->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
     gui2->addLabelButton("train fast", false, 100, 22);
-    gui2->addWidgetSouthOf(new ofxUILabelToggle("record", &inRecording,  100, 22, 0, 0, OFX_UI_FONT_SMALL), "map inputs")->setPadding(2);
+    gui2->addWidgetSouthOf(new ofxUILabelToggle("record", &inRecording,  100, 22, 0, 0, OFX_UI_FONT_SMALL), "analyzer")->setPadding(2);
     gui2->addWidgetSouthOf(new ofxUILabelButton("train accurate", false,  100, 22, 0, 0, OFX_UI_FONT_SMALL), "train fast")->setPadding(2);
     gui2->addWidgetEastOf(new ofxUISlider("countdown", 0.0, 5.0, &trainCountdown, 100.0f, 9.0f), "train fast")->setPadding(2);
     gui2->addWidgetSouthOf(new ofxUISlider("duration", 0.0, 5.0, &trainDuration, 100.0f, 9.0f), "countdown")->setPadding(2);
@@ -567,8 +573,8 @@ void Learn::gui2Event(ofxUIEventArgs &e) {
         if (recording)  stopRecording();
         trainClassifiers("accurate");
     }
-    else if (e.getName() == "map inputs") {
-        e.getButton()->getValue() ? startInputMapping() : stopInputMapping();
+    else if (e.getName() == "analyzer") {
+        e.getButton()->getValue() ? startAnalyzer() : stopAnalyzer();
     }
 }
 
@@ -773,39 +779,18 @@ void Learn::parameterSelected(LearnParameter & parameter) {
 //  INPUT MAPPING PROCEDURE
 
 //-------
-void Learn::startInputMapping() {
-    inMapping = true;
-    bool confirm = ofSystemChoiceDialog("Warning: this will erase all output classifiers and examples. Proceed?");
-    if (!confirm) {
-        inMapping = false;
-        return;
-    }
-    for (int i=0; i<outputs.size(); i++) {
-        outputs[i]->clearInstances();
-    }
-    for (int i=0; i<inputs.size(); i++) {
-        inputs[i]->setMax(-9999999);
-        inputs[i]->setMin( 9999999);
-    }
+void Learn::startAnalyzer() {
+    analyzing = true;
+    analyze.setup();
+    analyze.setInputs(&inputs);
+    analyze.setOutputs(&outputs);
 }
 
 //-------
-void Learn::stopInputMapping() {
-    inMapping = false;
+void Learn::stopAnalyzer() {
+    analyzing = false;
     for (int i=0; i<inputs.size(); i++) {
         inputs[i]->deselect();
-    }
-}
-
-//-------
-void Learn::setInputMapping() {
-    for (int i=0; i<inputs.size(); i++) {
-        if (inputs[i]->get() > inputs[i]->getMax()) {
-            inputs[i]->setMax(inputs[i]->get());
-        }
-        if (inputs[i]->get() < inputs[i]->getMin()) {
-            inputs[i]->setMin(inputs[i]->get());
-        }
     }
 }
 

@@ -96,6 +96,7 @@ private:
     
     void updateContours();
     void updateUsers();
+    void updateOpticalFlow();
     
     void checkTrackingOptions();
     void userEvent(ofxOpenNIUserEvent & event);

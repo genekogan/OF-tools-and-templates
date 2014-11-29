@@ -226,7 +226,7 @@ bool OpenNi::update(){
             }
         }
         if (trackingKeypoints) {
-            //flow.calcOpticalFlow(kinect.getDepthPixelsRef());
+            updateOpticalFlow();
         }
         if (trackingUsers) {
             updateUsers();
@@ -333,6 +333,11 @@ void OpenNi::updateUsers(){
             }
         }
     }
+}
+
+//-------
+void OpenNi::updateOpticalFlow() {
+    //flow.calcOpticalFlow(kinect.getDepthPixelsRef());
 }
 
 //-------

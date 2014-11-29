@@ -2,12 +2,16 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    
     // setup sc3
     string synthFile = "/Users/Gene/Code/openFrameworks/tools/SuperCollider/synths.scd";
     SuperColliderLayer *layer1 = sc3.addLayer("source", synthFile);
     layer1->setBusOutSelf();
     sc3.setGuiPosition(200, 200);
 
+    // setup learn/openni
+    learn.setup();
+    
     // add inputs
     learn.addJointsAsInput();
     

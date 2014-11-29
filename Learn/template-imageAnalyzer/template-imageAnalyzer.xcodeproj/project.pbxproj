@@ -93,10 +93,14 @@
 		B03DC0551A045DA00032E260 /* PAW.cc in Sources */ = {isa = PBXBuildFile; fileRef = B03DC04A1A045DA00032E260 /* PAW.cc */; };
 		B03DC0561A045DA00032E260 /* PDM.cc in Sources */ = {isa = PBXBuildFile; fileRef = B03DC04B1A045DA00032E260 /* PDM.cc */; };
 		B03DC0571A045DA00032E260 /* Tracker.cc in Sources */ = {isa = PBXBuildFile; fileRef = B03DC04C1A045DA00032E260 /* Tracker.cc */; };
-		B07AACCB1A24B5B3001CF190 /* ModuleImageAnalyzerLearn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07AACCA1A24B5B3001CF190 /* ModuleImageAnalyzerLearn.cpp */; };
+		B0AF3E811A29EE4D004A6C3E /* Analyze.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0AF3E7F1A29EE4D004A6C3E /* Analyze.cpp */; };
+		B0AF3E8C1A29EE51004A6C3E /* ofxGMM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0AF3E841A29EE51004A6C3E /* ofxGMM.cpp */; };
+		B0AF3E8D1A29EE51004A6C3E /* GMM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0AF3E881A29EE51004A6C3E /* GMM.cpp */; };
+		B0AF3E8E1A29EE51004A6C3E /* KMeans.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0AF3E8A1A29EE51004A6C3E /* KMeans.cpp */; };
 		B0BA13E319CDDC6400D64AAB /* ofxLearn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0BA0FF319CDDC6200D64AAB /* ofxLearn.cpp */; };
 		B0BA149919CDDD3F00D64AAB /* Learn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0BA148F19CDDCAA00D64AAB /* Learn.cpp */; };
 		B0BA149A19CDDD3F00D64AAB /* LearnParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0BA149119CDDCAA00D64AAB /* LearnParameter.cpp */; };
+		B0C5ADAD1A28D2FC00C40BD7 /* ModuleImageAnalyzerLearn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C5ADAB1A28D2F400C40BD7 /* ModuleImageAnalyzerLearn.cpp */; };
 		B26AAF6694320D2F661F6699 /* Base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 91900D7E1196099B4EAB1DDE /* Base64.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		BFEFCE32DAFE10A8EB519F6C /* ofxUISpacer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30CBAAEC78A0E9EBBB10A05A /* ofxUISpacer.cpp */; };
@@ -440,14 +444,22 @@
 		B03DC04A1A045DA00032E260 /* PAW.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PAW.cc; sourceTree = "<group>"; };
 		B03DC04B1A045DA00032E260 /* PDM.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PDM.cc; sourceTree = "<group>"; };
 		B03DC04C1A045DA00032E260 /* Tracker.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Tracker.cc; sourceTree = "<group>"; };
-		B07AACC91A24B5B3001CF190 /* ModuleImageAnalyzerLearn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModuleImageAnalyzerLearn.h; path = ../ModuleImageAnalyzerLearn/ModuleImageAnalyzerLearn.h; sourceTree = "<group>"; };
-		B07AACCA1A24B5B3001CF190 /* ModuleImageAnalyzerLearn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModuleImageAnalyzerLearn.cpp; path = ../ModuleImageAnalyzerLearn/ModuleImageAnalyzerLearn.cpp; sourceTree = "<group>"; };
+		B0AF3E7F1A29EE4D004A6C3E /* Analyze.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Analyze.cpp; sourceTree = "<group>"; };
+		B0AF3E801A29EE4D004A6C3E /* Analyze.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analyze.h; sourceTree = "<group>"; };
+		B0AF3E841A29EE51004A6C3E /* ofxGMM.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxGMM.cpp; sourceTree = "<group>"; };
+		B0AF3E851A29EE51004A6C3E /* ofxGMM.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxGMM.h; sourceTree = "<group>"; };
+		B0AF3E881A29EE51004A6C3E /* GMM.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GMM.cpp; sourceTree = "<group>"; };
+		B0AF3E891A29EE51004A6C3E /* GMM.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GMM.h; sourceTree = "<group>"; };
+		B0AF3E8A1A29EE51004A6C3E /* KMeans.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = KMeans.cpp; sourceTree = "<group>"; };
+		B0AF3E8B1A29EE51004A6C3E /* KMeans.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KMeans.h; sourceTree = "<group>"; };
 		B0BA0FF319CDDC6200D64AAB /* ofxLearn.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxLearn.cpp; sourceTree = "<group>"; };
 		B0BA0FF419CDDC6200D64AAB /* ofxLearn.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxLearn.h; sourceTree = "<group>"; };
 		B0BA148F19CDDCAA00D64AAB /* Learn.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Learn.cpp; sourceTree = "<group>"; };
 		B0BA149019CDDCAA00D64AAB /* Learn.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Learn.h; sourceTree = "<group>"; };
 		B0BA149119CDDCAA00D64AAB /* LearnParameter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LearnParameter.cpp; sourceTree = "<group>"; };
 		B0BA149219CDDCAA00D64AAB /* LearnParameter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LearnParameter.h; sourceTree = "<group>"; };
+		B0C5ADAB1A28D2F400C40BD7 /* ModuleImageAnalyzerLearn.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ModuleImageAnalyzerLearn.cpp; sourceTree = "<group>"; };
+		B0C5ADAC1A28D2F400C40BD7 /* ModuleImageAnalyzerLearn.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModuleImageAnalyzerLearn.h; sourceTree = "<group>"; };
 		B21E7E5F548EEA92F368040B /* tinyxml.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = tinyxml.h; path = ../../../addons/ofxXmlSettings/libs/tinyxml.h; sourceTree = SOURCE_ROOT; };
 		B31C608870ECEB2490A93736 /* ofxOscParameterSync.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOscParameterSync.h; path = ../../../addons/ofxOsc/src/ofxOscParameterSync.h; sourceTree = SOURCE_ROOT; };
 		B3CA0202B1A3B6D8920C2B15 /* ofxUIButton.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxUIButton.h; path = ../../../addons/ofxUI/src/ofxUIButton.h; sourceTree = SOURCE_ROOT; };
@@ -1191,14 +1203,43 @@
 			path = lib;
 			sourceTree = "<group>";
 		};
-		B07AACC51A24B3E3001CF190 /* ModuleImageAnalyzerLearn */ = {
+		B0AF3E821A29EE51004A6C3E /* ofxGMM */ = {
 			isa = PBXGroup;
 			children = (
-				B07AACCA1A24B5B3001CF190 /* ModuleImageAnalyzerLearn.cpp */,
-				B07AACC91A24B5B3001CF190 /* ModuleImageAnalyzerLearn.h */,
+				B0AF3E831A29EE51004A6C3E /* src */,
+				B0AF3E861A29EE51004A6C3E /* libs */,
 			);
-			name = ModuleImageAnalyzerLearn;
-			path = ModuleImageAnalyzer;
+			name = ofxGMM;
+			sourceTree = "<group>";
+		};
+		B0AF3E831A29EE51004A6C3E /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B0AF3E841A29EE51004A6C3E /* ofxGMM.cpp */,
+				B0AF3E851A29EE51004A6C3E /* ofxGMM.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxGMM/src;
+			sourceTree = "<group>";
+		};
+		B0AF3E861A29EE51004A6C3E /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				B0AF3E871A29EE51004A6C3E /* GMM */,
+			);
+			name = libs;
+			path = ../../../addons/ofxGMM/libs;
+			sourceTree = "<group>";
+		};
+		B0AF3E871A29EE51004A6C3E /* GMM */ = {
+			isa = PBXGroup;
+			children = (
+				B0AF3E881A29EE51004A6C3E /* GMM.cpp */,
+				B0AF3E891A29EE51004A6C3E /* GMM.h */,
+				B0AF3E8A1A29EE51004A6C3E /* KMeans.cpp */,
+				B0AF3E8B1A29EE51004A6C3E /* KMeans.h */,
+			);
+			path = GMM;
 			sourceTree = "<group>";
 		};
 		B0BA0FF119CDDC6200D64AAB /* ofxLearn */ = {
@@ -1238,7 +1279,9 @@
 		B0BA148E19CDDCAA00D64AAB /* src */ = {
 			isa = PBXGroup;
 			children = (
-				B07AACC51A24B3E3001CF190 /* ModuleImageAnalyzerLearn */,
+				B0C5ADAA1A28D2F400C40BD7 /* ModuleImageAnalyzerLearn */,
+				B0AF3E7F1A29EE4D004A6C3E /* Analyze.cpp */,
+				B0AF3E801A29EE4D004A6C3E /* Analyze.h */,
 				B0BA148F19CDDCAA00D64AAB /* Learn.cpp */,
 				B0BA149019CDDCAA00D64AAB /* Learn.h */,
 				B0BA149119CDDCAA00D64AAB /* LearnParameter.cpp */,
@@ -1246,6 +1289,15 @@
 			);
 			name = src;
 			path = ../src;
+			sourceTree = "<group>";
+		};
+		B0C5ADAA1A28D2F400C40BD7 /* ModuleImageAnalyzerLearn */ = {
+			isa = PBXGroup;
+			children = (
+				B0C5ADAB1A28D2F400C40BD7 /* ModuleImageAnalyzerLearn.cpp */,
+				B0C5ADAC1A28D2F400C40BD7 /* ModuleImageAnalyzerLearn.h */,
+			);
+			path = ModuleImageAnalyzerLearn;
 			sourceTree = "<group>";
 		};
 		BA6760AC87647DD61A92BD41 /* win32 */ = {
@@ -1262,6 +1314,7 @@
 			children = (
 				B0BA148C19CDDC8C00D64AAB /* Learn */,
 				B0BA148B19CDDC8700D64AAB /* Control */,
+				B0AF3E821A29EE51004A6C3E /* ofxGMM */,
 				B03DC0281A045DA00032E260 /* ofxFaceTracker */,
 				B03DBF181A045D9C0032E260 /* ofxOpenCv */,
 				B03DBEE01A045D930032E260 /* ofxCv */,
@@ -1626,6 +1679,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0C5ADAD1A28D2FC00C40BD7 /* ModuleImageAnalyzerLearn.cpp in Sources */,
 				B00F09EB1A041D0900C71A28 /* ControlPanel.cpp in Sources */,
 				B03DBF0B1A045D940032E260 /* fdog.cpp in Sources */,
 				B00F09EC1A041D0900C71A28 /* MetaController.cpp in Sources */,
@@ -1663,6 +1717,7 @@
 				B03DC0511A045DA00032E260 /* FCheck.cc in Sources */,
 				933A2227713C720CEFF80FD9 /* tinyxml.cpp in Sources */,
 				9D44DC88EF9E7991B4A09951 /* tinyxmlerror.cpp in Sources */,
+				B0AF3E811A29EE4D004A6C3E /* Analyze.cpp in Sources */,
 				5A4349E9754D6FA14C0F2A3A /* tinyxmlparser.cpp in Sources */,
 				1A8D816B38E38D1773A8B963 /* ofxSpreadsheet.cpp in Sources */,
 				B26AAF6694320D2F661F6699 /* Base64.cpp in Sources */,
@@ -1677,7 +1732,6 @@
 				C381F2B7CFD84C0E540EB4BC /* ofxUIBiLabelSlider.cpp in Sources */,
 				7D393646FB859A930EF58917 /* ofxUIButton.cpp in Sources */,
 				B03DC0551A045DA00032E260 /* PAW.cc in Sources */,
-				B07AACCB1A24B5B3001CF190 /* ModuleImageAnalyzerLearn.cpp in Sources */,
 				7BE46522B64E24FAEDE1A25D /* ofxUICanvas.cpp in Sources */,
 				DF0C851B244C4C867CEA8806 /* ofxUICircleSlider.cpp in Sources */,
 				B03DC0241A045D9C0032E260 /* ofxCvHaarFinder.cpp in Sources */,
@@ -1689,6 +1743,7 @@
 				B00F09F91A041D4600C71A28 /* ofxSequencer.cpp in Sources */,
 				22030CBDCC25D815E7ED6757 /* ofxUIFPSSlider.cpp in Sources */,
 				B03DC0261A045D9C0032E260 /* ofxCvShortImage.cpp in Sources */,
+				B0AF3E8E1A29EE51004A6C3E /* KMeans.cpp in Sources */,
 				3D4EA8E172D3E4A30FEFA969 /* ofxUIImage.cpp in Sources */,
 				7F2CD93F681F3C1547B3BF2C /* ofxUIImageButton.cpp in Sources */,
 				B00F09F41A041D4100C71A28 /* ofxBpm.cpp in Sources */,
@@ -1698,6 +1753,7 @@
 				26874B150C8535AEA0F24C8C /* ofxUIImageSlider.cpp in Sources */,
 				FB8AA9FA6535767BE31806BC /* ofxUIImageToggle.cpp in Sources */,
 				7C3DC84C9BFCBD2866DB2B6C /* ofxUILabel.cpp in Sources */,
+				B0AF3E8C1A29EE51004A6C3E /* ofxGMM.cpp in Sources */,
 				FFD1EBFCA24DFB4E4427B4FE /* ofxUILabelButton.cpp in Sources */,
 				C30B3A2A37F8F32EE7318718 /* ofxUILabelToggle.cpp in Sources */,
 				B03DC04E1A045DA00032E260 /* ExpressionClassifier.cpp in Sources */,
@@ -1731,6 +1787,7 @@
 				E3A1109F67D711D6C256031E /* ofxUIToggleMatrix.cpp in Sources */,
 				60012C723B05938A3D388335 /* ofxUIValuePlotter.cpp in Sources */,
 				B0BA13E319CDDC6400D64AAB /* ofxLearn.cpp in Sources */,
+				B0AF3E8D1A29EE51004A6C3E /* GMM.cpp in Sources */,
 				AE281BEBF3A00F1FC37F3DA0 /* ofxUIWaveform.cpp in Sources */,
 				82845E1F8C90E1F5A99D9868 /* ofxUIWidget.cpp in Sources */,
 				CE5D89B9893EAA12F511DCAC /* ofxUIWidgetWithLabel.cpp in Sources */,

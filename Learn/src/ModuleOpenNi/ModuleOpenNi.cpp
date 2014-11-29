@@ -242,6 +242,7 @@ void ModuleOpenNi::guiInputEvent(ofxUIEventArgs &e) {
     else if (e.getName() == "YMaxHands")	addYMaxHandsAsInput();
 
     else if (e.getName() == "add custom inputs") {
+        if (e.getButton()->getValue())  return;
         vector<ofxUILabelToggle*> jointToggles = guiJointSelector->getToggles();
         vector<ofxUILabelToggle*> statToggles = guiStatSelector->getToggles();
         for (int j=0; j<jointToggles.size(); j++) {
@@ -262,7 +263,6 @@ void ModuleOpenNi::guiInputEvent(ofxUIEventArgs &e) {
     }
 }
 
-
 //-----------
 void ModuleOpenNi::setGuiPosition(int x, int y) {
     this->x = x;
@@ -282,6 +282,6 @@ void ModuleOpenNi::setVisible(bool visible) {
 //-----------
 void ModuleOpenNi::toggleGuiSummaryView() {
     Learn::setGuiSummaryView(!summaryVisible);
-    //guiInputs->setVisible(!summaryVisible);
+    guiInputs->setVisible(summaryVisible);
     openNi.setVisible(summaryVisible);
 }

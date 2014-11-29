@@ -1,17 +1,17 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxUI.h"
-#include "LearnParameter.h"
-#include "ThreadedLearner.h"
 #include "Control.h"
+#include "LearnParameter.h"
+#include "Analyze.h"
+#include "ThreadedLearner.h"
 
 
 /*
-analysis
-- mapping
+analysis to-do
+- auto mapping
 - GMM w/ N clusters
-- assign N clusters to N evenly distributed values
+- assign the N cluster means to N evenly distributed output values
 */
 
 
@@ -97,9 +97,8 @@ protected:
     void drawSummary();
     
     // get input mappings
-    void startInputMapping();
-    void stopInputMapping();
-    void setInputMapping();
+    void startAnalyzer();
+    void stopAnalyzer();
     
     // record + learn
     void startRecording();
@@ -144,7 +143,7 @@ protected:
     // recording variables
     float startTime, trainCountdown, trainDuration;
     int instanceRate, framesPerInstance, currentNewInstances;
-    bool inRecording, inMapping, countingDown, recording, predicting, training;
+    bool inRecording, analyzing, countingDown, recording, predicting, training;
     int newInputCounter, newOutputCounter;
     
     // style
@@ -156,4 +155,7 @@ protected:
     ThreadedLearner threadedLearn;
     string trainStrategy;
     int idxTraining;
+    
+    // analyze
+    Analyze analyze;
 };
