@@ -2,7 +2,7 @@
 
 #### Point generator
 
- - Evenly-distributed sample points in 2d [link](http://bost.ocks.org/mike/algorithms/#sampling)
+ - Evenly-distributed sample points in 2d [[link]](http://bost.ocks.org/mike/algorithms/#sampling)
  - Circle-packing 
  - Triangulation (based on Delaunay)
 

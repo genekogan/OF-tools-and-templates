@@ -2,9 +2,9 @@
 
 This repository contains a series of “tools” and “templates” for my projects involving [OpenFrameworks](openframeworks.cc). Tools and templates are analogous to [addons](http://www.ofxaddons.com) and examples in OF.
 
-Tools contain classes for generating visual and audio content, organizing and handling parameters and interfaces, creating GUIs, communicating and interactivity with peripherals and other applications, etc. Like addons, they can be included with any OF project — the difference is that tools are higher-level and so less general than addons, being mostly specific to routines in my own work, and containing many dependencies on [addons](http://www.ofxaddons.com). 
+Tools contain classes for generating visual and audio content, organizing and handling parameters and interfaces, creating GUIs, communicating and interactivity with peripherals and other applications, etc. Like addons, they can be included with any OF project — the difference is that tools are higher-level and so less general than addons, being mostly specific to routines in my own work, and containing many dependencies.
 
-Templates are to tools as examples are to addons. They are complete OF projects which demo the tools in simple ways. 
+Templates are to tools as examples are to addons. They are complete OF projects which demo the tools in simple ways.
 
 
 #### License
@@ -23,7 +23,7 @@ Everything in this repository is licensed [GNU General Public License v3](http:/
 [Visuals](https://github.com/genekogan/OF-tools-and-templates/tree/master/Visuals), [Canvas](https://github.com/genekogan/OF-tools-and-templates/tree/master/Canvas), [ProjectionMapping](https://github.com/genekogan/OF-tools-and-templates/tree/master/ProjectionMapping)
  - visual content, shaders, movie/image player
  - manages a sequence of layers which create and modulate visual content inside a quad (ofFbo)
- - handles projection mapping of visual content
+ - interface for projection mapping the Canvas quad
  - integration with [Syphon](http://syphon.v002.info/)
  - save and load presets of Canvas layer sequences and parameters
 

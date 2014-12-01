@@ -93,6 +93,7 @@
 		B03DC0551A045DA00032E260 /* PAW.cc in Sources */ = {isa = PBXBuildFile; fileRef = B03DC04A1A045DA00032E260 /* PAW.cc */; };
 		B03DC0561A045DA00032E260 /* PDM.cc in Sources */ = {isa = PBXBuildFile; fileRef = B03DC04B1A045DA00032E260 /* PDM.cc */; };
 		B03DC0571A045DA00032E260 /* Tracker.cc in Sources */ = {isa = PBXBuildFile; fileRef = B03DC04C1A045DA00032E260 /* Tracker.cc */; };
+		B08625F61A2C626700FEF5CC /* ModuleImageAnalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B08625F41A2C625E00FEF5CC /* ModuleImageAnalyzer.cpp */; };
 		B0AF3E811A29EE4D004A6C3E /* Analyze.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0AF3E7F1A29EE4D004A6C3E /* Analyze.cpp */; };
 		B0AF3E8C1A29EE51004A6C3E /* ofxGMM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0AF3E841A29EE51004A6C3E /* ofxGMM.cpp */; };
 		B0AF3E8D1A29EE51004A6C3E /* GMM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0AF3E881A29EE51004A6C3E /* GMM.cpp */; };
@@ -100,7 +101,6 @@
 		B0BA13E319CDDC6400D64AAB /* ofxLearn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0BA0FF319CDDC6200D64AAB /* ofxLearn.cpp */; };
 		B0BA149919CDDD3F00D64AAB /* Learn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0BA148F19CDDCAA00D64AAB /* Learn.cpp */; };
 		B0BA149A19CDDD3F00D64AAB /* LearnParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0BA149119CDDCAA00D64AAB /* LearnParameter.cpp */; };
-		B0C5ADAD1A28D2FC00C40BD7 /* ModuleImageAnalyzerLearn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C5ADAB1A28D2F400C40BD7 /* ModuleImageAnalyzerLearn.cpp */; };
 		B26AAF6694320D2F661F6699 /* Base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 91900D7E1196099B4EAB1DDE /* Base64.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		BFEFCE32DAFE10A8EB519F6C /* ofxUISpacer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30CBAAEC78A0E9EBBB10A05A /* ofxUISpacer.cpp */; };
@@ -444,6 +444,8 @@
 		B03DC04A1A045DA00032E260 /* PAW.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PAW.cc; sourceTree = "<group>"; };
 		B03DC04B1A045DA00032E260 /* PDM.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PDM.cc; sourceTree = "<group>"; };
 		B03DC04C1A045DA00032E260 /* Tracker.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Tracker.cc; sourceTree = "<group>"; };
+		B08625F41A2C625E00FEF5CC /* ModuleImageAnalyzer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ModuleImageAnalyzer.cpp; sourceTree = "<group>"; };
+		B08625F51A2C625E00FEF5CC /* ModuleImageAnalyzer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModuleImageAnalyzer.h; sourceTree = "<group>"; };
 		B0AF3E7F1A29EE4D004A6C3E /* Analyze.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Analyze.cpp; sourceTree = "<group>"; };
 		B0AF3E801A29EE4D004A6C3E /* Analyze.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analyze.h; sourceTree = "<group>"; };
 		B0AF3E841A29EE51004A6C3E /* ofxGMM.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxGMM.cpp; sourceTree = "<group>"; };
@@ -458,8 +460,6 @@
 		B0BA149019CDDCAA00D64AAB /* Learn.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Learn.h; sourceTree = "<group>"; };
 		B0BA149119CDDCAA00D64AAB /* LearnParameter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LearnParameter.cpp; sourceTree = "<group>"; };
 		B0BA149219CDDCAA00D64AAB /* LearnParameter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LearnParameter.h; sourceTree = "<group>"; };
-		B0C5ADAB1A28D2F400C40BD7 /* ModuleImageAnalyzerLearn.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ModuleImageAnalyzerLearn.cpp; sourceTree = "<group>"; };
-		B0C5ADAC1A28D2F400C40BD7 /* ModuleImageAnalyzerLearn.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModuleImageAnalyzerLearn.h; sourceTree = "<group>"; };
 		B21E7E5F548EEA92F368040B /* tinyxml.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = tinyxml.h; path = ../../../addons/ofxXmlSettings/libs/tinyxml.h; sourceTree = SOURCE_ROOT; };
 		B31C608870ECEB2490A93736 /* ofxOscParameterSync.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOscParameterSync.h; path = ../../../addons/ofxOsc/src/ofxOscParameterSync.h; sourceTree = SOURCE_ROOT; };
 		B3CA0202B1A3B6D8920C2B15 /* ofxUIButton.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxUIButton.h; path = ../../../addons/ofxUI/src/ofxUIButton.h; sourceTree = SOURCE_ROOT; };
@@ -1203,6 +1203,15 @@
 			path = lib;
 			sourceTree = "<group>";
 		};
+		B08625F31A2C625E00FEF5CC /* ModuleImageAnalyzer */ = {
+			isa = PBXGroup;
+			children = (
+				B08625F41A2C625E00FEF5CC /* ModuleImageAnalyzer.cpp */,
+				B08625F51A2C625E00FEF5CC /* ModuleImageAnalyzer.h */,
+			);
+			path = ModuleImageAnalyzer;
+			sourceTree = "<group>";
+		};
 		B0AF3E821A29EE51004A6C3E /* ofxGMM */ = {
 			isa = PBXGroup;
 			children = (
@@ -1279,7 +1288,7 @@
 		B0BA148E19CDDCAA00D64AAB /* src */ = {
 			isa = PBXGroup;
 			children = (
-				B0C5ADAA1A28D2F400C40BD7 /* ModuleImageAnalyzerLearn */,
+				B08625F31A2C625E00FEF5CC /* ModuleImageAnalyzer */,
 				B0AF3E7F1A29EE4D004A6C3E /* Analyze.cpp */,
 				B0AF3E801A29EE4D004A6C3E /* Analyze.h */,
 				B0BA148F19CDDCAA00D64AAB /* Learn.cpp */,
@@ -1289,15 +1298,6 @@
 			);
 			name = src;
 			path = ../src;
-			sourceTree = "<group>";
-		};
-		B0C5ADAA1A28D2F400C40BD7 /* ModuleImageAnalyzerLearn */ = {
-			isa = PBXGroup;
-			children = (
-				B0C5ADAB1A28D2F400C40BD7 /* ModuleImageAnalyzerLearn.cpp */,
-				B0C5ADAC1A28D2F400C40BD7 /* ModuleImageAnalyzerLearn.h */,
-			);
-			path = ModuleImageAnalyzerLearn;
 			sourceTree = "<group>";
 		};
 		BA6760AC87647DD61A92BD41 /* win32 */ = {
@@ -1679,7 +1679,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0C5ADAD1A28D2FC00C40BD7 /* ModuleImageAnalyzerLearn.cpp in Sources */,
+				B08625F61A2C626700FEF5CC /* ModuleImageAnalyzer.cpp in Sources */,
 				B00F09EB1A041D0900C71A28 /* ControlPanel.cpp in Sources */,
 				B03DBF0B1A045D940032E260 /* fdog.cpp in Sources */,
 				B00F09EC1A041D0900C71A28 /* MetaController.cpp in Sources */,

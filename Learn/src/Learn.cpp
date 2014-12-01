@@ -781,6 +781,7 @@ void Learn::parameterSelected(LearnParameter & parameter) {
 //-------
 void Learn::startAnalyzer() {
     analyzing = true;
+    analyze.setVisible(true);
     analyze.setup();
     analyze.setInputs(&inputs);
     analyze.setOutputs(&outputs);
@@ -792,6 +793,7 @@ void Learn::stopAnalyzer() {
     for (int i=0; i<inputs.size(); i++) {
         inputs[i]->deselect();
     }
+    analyze.setVisible(false);
 }
 
 
@@ -1107,7 +1109,11 @@ void Learn::loadOutputs(ofXml &xml, bool loadExamples, bool loadClassifier) {
         
         
         
-        /* HACK */
+        /* HACK!!
+		having strange issues when trying to overwrite parameters with same name.
+		so just give each name a random number offset so it will delete,
+		until this bug is corrected in the future */
+		
         
         outputs[i]->setName("param"+ofToString(ofRandom(100000)));
         
@@ -1115,8 +1121,6 @@ void Learn::loadOutputs(ofXml &xml, bool loadExamples, bool loadClassifier) {
         
         outputsToDelete[outputs[i]->getName()] = true;
     }
-    
-    cout << "load " << outputs.size() << endl;
     
     
 
@@ -1315,7 +1319,6 @@ void Learn::setFontSizes(int small, int medium, int large) {
         outputs[i]->setFontSizes(fontSmall, fontMedium, fontLarge);
     }
 }
-
 
 
 //-------

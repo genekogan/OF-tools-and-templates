@@ -32,14 +32,14 @@ The actual shaders can be found inside the `shaders` subfolder of the template's
 
 #### MoviePlayer
  
-Plays images or movies. Right now it does little more than integrates a vector of ofVideoPlayer and ofImage into Canvas, but is intended to support other features, like clever playback trips/
+Plays images or movies. Right now it does little more than integrates a vector of ofVideoPlayer and ofImage into Canvas, but is intended to support other features in the future, like clever playback tricks.
 
 
 #### Syphon
 
-Basically a tiny wrapper for ofxSyphon which integrates it into Canvas
+Basically a tiny wrapper for ofxSyphon which integrates into Canvas
 
 
 ### Templates and customization
 
-All visuals inherit from the Scene class which handles the integration into Canvas and other features in the toolkit.  The template `template-custom` shows how to create a custom visual, and `template-shader` shows how to use another pre-existing shader.
+All visuals inherit from the `[Scene](https://github.com/genekogan/OF-tools-and-templates/blob/master/Visuals/src/Scene.h)` class which handles the integration into Canvas and other features in the toolkit.  The template `template-custom` shows how to create a custom visual, and `template-shader` shows how to use another pre-existing shader.

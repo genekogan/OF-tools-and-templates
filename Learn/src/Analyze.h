@@ -70,7 +70,7 @@ public:
             // get fake output value
             double valAssigned = gmmClusterSets[idxOutput][idxCurrent-1].assignedValue;
             double valStd = gmmClusterSets[idxOutput][idxCurrent-1].assignedStd;
-            cout << valAssigned << " " << valStd << "---"<<endl;
+            //cout << valAssigned << " " << valStd << "---"<<endl;
             double val = ofLerp(min, max, valAssigned + ofRandom(-1, 1) * valStd);
             
             // create instance

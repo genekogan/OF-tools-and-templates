@@ -2,7 +2,7 @@
 
 #include "ofMain.h"
 #include "Control.h"
-#include "ModuleImageAnalyzerLearn.h"
+#include "ModuleImageAnalyzer.h"
 
 
 class ofApp : public ofBaseApp{
@@ -13,5 +13,5 @@ public:
     void draw();
     void keyPressed(int key);
     
-    ModuleImageAnalyzerLearn learn;
+    ModuleImageAnalyzer learn;
 };
