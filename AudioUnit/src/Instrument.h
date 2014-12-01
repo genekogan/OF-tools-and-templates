@@ -11,7 +11,6 @@
 class Instrument
 {
 public:
-    void blah();
     enum InstrumentType { AALTO, KAIVO };
     
     Instrument();

@@ -12,6 +12,46 @@ Templates are to tools as examples are to addons. They are complete OF projects 
 Everything in this repository is licensed [GNU General Public License v3](http://www.gnu.org/copyleft/gpl.html).
 
 
+#### Tools/features
+
+Control
+ - base class of other tools for handling parameter sets
+ - automatically generate gui (using ofxUI), handle OSC communication and generate TouchOSC layouts
+ - modulate parameters with a sequencer
+ - save and load presets
+
+Visuals, Canvas, ProjectionMapping
+ - visual content, shaders, movie/image player
+ - manages a sequence of layers which create and modulate visual content in a quad
+ - handles projection mapping of visual content
+ - integration with [Syphon](http://syphon.v002.info/)
+ - save and load presets of Canvas layer sequences and parameters
+
+OpenNi, Kinect
+ - routines for getting data from the kinect
+ - track contours/blobs and skeleton features, create masks and visual content based on the data
+ - calibrate to a projector with ofxKinectProjectorToolkit
+ - get statistical features with ofxKinectFeatures
+
+Learn
+ - a patch-bay using machine learning to modulate a set of output parameters from a series of input parameters, based on [ofxLearn](https://github.com/genekogan/ofxLearn)
+
+AudioUnit, SuperCollider
+ - working with sound using [OSX AudioUnits](https://github.com/admsyn/ofxAudioUnit) and [SuperCollider](supercollider.sourceforge.net)
+ 
+
+Algorithms
+ - point generators (evenly spaced, circle packing, delaunay triangulation)
+ - recursively subdivide a 2d polygon
+ - time-based behaviors
+
+LeapMotion
+ - derive high-level features from [LeapMotion data](https://www.leapmotion.com/)
+
+Manta
+ - interface with the [Manta](www.snyderphonics.com/products.htm) touch controller
+
+
 #### Usage
 
 To use these in an OF project, the best place to put this repo is in your OF root folder, so that it is at the same level from your root folder as addons.

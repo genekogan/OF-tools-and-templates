@@ -3,18 +3,15 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
-    vector<ofPoint> points;
-    points.push_back(ofPoint(0, 0));
-    points.push_back(ofPoint(ofGetWidth(), 0));
-    points.push_back(ofPoint(ofGetWidth(), ofGetHeight()));
-    points.push_back(ofPoint(0, ofGetHeight()));
+    vector<ofPoint> bounds;
+    bounds.push_back(ofPoint(0, 0));
+    bounds.push_back(ofPoint(ofGetWidth(), 0));
+    bounds.push_back(ofPoint(ofGetWidth(), ofGetHeight()));
+    bounds.push_back(ofPoint(0, ofGetHeight()));
     
-    poly.setup(points, ofColor(127, 127, 127));
+    poly.setup(bounds, ofColor(127, 127, 127));
     
-    int n = ofMap(ofGetMouseX(), 0, ofGetWidth(), 2, 20);
-    poly.subdivide(n);
-    
-    ofBackground(255);
+    poly.subdivide(8);
     
 }
 

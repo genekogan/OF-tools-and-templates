@@ -12,11 +12,6 @@ Instrument::Instrument() {
     sequencerMode = NOTES;
 }
 
-void Instrument::blah() {
-    cout << "blah " << endl;
-    control.toggleVisible();
-}
-
 //-----------
 void Instrument::connectTo(ofxAudioUnitMixer &mixer, int channel) {
     au.connectTo(mixer, channel);

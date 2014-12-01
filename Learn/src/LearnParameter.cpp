@@ -138,6 +138,10 @@ void LearnParameter::setVisible(bool visible){
 //  LEARNING
 
 void LearnOutputParameter::addInstance(vector<float> instance) {
+    cout << "instance"<<endl;
+    for (int i=0; i<instance.size(); i++) {
+        cout << instance[i]<<",";
+    }
     data[page]->addEntry(instance);
 }
 

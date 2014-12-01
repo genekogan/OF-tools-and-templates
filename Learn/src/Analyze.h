@@ -35,6 +35,68 @@ public:
     void setVisible(bool visible);
     void toggleVisible() {setVisible(!visible);}
     
+    void makeTrainingSetFromGMM(int idxOutput) {
+        
+        int numInstances = 12;
+        
+        LearnOutputParameter * output = outputs->at(idxOutput);
+        
+        vector<LearnInputParameter*> ainputs = output->getActiveInputs();
+        float min = output->getMin();
+        float max = output->getMax();
+        
+        
+        
+        int numClusters = gmmClusterSets[idxOutput].size();
+        
+        
+
+
+        
+        vector<float> instance;
+        for (int i=0; i<numInstances; i++) {
+            
+            // sample from one of the gaussians, according to its prior
+            int idxCurrent = 0;
+            float rand = ofRandom(1);
+            float current = 0.0;
+            while (rand > current) {
+                current += gmmClusterSets[idxOutput][idxCurrent].prior;
+                idxCurrent++;
+            }
+            vector<double> *mean = &gmmClusterSets[idxOutput][idxCurrent-1].mean;
+            vector<double> *std = &gmmClusterSets[idxOutput][idxCurrent-1].std;
+
+            // get fake output value
+            double valAssigned = gmmClusterSets[idxOutput][idxCurrent-1].assignedValue;
+            double valStd = gmmClusterSets[idxOutput][idxCurrent-1].assignedStd;
+            cout << valAssigned << " " << valStd << "---"<<endl;
+            double val = ofLerp(min, max, valAssigned + ofRandom(-1, 1) * valStd);
+            
+            // create instance
+            instance.clear();
+            instance.push_back(val);
+            for (int p=0; p<mean->size(); p++) {
+                float featValue = mean->at(p) + ofRandom(-1, 1) * std->at(p);
+                instance.push_back(featValue);
+            }
+            output->addInstance(instance);
+        }
+        
+        
+        
+        
+        
+        
+    }
+    
+    void makeTrainingSetFromGMMAll() {
+        for (int i=0; i<outputs->size(); i++) {
+            makeTrainingSetFromGMM(i);
+        }
+    }
+    
+    
 private:
     
     struct GMMCluster {
@@ -42,38 +104,25 @@ private:
         double prior;
         vector<double> mean;
         vector<double> std;
+        double assignedValue, assignedStd;
         GMMCluster(string n, double p, vector<double> m, vector<double> s) {
             name = n;
             prior = p;
             mean = m;
             std = s;
+            assignedValue = 0;
+            assignedStd = 0;
         }
     };
     
-    void setInputMapping() {
-        for (int i=0; i<inputs->size(); i++) {
-            if (inputs->at(i)->get() > inputs->at(i)->getMax()) {
-                inputs->at(i)->setMax(inputs->at(i)->get());
-            }
-            if (inputs->at(i)->get() < inputs->at(i)->getMin()) {
-                inputs->at(i)->setMin(inputs->at(i)->get());
-            }
-        }
-    }
+    void setInputMapping();
+    void selectOutput(string &s);
     
-    void selectOutput(string &s) {
-        for (int i=0; i<spreadsheets.size(); i++) {
-            spreadsheets[i]->setInputsActive(false);
-        }
-        for (int i=0; i<outputs->size(); i++) {
-            if (s == outputs->at(i)->getName()) {
-                idxView = i;
-                spreadsheets[idxView]->setInputsActive(true);
-                return;
-            }
-        }
-    }
+    void mousePressed(ofMouseEventArgs &e);
+    void mouseDragged(ofMouseEventArgs &e);
+    void mouseReleased(ofMouseEventArgs &e);
     
+    void setupGui();
     
     Control control;
     
@@ -92,6 +141,10 @@ private:
     bool kMeansTrained, gmmTrained;
 
     int x, y;
-    bool visible;
+    bool visible, gmmVisible;
+    
+    int idxDraggingCluster;
+    bool dragging;
+    
 };
 
