@@ -20,7 +20,7 @@ public:
     void addNumFingersAsInput();
     void addPadSumAsInput();
     void addPadAverageAsInput();
-    void addPerimterAsInput();
+    void addPerimeterAsInput();
     void addAverageInterFingerDistanceAsInput();
     void addCentroidAsInput();
     void addWeightedCentroidAsInput();
@@ -29,7 +29,7 @@ public:
     void addSliderVelocitiesAsInput();
     void addPadSumVelocityAsInput();
     void addPadAverageVelocityAsInput();
-    void addPerimterVelocityAsInput();
+    void addPerimeterVelocityAsInput();
     void addAverageInterFingerDistanceVelocityAsInput();
     void addCentroidVelocityAsInput();
     void addWeightedCentroidVelocityAsInput();
@@ -38,18 +38,26 @@ public:
     void toggleMantaVisible() {setMantaVisible(!mantaVisible);}
     
 protected:
-
+    
+    void setupInputs();
     void setupGuiInputs();
     void guiEvent(ofxUIEventArgs &e);
     void guiInputEvent(ofxUIEventArgs &e);
-    void padClickedEvent(int &e);
-    void sliderClickedEvent(int &e);
-    void buttonClickedEvent(int &e);
 
+    bool allPads, allSliders, allButtons,
+        numFingers, padSum, padAvg, perimeter,
+        avgInterDist, centroid, wCentroid;
+    bool vAllPads, vAllSliders,
+        vPadSum, vPadAvg, vPerimeter,
+        vAvgInterDist, vCentroid, vWCentroid;
+    bool padVal[8][6], padVel[8][6];
+    bool sliderVal[2], sliderVel[2];
+    
     ofxUICanvas *gui, *guiInputs;
     ofxUIDropDownList *guiJointsFeatures, *guiGloalStatSelector, *guiJointSelector, *guiStatSelector;
     vector<string> rows, cols;
     vector<string> customPads;
+    int guiRow, guiCol;
     
     MantaController manta;
     bool mantaVisible;

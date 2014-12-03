@@ -34,6 +34,8 @@ public:
     void initializeOutput(LearnOutputParameter *output, bool sendOsc=true, bool receiveOsc=true);
     vector<LearnInputParameter*> * getInputs() {return &inputs;}
     vector<LearnOutputParameter*> * getOutputs() {return &outputs;}
+    void clearInputs();
+    void clearOutputs();
     
     // osc
     void setupOscSender(string host, int port);

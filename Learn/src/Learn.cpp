@@ -274,7 +274,19 @@ LearnInputParameter * Learn::addInput(string name, float *value, float min, floa
     newInput->addParameterDeletedListener(this, &Learn::inputParameterDeleted);
     newInput->addParameterSelectedListener(this, &Learn::parameterSelected);
     inputs.push_back(newInput);
-    resetInputs();
+ 
+    
+    
+    //resetInputs();
+    
+    for (int i=0; i<outputs.size(); i++) {
+        outputs[i]->setInputParameters(inputs);
+    }
+    oscManager.registerToOsc((ParameterBase *) newInput, false);
+    resetGuiPositions();
+
+    
+    
     return newInput;
 }
 
@@ -371,6 +383,24 @@ void Learn::resetOutputs() {
     }
 }
 
+//-------
+void Learn::clearInputs() {
+    inputGroups.clear();
+    for (int i=0; i<inputs.size(); i++) {
+        inputParameterDeleted((LearnParameter &) inputs[i]);
+    }
+    inputs.clear();
+    resetInputs();
+}
+
+//-------
+void Learn::clearOutputs() {
+    for (int i=0; i<outputs.size(); i++) {
+        outputParameterDeleted((LearnParameter &) outputs[i]);
+    }
+    outputs.clear();
+    resetOutputs();
+}
 
 
 

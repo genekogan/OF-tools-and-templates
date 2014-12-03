@@ -29,6 +29,7 @@ OpenNi::OpenNi() {
     skeletonVisuals = false;
     calibrationLoaded = false;
     
+    visible = true;
     setGuiPosition(0, 0);
 }
 
@@ -220,18 +221,18 @@ bool OpenNi::update(){
     if (kinect.isNewFrame()) {
         depthPixels = kinect.getDepthRawPixels();
         if (trackingContours) {
-            updateContours();
+            //updateContours();
             if (contourVisuals) {
-                contourRenderer->update();
+                //contourRenderer->update();
             }
         }
         if (trackingKeypoints) {
-            updateOpticalFlow();
+            //updateOpticalFlow();
         }
         if (trackingUsers) {
             updateUsers();
             if (skeletonVisuals) {
-                skeletonRenderer->update();
+            //    skeletonRenderer->update();
             }
         }
         return true;
@@ -349,7 +350,7 @@ void OpenNi::draw() {
     
     ofTranslate(guiX+120, guiY);
     ofScale(0.5, 0.5);
-    
+
     kinect.drawImage();
     if (trackingUsers) {
         kinect.drawSkeletons();
@@ -478,9 +479,10 @@ float * OpenNi::getYMaxHands(int idxUser) {
 vector<ofVec2f> & OpenNi::getProjectedJoints(int idxUser) {
     projectedJoints.clear();
     for (int i=0; i<pJoints[idxUser].size(); i++) {
-        pJoints[idxUser][i]->x *= -1.0;
-        pJoints[idxUser][i]->y *= -1.0;
-        projectedJoints.push_back(kpt.getProjectedPoint(*pJoints[idxUser][i]));
+        ofVec3f raw = ofVec3f(-pJoints[idxUser][i]->x,
+                              -pJoints[idxUser][i]->y,
+                              +pJoints[idxUser][i]->z);
+        projectedJoints.push_back(kpt.getProjectedPoint(raw));
     }
     return projectedJoints;
 }

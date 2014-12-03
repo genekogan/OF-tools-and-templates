@@ -3,11 +3,15 @@
 
 //-----------
 MantaLearn::MantaLearn() : Learn() {
-    manta.setup();
-    setGuiInputsVisible(false);
-    
-    mantaVisible = true;
-    setMantaVisible(mantaVisible);
+    for (int r=0; r<6; r++) {
+        for (int c=0; c<8; c++) {
+            customPads.push_back("pad ("+ofToString(r+1)+","+ofToString(c+1)+")");
+        }
+    }
+    for (int i=0; i<6; i++) rows.push_back(ofToString(i+1));
+    for (int i=0; i<8; i++) cols.push_back(ofToString(i+1));
+    guiRow = -1;
+    guiCol = -1;
     
     guiInputs = new ofxUICanvas();
     setupGuiInputs();
@@ -21,18 +25,11 @@ MantaLearn::MantaLearn() : Learn() {
     gui->addToggle("input selector", false);
     gui->autoSizeToFitWidgets();
     ofAddListener(gui->newGUIEvent, this, &MantaLearn::guiEvent);
-    
-    for (int i=0; i<6; i++) {
-        rows.push_back(ofToString(i+1));
-    }
-    for (int i=0; i<8; i++) {
-        cols.push_back(ofToString(i+1));
-    }
-    for (int r=0; r<6; r++) {
-        for (int c=0; c<8; c++) {
-            customPads.push_back("pad ("+ofToString(r+1)+","+ofToString(c+1)+")");
-        }
-    }
+
+    manta.setup();
+    mantaVisible = true;
+    setMantaVisible(mantaVisible);
+    setGuiInputsVisible(false);
 }
 
 //-----------
@@ -104,7 +101,7 @@ void MantaLearn::addPadAverageAsInput() {
 }
 
 //-----------
-void MantaLearn::addPerimterAsInput() {
+void MantaLearn::addPerimeterAsInput() {
     addParameterAsInput("perimeter", addInput("perimeter", &manta.getPerimeter(), 0, 10));
 }
 
@@ -160,7 +157,7 @@ void MantaLearn::addPadAverageVelocityAsInput() {
 }
 
 //-----------
-void MantaLearn::addPerimterVelocityAsInput() {
+void MantaLearn::addPerimeterVelocityAsInput() {
     addParameterAsInput("perimeter velocity", addInput("perimeterVel", &manta.getPerimeterVelocity(), -1, 1));
 }
 
@@ -185,74 +182,99 @@ void MantaLearn::addWeightedCentroidVelocityAsInput() {
     addParametersAsInput("weighted centroid velocity", newInputs);
 }
 
+//-----------
+void MantaLearn::setupInputs() {
+    clearInputs();
+    
+    if (allPads)  addAllPadsAsInput();
+    if (allSliders)  addSlidersAsInput();
+    if (allButtons)  addButtonsAsInput();
+    if (numFingers)  addNumFingersAsInput();
+    if (padSum)  addPadSumAsInput();
+    if (padAvg)  addPadAverageAsInput();
+    if (perimeter)  addPerimeterAsInput();
+    if (avgInterDist)  addAverageInterFingerDistanceAsInput();
+    if (centroid)  addCentroidAsInput();
+    if (wCentroid)  addWeightedCentroidAsInput();
+    if (vAllPads)  addAllPadVelocitiesAsInput();
+    if (vAllSliders)  addSliderVelocitiesAsInput();
+    if (vPadSum)  addPadSumVelocityAsInput();
+    if (vPadAvg)  addPadAverageVelocityAsInput();
+    if (vPerimeter)  addPerimeterVelocityAsInput();
+    if (vAvgInterDist)  addAverageInterFingerDistanceVelocityAsInput();
+    if (vCentroid)  addCentroidVelocityAsInput();
+    if (vWCentroid)  addWeightedCentroidVelocityAsInput();
+    
+    for (int r=0; r<8; r++) {
+        for (int c=0; c<6; c++) {
+            if (padVal[r][c]) {
+                addParameterAsInput("mantaPad-"+ofToString(r)+"-"+ofToString(c),
+                                    addInput("mantaPad"+ofToString(r)+ofToString(c),
+                                             manta.getPadVelocityRef(r, c),
+                                             -30, 30));
+            }
+            if (padVel[r][c]) {
+                addParameterAsInput("mantaVelocity-"+ofToString(r)+"-"+ofToString(c),
+                                    addInput("mantaVelocity"+ofToString(r)+ofToString(c),
+                                             manta.getPadVelocityRef(guiRow, guiCol),
+                                             -1, 1));
+            }
+        }
+    }
+    
+    for (int i=0; i<2; i++) {
+        if (sliderVal[i])   addParameterAsInput("sliderValue"+ofToString(i),
+                                                addInput("sliderValue"+ofToString(i),
+                                                         manta.getSliderRef(i), 0, 4096));
+        if (sliderVel[i])   addParameterAsInput("sliderVelocity"+ofToString(i),
+                                                addInput("sliderVelocity"+ofToString(i),
+                                                         manta.getSliderVelocityRef(i), -20, 20));
+    }
+
+}
 
 //-----------
 void MantaLearn::setupGuiInputs() {
     guiInputs->clearWidgets();
     guiInputs->setColorBack(ofColor(60));
     guiInputs->setPosition(5, 96);
-    
-    guiInputs->addLabel("Select global inputs");
-    guiInputs->addSpacer();
     guiInputs->addLabel("Manta features");
-    guiInputs->addLabelButton("all pads", false);
-    guiInputs->addLabelButton("all sliders", false);
-    guiInputs->addLabelButton("all buttons", false);
-    guiInputs->addLabelButton("number fingers", false);
-    guiInputs->addLabelButton("pad sum", false);
-    guiInputs->addLabelButton("pad average", false);
-    guiInputs->addLabelButton("perimeter", false);
-    guiInputs->addLabelButton("avg inter-finger dist", false);
-    guiInputs->addLabelButton("centroid", false);
-    guiInputs->addLabelButton("weighted centroid", false);
+    guiInputs->addLabelToggle("all pads", &allPads);
+    guiInputs->addLabelToggle("all sliders", &allSliders);
+    guiInputs->addLabelToggle("all buttons", &allButtons);
+    guiInputs->addLabelToggle("number fingers", &numFingers);
+    guiInputs->addLabelToggle("pad sum", &padSum);
+    guiInputs->addLabelToggle("pad average", &padAvg);
+    guiInputs->addLabelToggle("perimeter", &perimeter);
+    guiInputs->addLabelToggle("avg inter-finger dist", &avgInterDist);
+    guiInputs->addLabelToggle("centroid", &centroid);
+    guiInputs->addLabelToggle("weighted centroid", &wCentroid);
     guiInputs->addSpacer();
     guiInputs->addLabel("Velocity features");
-    guiInputs->addLabelButton("all pad velocities", false);
-    guiInputs->addLabelButton("all slider velocities", false);
-    guiInputs->addLabelButton("pad sum velocity", false);
-    guiInputs->addLabelButton("pad average velocity", false);
-    guiInputs->addLabelButton("perimeter velocity", false);
-    guiInputs->addLabelButton("avg inter-finger dist velocity", false);
-    guiInputs->addLabelButton("centroid velocity", false);
-    guiInputs->addLabelButton("weighted centroid velocity", false);
+    guiInputs->addLabelToggle("all pad velocities", &vAllPads);
+    guiInputs->addLabelToggle("all slider velocities", &vAllSliders);
+    guiInputs->addLabelToggle("pad sum velocity", &vPadSum);
+    guiInputs->addLabelToggle("pad average velocity", &vPadAvg);
+    guiInputs->addLabelToggle("perimeter velocity", &vPerimeter);
+    guiInputs->addLabelToggle("avg inter-finger dist velocity", &vAvgInterDist);
+    guiInputs->addLabelToggle("centroid velocity", &vCentroid);
+    guiInputs->addLabelToggle("weighted centroid velocity", &vWCentroid);
     guiInputs->addSpacer();
-    
-    
-    guiInputs->addLabel("Pad ")->getRect()->setWidth(56.0f);;
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    
-    
+    guiInputs->addLabelToggle("slider 0 value", false);
+    guiInputs->addLabelToggle("slider 0 velocity", false);
+    guiInputs->addLabelToggle("slider 1 value", false);
+    guiInputs->addLabelToggle("slider 1 velocity", false);
+    guiInputs->addSpacer();
     guiInputs->addDropDownList("Row", rows, 42.0f);
+    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
     guiInputs->addDropDownList("Col", cols, 42.0f);
     guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    guiInputs->addLabelButton("pad value", false);
-    guiInputs->addLabelButton("pad velocity", false);
-
+    guiInputs->addLabel("Pad ")->getRect()->setWidth(56.0f);;
+    if (guiRow >= 0 && guiCol >= 0) {
+        guiInputs->addLabelToggle("pad value", padVal[guiRow][guiCol])->setLabelText("pad ("+ofToString(guiRow)+","+ofToString(guiCol)+") value");
+        guiInputs->addLabelToggle("pad velocity", padVel[guiRow][guiCol])->setLabelText("pad ("+ofToString(guiRow)+","+ofToString(guiCol)+") velocity");
+    }
     guiInputs->addSpacer();
-    guiInputs->addLabelButton("slider 0 value", false);
-    guiInputs->addLabelButton("slider 0 velocity", false);
-    guiInputs->addLabelButton("slider 1 value", false);
-    guiInputs->addLabelButton("slider 1 velocity", false);
-    guiInputs->addSpacer();
-    
-    
-    /*
-    if (guiMantaActiveType == 0) {
-        guiInputs->addLabel("Pad "+ofToString(guiMantaActive));
-        guiInputs->addLabelButton("pad value => input", false);
-        guiInputs->addLabelButton("pad velocity => input", false);
-    }
-    else if (guiMantaActiveType == 1) {
-        guiInputs->addLabel("Slider "+ofToString(guiMantaActive));
-        guiInputs->addLabelButton("slider value => input", false);
-        guiInputs->addLabelButton("slider velocity => input", false);
-    }
-    else if (guiMantaActiveType == 2) {
-        guiInputs->addLabel("Button "+ofToString(guiMantaActive));
-        guiInputs->addLabelButton("button value => input", false);
-    }
-     */
-    
     guiInputs->autoSizeToFitWidgets();
 }
 
@@ -266,94 +288,63 @@ void MantaLearn::guiEvent(ofxUIEventArgs &e) {
 
 //-----------
 void MantaLearn::guiInputEvent(ofxUIEventArgs &e) {
-    if (e.getButton()->getValue() == 1) return;
-    
-    if      (e.getName() == "all pads")  addAllPadsAsInput();
-    else if (e.getName() == "all sliders")  addSlidersAsInput();
-    else if (e.getName() == "all buttons")  addButtonsAsInput();
-    else if (e.getName() == "number fingers")  addNumFingersAsInput();
-    else if (e.getName() == "pad sum")  addPadSumAsInput();
-    else if (e.getName() == "pad average")  addPadAverageAsInput();
-    else if (e.getName() == "perimeter")  addPerimterAsInput();
-    else if (e.getName() == "avg inter-finger dist")  addAverageInterFingerDistanceAsInput();
-    else if (e.getName() == "centroid")  addCentroidAsInput();
-    else if (e.getName() == "weighted centroid")  addWeightedCentroidAsInput();
-    else if (e.getName() == "all pad velocities")  addAllPadVelocitiesAsInput();
-    else if (e.getName() == "all slider velocities")  addSliderVelocitiesAsInput();
-    else if (e.getName() == "pad sum velocity")  addPadSumVelocityAsInput();
-    else if (e.getName() == "pad average velocity")  addPadAverageVelocityAsInput();
-    else if (e.getName() == "perimeter velocity")  addPerimterVelocityAsInput();
-    else if (e.getName() == "avg inter-finger dist velocity")  addAverageInterFingerDistanceVelocityAsInput();
-    else if (e.getName() == "centroid velocity")  addCentroidVelocityAsInput();
-    else if (e.getName() == "weighted centroid velocity")  addWeightedCentroidVelocityAsInput();
-
-    
-    
-    /*
-    else if (e.getName() == "pad value => input") {
-        int col = guiMantaActive % 8;
-        int row = guiMantaActive / 8;
-        addParameterAsInput("mantaPad"+ofToString(col)+ofToString(row), addInput("mantaPad"+ofToString(col)+ofToString(row), manta.getPadVelocityRef(row, col), 0, 196));
-    }
-    else if (e.getName() == "pad velocity => input") {
-        int col = guiMantaActive % 8;
-        int row = guiMantaActive / 8;
-        addParameterAsInput("mantaVelocity"+ofToString(col)+ofToString(row), addInput("mantaVelocity"+ofToString(col)+ofToString(row), manta.getPadVelocityRef(row, col), 0, 196));
-    }
-    
-    
-    
-    else if (e.getName() == "slider value => input") {
-        addParameterAsInput("slider"+ofToString(guiMantaActive), addInput("slider"+ofToString(guiMantaActive), manta.getSliderRef(guiMantaActive), 0, 196));
-    }
-    else if (e.getName() == "slider velocity => input") {
-//        addParameterAsInput("sliderVelocity"+ofToString(guiMantaActive), addInput("mantaVelocity"+ofToString(guiMantaActive), manta.getSliderVelocityRef(guiMantaActive), 0, 196));
-        
-    }
-
-    
-    else if (e.getName() == "button value => input") {
-        int col = guiMantaActive % 8;
-        int row = guiMantaActive / 8;
-        addParameterAsInput("button"+ofToString(guiMantaActive), addInput("button"+ofToString(guiMantaActive), manta.getButtonRef(guiMantaActive), 0, 196));
-    }
-    //guiInputs->setVisible(false);
-     */
-}
-
-//-----------
-void MantaLearn::padClickedEvent(int &e) {
-    if (guiMantaActive == e && guiMantaActiveType == 0) {
-        //guiInputs->setVisible(true);
-    }
-    else {
-        guiMantaActive = e;
-        guiMantaActiveType = 0;
+    if      (e.getParentName() == "Row") {
+        guiRow = ofToInt(e.getName());
         setupGuiInputs();
     }
-}
-
-//-----------
-void MantaLearn::sliderClickedEvent(int &e) {
-    if (guiMantaActive == e && guiMantaActiveType == 1) {
-        //guiInputs->setVisible(true);
-    }
-    else {
-        guiMantaActive = e;
-        guiMantaActiveType = 1;
+    else if (e.getParentName() == "Col") {
+        guiCol = ofToInt(e.getName());
         setupGuiInputs();
     }
-}
-
-//-----------
-void MantaLearn::buttonClickedEvent(int &e) {
-    if (guiMantaActive == e && guiMantaActiveType == 2) {
-        //guiInputs->setVisible(true);
+    else if (e.getName() == "pad value") {
+        if (guiRow >= 0 && guiCol >= 0) {
+            padVal[guiRow][guiCol] = e.getButton()->getValue();
+            setupGuiInputs();
+        }
+    }
+    else if (e.getName() == "pad velocity") {
+        if (guiRow >= 0 && guiCol >= 0) {
+            padVel[guiRow][guiCol] = e.getButton()->getValue();
+            setupGuiInputs();
+        }
+    }
+    else if (e.getName() == "slider 0 value") {
+        sliderVal[0] = e.getButton()->getValue();
+        setupGuiInputs();
+    }
+    else if (e.getName() == "slider 1 value") {
+        sliderVal[1] = e.getButton()->getValue();
+        setupGuiInputs();
+    }
+    else if (e.getName() == "slider 0 velocity") {
+        sliderVel[0] = e.getButton()->getValue();
+        setupGuiInputs();
+    }
+    else if (e.getName() == "slider 1 velocity") {
+        sliderVel[1] = e.getButton()->getValue();
+        setupGuiInputs();
     }
     else {
-        guiMantaActive = e;
-        guiMantaActiveType = 2;
-        setupGuiInputs();
+        if (e.getName()=="all pads" ||
+            e.getName()=="all sliders" ||
+            e.getName()=="all buttons" ||
+            e.getName()=="number fingers" ||
+            e.getName()=="pad sum" ||
+            e.getName()=="pad average" ||
+            e.getName()=="perimeter" ||
+            e.getName()=="avg inter-finger dist" ||
+            e.getName()=="centroid" ||
+            e.getName()=="weighted centroid" ||
+            e.getName()=="all pad velocities" ||
+            e.getName()=="all slider velocities" ||
+            e.getName()=="pad sum velocity" ||
+            e.getName()=="pad average velocity" ||
+            e.getName()=="perimeter velocity" ||
+            e.getName()=="avg inter-finger dist velocity" ||
+            e.getName()=="centroid velocity" ||
+            e.getName()=="weighted centroid velocity") {
+        }
+        setupInputs();
     }
 }
 
@@ -361,16 +352,8 @@ void MantaLearn::buttonClickedEvent(int &e) {
 void MantaLearn::setMantaVisible(bool mantaVisible) {
     this->mantaVisible = mantaVisible;
     manta.setVisible(mantaVisible);
-    if (mantaVisible) {
-        manta.addPadClickListener(this, &MantaLearn::padClickedEvent);
-        manta.addSliderClickListener(this, &MantaLearn::sliderClickedEvent);
-        manta.addButtonClickListener(this, &MantaLearn::buttonClickedEvent);
-    }
-    else {
-        manta.removePadClickListener(this, &MantaLearn::padClickedEvent);
-        manta.removeSliderClickListener(this, &MantaLearn::sliderClickedEvent);
-        manta.removeButtonClickListener(this, &MantaLearn::buttonClickedEvent);
-    }
+    gui->setVisible(mantaVisible);
+    guiInputs->setVisible(mantaVisible);
 }
 
 //-----------
