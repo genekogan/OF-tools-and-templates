@@ -3,17 +3,8 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
-    // decide which manta inputs are available
-    learn.addAllPadsAsInput();
-    learn.addSlidersAsInput();
-    learn.addButtonsAsInput();
-    learn.addNumFingersAsInput();
-    learn.addPadSumAsInput();
-    learn.addPadAverageAsInput();
-    learn.addPerimterAsInput();
-    learn.addAverageInterFingerDistanceAsInput();
-    learn.addCentroidAsInput();
-    learn.addWeightedCentroidAsInput();
+    // decide which manta inputs are available (or do it through interface)
+    //learn.addAllPadsAsInput();
 
     // add outputs
     learn.addOutput("output1", 20, 50);
@@ -37,6 +28,8 @@ void ofApp::draw(){
 void ofApp::keyPressed(int key){
     if (key=='g')
         learn.toggleVisible();
+    else if (key=='!')
+        learn.toggleMantaVisible();
 }
 
 //--------------------------------------------------------------

@@ -5,6 +5,8 @@
 void MantaController::setup(){
     isConnected = manta.setup();    
     setMouseActive(true);
+    velocityLerpRate = 0.01;
+    setVisible(true);
 }
 
 //-----------
@@ -20,51 +22,80 @@ void MantaController::setMouseActive(bool mouseActive) {
 
 //-----------
 void MantaController::update(){
-    
-    
-    /*
-     
-     
-    CLEAN UP 
-     
-     */
-    
     if (!isConnected)  return;
     
+    // pad velocities
+    int idx = 0;
+    for (int row=0; row<6; row++) {
+        for (int col=0; col<8; col++) {
+            padVelocity[row][col] = ofLerp(padVelocity[row][col], manta.getPad(row, col) - prevPad[row][col], 0.1);
+            prevPad[row][col] = manta.getPad(row, col);
+            idx++;            
+        }
+    }
+    
+    // slider velocities
+    cout << "SV 1 : "<< sliderVelocity[0] << endl;
+    cout << "PV 1 : "<< prevSlider[0] << endl;
+    cout << "MV 1 : "<< manta.getSlider(0) << endl;
+    sliderVelocity[0] = ofLerp(sliderVelocity[0], manta.getSlider(0) - prevSlider[0], velocityLerpRate);
+    sliderVelocity[1] = ofLerp(sliderVelocity[1], manta.getSlider(1) - prevSlider[1], velocityLerpRate);
+    prevSlider[0] = manta.getSlider(0);
+    prevSlider[1] = manta.getSlider(1);
+    cout << "SV 2 : "<< sliderVelocity[0] << endl;
+    cout << "PV 2 : "<< prevSlider[0] << endl;
+    cout << "MV 2 : "<< manta.getSlider(0) << endl;
+    cout << "==="<<endl;
+    // finger stats
+    float _padSum = 0;
+    float _padAverage = 0;
+    numFingers = 0;
     fingers.clear();
     fingerValues.clear();
-    
-    padSum = 0;
-    padAverage = 0;
-    numFingers = 0;
-    
+    ofPoint fingersMin = ofPoint(1, 1);
+    ofPoint fingersMax = ofPoint(0, 0);
     float currentValue;
     for (int row=0; row<6; row++) {
         for (int col=0; col<8; col++) {
             currentValue = manta.getPad(row, col);
             if (currentValue > 0) {
-                fingers.push_back(getPositionAtPad(row, col));
+                ofPoint fingerPos = getPositionAtPad(row, col);
+                fingers.push_back(fingerPos);
                 fingerValues.push_back(currentValue);
                 numFingers+=1.0;
-                padSum += currentValue;
+                _padSum += currentValue;
+                if      (fingerPos.x > fingersMax.x)   fingersMax.x = fingerPos.x;
+                else if (fingerPos.x < fingersMin.x)   fingersMin.x = fingerPos.x;
+                if      (fingerPos.y > fingersMax.y)   fingersMax.y = fingerPos.y;
+                else if (fingerPos.y < fingersMin.y)   fingersMin.y = fingerPos.y;
             }
         }
     }
-    
     if (numFingers > 0.0) {
-        padAverage = padSum / numFingers;
+        _padAverage = _padSum / numFingers;
         fingersHull = convexHull.getConvexHull(fingers);
+        fingersHullNormalized.resize(fingersHull.size());
+        for (int i=0; i<fingersHull.size(); i++) {
+            fingersHullNormalized[i].x = (fingersHull[i].x - fingersMin.x) / (fingersMax.x - fingersMin.x);
+            fingersHullNormalized[i].y = (fingersHull[i].y - fingersMin.y) / (fingersMax.y - fingersMin.y);
+        }
     }
+    padSumVelocity = ofLerp(padSumVelocity, _padSum-padSum, velocityLerpRate);
+    padAverageVelocity = ofLerp(padAverageVelocity, _padAverage-padAverage, velocityLerpRate);
+    padSum = _padSum;
+    padAverage = _padAverage;
     
-    perimeter = 0;
-    float currentDist;
+    float _perimeter = 0;
     for (int i=0; i<fingersHull.size(); i++) {
-        currentDist = pow(fingersHull[i].x - fingersHull[(i+1)%fingersHull.size()].x, 2)+
+        _perimeter += pow(fingersHull[i].x - fingersHull[(i+1)%fingersHull.size()].x, 2)+
                       pow(fingersHull[i].y - fingersHull[(i+1)%fingersHull.size()].y, 2);
-        perimeter += currentDist;
     }
+    perimeterVelocity = ofLerp(perimeterVelocity, _perimeter-perimeter, velocityLerpRate);
+    perimeter = _perimeter;
     
-    averageInterFingerDistance = (fingersHull.size()==0) ? 0 : perimeter / (float) fingersHull.size();
+    float _averageInterFingerDistance = (fingersHull.size()==0) ? 0 : perimeter / (float) fingersHull.size();
+    averageInterFingerDistanceVelocity = ofLerp(averageInterFingerDistanceVelocity, _averageInterFingerDistance-averageInterFingerDistance, velocityLerpRate);
+    averageInterFingerDistance = _averageInterFingerDistance;
     
     ofPoint centroid, weightedCentroid;
     for (int i=0; i<fingers.size(); i++) {
@@ -72,6 +103,11 @@ void MantaController::update(){
         weightedCentroid += (fingers[i] * fingerValues[i] / padSum);
     }
     centroid /= numFingers;
+    
+    centroidVelocityX = ofLerp(centroidVelocityX, centroidX-centroid.x, velocityLerpRate);
+    centroidVelocityY = ofLerp(centroidVelocityY, centroidY-centroid.y, velocityLerpRate);
+    weightedCentroidVelocityX = ofLerp(weightedCentroidVelocityX, weightedCentroidVelocityX-weightedCentroid.x, velocityLerpRate);
+    weightedCentroidVelocityY = ofLerp(weightedCentroidVelocityY, weightedCentroidVelocityY-weightedCentroid.y, velocityLerpRate);
     
     centroidX = centroid.x;
     centroidY = centroid.y;
@@ -102,6 +138,7 @@ void MantaController::markButton(int index, bool mark) {
 
 //-----------
 void MantaController::draw(int x, int y, int width){
+    if (!visible)   return;
     this->x = x;
     this->y = y;
     this->width = width;
@@ -257,6 +294,12 @@ void MantaController::close() {
         manta.close();
         isConnected = false;
     }
+}
+
+//----------
+void MantaController::setVisible(bool visible) {
+    this->visible = visible;
+    setMouseActive(visible);
 }
 
 //-----------

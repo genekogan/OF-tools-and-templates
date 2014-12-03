@@ -14,6 +14,11 @@ public:
     void close();
     
     void setMouseActive(bool active);
+    void setVisible(bool visible);
+    void toggleVisible() {setVisible(!visible);}
+    
+    float & getVelocityLerpRate() {return velocityLerpRate;}
+    void setVelocityLerpRate(float v) {velocityLerpRate=v;}
     
     void update();
     void draw(int x, int y, int width);
@@ -41,6 +46,23 @@ public:
     float & getCentroidY() {return centroidY;}
     float & getWeightedCentroidX() {return weightedCentroidX;}
     float & getWeightedCentroidY() {return weightedCentroidY;}
+    
+    // get shape
+    // getNormalizedConvexHull (get shape)
+    // getBoundingBox
+    // get width/height ratio
+    
+    float * getPadVelocityRef(int row, int col) {return &padVelocity[row][col];}
+    float * getSliderVelocityRef(int index) {return &sliderVelocity[index];}
+
+    float & getPadSumVelocity() {return padSumVelocity;}
+    float & getPadAverageVelocity() {return padAverageVelocity;}
+    float & getPerimeterVelocity() {return perimeterVelocity;}
+    float & getAverageInterFingerDistanceVelocity() {return averageInterFingerDistanceVelocity;}
+    float & getCentroidVelocityX() {return centroidVelocityX;}
+    float & getCentroidVelocityY() {return centroidVelocityY;}
+    float & getWeightedCentroidVelocityX() {return weightedCentroidVelocityX;}
+    float & getWeightedCentroidVelocityY() {return weightedCentroidVelocityY;}
     
     // mark manta
     void markPad(int row, int col, bool mark);
@@ -76,10 +98,19 @@ protected:
     bool isConnected;
     ofxConvexHull convexHull;
     
+    // parameters
+    float velocityLerpRate;
+    
     // finger trackers
-    vector<ofPoint> fingers, fingersHull;
+    vector<ofPoint> fingers, fingersHull, fingersHullNormalized;
     vector<float> fingerValues;
     
+    // tracking pads and sliders (for velocity)
+    float padVelocity[8][6];
+    float sliderVelocity[2];
+    float prevPad[8][6];
+    float prevSlider[2];
+
     // finger statistics
     float numFingers;
     float padSum, padAverage;
@@ -87,6 +118,13 @@ protected:
     float weightedCentroidX, weightedCentroidY;
     float averageInterFingerDistance;
     float perimeter;
+    
+    // velocity statistics
+    float padSumVelocity, padAverageVelocity;
+    float centroidVelocityX, centroidVelocityY;
+    float weightedCentroidVelocityX, weightedCentroidVelocityY;
+    float averageInterFingerDistanceVelocity;
+    float perimeterVelocity;
 
     // mouse callbacks
     void mousePressed(ofMouseEventArgs &evt);
@@ -97,4 +135,5 @@ protected:
     ofRectangle padPositions[48], sliderPositions[2], buttonPositions[4];
     int x, y, width;
     int px, py, pwidth;
+    bool visible;
 };
