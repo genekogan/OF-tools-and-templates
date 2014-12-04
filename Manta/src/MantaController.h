@@ -54,6 +54,7 @@ public:
     
     float * getPadVelocityRef(int row, int col) {return &padVelocity[row][col];}
     float * getSliderVelocityRef(int index) {return &sliderVelocity[index];}
+    float * getButtonVelocityRef(int index) {return &buttonVelocity[index];}
 
     float & getPadSumVelocity() {return padSumVelocity;}
     float & getPadAverageVelocity() {return padAverageVelocity;}
@@ -108,8 +109,10 @@ protected:
     // tracking pads and sliders (for velocity)
     float padVelocity[8][6];
     float sliderVelocity[2];
+    float buttonVelocity[4];
     float prevPad[8][6];
     float prevSlider[2];
+    float prevButton[4];
 
     // finger statistics
     float numFingers;

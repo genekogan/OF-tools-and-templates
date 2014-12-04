@@ -27,6 +27,7 @@ public:
     
     void addAllPadVelocitiesAsInput();
     void addSliderVelocitiesAsInput();
+    void addButtonVelocitiesAsInput();
     void addPadSumVelocityAsInput();
     void addPadAverageVelocityAsInput();
     void addPerimeterVelocityAsInput();
@@ -36,7 +37,7 @@ public:
     
     void setMantaVisible(bool mantaVisible);
     void toggleMantaVisible() {setMantaVisible(!mantaVisible);}
-    
+        
 protected:
     
     void setupInputs();
@@ -44,14 +45,16 @@ protected:
     void guiEvent(ofxUIEventArgs &e);
     void guiInputEvent(ofxUIEventArgs &e);
 
+    // input selector
     bool allPads, allSliders, allButtons,
         numFingers, padSum, padAvg, perimeter,
         avgInterDist, centroid, wCentroid;
-    bool vAllPads, vAllSliders,
+    bool vAllPads, vAllSliders, vAllButtons,
         vPadSum, vPadAvg, vPerimeter,
         vAvgInterDist, vCentroid, vWCentroid;
     bool padVal[8][6], padVel[8][6];
     bool sliderVal[2], sliderVel[2];
+    bool buttonVal[4], buttonVel[4];
     
     ofxUICanvas *gui, *guiInputs;
     ofxUIDropDownList *guiJointsFeatures, *guiGloalStatSelector, *guiJointSelector, *guiStatSelector;
@@ -60,6 +63,6 @@ protected:
     int guiRow, guiCol;
     
     MantaController manta;
-    bool mantaVisible;
+    bool mantaVisible, inputsVisible;
 };
 

@@ -5,7 +5,7 @@
 void MantaController::setup(){
     isConnected = manta.setup();    
     setMouseActive(true);
-    velocityLerpRate = 0.01;
+    velocityLerpRate = 0.1;
     setVisible(true);
 }
 
@@ -35,17 +35,17 @@ void MantaController::update(){
     }
     
     // slider velocities
-//    cout << "SV 1 : "<< sliderVelocity[0] << endl;
-//    cout << "PV 1 : "<< prevSlider[0] << endl;
-//    cout << "MV 1 : "<< manta.getSlider(0) << endl;
-    sliderVelocity[0] = ofLerp(sliderVelocity[0], manta.getSlider(0) - prevSlider[0], velocityLerpRate);
-    sliderVelocity[1] = ofLerp(sliderVelocity[1], manta.getSlider(1) - prevSlider[1], velocityLerpRate);
-    prevSlider[0] = manta.getSlider(0);
-    prevSlider[1] = manta.getSlider(1);
-//    cout << "SV 2 : "<< sliderVelocity[0] << endl;
-//    cout << "PV 2 : "<< prevSlider[0] << endl;
-//    cout << "MV 2 : "<< manta.getSlider(0) << endl;
-//    cout << "==="<<endl;
+    for (int i=0; i<2; i++) {
+        sliderVelocity[i] = ofLerp(sliderVelocity[i], manta.getSlider(i) - prevSlider[i], velocityLerpRate);
+        prevSlider[i] = manta.getSlider(i);
+    }
+
+    // button velocities
+    for (int i=0; i<4; i++) {
+        buttonVelocity[i] = ofLerp(buttonVelocity[i], manta.getButton(i) - prevButton[i], velocityLerpRate);
+        prevButton[i] = manta.getButton(i);
+    }
+
     // finger stats
     float _padSum = 0;
     float _padAverage = 0;
