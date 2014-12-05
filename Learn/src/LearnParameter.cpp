@@ -662,7 +662,7 @@ void LearnParameter::deselect() {
     guiSetOscAddress();
     guiSetMin();
     guiSetMax();
-    guiSetValueText();
+    //guiSetValueText();
     guiName->setFocus(false);
     guiOsc->setFocus(false);
     guiMin->setFocus(false);

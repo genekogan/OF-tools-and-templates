@@ -6,6 +6,11 @@
 #include "Control.h"
 
 
+// todo:
+//  - shape summary features
+//  - check face detection research
+//
+
 class MantaController
 {
 public:
@@ -27,17 +32,20 @@ public:
     // get pads
     float getPad(int row, int col) {return manta.getPad(row, col);}
     float * getPadRef(int row, int col) {return manta.getPadRef(row, col);}
+    float * getPadVelocityRef(int row, int col) {return &padVelocity[row][col];}
 
     // get sliders
     float getSlider(int index) {return manta.getSlider(index);}
     float * getSliderRef(int index) {return manta.getSliderRef(index);}
+    float * getSliderVelocityRef(int index) {return &sliderVelocity[index];}
 
     // get buttons
     float getButton(int index) {return manta.getButton(index);}
     float * getButtonRef(int index) {return manta.getButtonRef(index);}
+    float * getButtonVelocityRef(int index) {return &buttonVelocity[index];}
 
     // get stats
-    float & getNumFingers() {return numFingers;}
+    float & getNumPads() {return numPads;}
     float & getPadSum() {return padSum;}
     float & getPadAverage() {return padAverage;}
     float & getPerimeter() {return perimeter;}
@@ -46,15 +54,9 @@ public:
     float & getCentroidY() {return centroidY;}
     float & getWeightedCentroidX() {return weightedCentroidX;}
     float & getWeightedCentroidY() {return weightedCentroidY;}
-    
-    // get shape
-    // getNormalizedConvexHull (get shape)
-    // getBoundingBox
-    // get width/height ratio
-    
-    float * getPadVelocityRef(int row, int col) {return &padVelocity[row][col];}
-    float * getSliderVelocityRef(int index) {return &sliderVelocity[index];}
-    float * getButtonVelocityRef(int index) {return &buttonVelocity[index];}
+    float & getWidth() {return padWidth;}
+    float & getHeight() {return padHeight;}
+    float & getWidthHeightRatio() {return whRatio;}
 
     float & getPadSumVelocity() {return padSumVelocity;}
     float & getPadAverageVelocity() {return padAverageVelocity;}
@@ -64,7 +66,10 @@ public:
     float & getCentroidVelocityY() {return centroidVelocityY;}
     float & getWeightedCentroidVelocityX() {return weightedCentroidVelocityX;}
     float & getWeightedCentroidVelocityY() {return weightedCentroidVelocityY;}
-    
+    float & getWidthVelocity() {return widthVelocity;}
+    float & getHeightVelocity() {return heightVelocity;}
+    float & getWidthHeightRatioVelocity() {return whRatioVelocity;}
+
     // mark manta
     void markPad(int row, int col, bool mark);
     void markSlider(int index, int column);
@@ -115,12 +120,13 @@ protected:
     float prevButton[4];
 
     // finger statistics
-    float numFingers;
+    float numPads;
     float padSum, padAverage;
     float centroidX, centroidY;
     float weightedCentroidX, weightedCentroidY;
     float averageInterFingerDistance;
     float perimeter;
+    float padWidth, padHeight, whRatio;
     
     // velocity statistics
     float padSumVelocity, padAverageVelocity;
@@ -128,6 +134,7 @@ protected:
     float weightedCentroidVelocityX, weightedCentroidVelocityY;
     float averageInterFingerDistanceVelocity;
     float perimeterVelocity;
+    float widthVelocity, heightVelocity, whRatioVelocity;
 
     // mouse callbacks
     void mousePressed(ofMouseEventArgs &evt);

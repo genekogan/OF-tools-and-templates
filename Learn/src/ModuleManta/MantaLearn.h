@@ -17,10 +17,13 @@ public:
     void addAllPadsAsInput();
     void addSlidersAsInput();
     void addButtonsAsInput();
-    void addNumFingersAsInput();
+    void addNumPadsAsInput();
     void addPadSumAsInput();
     void addPadAverageAsInput();
     void addPerimeterAsInput();
+    void addPadWidthAsInput();
+    void addPadHeightAsInput();
+    void addPadWHRatioAsInput();
     void addAverageInterFingerDistanceAsInput();
     void addCentroidAsInput();
     void addWeightedCentroidAsInput();
@@ -31,6 +34,9 @@ public:
     void addPadSumVelocityAsInput();
     void addPadAverageVelocityAsInput();
     void addPerimeterVelocityAsInput();
+    void addPadWidthVelocityAsInput();
+    void addPadHeightVelocityAsInput();
+    void addPadWHRatioVelocityAsInput();
     void addAverageInterFingerDistanceVelocityAsInput();
     void addCentroidVelocityAsInput();
     void addWeightedCentroidVelocityAsInput();
@@ -47,10 +53,12 @@ protected:
 
     // input selector
     bool allPads, allSliders, allButtons,
-        numFingers, padSum, padAvg, perimeter,
+        numPads, padSum, padAvg, perimeter,
+        width, height, whRatio,
         avgInterDist, centroid, wCentroid;
     bool vAllPads, vAllSliders, vAllButtons,
         vPadSum, vPadAvg, vPerimeter,
+        vWidth, vHeight, vWhRatio,
         vAvgInterDist, vCentroid, vWCentroid;
     bool padVal[8][6], padVel[8][6];
     bool sliderVal[2], sliderVel[2];

@@ -49,7 +49,11 @@ void MantaController::update(){
     // finger stats
     float _padSum = 0;
     float _padAverage = 0;
-    numFingers = 0;
+    float _width = 0;
+    float _height = 0;
+    float _whRatio = 0;
+    
+    numPads = 0;
     fingers.clear();
     fingerValues.clear();
     ofPoint fingersMin = ofPoint(1, 1);
@@ -62,57 +66,103 @@ void MantaController::update(){
                 ofPoint fingerPos = getPositionAtPad(row, col);
                 fingers.push_back(fingerPos);
                 fingerValues.push_back(currentValue);
-                numFingers+=1.0;
+                numPads+=1.0;
                 _padSum += currentValue;
-                if      (fingerPos.x > fingersMax.x)   fingersMax.x = fingerPos.x;
-                else if (fingerPos.x < fingersMin.x)   fingersMin.x = fingerPos.x;
-                if      (fingerPos.y > fingersMax.y)   fingersMax.y = fingerPos.y;
-                else if (fingerPos.y < fingersMin.y)   fingersMin.y = fingerPos.y;
+                if (fingerPos.x > fingersMax.x)   fingersMax.x = fingerPos.x;
+                if (fingerPos.x < fingersMin.x)   fingersMin.x = fingerPos.x;
+                if (fingerPos.y > fingersMax.y)   fingersMax.y = fingerPos.y;
+                if (fingerPos.y < fingersMin.y)   fingersMin.y = fingerPos.y;
             }
         }
     }
-    if (numFingers > 0.0) {
-        _padAverage = _padSum / numFingers;
+    
+    _padAverage = fingers.size() > 0 ? _padSum / numPads : 0.0;
+    
+    float _perimeter = 0.0;
+    float _averageInterFingerDistance = 0.0;
+
+    if (fingers.size() < 2) {
+        _width = 0;
+        _height = 0;
+        _whRatio = 0;
+        _perimeter = 0;
+        _averageInterFingerDistance = 0;
+        fingersHull.resize(0);
+        fingersHullNormalized.resize(0);
+    }
+    else if (fingers.size() == 2) {
+        _width = fingersMax.x - fingersMin.x;
+        _height = fingersMax.y - fingersMin.y;
+        _whRatio = _width / _height;
+        
+        _perimeter = (pow(fingers[0].x - fingers[1].x, 2)+
+                      pow(fingers[0].y - fingers[1].y, 2));
+
+        _averageInterFingerDistance = _perimeter;
+        fingersHull.resize(0);
+        fingersHullNormalized.resize(0);
+    }
+    else {
+        _width = fingersMax.x - fingersMin.x;
+        _height = fingersMax.y - fingersMin.y;
+        _whRatio = _width / _height;
+        
         fingersHull = convexHull.getConvexHull(fingers);
         fingersHullNormalized.resize(fingersHull.size());
         for (int i=0; i<fingersHull.size(); i++) {
             fingersHullNormalized[i].x = (fingersHull[i].x - fingersMin.x) / (fingersMax.x - fingersMin.x);
             fingersHullNormalized[i].y = (fingersHull[i].y - fingersMin.y) / (fingersMax.y - fingersMin.y);
         }
+        for (int i=0; i<fingersHull.size()-1; i++) {
+            _perimeter += (pow(fingersHull[i].x - fingersHull[(i+1)].x, 2)+
+                           pow(fingersHull[i].y - fingersHull[(i+1)].y, 2));
+        }
+        _averageInterFingerDistance = _perimeter / (float) (fingersHull.size()-1);
     }
+    
+    perimeterVelocity = ofLerp(perimeterVelocity, _perimeter-perimeter, velocityLerpRate);
+    averageInterFingerDistanceVelocity = ofLerp(averageInterFingerDistanceVelocity, _averageInterFingerDistance-averageInterFingerDistance, velocityLerpRate);
+
     padSumVelocity = ofLerp(padSumVelocity, _padSum-padSum, velocityLerpRate);
     padAverageVelocity = ofLerp(padAverageVelocity, _padAverage-padAverage, velocityLerpRate);
+
+    widthVelocity = ofLerp(widthVelocity, _width-padWidth, velocityLerpRate);
+    heightVelocity = ofLerp(heightVelocity, _height-padHeight, velocityLerpRate);
+    whRatioVelocity = ofLerp(whRatioVelocity, _whRatio-whRatio, velocityLerpRate);
+    
+    padWidth = _width;
+    padHeight = _height;
+    whRatio = _whRatio;
+    perimeter = _perimeter;
+    averageInterFingerDistance = _averageInterFingerDistance;
     padSum = _padSum;
     padAverage = _padAverage;
     
-    float _perimeter = 0;
-    for (int i=0; i<fingersHull.size(); i++) {
-        _perimeter += pow(fingersHull[i].x - fingersHull[(i+1)%fingersHull.size()].x, 2)+
-                      pow(fingersHull[i].y - fingersHull[(i+1)%fingersHull.size()].y, 2);
-    }
-    perimeterVelocity = ofLerp(perimeterVelocity, _perimeter-perimeter, velocityLerpRate);
-    perimeter = _perimeter;
-    
-    float _averageInterFingerDistance = (fingersHull.size()==0) ? 0 : perimeter / (float) fingersHull.size();
-    averageInterFingerDistanceVelocity = ofLerp(averageInterFingerDistanceVelocity, _averageInterFingerDistance-averageInterFingerDistance, velocityLerpRate);
-    averageInterFingerDistance = _averageInterFingerDistance;
-    
-    ofPoint centroid, weightedCentroid;
+    ofPoint _centroid, _weightedCentroid;
     for (int i=0; i<fingers.size(); i++) {
-        centroid += fingers[i];
-        weightedCentroid += (fingers[i] * fingerValues[i] / padSum);
+        _centroid += fingers[i];
+        _weightedCentroid += (fingers[i] * fingerValues[i] / padSum);
     }
-    centroid /= numFingers;
+    _centroid /= numPads;
     
-    centroidVelocityX = ofLerp(centroidVelocityX, centroidX-centroid.x, velocityLerpRate);
-    centroidVelocityY = ofLerp(centroidVelocityY, centroidY-centroid.y, velocityLerpRate);
-    weightedCentroidVelocityX = ofLerp(weightedCentroidVelocityX, weightedCentroidVelocityX-weightedCentroid.x, velocityLerpRate);
-    weightedCentroidVelocityY = ofLerp(weightedCentroidVelocityY, weightedCentroidVelocityY-weightedCentroid.y, velocityLerpRate);
+    centroidVelocityX = ofLerp(centroidVelocityX, _centroid.x-centroidX, velocityLerpRate);
+    centroidVelocityY = ofLerp(centroidVelocityY, _centroid.y-centroidY, velocityLerpRate);
+    weightedCentroidVelocityX = ofLerp(weightedCentroidVelocityX, _weightedCentroid.x-weightedCentroidX, velocityLerpRate);
+    weightedCentroidVelocityY = ofLerp(weightedCentroidVelocityY, _weightedCentroid.y-weightedCentroidY, velocityLerpRate);
     
-    centroidX = centroid.x;
-    centroidY = centroid.y;
-    weightedCentroidX = weightedCentroid.x;
-    weightedCentroidY = weightedCentroid.y;
+    centroidX = _centroid.x;
+    centroidY = _centroid.y;
+    weightedCentroidX = _weightedCentroid.x;
+    weightedCentroidY = _weightedCentroid.y;    
+    
+    // some epsilons
+    if (centroidVelocityX < 1e-5)   centroidVelocityX = 0;
+    if (centroidVelocityY < 1e-5)   centroidVelocityY = 0;
+    if (weightedCentroidVelocityX < 1e-5)   weightedCentroidVelocityX = 0;
+    if (weightedCentroidVelocityY < 1e-5)   weightedCentroidVelocityY = 0;
+    if (widthVelocity < 1e-5)   widthVelocity = 0;
+    if (heightVelocity < 1e-5)   heightVelocity = 0;
+    if (whRatioVelocity < 1e-5)   whRatioVelocity = 0;
 }
 
 //-----------

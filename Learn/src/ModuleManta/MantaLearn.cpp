@@ -96,43 +96,58 @@ void MantaLearn::addButtonsAsInput() {
 }
 
 //-----------
-void MantaLearn::addNumFingersAsInput() {
-    addParameterAsInput("num fingers", addInput("numFingers", &manta.getNumFingers(), 0, 24));
+void MantaLearn::addNumPadsAsInput() {
+    addParameterAsInput("num fingers", addInput("numPads", &manta.getNumPads(), 0, 48));
 }
 
 //-----------
 void MantaLearn::addPadSumAsInput() {
-    addParameterAsInput("pad sum", addInput("padSum", &manta.getPadSum(), 0, 10));
+    addParameterAsInput("pad sum", addInput("padSum", &manta.getPadSum(), 0, 3000));
 }
 
 //-----------
 void MantaLearn::addPadAverageAsInput() {
-    addParameterAsInput("pad average", addInput("padAverage", &manta.getPadAverage(), 0, 10));
+    addParameterAsInput("pad average", addInput("padAverage", &manta.getPadAverage(), 0, 196));
 }
 
 //-----------
 void MantaLearn::addPerimeterAsInput() {
-    addParameterAsInput("perimeter", addInput("perimeter", &manta.getPerimeter(), 0, 10));
+    addParameterAsInput("perimeter", addInput("perimeter", &manta.getPerimeter(), 0, 3));
+}
+
+//-----------
+void MantaLearn::addPadWidthAsInput() {
+    addParameterAsInput("width", addInput("width", &manta.getWidth(), 0, 1));
+}
+
+//-----------
+void MantaLearn::addPadHeightAsInput() {
+    addParameterAsInput("height", addInput("height", &manta.getHeight(), 0, 1));
+}
+
+//-----------
+void MantaLearn::addPadWHRatioAsInput() {
+    addParameterAsInput("widthHeightRatio", addInput("widthHeightRatio", &manta.getWidthHeightRatio(), 0, 10));
 }
 
 //-----------
 void MantaLearn::addAverageInterFingerDistanceAsInput() {
-    addParameterAsInput("avg finger distance", addInput("avgFingerDistance", &manta.getAverageInterFingerDistance(), 0, 10));
+    addParameterAsInput("avg finger distance", addInput("avgFingerDistance", &manta.getAverageInterFingerDistance(), 0, 2));
 }
 
 //-----------
 void MantaLearn::addCentroidAsInput() {
     vector<LearnInputParameter*> newInputs;
-    newInputs.push_back(addInput("centroidX", &manta.getCentroidX(), 0, 10));
-    newInputs.push_back(addInput("centroidY", &manta.getCentroidY(), 0, 10));
+    newInputs.push_back(addInput("centroidX", &manta.getCentroidX(), 0, 1));
+    newInputs.push_back(addInput("centroidY", &manta.getCentroidY(), 0, 1));
     addParametersAsInput("centroid", newInputs);
 }
 
 //-----------
 void MantaLearn::addWeightedCentroidAsInput() {
     vector<LearnInputParameter*> newInputs;
-    newInputs.push_back(addInput("wCentroidX", &manta.getWeightedCentroidX(), 0, 10));
-    newInputs.push_back(addInput("wCentroidY", &manta.getWeightedCentroidY(), 0, 10));
+    newInputs.push_back(addInput("wCentroidX", &manta.getWeightedCentroidX(), 0, 1));
+    newInputs.push_back(addInput("wCentroidY", &manta.getWeightedCentroidY(), 0, 1));
     addParametersAsInput("weighted centroid", newInputs);
 }
 
@@ -182,6 +197,21 @@ void MantaLearn::addPerimeterVelocityAsInput() {
 }
 
 //-----------
+void MantaLearn::addPadWidthVelocityAsInput() {
+    addParameterAsInput("width velocity", addInput("width velocity", &manta.getWidthVelocity(), -0.1, 0.1));
+}
+
+//-----------
+void MantaLearn::addPadHeightVelocityAsInput() {
+    addParameterAsInput("height velocity", addInput("height velocity", &manta.getHeightVelocity(), -0.1, 0.1));
+}
+
+//-----------
+void MantaLearn::addPadWHRatioVelocityAsInput() {
+    addParameterAsInput("widthHeightRatio velocity", addInput("widthHeightRatio velocity", &manta.getWidthHeightRatioVelocity(), -0.2, 0.2));
+}
+
+//-----------
 void MantaLearn::addAverageInterFingerDistanceVelocityAsInput() {
     addParameterAsInput("avg finger distance velocity", addInput("avgFingerDistanceVel", &manta.getAverageInterFingerDistanceVelocity(), -0.1, 0.1));
 }
@@ -209,10 +239,13 @@ void MantaLearn::setupInputs() {
     if (allPads)  addAllPadsAsInput();
     if (allSliders)  addSlidersAsInput();
     if (allButtons)  addButtonsAsInput();
-    if (numFingers)  addNumFingersAsInput();
+    if (numPads)  addNumPadsAsInput();
     if (padSum)  addPadSumAsInput();
     if (padAvg)  addPadAverageAsInput();
     if (perimeter)  addPerimeterAsInput();
+    if (width)  addPadWidthAsInput();
+    if (height)  addPadHeightAsInput();
+    if (whRatio)  addPadWHRatioAsInput();
     if (avgInterDist)  addAverageInterFingerDistanceAsInput();
     if (centroid)  addCentroidAsInput();
     if (wCentroid)  addWeightedCentroidAsInput();
@@ -222,6 +255,9 @@ void MantaLearn::setupInputs() {
     if (vPadSum)  addPadSumVelocityAsInput();
     if (vPadAvg)  addPadAverageVelocityAsInput();
     if (vPerimeter)  addPerimeterVelocityAsInput();
+    if (vWidth)  addPadWidthVelocityAsInput();
+    if (vHeight)  addPadHeightVelocityAsInput();
+    if (vWhRatio)  addPadWHRatioVelocityAsInput();
     if (vAvgInterDist)  addAverageInterFingerDistanceVelocityAsInput();
     if (vCentroid)  addCentroidVelocityAsInput();
     if (vWCentroid)  addWeightedCentroidVelocityAsInput();
@@ -231,18 +267,15 @@ void MantaLearn::setupInputs() {
             if (padVal[r][c]) {
                 addParameterAsInput("mantaPad-"+ofToString(r)+"-"+ofToString(c),
                                     addInput("mantaPad"+ofToString(r)+ofToString(c),
-                                             manta.getPadRef(r, c),
-                                             0, 196));
+                                             manta.getPadRef(r, c), 0, 196));
             }
             if (padVel[r][c]) {
                 addParameterAsInput("mantaVelocity-"+ofToString(r)+"-"+ofToString(c),
                                     addInput("mantaVelocity"+ofToString(r)+ofToString(c),
-                                             manta.getPadVelocityRef(guiRow, guiCol),
-                                             -20, 20));
+                                             manta.getPadVelocityRef(guiRow, guiCol), -20, 20));
             }
         }
     }
-    
     for (int i=0; i<2; i++) {
         if (sliderVal[i])   addParameterAsInput("sliderValue"+ofToString(i),
                                                 addInput("sliderValue"+ofToString(i),
@@ -251,7 +284,6 @@ void MantaLearn::setupInputs() {
                                                 addInput("sliderVelocity"+ofToString(i),
                                                          manta.getSliderVelocityRef(i), -0.1, 0.1));
     }
-
     for (int i=0; i<4; i++) {
         if (buttonVal[i])   addParameterAsInput("buttonValue"+ofToString(i),
                                                 addInput("buttonValue"+ofToString(i),
@@ -270,10 +302,13 @@ void MantaLearn::setupGuiInputs() {
     guiInputs->addLabelToggle("all pads", &allPads);
     guiInputs->addLabelToggle("all sliders", &allSliders);
     guiInputs->addLabelToggle("all buttons", &allButtons);
-    guiInputs->addLabelToggle("number fingers", &numFingers);
+    guiInputs->addLabelToggle("number pads", &numPads);
     guiInputs->addLabelToggle("pad sum", &padSum);
     guiInputs->addLabelToggle("pad average", &padAvg);
     guiInputs->addLabelToggle("perimeter", &perimeter);
+    guiInputs->addLabelToggle("width", &width);
+    guiInputs->addLabelToggle("height", &height);
+    guiInputs->addLabelToggle("width/height ratio", &whRatio);
     guiInputs->addLabelToggle("avg inter-finger dist", &avgInterDist);
     guiInputs->addLabelToggle("centroid", &centroid);
     guiInputs->addLabelToggle("weighted centroid", &wCentroid);
@@ -284,6 +319,9 @@ void MantaLearn::setupGuiInputs() {
     guiInputs->addLabelToggle("pad sum velocity", &vPadSum);
     guiInputs->addLabelToggle("pad average velocity", &vPadAvg);
     guiInputs->addLabelToggle("perimeter velocity", &vPerimeter);
+    guiInputs->addLabelToggle("width velocity", &vWidth);
+    guiInputs->addLabelToggle("height velocity", &vHeight);
+    guiInputs->addLabelToggle("width/height ratio velocity", &vWhRatio);
     guiInputs->addLabelToggle("avg inter-finger dist velocity", &vAvgInterDist);
     guiInputs->addLabelToggle("centroid velocity", &vCentroid);
     guiInputs->addLabelToggle("weighted centroid velocity", &vWCentroid);
@@ -348,45 +386,17 @@ void MantaLearn::guiInputEvent(ofxUIEventArgs &e) {
         guiCol = ofToInt(e.getName());
         setupGuiInputs();
     }
-    /*
-    else if (e.getName() == "pad value") {
-        if (guiRow >= 0 && guiCol >= 0) {
-            padVal[guiRow][guiCol] = e.getButton()->getValue();
-            setupInputs();
-        }
-    }
-    else if (e.getName() == "pad velocity") {
-        if (guiRow >= 0 && guiCol >= 0) {
-            padVel[guiRow][guiCol] = e.getButton()->getValue();
-            setupInputs();
-        }
-    }*/
-    /*
-    else if (e.getName() == "slider 0 value") {
-        sliderVal[0] = e.getButton()->getValue();
-        setupInputs();
-    }
-    else if (e.getName() == "slider 1 value") {
-        sliderVal[1] = e.getButton()->getValue();
-        setupInputs();
-    }
-    else if (e.getName() == "slider 0 velocity") {
-        sliderVel[0] = e.getButton()->getValue();
-        setupInputs();
-    }
-    else if (e.getName() == "slider 1 velocity") {
-        sliderVel[1] = e.getButton()->getValue();
-        setupInputs();
-    }
-    */
     else {
         if (e.getName()=="all pads" ||
             e.getName()=="all sliders" ||
             e.getName()=="all buttons" ||
-            e.getName()=="number fingers" ||
+            e.getName()=="number pads" ||
             e.getName()=="pad sum" ||
             e.getName()=="pad average" ||
             e.getName()=="perimeter" ||
+            e.getName()=="width" ||
+            e.getName()=="height" ||
+            e.getName()=="width/height ratio" ||
             e.getName()=="avg inter-finger dist" ||
             e.getName()=="centroid" ||
             e.getName()=="weighted centroid" ||
@@ -395,18 +405,18 @@ void MantaLearn::guiInputEvent(ofxUIEventArgs &e) {
             e.getName()=="pad sum velocity" ||
             e.getName()=="pad average velocity" ||
             e.getName()=="perimeter velocity" ||
+            e.getName()=="width velocity" ||
+            e.getName()=="height velocity" ||
+            e.getName()=="width/height ratio velocity" ||
             e.getName()=="avg inter-finger dist velocity" ||
             e.getName()=="centroid velocity" ||
             e.getName()=="weighted centroid velocity" ||
-
             e.getName()=="pad value" ||
             e.getName()=="pad velocity" ||
-
             e.getName()=="slider 0 value" ||
             e.getName()=="slider 0 velocity" ||
             e.getName()=="slider 1 value" ||
             e.getName()=="slider 1 velocity" ||
-            
             e.getName()=="button 0 value" ||
             e.getName()=="button 0 velocity" ||
             e.getName()=="button 1 value" ||
@@ -414,12 +424,9 @@ void MantaLearn::guiInputEvent(ofxUIEventArgs &e) {
             e.getName()=="button 2 value" ||
             e.getName()=="button 2 velocity" ||
             e.getName()=="button 3 value" ||
-            e.getName()=="button 3 velocity"
-
-            
-            ) {
+            e.getName()=="button 3 velocity") {
+            setupInputs();
         }
-        setupInputs();
     }
 }
 
