@@ -4,9 +4,10 @@
 void ofApp::setup() {
     ofSetLogLevel(OF_LOG_VERBOSE);
     
-    gfx.setup("main", ofGetScreenWidth()-640, 20, 1024, 768, false);
+    gfx.setup("main", ofGetScreenWidth(), 0, 1280, 800, true);
 
-    kinect.setup("/Users/Gene/Code/openFrameworks/templates/Kinect/openni_oniRecording/bin/data/alecsroom.oni");
+    kinect.setup();
+//    kinect.setup("/Users/Gene/Code/openFrameworks/templates/Kinect/openni_oniRecording/bin/data/alecsroom.oni");
     kinect.enableUserTracking();
     kinect.setCalibration("/Users/Gene/Desktop/calibration.xml");
     kinect.setupSkeletonVisuals(gfx.getWidth(), gfx.getHeight());

@@ -41,6 +41,9 @@
 		B09873451962160B00B98589 /* libXnVFeatures_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B09873371962160A00B98589 /* libXnVFeatures_1_5_2.dylib */; };
 		B09873461962160B00B98589 /* libXnVHandGenerator_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B09873381962160A00B98589 /* libXnVHandGenerator_1_5_2.dylib */; };
 		B09873471962160B00B98589 /* libXnVNite_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B09873391962160A00B98589 /* libXnVNite_1_5_2.dylib */; };
+		B0B758FF1A31BC3C00EB3EAD /* ofxKinectFeatures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0B758F91A31BC3C00EB3EAD /* ofxKinectFeatures.cpp */; };
+		B0B759001A31BC3C00EB3EAD /* ofxKinectSkeleton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0B758FB1A31BC3C00EB3EAD /* ofxKinectSkeleton.cpp */; };
+		B0B759011A31BC3C00EB3EAD /* ofxMocapElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0B758FD1A31BC3C00EB3EAD /* ofxMocapElement.cpp */; };
 		B0C5DDA119DC822500AFAE23 /* ofxKinectProjectorToolkit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C5DD4F19DC822400AFAE23 /* ofxKinectProjectorToolkit.cpp */; };
 		B0C5DDA219DC822500AFAE23 /* unicode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C5DD9C19DC822500AFAE23 /* unicode.cpp */; };
 		B0C5DDAC19DC823900AFAE23 /* ofxXmlSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C5DDA519DC823900AFAE23 /* ofxXmlSettings.cpp */; };
@@ -416,6 +419,12 @@
 		B09873371962160A00B98589 /* libXnVFeatures_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVFeatures_1_5_2.dylib; sourceTree = "<group>"; };
 		B09873381962160A00B98589 /* libXnVHandGenerator_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVHandGenerator_1_5_2.dylib; sourceTree = "<group>"; };
 		B09873391962160A00B98589 /* libXnVNite_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVNite_1_5_2.dylib; sourceTree = "<group>"; };
+		B0B758F91A31BC3C00EB3EAD /* ofxKinectFeatures.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxKinectFeatures.cpp; sourceTree = "<group>"; };
+		B0B758FA1A31BC3C00EB3EAD /* ofxKinectFeatures.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxKinectFeatures.h; sourceTree = "<group>"; };
+		B0B758FB1A31BC3C00EB3EAD /* ofxKinectSkeleton.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxKinectSkeleton.cpp; sourceTree = "<group>"; };
+		B0B758FC1A31BC3C00EB3EAD /* ofxKinectSkeleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxKinectSkeleton.h; sourceTree = "<group>"; };
+		B0B758FD1A31BC3C00EB3EAD /* ofxMocapElement.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMocapElement.cpp; sourceTree = "<group>"; };
+		B0B758FE1A31BC3C00EB3EAD /* ofxMocapElement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxMocapElement.h; sourceTree = "<group>"; };
 		B0C5DD4F19DC822400AFAE23 /* ofxKinectProjectorToolkit.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxKinectProjectorToolkit.cpp; sourceTree = "<group>"; };
 		B0C5DD5019DC822400AFAE23 /* ofxKinectProjectorToolkit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxKinectProjectorToolkit.h; sourceTree = "<group>"; };
 		B0C5DD5319DC822400AFAE23 /* algs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = algs.h; sourceTree = "<group>"; };
@@ -1372,6 +1381,28 @@
 			path = ../../../addons/ofxOpenNI/mac/copy_to_data_openni_path/lib;
 			sourceTree = "<group>";
 		};
+		B0B758F71A31BC3C00EB3EAD /* ofxKinectFeatures */ = {
+			isa = PBXGroup;
+			children = (
+				B0B758F81A31BC3C00EB3EAD /* src */,
+			);
+			name = ofxKinectFeatures;
+			sourceTree = "<group>";
+		};
+		B0B758F81A31BC3C00EB3EAD /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B0B758F91A31BC3C00EB3EAD /* ofxKinectFeatures.cpp */,
+				B0B758FA1A31BC3C00EB3EAD /* ofxKinectFeatures.h */,
+				B0B758FB1A31BC3C00EB3EAD /* ofxKinectSkeleton.cpp */,
+				B0B758FC1A31BC3C00EB3EAD /* ofxKinectSkeleton.h */,
+				B0B758FD1A31BC3C00EB3EAD /* ofxMocapElement.cpp */,
+				B0B758FE1A31BC3C00EB3EAD /* ofxMocapElement.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxKinectFeatures/src;
+			sourceTree = "<group>";
+		};
 		B0C5DD4D19DC822400AFAE23 /* ofxKinectProjectorToolkit */ = {
 			isa = PBXGroup;
 			children = (
@@ -1810,6 +1841,7 @@
 			children = (
 				B01D1EFF19FD8ACC00D164A7 /* OpenNi */,
 				B01D1EFE19FD8AC800D164A7 /* Control */,
+				B0B758F71A31BC3C00EB3EAD /* ofxKinectFeatures */,
 				B01D1EF819FD8AA400D164A7 /* ofxSequencer */,
 				B01D1EF319FD8A9E00D164A7 /* ofxBpm */,
 				B0C5DE7E19DC826700AFAE23 /* ofxSecondWindow */,
@@ -2091,8 +2123,10 @@
 				1D5F3298C2FA073628012944 /* ofxCvContourFinder.cpp in Sources */,
 				169D3C72FDE6C5590A1616F5 /* ofxCvFloatImage.cpp in Sources */,
 				B0C5DE7919DC824900AFAE23 /* UdpSocket.cpp in Sources */,
+				B0B759001A31BC3C00EB3EAD /* ofxKinectSkeleton.cpp in Sources */,
 				B0C5DE7319DC824900AFAE23 /* ofxOscMessage.cpp in Sources */,
 				FB09C6B2A1DA0EA217240CB8 /* ofxCvGrayscaleImage.cpp in Sources */,
+				B0B759011A31BC3C00EB3EAD /* ofxMocapElement.cpp in Sources */,
 				E212C821D1064B92DD953A42 /* ofxCvHaarFinder.cpp in Sources */,
 				63020F16C7E8DED980111241 /* ofxCvImage.cpp in Sources */,
 				B0C5DE2019DC823C00AFAE23 /* ofxUIImageSampler.cpp in Sources */,
@@ -2161,6 +2195,7 @@
 				B0C5DE3219DC823C00AFAE23 /* ofxUISortableList.cpp in Sources */,
 				B0C5DDAF19DC823900AFAE23 /* tinyxmlparser.cpp in Sources */,
 				B0DEE5821A08F126005A4A69 /* SkeletonRenderer.cpp in Sources */,
+				B0B758FF1A31BC3C00EB3EAD /* ofxKinectFeatures.cpp in Sources */,
 				B0C5DE7219DC824900AFAE23 /* ofxOscBundle.cpp in Sources */,
 				B0C5DE7719DC824900AFAE23 /* IpEndpointName.cpp in Sources */,
 				B0C5DE1B19DC823C00AFAE23 /* ofxUIEventArgs.cpp in Sources */,

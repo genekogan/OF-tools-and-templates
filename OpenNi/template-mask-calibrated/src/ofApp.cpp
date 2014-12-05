@@ -6,7 +6,8 @@ void ofApp::setup() {
     
     gfx.setup("main", ofGetScreenWidth(), 0, 1280, 800, true);
 
-    kinect.setup("/Users/Gene/Code/openFrameworks/templates/Kinect/openni_oniRecording/bin/data/alecsroom.oni");
+    kinect.setup();
+    //kinect.setup("/Users/Gene/Code/openFrameworks/templates/Kinect/openni_oniRecording/bin/data/alecsroom.oni");
     kinect.enableContourTracking();
     kinect.setCalibration("/Users/Gene/Desktop/calibration.xml");
     kinect.setupContourVisuals(gfx.getWidth(), gfx.getHeight());
@@ -36,5 +37,5 @@ void ofApp::exit(){
 
 //--------
 void ofApp::keyPressed(int key){
-    if (key=='g')   kinect.toggleGuiVisible();
+    if (key=='g')   kinect.toggleVisible();
 }

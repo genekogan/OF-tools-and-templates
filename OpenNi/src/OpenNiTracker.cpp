@@ -221,9 +221,9 @@ bool OpenNi::update(){
     if (kinect.isNewFrame()) {
         depthPixels = kinect.getDepthRawPixels();
         if (trackingContours) {
-            //updateContours();
+            updateContours();
             if (contourVisuals) {
-                //contourRenderer->update();
+                contourRenderer->update();
             }
         }
         if (trackingKeypoints) {
@@ -232,7 +232,7 @@ bool OpenNi::update(){
         if (trackingUsers) {
             updateUsers();
             if (skeletonVisuals) {
-            //    skeletonRenderer->update();
+                skeletonRenderer->update();
             }
         }
         return true;
