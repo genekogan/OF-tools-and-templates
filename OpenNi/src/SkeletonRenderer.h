@@ -26,6 +26,12 @@ public:
     
     void update() {
         
+        checkChanges();
+        
+        if (drawFluids) {
+            updateFluids();
+        }
+        
     }
     
     void draw() {
@@ -34,6 +40,7 @@ public:
         
         if (drawJointLines)     renderJointLines();
         if (drawOutwardLines)   renderOutwardLines();
+        if (drawFluids)         renderFluids();
         
         ofPopStyle();
         ofPopMatrix();
@@ -42,7 +49,9 @@ public:
     void renderJointLines();
     void renderOutwardLines();
 
-    
+    void setupFluids();
+    void updateFluids();
+    void renderFluids();
     
     OpenNi *openNi;
     ofxKinectProjectorToolkit *kpt;
@@ -53,12 +62,15 @@ public:
 private:
     
     void setupControl();
+    void checkChanges();
     
     Control control;
+    bool visible;
     
-    bool drawJointLines;
-    bool drawOutwardLines;
+    bool drawJointLines, drawOutwardLines, drawFluids;
+    bool pDrawJointLines, pDrawOutwardLines, pDrawFluids;
     
+    // joint lines
     int iterations;
     float randomOffset;
     ofColor color;
@@ -66,5 +78,12 @@ private:
     int numLines;
     int radius;
     
-    bool visible;
+    // fluids
+    ofxFluid fluid;
+    vector<vector<ofVec2f> > pJoints;
+    int maxUsers = 3;
+    float dissipation, velDissipation;
+    float displacement;
+    float strength;
+    float gravityX, gravityY;
 };

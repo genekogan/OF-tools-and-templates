@@ -8,9 +8,11 @@ void ofApp::setup() {
 
     //kinect.setup();
     kinect.setup("/Users/Gene/Code/openFrameworks/templates/Kinect/openni_oniRecording/bin/data/alecsroom.oni");
-    kinect.enableContourTracking();
+//    kinect.enableContourTracking();
+    kinect.enableUserTracking();
     kinect.setCalibration("/Users/Gene/Desktop/calibration.xml");
-    kinect.setupContourVisuals(gfx.getWidth(), gfx.getHeight());
+    //kinect.setupContourVisuals(gfx.getWidth(), gfx.getHeight());
+    kinect.setupSkeletonVisuals(gfx.getWidth(), gfx.getHeight());
     kinect.start();
     
     //kinect.getContourRenderer()->setDrawRibbons(true);

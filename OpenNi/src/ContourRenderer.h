@@ -60,13 +60,15 @@ private:
 };
 
 
-class ContourRenderer {
+class ContourRenderer
+{
 public:
     void setup(OpenNi *openNi, int width, int height);
     void setCalibration(ofxKinectProjectorToolkit *kpt);
     void update();
     void draw();
     
+    void setDrawContours(bool drawContours) {this->drawContours = pDrawContours;}
     void setDrawRibbons(bool drawRibbons) {this->drawRibbons = drawRibbons;}
     void setDrawOutwardLines(bool drawOutwardLines) {this->drawOutwardLines = drawOutwardLines;}
     void setDrawPhysics(bool drawPhysics) {this->drawPhysics = drawPhysics;}
@@ -131,6 +133,7 @@ private:
     ofColor color;
     bool centered;
     
+    // ribbons
     int maxAgeMin, maxAgeMax;
     int speedMin, speedMax;
     int lengthMin, lengthMax;

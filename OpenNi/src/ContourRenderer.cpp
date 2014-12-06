@@ -409,14 +409,18 @@ void ContourRenderer::renderPhysics() {
 
 //-------
 void ContourRenderer::renderContours() {
+    ofPushMatrix();
+    ofPushStyle();
     for (int i=0; i<currentContours.size(); i++) {
         ofBeginShape();
-        ofSetColor(255, 0, 0);
+        ofSetColor(contourColor);
         for (int j=0; j<currentContours[i].size(); j+=contourSmoothness) {
             ofCurveVertex(currentContours[i][j].x, currentContours[i][j].y);
         }
         ofEndShape();
     }
+    ofPopStyle();
+    ofPopMatrix();
 }
 
 //-------
