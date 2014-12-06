@@ -72,6 +72,7 @@ public:
     void setDrawRibbons(bool drawRibbons) {this->drawRibbons = drawRibbons;}
     void setDrawOutwardLines(bool drawOutwardLines) {this->drawOutwardLines = drawOutwardLines;}
     void setDrawPhysics(bool drawPhysics) {this->drawPhysics = drawPhysics;}
+    void setDrawFluids(bool drawFluids) {this->drawFluids = drawFluids;}
     
     void setGuiPosition(int x, int y) {control.setGuiPosition(x, y);}
     void setGuiVisible(bool visible);
@@ -97,6 +98,30 @@ private:
     void renderPhysics();
     void clearCircles(string &s) {circles.clear(); }
 
+    
+    
+    void setupFluids();
+    void updateFluids();
+    void renderFluids();
+    bool drawFluids, pDrawFluids;
+    
+    float simplify;
+    float displaceLerp;
+    int numContourPts;
+    int skip;
+    vector<vector<ofVec2f> > pContourPoints;
+    vector<vector<ofVec2f> > displace;
+    int maxUsers = 3;
+    ofxFluid fluid;
+    float dissipation, velDissipation;
+    float displacement;
+    float strength;
+    float gravityX, gravityY;
+
+    
+    
+    
+    
     // tracking
     vector<Contour *> contours;
     vector<vector<ofVec2f> > currentContours;

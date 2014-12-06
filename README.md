@@ -86,4 +86,5 @@ Addons
  - [ofxPostGlitch](https://github.com/maxillacult/ofxPostGlitch)
  - [ofxPostProcessing](https://github.com/neilmendoza/ofxPostProcessing)
  - [ofxFx](https://github.com/patriciogonzalezvivo/ofxFX)
+ - [ofxFluid](https://github.com/patriciogonzalezvivo/ofxFluid)
  - [ofxManta](https://github.com/genekogan/ofxManta/tree/master/src)

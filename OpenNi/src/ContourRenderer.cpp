@@ -154,6 +154,9 @@ void ContourRenderer::update() {
     if (drawPhysics) {
         updatePhysics();
     }
+    if (drawFluids) {
+        updateFluids();
+    }
 }
 
 //-------
@@ -161,9 +164,17 @@ void ContourRenderer::checkChanges() {
     if (!pDrawPhysics && drawPhysics) {
         setupPhysics();
     }
+    if (!pDrawFluids && drawFluids) {
+        setupFluids();
+    }
+    
     if ((pDrawOutwardLines != drawOutwardLines) ||
         (pDrawRibbons != drawRibbons) ||
         (pDrawContours != drawContours) ||
+        
+        (pDrawFluids != drawFluids) ||
+        
+        
         (pDrawPhysics != drawPhysics)) {
         
         setupControl();
@@ -171,6 +182,9 @@ void ContourRenderer::checkChanges() {
         pDrawRibbons = drawRibbons;
         pDrawPhysics = drawPhysics;
         pDrawContours = drawContours;
+        
+        
+        pDrawFluids = drawFluids;
     }
 }
 
@@ -292,6 +306,9 @@ void ContourRenderer::draw() {
     }
     if (drawPhysics) {
         renderPhysics();
+    }
+    if (drawFluids) {
+        renderFluids();
     }
 }
 
@@ -432,6 +449,7 @@ void ContourRenderer::setupControl() {
     control.addParameter("drawRibbons", &drawRibbons);
     control.addParameter("drawOutwardLines", &drawOutwardLines);
     control.addParameter("drawPhysics", &drawPhysics);
+    control.addParameter("drawFluids", &drawFluids);
 
     if (drawOutwardLines) {
         control.addParameter("offset", &offset, 0.0f, float(TWO_PI));
@@ -488,7 +506,7 @@ void ContourRenderer::setupControl() {
     
     if (drawPhysics) {
         control.addParameter("rate", &rate, 1, 20);
-        control.addParameter("tolerance", &tolerance, 0.0f, 1.0f);
+        control.addParameter("tolerance", &tolerance, 0.0f, 100.0f);
         control.addParameter("circleDensity", &circleDensity, 0.0f, 1.0f);
         control.addParameter("circleBounce", &circleBounce, 0.0f, 1.0f);
         control.addParameter("circleFriction", &circleFriction, 0.0f, 1.0f);
@@ -499,6 +517,32 @@ void ContourRenderer::setupControl() {
         control.addParameter("contourSmoothness", &contourSmoothness, 1, 10);
         control.addColor("contourColor", &contourColor);
     }
+    
+    
+    
+    if (drawFluids) {
+        control.addParameter("simplify", &simplify, 0.0f, 100.0f);
+        control.addParameter("numContourPts", &numContourPts, 3, 100);
+        control.addParameter("skip", &skip, 1, 100);
+        control.addParameter("displaceLerp", &displaceLerp, 0.0f, 1.0f);
+        control.addParameter("dissipation", &dissipation, 0.0f, 1.0f);
+        control.addParameter("vel dissipation", &velDissipation, 0.0f, 1.0f);
+        control.addParameter("displacement", &displacement, 0.0f, 100.0f);
+        control.addParameter("strength", &strength, 0.0f, 10.0f);
+        control.addParameter("gravityX",  &gravityX, -0.02f, 0.02f);
+        control.addParameter("gravityY", &gravityY, -0.02f, 0.02f);
+
+        simplify = 40.0f;
+        numContourPts = 10;
+        displaceLerp = 0.1;
+        skip = 5;
+    }
+    
+    
+    
+    
+    
+    
     
     threshold = 240;
     frameSkip = 3;
@@ -535,3 +579,159 @@ void ContourRenderer::setGuiVisible(bool visible) {
     this->visible = visible;
     control.setVisible(visible);
 }
+
+
+
+
+
+//-------
+void ContourRenderer::setupFluids() {
+    
+    
+    // hold previous joints
+    for (int i=0; i<maxUsers; i++) {
+        vector<ofVec2f> newVec;
+        //newVec.resize(openNi->getJointNames().size());
+        pContourPoints.push_back(newVec);
+        displace.push_back(newVec);
+    }
+    
+    
+    
+    // Initial Allocation
+    fluid.allocate(width, height, 0.5);
+    
+    // Seting the gravity set up & injecting the background image
+    fluid.dissipation = 0.99;
+    fluid.velocityDissipation = 0.99;
+    
+    fluid.setGravity(ofVec2f(0.0,0.0));
+    //    fluid.setGravity(ofVec2f(0.0,0.0098));
+    
+    //  Set obstacle
+    fluid.begin();
+    ofSetColor(0,0);
+    ofSetColor(255);
+    ofCircle(width*0.5, height*0.35, 40);
+    fluid.end();
+    fluid.setUseObstacles(false);
+    
+    // Adding constant forces
+    /*
+     fluid.addConstantForce(ofPoint(gfx.getWidth()*0.5,
+     gfx.getHeight()*0.85),
+     ofPoint(0,-2),
+     ofFloatColor(0.5,0.1,0.0),
+     10.f);
+     */
+    
+    for (int i=0; i<12; i++) {
+        float x = ofMap(i+0.5, 0, 12, 0, width);
+        //fluid.addConstantForce(ofPoint(x, gfx.getHeight()*0.85),
+        //                       ofPoint(0,-6),
+        //                       ofFloatColor(0.5,0.1,0.0),
+        //                       10.f);
+    }
+    
+    
+    
+    dissipation = 0.99;
+    velDissipation = 0.99;
+    gravityX = 0.0;
+    gravityY = 0.0;
+    displacement = 10;
+    strength = 4.8;
+    
+
+}
+//-------
+void ContourRenderer::updateFluids() {
+    
+    for (int i=0; i<pContourPoints.size(); i++) {
+        while (pContourPoints[i].size() < numContourPts) {
+            pContourPoints[i].push_back(ofVec2f(0,0));
+        }
+        if (pContourPoints[i].size() > numContourPts) {
+            pContourPoints[i].resize(numContourPts);
+        }
+    }
+
+    for (int i=0; i<displace.size(); i++) {
+        while (displace[i].size() < numContourPts) {
+            displace[i].push_back(ofVec2f(0,0));
+        }
+        if (displace[i].size() > numContourPts) {
+            displace[i].resize(numContourPts);
+        }
+    }
+    
+    
+    
+    for (int i=0; i < min(maxUsers,(int) currentContours.size()); i++) {
+        ofPolyline pl;
+        for (int j=0; j<currentContours[i].size(); j++) {
+            pl.addVertex(currentContours[i][j]);
+        }
+        //pl.addVertices((vector<ofPoint>&) currentContours[i]);
+        pl.simplify(simplify);
+        
+        
+        vector<ofPoint> verts = pl.getVertices();
+        ofVec2f newDisplace;
+        for (int j=0; j<numContourPts; j++) {
+            int idx = ofMap(j, 0, numContourPts, 0, verts.size());
+            ofVec2f pt = verts[idx];
+            
+            
+            newDisplace = pt - pContourPoints[i][j];
+            displace[i][j].set(ofLerp(displace[i][j].x, newDisplace.x, displaceLerp),
+                               ofLerp(displace[i][j].y, newDisplace.y, displaceLerp));
+            
+            pContourPoints[i][j] = pt;
+            
+            
+            
+            if (j%skip==0) {
+            ofPoint m = pt;
+            ofPoint d = displace[i][j]*displacement;
+            ofPoint c = ofPoint(320, 240) - m;
+            c.normalize();
+            fluid.addTemporalForce(m,
+                                   d,
+                                   ofFloatColor(c.x,c.y,0.5)*sin(ofGetElapsedTimef()),
+                                   strength);
+            }
+            
+            
+        }
+    }
+    
+    
+    //fluid.setGravity(ofVec2f(gravityX, gravityY));
+    fluid.dissipation = dissipation;
+    fluid.velocityDissipation = velDissipation;
+    
+    fluid.update();
+
+}
+//-------
+void ContourRenderer::renderFluids() {
+    
+
+//    ofBackgroundGradient(ofColor::gray, ofColor::black, OF_GRADIENT_LINEAR);
+    fluid.draw();
+
+    
+    renderContours();
+    
+    ofSetColor(255);    
+    for (int i=0; i<pContourPoints.size(); i++) {
+        for (int j=0; j<pContourPoints[i].size(); j++) {
+            ofLine(pContourPoints[i][j].x, pContourPoints[i][j].y, pContourPoints[i][j].x + displace[i][j].x, pContourPoints[i][j].y + displace[i][j].y);
+        }
+    }
+
+}
+
+
+
