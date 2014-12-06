@@ -48,6 +48,9 @@ public:
     ContourFinder & getContourFinder() {return contourFinder;}
     RectTracker & getContourTracker() {return contourFinder.getTracker();}
     
+    ContourRenderer * getContourRenderer() {return contourRenderer;}
+    SkeletonRenderer * getSkeletonRenderer() {return skeletonRenderer;}
+    
     int getNumUsers() {return kinect.getNumTrackedUsers();}
 
     // individual getters

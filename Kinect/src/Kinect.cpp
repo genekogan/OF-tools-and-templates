@@ -43,16 +43,16 @@ void Kinect::setup(){
     blobColors[11]= ofColor(0, 127, 255);
 
     fade = 200;
-    minArea = 1000;
-    maxArea = 70000;
+    minArea = 6000;
+    maxArea = 140000;
     threshold = 15;
     persistence = 15;
     maxDistance = 32;
     numDilate = 2;
     numErode = 0;
     nearThreshold = 230;
-    farThreshold = 10;
-    smoothness = 1;
+    farThreshold = 21;
+    smoothness = 5;
     curved = false;
     smoothingRate = 1;
     

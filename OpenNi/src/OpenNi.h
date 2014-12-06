@@ -2,6 +2,9 @@
 
 #include "ofMain.h"
 
+#include "ofxBox2d.h"
+#include "ofxFluid.h"
+
 #include "ofxOpenNi.h"
 #include "ofxCv.h"
 #include "ofxOpenCv.h"

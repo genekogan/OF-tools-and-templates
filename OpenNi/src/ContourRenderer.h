@@ -66,7 +66,11 @@ public:
     void setCalibration(ofxKinectProjectorToolkit *kpt);
     void update();
     void draw();
-
+    
+    void setDrawRibbons(bool drawRibbons) {this->drawRibbons = drawRibbons;}
+    void setDrawOutwardLines(bool drawOutwardLines) {this->drawOutwardLines = drawOutwardLines;}
+    void setDrawPhysics(bool drawPhysics) {this->drawPhysics = drawPhysics;}
+    
     void setGuiPosition(int x, int y) {control.setGuiPosition(x, y);}
     void setGuiVisible(bool visible);
     void toggleGuiVisible() {setGuiVisible(!visible);}
@@ -79,13 +83,21 @@ private:
     void recordContours();
     void manageContours();
     
+    void renderContours();
+    
     void manageRibbons();
     void renderRibbons();
     
     void renderOutwardLines();
     
+    void setupPhysics();
+    void updatePhysics();
+    void renderPhysics();
+    void clearCircles(string &s) {circles.clear(); }
+
     // tracking
     vector<Contour *> contours;
+    vector<vector<ofVec2f> > currentContours;
     OpenNi *openNi;
     ofxKinectProjectorToolkit *kpt;
     bool calibrated = false;
@@ -94,6 +106,20 @@ private:
     // ribbons
     vector<Ribbon *> ribbons;
     vector<int> labels;
+    
+    // drawing contours
+    ofColor contourColor;
+    int contourSmoothness;
+    
+    // physics
+    ofxBox2d box2d;
+	vector<ofPtr<ofxBox2dCircle> > circles;
+	vector<ofPolyline> lines;
+    vector<ofPtr<ofxBox2dEdge> > edges;
+    int rate;
+    float tolerance;
+    float circleDensity, circleBounce, circleFriction;
+    ofImage img;
     
     // parameters
     Control control;
@@ -123,8 +149,8 @@ private:
     int frameSkip;
     
     // drawing modes
-    bool drawRibbons, pDrawRibbons;
-    bool drawOutwardLines, pDrawOutwardLines;
+    bool drawRibbons, pDrawRibbons, drawPhysics, drawContours;
+    bool drawOutwardLines, pDrawOutwardLines, pDrawPhysics, pDrawContours;
     
     bool visible;
 };

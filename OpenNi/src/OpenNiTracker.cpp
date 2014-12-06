@@ -4,12 +4,12 @@
 //-------
 OpenNi::OpenNi() {
     maxUsers = 2;
-    minArea = 1000;
-    maxArea = 70000;
+    minArea = 5000;
+    maxArea = 140000;
     threshold = 15;
     persistence = 15;
     maxDistance = 32;
-    nearThreshold = 70;
+    nearThreshold = 85;
     farThreshold = 0;
     smoothness = 1;
     curved = false;

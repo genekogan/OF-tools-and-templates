@@ -1,6 +1,12 @@
 #include "ContourRenderer.h"
 
 
+//----------
+static bool shouldRemove(ofPtr<ofxBox2dBaseShape>shape) {
+    //return !ofRectangle(0, -400, ofGetWidth(), ofGetHeight()+400).inside(shape.get()->getPosition());
+    return !ofRectangle(0, -400, 1280, 800+400).inside(shape.get()->getPosition());
+}
+
 //-------
 Contour::Contour(vector<ofVec2f> & points, ofPoint center, int label) {
     this->points = points;
@@ -145,15 +151,26 @@ void ContourRenderer::update() {
     if (drawOutwardLines) {
         
     }
+    if (drawPhysics) {
+        updatePhysics();
+    }
 }
 
 //-------
 void ContourRenderer::checkChanges() {
+    if (!pDrawPhysics && drawPhysics) {
+        setupPhysics();
+    }
     if ((pDrawOutwardLines != drawOutwardLines) ||
-        (pDrawRibbons != drawRibbons)) {
+        (pDrawRibbons != drawRibbons) ||
+        (pDrawContours != drawContours) ||
+        (pDrawPhysics != drawPhysics)) {
+        
         setupControl();
         pDrawOutwardLines = drawOutwardLines;
         pDrawRibbons = drawRibbons;
+        pDrawPhysics = drawPhysics;
+        pDrawContours = drawContours;
     }
 }
 
@@ -222,6 +239,7 @@ void ContourRenderer::recordContours() {
     ContourFinder & contourFinder = openNi->getContourFinder();
     RectTracker & tracker = openNi->getContourTracker();
 
+    currentContours.clear();
     labels.clear();
     for(int i = 0; i < contourFinder.size(); i++) {
         vector<cv::Point> points = contourFinder.getContour(i);
@@ -237,6 +255,7 @@ void ContourRenderer::recordContours() {
                 if (calibrated) {
                     vector<ofVec2f> calibratedContour;
                     openNi->getCalibratedContour(contourFinder.getContour(i), calibratedContour, width, height);
+                    currentContours.push_back(calibratedContour);
                     contours[c]->setPoints(calibratedContour, center);
                 }
                 else {
@@ -262,11 +281,17 @@ void ContourRenderer::recordContours() {
 
 //-------
 void ContourRenderer::draw() {
+    if (drawContours) {
+        renderContours();
+    }
     if (drawRibbons) {
         renderRibbons();
     }
     if (drawOutwardLines) {
         renderOutwardLines();
+    }
+    if (drawPhysics) {
+        renderPhysics();
     }
 }
 
@@ -311,12 +336,98 @@ void ContourRenderer::renderOutwardLines() {
 }
 
 //-------
+void ContourRenderer::setupPhysics() {
+    img.loadImage("/Users/Gene/Desktop/star.png");
+    img.resize(40, 40);
+    
+	box2d.init();
+	box2d.setGravity(0, 16);
+	//box2d.createGround(ofPoint(0, secondWindow.getHeight()), ofPoint(secondWindow.getWidth(), secondWindow.getHeight()));
+    
+    rate = 5;
+    tolerance = 0.3f;
+    circleDensity = 0.3;
+    circleBounce = 0.5;
+    circleFriction = 0.1;
+}
+
+//-------
+void ContourRenderer::updatePhysics() {
+    lines.clear();
+    edges.clear();
+    
+    // create box2d edges
+    for(int i = 0; i < currentContours.size(); i++) {
+        lines.push_back(ofPolyline());
+        for (int j=0; j<currentContours[i].size(); j++) {
+            lines.back().addVertex(currentContours[i][j].x, currentContours[i][j].y);
+        }
+        ofPtr <ofxBox2dEdge> edge = ofPtr<ofxBox2dEdge>(new ofxBox2dEdge);
+        lines.back().simplify(tolerance);
+        for (int i=0; i<lines.back().size(); i++) {
+            edge.get()->addVertex(lines.back()[i]);
+        }
+        edge.get()->create(box2d.getWorld());
+        edges.push_back(edge);
+    }
+    
+    // add some falling circles every so often
+	if((int)ofRandom(0, rate) == 0) {
+        ofPtr<ofxBox2dCircle> circle = ofPtr<ofxBox2dCircle>(new ofxBox2dCircle);
+        circle.get()->setPhysics(circleDensity, circleBounce, circleFriction);
+        circle.get()->setup(box2d.getWorld(), ofRandom(width), -20, ofRandom(15, 40));
+		circles.push_back(circle);
+	}
+	
+    // update box2d
+    ofRemove(circles, shouldRemove);
+    box2d.update();
+}
+
+//-------
+void ContourRenderer::renderPhysics() {
+    for (int i=0; i<circles.size(); i++) {
+        ofPushMatrix();
+        ofPushStyle();
+
+		ofFill();
+		ofSetHexColor(0xc0dd3b);
+		
+        ofVec2f pos = circles[i].get()->getPosition();
+        float rad = circles[i].get()->getRadius();
+        float ang = circles[i].get()->getRotation();
+        
+        ofSetRectMode(OF_RECTMODE_CENTER);
+        ofTranslate(pos.x, pos.y);
+        ofRotate(ang);
+        img.draw(0, 0, 2*rad, 2*rad);
+        
+        ofPopStyle();
+        ofPopMatrix();
+	}
+}
+
+//-------
+void ContourRenderer::renderContours() {
+    for (int i=0; i<currentContours.size(); i++) {
+        ofBeginShape();
+        ofSetColor(255, 0, 0);
+        for (int j=0; j<currentContours[i].size(); j+=contourSmoothness) {
+            ofCurveVertex(currentContours[i][j].x, currentContours[i][j].y);
+        }
+        ofEndShape();
+    }
+}
+
+//-------
 void ContourRenderer::setupControl() {
     control.clear();
     control.setName("contour render");
 
+    control.addParameter("drawContours", &drawContours);
     control.addParameter("drawRibbons", &drawRibbons);
     control.addParameter("drawOutwardLines", &drawOutwardLines);
+    control.addParameter("drawPhysics", &drawPhysics);
 
     if (drawOutwardLines) {
         control.addParameter("offset", &offset, 0.0f, float(TWO_PI));
@@ -371,6 +482,20 @@ void ContourRenderer::setupControl() {
         control.addParameter("match", &match);
     }
     
+    if (drawPhysics) {
+        control.addParameter("rate", &rate, 1, 20);
+        control.addParameter("tolerance", &tolerance, 0.0f, 1.0f);
+        control.addParameter("circleDensity", &circleDensity, 0.0f, 1.0f);
+        control.addParameter("circleBounce", &circleBounce, 0.0f, 1.0f);
+        control.addParameter("circleFriction", &circleFriction, 0.0f, 1.0f);
+        control.addEvent("clear", this, &ContourRenderer::clearCircles);
+    }
+    
+    if (drawContours) {
+        control.addParameter("contourSmoothness", &contourSmoothness, 1, 10);
+        control.addColor("contourColor", &contourColor);
+    }
+    
     threshold = 240;
     frameSkip = 3;
     numNew = 1;
@@ -381,6 +506,9 @@ void ContourRenderer::setupControl() {
     length = 600;
     centered = false;
     color = ofColor(255);
+    
+    contourColor = ofColor(255);
+    contourSmoothness = 3;
     
     maxAgeMin = 50;         maxAgeMax = 100;
     speedMin = 1;           speedMax = 4;
