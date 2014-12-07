@@ -149,7 +149,7 @@ void ContourRenderer::update() {
         manageRibbons();
     }
     if (drawOutwardLines) {
-        
+        updateOutwardLines();
     }
     if (drawPhysics) {
         updatePhysics();
@@ -171,19 +171,13 @@ void ContourRenderer::checkChanges() {
     if ((pDrawOutwardLines != drawOutwardLines) ||
         (pDrawRibbons != drawRibbons) ||
         (pDrawContours != drawContours) ||
-        
-        (pDrawFluids != drawFluids) ||
-        
-        
-        (pDrawPhysics != drawPhysics)) {
-        
+        (pDrawPhysics != drawPhysics) ||
+        (pDrawFluids != drawFluids)) {
         setupControl();
         pDrawOutwardLines = drawOutwardLines;
         pDrawRibbons = drawRibbons;
         pDrawPhysics = drawPhysics;
         pDrawContours = drawContours;
-        
-        
         pDrawFluids = drawFluids;
     }
 }
@@ -320,34 +314,70 @@ void ContourRenderer::renderRibbons() {
     }
 }
 
-//-------
-void ContourRenderer::renderOutwardLines() {
-    ContourFinder & contourFinder = openNi->getContourFinder();
-    RectTracker & tracker = openNi->getContourTracker();
 
-    ofPushMatrix();
-    ofPushStyle();
-    for(int i = 0; i < contourFinder.size(); i++) {
-        vector<cv::Point> points = contourFinder.getContour(i);
-        int label = contourFinder.getLabel(i);
-        ofPoint center = toOf(contourFinder.getCenter(i));
-        int age = tracker.getAge(label);
-        ofSetColor(color);
-        ofSetLineWidth(lineWidth);
-        for (int k=0; k<points.size(); k+=smooth) {
-            float ang = offset + atan2(points[k].y - center.y, points[k].x - center.x);
-            float x, y;
-            if (centered) {
-                x = width * 0.5 + length * cos(ang);
-                y = height * 0.5 + length * sin(ang);
-            }
-            else {
-                x = ((float) width  / 640.0) * center.x * 0.5 + length * cos(ang);
-                y = ((float) height / 480.0) * center.y * 0.5 + length * sin(ang);
-            }
-            ofLine(x, y, points[k].x, points[k].y);
+void ContourRenderer::updateOutwardLines() {
+    
+    while (pPoints.size() < maxUsers) {
+        vector<ofVec2f> newVec;
+        pPoints.push_back(newVec);
+        oPoints.push_back(newVec);
+    }
+    for (int i=0; i<pPoints.size(); i++) {
+        while (pPoints[i].size() < lNumPoints) {
+            pPoints[i].push_back(ofVec2f(0,0));
+            oPoints[i].push_back(ofVec2f(0,0));
+        }
+        if (pPoints[i].size() > lNumPoints) {
+            pPoints[i].resize(lNumPoints);
+            oPoints[i].resize(lNumPoints);
         }
     }
+
+    
+    
+    for (int i=0; i < min(maxUsers,(int) currentContours.size()); i++) {
+        ofPolyline pl;
+        for (int j=0; j<currentContours[i].size(); j++) {
+            pl.addVertex(currentContours[i][j]);
+        }
+        //pl.addVertices((vector<ofPoint>&) currentContours[i]);
+        pl.simplify(lSimplify);
+        
+        
+        vector<ofPoint> verts = pl.getVertices();
+        ofVec2f newPoint;
+        for (int j=0; j<lNumPoints; j++) {
+            int idx = ofMap(j, 0, lNumPoints, 0, verts.size());
+            ofVec2f pt = verts[idx];
+            
+            
+            newPoint = pt - pPoints[i][j];
+            oPoints[i][j].set(ofLerp(pPoints[i][j].x, newPoint.x, oDisplaceLerp),
+                              ofLerp(pPoints[i][j].y, newPoint.y, oDisplaceLerp));
+            
+            pPoints[i][j] = oPoints[i][j];
+        }
+    }
+}
+
+//-------
+void ContourRenderer::renderOutwardLines() {
+    ofPushMatrix();
+    ofPushStyle();
+    
+    for(int i = 0; i < oPoints.size(); i++) {
+        ofSetColor(color);
+        ofSetLineWidth(lineWidth);
+        for(int j = 0; j < oPoints[i].size(); j+=smooth) {
+            float ang = ofMap(j, 0, oPoints[i].size(), 0, TWO_PI) + offset;
+            if (centered) {
+                ofLine(oPoints[i][j].x, oPoints[i][j].y,
+                       width* 0.5 + length*cos(ang),
+                       height*0.5 + length*sin(ang));
+            }
+        }
+    }
+    
     ofPopStyle();
     ofPopMatrix();
 }
@@ -452,12 +482,18 @@ void ContourRenderer::setupControl() {
     control.addParameter("drawFluids", &drawFluids);
 
     if (drawOutwardLines) {
+        control.addParameter("lSimplify", &lSimplify, 0.0f, 100.0f);
+        control.addParameter("lNumPoints", &lNumPoints, 2, 200);
+        control.addParameter("oDisplaceLerp", &oDisplaceLerp, 0.0f, 1.0f);
         control.addParameter("offset", &offset, 0.0f, float(TWO_PI));
         control.addParameter("smooth", &smooth, 1, 10);
         control.addParameter("lineWidth", &lineWidth, 0.0f, 5.0f);
         control.addParameter("length", &length, 0, 1000);
         control.addColor("color", &color);
         control.addParameter("centered", &centered);
+        
+        lSimplify = 10.0f;
+        lNumPoints = 100;
     }
     
     if (drawRibbons) {
@@ -518,8 +554,6 @@ void ContourRenderer::setupControl() {
         control.addColor("contourColor", &contourColor);
     }
     
-    
-    
     if (drawFluids) {
         control.addParameter("simplify", &simplify, 0.0f, 100.0f);
         control.addParameter("numContourPts", &numContourPts, 3, 100);
@@ -537,12 +571,6 @@ void ContourRenderer::setupControl() {
         displaceLerp = 0.1;
         skip = 5;
     }
-    
-    
-    
-    
-    
-    
     
     threshold = 240;
     frameSkip = 3;
@@ -579,6 +607,7 @@ void ContourRenderer::setGuiVisible(bool visible) {
     this->visible = visible;
     control.setVisible(visible);
 }
+
 
 
 
@@ -641,9 +670,8 @@ void ContourRenderer::setupFluids() {
     gravityY = 0.0;
     displacement = 10;
     strength = 4.8;
-    
-
 }
+
 //-------
 void ContourRenderer::updateFluids() {
     
@@ -722,14 +750,15 @@ void ContourRenderer::renderFluids() {
     fluid.draw();
 
     
-    renderContours();
-    
+    //renderContours();
+    /*
     ofSetColor(255);    
     for (int i=0; i<pContourPoints.size(); i++) {
         for (int j=0; j<pContourPoints[i].size(); j++) {
             ofLine(pContourPoints[i][j].x, pContourPoints[i][j].y, pContourPoints[i][j].x + displace[i][j].x, pContourPoints[i][j].y + displace[i][j].y);
         }
     }
+     */
 
 }
 

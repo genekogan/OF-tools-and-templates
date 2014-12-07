@@ -12,19 +12,20 @@ void LearnOutputParameter::activateAllInputs() {
 //===========================================
 //  CONSTRUCTORS, DESTRUCTORS, SETTERS
 
-LearnParameter::LearnParameter(string name, float *value, float min, float max) : Parameter<float>(name, *value, min, max) {
+LearnParameter::LearnParameter(string name, float *value, float min, float max, bool rangeLocked) : Parameter<float>(name, *value, min, max) {
     *value = 0.5 * (min + max);
     gui = new ofxUICanvas(name);
+    this->rangeLocked = rangeLocked;
 }
 
 //-----------
-LearnInputParameter::LearnInputParameter(string name, float *value, float min, float max) : LearnParameter(name, value, min, max) {
+LearnInputParameter::LearnInputParameter(string name, float *value, float min, float max, bool rangeLocked) : LearnParameter(name, value, min, max, rangeLocked) {
     setupGui();
     ofAddListener(gui->newGUIEvent, this, &LearnInputParameter::guiEvent);
 }
 
 //-----------
-LearnOutputParameter::LearnOutputParameter(string name, float *value, float min, float max) : LearnParameter(name, value, min, max) {
+LearnOutputParameter::LearnOutputParameter(string name, float *value, float min, float max, bool rangeLocked) : LearnParameter(name, value, min, max, rangeLocked) {
     guiInputSelect = new ofxUICanvas(name+"_inputs");
     guiData = new ofxUICanvas(name+"_data");
 
@@ -138,10 +139,6 @@ void LearnParameter::setVisible(bool visible){
 //  LEARNING
 
 void LearnOutputParameter::addInstance(vector<float> instance) {
-    cout << "instance"<<endl;
-    for (int i=0; i<instance.size(); i++) {
-        cout << instance[i]<<",";
-    }
     data[page]->addEntry(instance);
 }
 

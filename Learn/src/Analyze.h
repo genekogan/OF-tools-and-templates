@@ -23,9 +23,10 @@ public:
     
     void drawGMM(int g);
     
-    void toggleRemapping(string &s);
     void toggleCollecting(string &s);
     void startCollecting();
+    void clear(string &s);
+
     void startTraining(string &s);
     void trainGMM(string &s);
     void trainNextOutput();

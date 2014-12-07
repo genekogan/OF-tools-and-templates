@@ -20,11 +20,10 @@ void Analyze::setupGui() {
     control.setVisible(true);
     control.clear();
     control.setName("Analyze");
-    control.addEvent("remap inputs", this, &Analyze::toggleRemapping);
-    control.addParameter("remapping", &remapping);
-    control.addSpacer();
-    control.addEvent("collect", this, &Analyze::toggleCollecting);
+    control.addEvent("start analyzing", this, &Analyze::toggleCollecting);
     control.addParameter("collecting", &collecting);
+    control.addParameter("remapping?", &remapping);
+    control.addEvent("clear", this, &Analyze::clear);
     control.addSpacer();
     control.addEvent("train kmeans", this, &Analyze::startTraining);
     control.addEvent("train gmm", this, &Analyze::trainGMM);
@@ -45,10 +44,11 @@ void Analyze::setOutputs(vector<LearnOutputParameter *> *outputs) {
 }
 
 //-----------
-void Analyze::toggleRemapping(string &s) {
-    remapping = !remapping;
+void Analyze::toggleCollecting(string &s) {
+    collecting = !collecting;
+
     if (remapping) {
-        bool confirm = ofSystemChoiceDialog("Warning: this will erase all output classifiers and examples. Proceed?");
+        bool confirm = ofSystemChoiceDialog("Warning: remapping erase all output classifiers and examples. Proceed?");
         if (!confirm) {
             remapping = false;
             return;
@@ -61,19 +61,29 @@ void Analyze::toggleRemapping(string &s) {
             inputs->at(i)->setMin( 9999999);
         }
     }
-}
 
-//-----------
-void Analyze::toggleCollecting(string &s) {
-    collecting = !collecting;
     if (collecting && spreadsheets.size() == 0) {
         startCollecting();
     }
 }
 
 //-----------
+void Analyze::clear(string &s) {
+    for (int i=0; i<spreadsheets.size(); i++) {
+        delete spreadsheets[i];
+    }
+    spreadsheets.clear();
+    clusters.clear();
+    gmmClusterSets.clear();
+    gmmTrained = false;
+    kMeansTrained = false;
+    idxView = -1;
+}
+
+//-----------
 void Analyze::setInputMapping() {
     for (int i=0; i<inputs->size(); i++) {
+        if (inputs->at(i)->getRangeLocked())   continue;
         if (inputs->at(i)->get() > inputs->at(i)->getMax()) {
             inputs->at(i)->setMax(inputs->at(i)->get());
         }

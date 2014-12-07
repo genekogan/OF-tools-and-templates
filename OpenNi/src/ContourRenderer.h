@@ -91,6 +91,7 @@ private:
     void manageRibbons();
     void renderRibbons();
     
+    void updateOutwardLines();
     void renderOutwardLines();
     
     void setupPhysics();
@@ -98,30 +99,10 @@ private:
     void renderPhysics();
     void clearCircles(string &s) {circles.clear(); }
 
-    
-    
     void setupFluids();
     void updateFluids();
     void renderFluids();
-    bool drawFluids, pDrawFluids;
-    
-    float simplify;
-    float displaceLerp;
-    int numContourPts;
-    int skip;
-    vector<vector<ofVec2f> > pContourPoints;
-    vector<vector<ofVec2f> > displace;
-    int maxUsers = 3;
-    ofxFluid fluid;
-    float dissipation, velDissipation;
-    float displacement;
-    float strength;
-    float gravityX, gravityY;
 
-    
-    
-    
-    
     // tracking
     vector<Contour *> contours;
     vector<vector<ofVec2f> > currentContours;
@@ -133,6 +114,19 @@ private:
     // ribbons
     vector<Ribbon *> ribbons;
     vector<int> labels;
+    
+    // outward lines
+    vector<vector<ofVec2f> > oPoints;
+    vector<vector<ofVec2f> > pPoints;
+    float lSimplify;
+    int lNumPoints;
+    float oDisplaceLerp;
+    int smooth;
+    float offset;
+    float lineWidth;
+    int length;
+    ofColor color;
+    bool centered;
     
     // drawing contours
     ofColor contourColor;
@@ -148,15 +142,22 @@ private:
     float circleDensity, circleBounce, circleFriction;
     ofImage img;
     
+    // fluids
+    ofxFluid fluid;
+    vector<vector<ofVec2f> > pContourPoints;
+    vector<vector<ofVec2f> > displace;
+    float simplify;
+    float displaceLerp;
+    int numContourPts;
+    int skip;
+    int maxUsers = 3;
+    float dissipation, velDissipation;
+    float displacement;
+    float strength;
+    float gravityX, gravityY;
+
     // parameters
     Control control;
-    
-    int smooth;
-    float offset;
-    float lineWidth;
-    int length;
-    ofColor color;
-    bool centered;
     
     // ribbons
     int maxAgeMin, maxAgeMax;
@@ -177,8 +178,8 @@ private:
     int frameSkip;
     
     // drawing modes
-    bool drawRibbons, pDrawRibbons, drawPhysics, drawContours;
-    bool drawOutwardLines, pDrawOutwardLines, pDrawPhysics, pDrawContours;
+    bool drawRibbons, pDrawRibbons, drawPhysics, drawContours, drawFluids;
+    bool drawOutwardLines, pDrawOutwardLines, pDrawPhysics, pDrawContours, pDrawFluids;
     
     bool visible;
 };

@@ -21,7 +21,7 @@
 class LearnParameter : public Parameter<float>
 {
 public:
-    LearnParameter(string name, float *value, float min=0, float max=1);
+    LearnParameter(string name, float *value, float min=0, float max=1, bool rangeLocked=false);
     ~LearnParameter();
     
     void set(float value);
@@ -53,6 +53,9 @@ public:
     virtual void setFont(string path);
     virtual void setFontSizes(int small, int medium, int large);
     
+    void setRangeLocked(bool rangeLocked) {this->rangeLocked = rangeLocked;}
+    bool getRangeLocked() {return rangeLocked;}
+    
 protected:
     
     virtual void setupGui() { }
@@ -65,6 +68,8 @@ protected:
     void guiSetWarp();
     void guiSetValueText();
 
+    bool rangeLocked;
+    
     ofxUICanvas *gui;
     ofxUISlider *guiValue;
     ofxUITextInput *guiValueText, *guiMin, *guiMax, *guiWarp, *guiOsc, *guiName;
@@ -79,7 +84,7 @@ protected:
 class LearnInputParameter : public LearnParameter
 {
 public:
-    LearnInputParameter(string name, float *value, float min=0, float max=1);
+    LearnInputParameter(string name, float *value, float min=0, float max=1, bool rangeLocked=false);
 
 protected:
     void setupGui();
@@ -100,7 +105,7 @@ public:
     };
 
     ~LearnOutputParameter();
-    LearnOutputParameter(string name, float *value, float min=0, float max=1);
+    LearnOutputParameter(string name, float *value, float min=0, float max=1, bool rangeLocked=false);
     
     virtual void draw();
 

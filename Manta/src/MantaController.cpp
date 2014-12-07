@@ -154,15 +154,6 @@ void MantaController::update(){
     centroidY = _centroid.y;
     weightedCentroidX = _weightedCentroid.x;
     weightedCentroidY = _weightedCentroid.y;    
-    
-    // some epsilons
-    if (centroidVelocityX < 1e-5)   centroidVelocityX = 0;
-    if (centroidVelocityY < 1e-5)   centroidVelocityY = 0;
-    if (weightedCentroidVelocityX < 1e-5)   weightedCentroidVelocityX = 0;
-    if (weightedCentroidVelocityY < 1e-5)   weightedCentroidVelocityY = 0;
-    if (widthVelocity < 1e-5)   widthVelocity = 0;
-    if (heightVelocity < 1e-5)   heightVelocity = 0;
-    if (whRatioVelocity < 1e-5)   whRatioVelocity = 0;
 }
 
 //-----------

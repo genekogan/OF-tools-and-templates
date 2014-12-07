@@ -25,10 +25,10 @@ public:
     void draw();
     
     // managing parameters
-    virtual LearnInputParameter  * addInput (string name, float *value, float min, float max);
-    virtual LearnOutputParameter * addOutput(string name, float *value, float min, float max);
-    LearnInputParameter  * addInput (string name, float min, float max);
-    LearnOutputParameter * addOutput(string name, float min, float max);
+    virtual LearnInputParameter  * addInput (string name, float *value, float min, float max, bool rangeLocked=false);
+    virtual LearnOutputParameter * addOutput(string name, float *value, float min, float max, bool rangeLocked=false);
+    LearnInputParameter  * addInput (string name, float min, float max, bool rangeLocked=false);
+    LearnOutputParameter * addOutput(string name, float min, float max, bool rangeLocked=false);
     void addParameterAsInput(string name, LearnInputParameter* newInput);
     void addParametersAsInput(string name, vector<LearnInputParameter*> &newInputs);
     void initializeOutput(LearnOutputParameter *output, bool sendOsc=true, bool receiveOsc=true);

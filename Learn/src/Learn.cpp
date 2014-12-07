@@ -262,7 +262,7 @@ void Learn::mouseReleased(ofMouseEventArgs &e) {
 //  MANAGING PARAMETERS
 
 //-------
-LearnInputParameter * Learn::addInput(string name, float *value, float min, float max) {
+LearnInputParameter * Learn::addInput(string name, float *value, float min, float max, bool rangeLocked) {
     LearnInputParameter *newInput = new LearnInputParameter(name, value, min, max);
     if (customFont) {
         newInput->setFont(fontPath);
@@ -274,11 +274,8 @@ LearnInputParameter * Learn::addInput(string name, float *value, float min, floa
     newInput->addParameterDeletedListener(this, &Learn::inputParameterDeleted);
     newInput->addParameterSelectedListener(this, &Learn::parameterSelected);
     inputs.push_back(newInput);
- 
-    
-    
+
     //resetInputs();
-    
     for (int i=0; i<outputs.size(); i++) {
         outputs[i]->setInputParameters(inputs);
     }
@@ -291,8 +288,8 @@ LearnInputParameter * Learn::addInput(string name, float *value, float min, floa
 }
 
 //-------
-LearnOutputParameter * Learn::addOutput(string name, float *value, float min, float max) {
-	LearnOutputParameter *newOutput = new LearnOutputParameter(name, value, min, max);
+LearnOutputParameter * Learn::addOutput(string name, float *value, float min, float max, bool rangeLocked) {
+	LearnOutputParameter *newOutput = new LearnOutputParameter(name, value, min, max, rangeLocked);
 	initializeOutput(newOutput);
     return newOutput;
 }
@@ -323,13 +320,13 @@ void Learn::initializeOutput(LearnOutputParameter *output, bool sendOsc, bool re
 }
 
 //-------
-LearnInputParameter * Learn::addInput(string name, float min, float max) {
-    return addInput(name, new float(), min, max);
+LearnInputParameter * Learn::addInput(string name, float min, float max, bool rangeLocked) {
+    return addInput(name, new float(), min, max, rangeLocked);
 }
 
 //-------
-LearnOutputParameter * Learn::addOutput(string name, float min, float max) {
-    return addOutput(name, new float(), min, max);
+LearnOutputParameter * Learn::addOutput(string name, float min, float max, bool rangeLocked) {
+    return addOutput(name, new float(), min, max, rangeLocked);
 }
 
 //-------
