@@ -183,6 +183,11 @@ void MantaLearn::addButtonVelocitiesAsInput() {
 }
 
 //-----------
+void MantaLearn::addNumPadsVelocityAsInput() {
+    addParameterAsInput("num pads velocity", addInput("numPadsVel", &manta.getNumPadsVelocity(), -1, 1, true));
+}
+
+//-----------
 void MantaLearn::addPadSumVelocityAsInput() {
     addParameterAsInput("pad sum velocity", addInput("padSumVel", &manta.getPadSumVelocity(), -200, 200, true));
 }
@@ -253,6 +258,7 @@ void MantaLearn::setupInputs() {
     if (vAllPads)  addAllPadVelocitiesAsInput();
     if (vAllSliders)  addSliderVelocitiesAsInput();
     if (vAllButtons)  addButtonVelocitiesAsInput();
+    if (vNumPads)  addNumPadsVelocityAsInput();
     if (vPadSum)  addPadSumVelocityAsInput();
     if (vPadAvg)  addPadAverageVelocityAsInput();
     if (vPerimeter)  addPerimeterVelocityAsInput();
@@ -317,6 +323,8 @@ void MantaLearn::setupGuiInputs() {
     guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
     
     guiInputs->addLabelToggle("number pads", &numPads, 140.0f);
+    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
+    guiInputs->addLabelToggle("number pads velocity", &vNumPads, 50.0f)->setLabelText("velocity");
     guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
 
     guiInputs->addLabelToggle("pad sum", &padSum, 140.0f);
@@ -448,6 +456,8 @@ void MantaLearn::guiInputEvent(ofxUIEventArgs &e) {
             e.getName()=="weighted centroid" ||
             e.getName()=="all pad velocities" ||
             e.getName()=="all slider velocities" ||
+            e.getName()=="all button velocities" ||
+            e.getName()=="number pads velocity" ||
             e.getName()=="pad sum velocity" ||
             e.getName()=="pad average velocity" ||
             e.getName()=="perimeter velocity" ||

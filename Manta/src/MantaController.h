@@ -58,6 +58,7 @@ public:
     float & getHeight() {return padHeight;}
     float & getWidthHeightRatio() {return whRatio;}
 
+    float & getNumPadsVelocity() {return numPadsVelocity;}
     float & getPadSumVelocity() {return padSumVelocity;}
     float & getPadAverageVelocity() {return padAverageVelocity;}
     float & getPerimeterVelocity() {return perimeterVelocity;}
@@ -129,6 +130,7 @@ protected:
     float padWidth, padHeight, whRatio;
     
     // velocity statistics
+    float numPadsVelocity;
     float padSumVelocity, padAverageVelocity;
     float centroidVelocityX, centroidVelocityY;
     float weightedCentroidVelocityX, weightedCentroidVelocityY;

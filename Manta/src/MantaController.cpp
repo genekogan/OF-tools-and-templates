@@ -52,8 +52,8 @@ void MantaController::update(){
     float _width = 0;
     float _height = 0;
     float _whRatio = 0;
+    float _numPads = 0;
     
-    numPads = 0;
     fingers.clear();
     fingerValues.clear();
     ofPoint fingersMin = ofPoint(1, 1);
@@ -66,7 +66,7 @@ void MantaController::update(){
                 ofPoint fingerPos = getPositionAtPad(row, col);
                 fingers.push_back(fingerPos);
                 fingerValues.push_back(currentValue);
-                numPads+=1.0;
+                _numPads+=1.0;
                 _padSum += currentValue;
                 if (fingerPos.x > fingersMax.x)   fingersMax.x = fingerPos.x;
                 if (fingerPos.x < fingersMin.x)   fingersMin.x = fingerPos.x;
@@ -76,7 +76,7 @@ void MantaController::update(){
         }
     }
     
-    _padAverage = fingers.size() > 0 ? _padSum / numPads : 0.0;
+    _padAverage = fingers.size() > 0 ? _padSum / _numPads : 0.0;
     
     float _perimeter = 0.0;
     float _averageInterFingerDistance = 0.0;
@@ -120,6 +120,7 @@ void MantaController::update(){
         _averageInterFingerDistance = _perimeter / (float) (fingersHull.size()-1);
     }
     
+    numPadsVelocity = ofLerp(numPadsVelocity, _numPads-numPads, velocityLerpRate);
     perimeterVelocity = ofLerp(perimeterVelocity, _perimeter-perimeter, velocityLerpRate);
     averageInterFingerDistanceVelocity = ofLerp(averageInterFingerDistanceVelocity, _averageInterFingerDistance-averageInterFingerDistance, velocityLerpRate);
 
@@ -137,13 +138,14 @@ void MantaController::update(){
     averageInterFingerDistance = _averageInterFingerDistance;
     padSum = _padSum;
     padAverage = _padAverage;
+    numPads = _numPads;
     
     ofPoint _centroid, _weightedCentroid;
     for (int i=0; i<fingers.size(); i++) {
         _centroid += fingers[i];
         _weightedCentroid += (fingers[i] * fingerValues[i] / padSum);
     }
-    _centroid /= numPads;
+    _centroid /= _numPads;
     
     centroidVelocityX = ofLerp(centroidVelocityX, _centroid.x-centroidX, velocityLerpRate);
     centroidVelocityY = ofLerp(centroidVelocityY, _centroid.y-centroidY, velocityLerpRate);

@@ -31,6 +31,7 @@ public:
     void addAllPadVelocitiesAsInput();
     void addSliderVelocitiesAsInput();
     void addButtonVelocitiesAsInput();
+    void addNumPadsVelocityAsInput();
     void addPadSumVelocityAsInput();
     void addPadAverageVelocityAsInput();
     void addPerimeterVelocityAsInput();
@@ -57,7 +58,7 @@ protected:
         width, height, whRatio,
         avgInterDist, centroid, wCentroid;
     bool vAllPads, vAllSliders, vAllButtons,
-        vPadSum, vPadAvg, vPerimeter,
+        vNumPads, vPadSum, vPadAvg, vPerimeter,
         vWidth, vHeight, vWhRatio,
         vAvgInterDist, vCentroid, vWCentroid;
     bool padVal[8][6], padVel[8][6];

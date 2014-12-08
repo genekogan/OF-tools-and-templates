@@ -8,12 +8,16 @@
 /*
  stub for image analysis module
  metrics
-  - color histogram => GMM
+  - color histogram/distribution => GMM
   - color voxel set
   - color motion, movement
   - high-level info from contours, edges, keypoints
-  - frame differencing, motion
+  - frame differencing (by rows/cols), motion quantity
   - flux
+  - optical flow -> quantify motion
+  - edges/saliency map -> downpixel
+  - brightness/contrast/saturation/
+
  inputs
   - image, movie
   - camera feed
@@ -22,7 +26,7 @@
 
 
 using namespace ofxCv;
-
+using namespace cv;
 
 class ModuleImageAnalyzer : public Learn
 {
@@ -44,8 +48,27 @@ protected:
     
     Control control;
     
-    //ofxCv cv;
-    //ofVideoGrabber cam;
+    ofVideoGrabber cam;
+    ofVideoPlayer player;
+
+    
+    ofPixels previous;
+	ofImage diff;
+	cv::Scalar diffMean;
+    cv::Mat columnMean;
+    
+    
+    
+    ofxCv::FlowFarneback flow;
+	ofMesh mesh;
+	int stepSize, xSteps, ySteps;
+
+    
+    
+    float frameDiffTotal;
+    float frameDiffTotalRed, frameDiffTotalGreen, frameDiffTotalBlue;
+    vector<float> frameDiffCol, frameDiffRow;
+
     
     int x, y;
 };
