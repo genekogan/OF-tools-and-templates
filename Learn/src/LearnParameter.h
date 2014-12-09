@@ -131,7 +131,10 @@ public:
     
     void setupGui();
     void setupGuiInputSelector();
-
+    
+    
+    
+    
     void setVisible(bool visible);
     void setGuiPosition(int x, int y);
     void setGuiInputsPosition(int x, int y);
@@ -205,7 +208,8 @@ protected:
     vector<double> mlpCoefficientsW1, mlpCoefficientsW3;
     vector<LearnInputParameter *> allInputs, activeInputs;
     vector<GuiInputGroup> inputGroups;
-
+    vector<string> activeInputGroups;
+    
     vector<ofxSpreadsheet *> data;
     int page, dataWidth, dataHeight;
     

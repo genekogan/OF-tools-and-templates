@@ -26,7 +26,9 @@ LearnInputParameter::LearnInputParameter(string name, float *value, float min, f
 
 //-----------
 LearnOutputParameter::LearnOutputParameter(string name, float *value, float min, float max, bool rangeLocked) : LearnParameter(name, value, min, max, rangeLocked) {
+    vector<string> emptyInputLabels;
     guiInputSelect = new ofxUICanvas(name+"_inputs");
+    guiSelector = guiInputSelect->addDropDownList("select inputs", emptyInputLabels, 190.0f);
     guiData = new ofxUICanvas(name+"_data");
 
     direct = false;
@@ -533,6 +535,16 @@ void LearnOutputParameter::setupGui() {
 
 //-----------
 void LearnOutputParameter::setupGuiInputSelector() {
+   // cout << "==============="<<endl;
+
+    
+    vector<ofxUILabelToggle *> oldToggles = guiSelector->getToggles();
+    for (int i=0; i<oldToggles.size(); i++) {
+        string inputName = oldToggles[i]->getName();
+     //   cout <<"old " << inputName << " " << oldToggles[i]->getValue() << endl;
+    }
+    
+    
     guiInputSelect->clearWidgets();
     guiInputSelect->setColorOutline(ofColor(255,200));
     guiInputSelect->setDrawOutline(true);
@@ -548,16 +560,46 @@ void LearnOutputParameter::setupGuiInputSelector() {
             inputLabels.push_back(allInputs[i]->getName());
         }
     }
+
     
     guiSelector = guiInputSelect->addDropDownList("select inputs", inputLabels, 190.0f);
     vector<ofxUILabelToggle *> toggles = guiSelector->getToggles();
+    
+    
     for (int i=0; i<toggles.size(); i++) {
         string inputName = toggles[i]->getName();
-        for (int j=0; j<activeInputs.size(); j++) {
-            if (inputName == activeInputs[j]->getName()) {
-                toggles[i]->setValue(value);
+        //cout << inputName << " " << toggles[i]->getValue() << endl;
+    }
+    
+    for (int i=0; i<toggles.size(); i++) {
+        string inputName = toggles[i]->getName();
+        
+        //cout << ofGetFrameNum() << " "<<i << " " << getName() << " /// " <<inputName << endl;
+        
+        if (inputGroupsEnabled) {
+            
+            //////////////////
+            for (int j=0; j<activeInputGroups.size(); j++) {
+                if (inputName == activeInputGroups[j]) {
+                    
+                    
+                    toggles[i]->setValue(value);
+                    
+                    
+                }
+            }
+
+            
+            
+        }
+        else {
+            for (int j=0; j<activeInputs.size(); j++) {
+                if (inputName == activeInputs[j]->getName()) {
+                    toggles[i]->setValue(value);
+                }
             }
         }
+        
     }
     guiSelector->setAutoClose(false);
     guiSelector->setAllowMultiple(true);
@@ -741,9 +783,11 @@ void LearnOutputParameter::setExamplesVisible(bool b) {
 void LearnOutputParameter::guiInputSelectEvent(ofxUIEventArgs &e) {
     vector<ofxUILabelToggle *> toggles = guiSelector->getToggles();
     activeInputs.clear();
+    activeInputGroups.clear();
     for (int i=0; i<toggles.size(); i++) {
         if (toggles[i]->getValue()) {
             if (inputGroupsEnabled) {
+                activeInputGroups.push_back(inputGroups[i].name);
                 for (int j=0; j<inputGroups[i].inputs.size(); j++) {
                     addInput(inputGroups[i].inputs[j]);
                 }

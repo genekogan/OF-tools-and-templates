@@ -14,6 +14,10 @@ public:
     void update();
     void draw();
     
+    
+    void addInputFeatureSet(string name);
+    void removeInputFeatureSet(string name);
+    
     void addAllPadsAsInput();
     void addSlidersAsInput();
     void addButtonsAsInput();
@@ -41,6 +45,11 @@ public:
     void addCentroidVelocityAsInput();
     void addWeightedCentroidVelocityAsInput();
     
+    
+//    void addWeightedCentroidVelocityAsInput2();
+    
+    
+    
     //LearnOutputParameter * addOutput(string name, float min, float max);
     LearnInputParameter * addInput(string name, float min, float max);
     
@@ -53,6 +62,7 @@ protected:
     void setupGuiInputs();
     void guiEvent(ofxUIEventArgs &e);
     void guiInputEvent(ofxUIEventArgs &e);
+    void resetManta();
 
     // input selector
     bool allPads, allSliders, allButtons,
@@ -75,5 +85,27 @@ protected:
     
     MantaController manta;
     bool mantaVisible, inputsVisible;
+    
+    
+    
+    
+    
+    struct InputFeature {
+        float *value;
+        float min, max;
+        string name;
+        InputFeature(float *value, float min, float max, string name="") {
+            this->value = value;
+            this->min = min;
+            this->max = max;
+            this->name = name;
+            cout << "name is " << name << endl;
+        }
+    };
+    
+    map<string, vector<InputFeature> > inputFeatures;
+    
+    
+    
 };
 

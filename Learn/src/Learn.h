@@ -34,6 +34,8 @@ public:
     virtual LearnOutputParameter * addOutput(string name, float min, float max);
     void addParameterAsInput(string name, LearnInputParameter* newInput);
     void addParametersAsInput(string name, vector<LearnInputParameter*> &newInputs);
+    void removeParameterAsInput(string name);
+    void removeParameterGroupAsInput(string name);
     void initializeOutput(LearnOutputParameter *output, bool sendOsc=true, bool receiveOsc=true);
     vector<LearnInputParameter*> * getInputs() {return &inputs;}
     vector<LearnOutputParameter*> * getOutputs() {return &outputs;}

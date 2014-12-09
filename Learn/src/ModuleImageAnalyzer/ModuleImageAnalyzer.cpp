@@ -240,7 +240,6 @@ void ModuleImageAnalyzer::update() {
 void ModuleImageAnalyzer::draw() {
     
     
-    drawHistograms();
     
     //ofTranslate(320, 240);
     //ofSetHexColor(0xffffff);
@@ -269,7 +268,6 @@ void ModuleImageAnalyzer::draw() {
     */
     
     
-    return;
     
     
     if (visible) {
@@ -326,6 +324,11 @@ void ModuleImageAnalyzer::draw() {
 			}
 		}
         */
+        
+
+        ofTranslate(0, 400);
+        drawHistograms();
+
         
         
         ofPopMatrix();

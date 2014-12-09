@@ -339,6 +339,8 @@ LearnOutputParameter * Learn::addOutput(string name, float min, float max) {
     return addOutput(name, new float(), min, max, false);
 }
 
+
+
 //-------
 void Learn::addParameterAsInput(string name, LearnInputParameter* newInput) {
     vector<LearnInputParameter*> newInputs;
@@ -353,6 +355,32 @@ void Learn::addParametersAsInput(string name, vector<LearnInputParameter*> &newI
     newGroup.inputs = newInputs;
     inputGroups.push_back(newGroup);
     resetInputGroups();
+}
+
+//-------
+void Learn::removeParameterAsInput(string name) {
+    for (int i=0; i<inputs.size(); i++) {
+        if (name == inputs[i]->getName()) {
+            inputParameterDeleted((LearnParameter &) *inputs[i]);
+            resetInputs();
+            return;
+        }
+    }
+}
+
+//-------
+void Learn::removeParameterGroupAsInput(string name) {
+    for (int i=0; i<inputGroups.size(); i++) {
+        if (name == inputGroups[i].name) {
+            for (int j=0; j<inputGroups[i].inputs.size(); j++) {
+                inputParameterDeleted((LearnParameter &) *inputGroups[i].inputs[j]);
+            }
+            inputGroups.erase(inputGroups.begin() + i);
+            resetInputs();
+            resetInputGroups();
+            return;
+        }
+    }
 }
 
 //-------
@@ -371,7 +399,6 @@ void Learn::resetInputs() {
 
 //-------
 void Learn::resetInputGroups() {
-    if (inputGroups.size() == 0) return;
     for (int i=0; i<outputs.size(); i++) {
         outputs[i]->setInputGroups(inputGroups);
     }

@@ -10,22 +10,22 @@
 
 
 /*
- stub for image analysis module
- metrics
-  - color histogram/distribution => GMM
-  - color voxel set
-  - color motion, movement
-  - high-level info from contours, edges, keypoints
-  - frame differencing (by rows/cols), motion quantity
-  - flux
-  - optical flow -> quantify motion
-  - edges/saliency map -> downpixel
-  - brightness/contrast/saturation/
 
  inputs
   - image, movie
   - camera feed
   - webcam
+ 
+ features
+  - 1d histograms (r, g, b, h, s, v) (GMM?)
+  - 2d/3d histograms (rgb, hsv)
+  - framediff -> motion quantity
+  - optical flow -> motion vectors/direction movement
+  - color flux
+  - contour/edge/keypoint info: avg blob size, circularity (https://github.com/ofZach/circularityMetric/)
+  - edges/saliency map -> downpixel
+  - contrast/saturation
+
  */
 
 
