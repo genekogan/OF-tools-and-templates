@@ -43,7 +43,7 @@ public:
     float getButton(int index) {return manta.getButton(index);}
     float * getButtonRef(int index) {return manta.getButtonRef(index);}
     float * getButtonVelocityRef(int index) {return &buttonVelocity[index];}
-
+    
     // get stats
     float & getNumPads() {return numPads;}
     float & getPadSum() {return padSum;}
@@ -99,6 +99,7 @@ public:
     template <typename L, typename M> void removeSliderClickListener(L *listener, M method) {ofRemoveListener(sliderClickEvent, listener, method);}
     template <typename L, typename M> void removeButtonClickListener(L *listener, M method) {ofRemoveListener(buttonClickEvent, listener, method);}
     
+    
 protected:
     
     ofxManta manta;
@@ -147,5 +148,5 @@ protected:
     ofRectangle padPositions[48], sliderPositions[2], buttonPositions[4];
     int x, y, width;
     int px, py, pwidth;
-    bool visible;
+    bool visible, animated;
 };

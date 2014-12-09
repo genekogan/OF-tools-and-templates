@@ -13,6 +13,15 @@ Learn::Learn(bool init) {
     outputsVisible = true;
     visible = true;
     
+    guiInputX = DEFAULT_INPUT_X;
+    guiInputY = DEFAULT_INPUT_Y;
+    guiInputH = DEFAULT_INPUT_H;
+    guiOutputX = DEFAULT_OUTPUT_X;
+    guiOutputY = DEFAULT_OUTPUT_Y;
+    guiOutputH = DEFAULT_OUTPUT_H;
+    guiOutputSelectorX = DEFAULT_OUTPUT_SELECTOR_X;
+    guiOutputSelectorY = DEFAULT_OUTPUT_SELECTOR_Y;
+    
     training = false;
     predicting = false;
     recording = false;
@@ -301,6 +310,7 @@ void Learn::initializeOutput(LearnOutputParameter *output, bool sendOsc, bool re
         output->setFontSizes(fontSmall, fontMedium, fontLarge);
     }
     output->setGuiPosition(420, 75+55*outputs.size());
+    output->setGuiInputsPosition(215, 75);
     output->setInputParameters(inputs);
     output->setVisible(outputsVisible);
     output->addParameterChangedListener(this, &Learn::outputParameterChanged);
@@ -320,13 +330,13 @@ void Learn::initializeOutput(LearnOutputParameter *output, bool sendOsc, bool re
 }
 
 //-------
-LearnInputParameter * Learn::addInput(string name, float min, float max, bool rangeLocked) {
-    return addInput(name, new float(), min, max, rangeLocked);
+LearnInputParameter * Learn::addInput(string name, float min, float max) {
+    return addInput(name, new float(), min, max, false);
 }
 
 //-------
-LearnOutputParameter * Learn::addOutput(string name, float min, float max, bool rangeLocked) {
-    return addOutput(name, new float(), min, max, rangeLocked);
+LearnOutputParameter * Learn::addOutput(string name, float min, float max) {
+    return addOutput(name, new float(), min, max, false);
 }
 
 //-------
@@ -384,7 +394,7 @@ void Learn::resetOutputs() {
 void Learn::clearInputs() {
     inputGroups.clear();
     for (int i=0; i<inputs.size(); i++) {
-        inputParameterDeleted((LearnParameter &) inputs[i]);
+        inputParameterDeleted((LearnParameter &) *inputs[i]);
     }
     inputs.clear();
     resetInputs();
@@ -393,7 +403,7 @@ void Learn::clearInputs() {
 //-------
 void Learn::clearOutputs() {
     for (int i=0; i<outputs.size(); i++) {
-        outputParameterDeleted((LearnParameter &) outputs[i]);
+        outputParameterDeleted((LearnParameter &) *outputs[i]);
     }
     outputs.clear();
     resetOutputs();
@@ -663,6 +673,7 @@ void Learn::resetGuiPositions() {
     }
     for (int i=0; i<outputs.size(); i++) {
         outputs[i]->setGuiPosition(420, 75+55*i);
+        outputs[i]->setGuiInputsPosition(215, 75);
     }
 }
 
@@ -719,6 +730,34 @@ void Learn::setGuiSummaryView(bool summaryVisible) {
 }
 
 
+
+
+//===========================================
+//  GUI
+
+//-------
+void Learn::setGuiInputPosition(int x, int y, int h) {
+    guiInputX = x;
+    guiInputY = y;
+    guiInputH = h;
+}
+
+//-------
+void Learn::setGuiOutputPosition(int x, int y, int h) {
+    guiOutputX = x;
+    guiOutputY = y;
+    guiOutputH = h;
+}
+
+//-------
+void Learn::setGuiInputSelectorPosition(int x, int y) {
+    guiOutputSelectorX = x;
+    guiOutputSelectorY = y;
+}
+
+
+
+
 //===========================================
 //  PARAMETER EVENTS
 
@@ -737,7 +776,6 @@ void Learn::inputParameterDeleted(LearnParameter & input) {
     vector<LearnInputParameter *>::iterator it=inputs.begin();
     while (it != inputs.end()) {
         if (*it == &input) {
-            // check if input tied into any outputs and ask to confirm
             vector<string> dependentOutputs;
             for (int i=0; i<outputs.size(); i++) {
                 if (outputs[i]->getInputActive(*it) && (outputs[i]->getNumInstances()>0 || outputs[i]->getTrained())) {
@@ -755,6 +793,7 @@ void Learn::inputParameterDeleted(LearnParameter & input) {
             for (int i=0; i<outputs.size(); i++) {
                 outputs[i]->removeInput(*it);
             }
+            (*it)->setVisible(false);
             delete (*it);
             it = inputs.erase(it);
         }
@@ -768,6 +807,7 @@ void Learn::outputParameterDeleted(LearnParameter & output) {
     vector<LearnOutputParameter *>::iterator it=outputs.begin();
     while (it != outputs.end()) {
         if (*it == &output) {
+            (*it)->setVisible(false);
             delete (*it);
             it = outputs.erase(it);
         }
@@ -1063,11 +1103,30 @@ void Learn::loadPreset(string filename) {
 //-------
 void Learn::loadInputs(ofXml &xml) {
     // store existing parameters to delete non-overwritten ones after loading done
+
+    /*
     map<string, bool> inputsToDelete;
     for (int i=0; i<inputs.size(); i++) {
         inputsToDelete[inputs[i]->getName()] = true;
-    }
+    }*/
     
+    clearInputs();
+    
+    // delete inputs
+//    cout << inputs.size() << endl;
+/*
+    //vector<LearnInputParameter *> parametersToDelete;
+    for (int i=0; i<inputs.size(); i++) {
+        inputParameterDeleted((LearnParameter &) inputs[i]);
+    }
+    inputs.clear();
+    cout << inputs.size() << endl;
+  */
+//    parametersToDelete.clear();
+//    inputsToDelete.clear();
+
+    
+
     xml.setTo("Inputs");
     if (xml.exists("Parameter")) {
         xml.setTo("Parameter[0]");
@@ -1081,9 +1140,11 @@ void Learn::loadInputs(ofXml &xml) {
             float warp = xml.getValue<float>("Warp");
             
             // input to load settings into
-            LearnInputParameter * input;
+            //LearnInputParameter * input;
             
             // try to find existing input with same name...
+///////
+            /*
             bool inputExists = false;
             for (int i=0; i<inputs.size(); i++) {
                 if (inputs[i]->getName() == name) {
@@ -1096,20 +1157,32 @@ void Learn::loadInputs(ofXml &xml) {
             if (!inputExists) {
                 input = addInput(name, new float(), min, max);
             }
+            */
+////////
             
+            //LearnInputParameter * input = addInput(name, new float(), min, max);
+            
+            //LearnInputParameter * input = createNewParameter(name, min, max);
+            
+            LearnInputParameter * input = addInput(name, min, max);
+            
+            //resetInputParameterMapping(input);
+             
             input->setOscAddress(oscAddress);
             input->setMin(min);
             input->setMax(max);
             input->setWarp(warp);
             input->set(value);
-            inputsToDelete[name] = false;
+            //inputsToDelete[name] = false;
         }
         while (xml.setToSibling());
         xml.setToParent();
     }
     xml.setToParent();
+
     
     // delete non-overwritten inputs from before loading
+    /*
     vector<LearnInputParameter *> parametersToDelete;
     for (int i=0; i<inputs.size(); i++) {
         if (inputsToDelete[inputs[i]->getName()]) {
@@ -1121,36 +1194,49 @@ void Learn::loadInputs(ofXml &xml) {
     }
     parametersToDelete.clear();
     inputsToDelete.clear();
+     */
+    
+//    for (int i=0; i<inputs.size(); i++) {
+//        resetInputParameterMapping(inputs[i]);
+//    }
 }
 
 //-------
 void Learn::loadOutputs(ofXml &xml, bool loadExamples, bool loadClassifier) {
 
+    // delete outputs
+    /*
+    for (int i=0; i<outputs.size(); i++) {
+        outputParameterDeleted((LearnParameter &) outputs[i]);
+    }
+    outputs.clear();
+    */
     
-    
-    
+    clearOutputs();
     // store existing parameters to delete non-overwritten ones after loading done
+    
+    /*
     map<string, bool> outputsToDelete;
     for (int i=0; i<outputs.size(); i++) {
         
         
         
         
-        /* HACK!!
+        // HACK!!
 		having strange issues when trying to overwrite parameters with same name.
 		so just give each name a random number offset so it will delete,
-		until this bug is corrected in the future */
+		until this bug is corrected in the future...
 		
-        
         outputs[i]->setName("param"+ofToString(ofRandom(100000)));
         
         
         
         outputsToDelete[outputs[i]->getName()] = true;
     }
-    
+    */
     
 
+    
 
     xml.setTo("Outputs");
     if (xml.exists("Parameter")) {
@@ -1165,8 +1251,10 @@ void Learn::loadOutputs(ofXml &xml, bool loadExamples, bool loadClassifier) {
             float warp = xml.getValue<float>("Warp");
             
             // output to load settings into
-            LearnOutputParameter * output;
+            //LearnOutputParameter * output;
             
+            
+/*
             // try to find existing output with same name...
             bool outputExists = false;
             for (int i=0; i<outputs.size(); i++) {
@@ -1182,6 +1270,11 @@ void Learn::loadOutputs(ofXml &xml, bool loadExamples, bool loadClassifier) {
                 output = addOutput(name, new float(), min, max);
             }
             outputsToDelete[name] = false;
+*/
+            
+            LearnOutputParameter * output = addOutput(name, min, max);
+
+            //resetOutputParameterMapping(output);
             
             output->setOscAddress(oscAddress);
             output->setMin(min);
@@ -1214,7 +1307,6 @@ void Learn::loadOutputs(ofXml &xml, bool loadExamples, bool loadClassifier) {
             
             // add saved examples to output
             if (allInputsFound) {
-                
                 if (loadExamples) {
                     xml.setTo("Examples");
                     if (xml.exists("Page[0]")) {
@@ -1274,8 +1366,11 @@ void Learn::loadOutputs(ofXml &xml, bool loadExamples, bool loadClassifier) {
         xml.setToParent();
     }
     xml.setToParent();
-    
+
+
+
     // delete non-overwritten inputs from before loading
+    /*
     vector<LearnOutputParameter *> parametersToDelete;
     for (int i=0; i<outputs.size(); i++) {
         if (outputsToDelete[outputs[i]->getName()]) {
@@ -1287,6 +1382,7 @@ void Learn::loadOutputs(ofXml &xml, bool loadExamples, bool loadClassifier) {
     }
     parametersToDelete.clear();
     outputsToDelete.clear();
+     */
 }
 
 //-------

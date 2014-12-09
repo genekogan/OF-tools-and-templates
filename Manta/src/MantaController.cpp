@@ -33,19 +33,17 @@ void MantaController::update(){
             idx++;            
         }
     }
-    
     // slider velocities
     for (int i=0; i<2; i++) {
         sliderVelocity[i] = ofLerp(sliderVelocity[i], manta.getSlider(i) - prevSlider[i], velocityLerpRate);
         prevSlider[i] = manta.getSlider(i);
     }
-
     // button velocities
     for (int i=0; i<4; i++) {
         buttonVelocity[i] = ofLerp(buttonVelocity[i], manta.getButton(i) - prevButton[i], velocityLerpRate);
         prevButton[i] = manta.getButton(i);
     }
-
+    
     // finger stats
     float _padSum = 0;
     float _padAverage = 0;
@@ -81,6 +79,7 @@ void MantaController::update(){
     float _perimeter = 0.0;
     float _averageInterFingerDistance = 0.0;
 
+    // stats on finger groups
     if (fingers.size() < 2) {
         _width = 0;
         _height = 0;
@@ -93,7 +92,7 @@ void MantaController::update(){
     else if (fingers.size() == 2) {
         _width = fingersMax.x - fingersMin.x;
         _height = fingersMax.y - fingersMin.y;
-        _whRatio = _width / _height;
+        _whRatio = _width / (1.0 + _height);
         
         _perimeter = (pow(fingers[0].x - fingers[1].x, 2)+
                       pow(fingers[0].y - fingers[1].y, 2));
@@ -140,6 +139,7 @@ void MantaController::update(){
     padAverage = _padAverage;
     numPads = _numPads;
     
+    // centroid and weighted centroid
     ofPoint _centroid, _weightedCentroid;
     for (int i=0; i<fingers.size(); i++) {
         _centroid += fingers[i];

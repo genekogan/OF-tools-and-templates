@@ -5,7 +5,10 @@
 ModuleImageAnalyzer::ModuleImageAnalyzer() : Learn() {
     setGuiInputsVisible(false);
     
-    cam.initGrabber(320, 240);
+    width = 320;
+    height = 240;
+    
+    cam.initGrabber(width, height);
     
 //    player.loadMovie("/Users/Gene/Media/german_train_grid.mov");
     player.loadMovie("/Users/Gene/Desktop/german_train_320x240.mp4");
@@ -28,7 +31,18 @@ ModuleImageAnalyzer::ModuleImageAnalyzer() : Learn() {
     
     frameDiffCol.resize(cam.getWidth());
 
+    /*
+     //cvCalcHist(toCv(player), hist);
+
+    ofxCvGrayscaleImage cvImageGray1;
     
+    cvImageGray1.allocate(320, 240);
+    
+    IplImage** iplImageGray1;
+    iplImageGray1 = cvImageGray1.getCvImage();//<----- Can't do this
+
+    cvCalcHist(iplImageGray1, refHist, 0, 0);
+    */
     
     
     
@@ -39,7 +53,7 @@ ModuleImageAnalyzer::ModuleImageAnalyzer() : Learn() {
 	for(int y = 0; y < ySteps; y++) {
 		for(int x = 0; x < xSteps; x++) {
 			mesh.addVertex(ofVec2f(x * stepSize, y * stepSize));
-			mesh.addTexCoord(ofVec2f(x * stepSize, y * stepSize));
+			mesh.addTexCoord(ofVec2f(x * stepSize, y    * stepSize));
 		}
 	}
 	for(int y = 0; y + 1 < ySteps; y++) {
@@ -59,13 +73,111 @@ ModuleImageAnalyzer::ModuleImageAnalyzer() : Learn() {
 
     
     
+    // setup histograms
+    rgb.allocate(width, height);
+    hsv.allocate(width, height);
+    r.allocate(width, height);
+    g.allocate(width, height);
+    b.allocate(width, height);
+    h.allocate(width, height);
+    s.allocate(width, height);
+    v.allocate(width, height);
+    
+    
     
     addInput("frameDiffTotal", &frameDiffTotal, 0.0f, 8000.0f);
     addInput("frameDiffTotalRed", &frameDiffTotalRed, 0.0f, 3000.0f);
     addInput("frameDiffTotalGreen", &frameDiffTotalGreen, 0.0f, 3000.0f);
     addInput("frameDiffTotalBlue", &frameDiffTotalBlue, 0.0f, 3000.0f);
     
+    
+
+    
 }
+
+//-----------
+void ModuleImageAnalyzer::getHistograms() {
+    rgb.setFromPixels(cam.getPixelsRef());
+    
+    // get separate red, green, blue channels
+    r.setFromPixels(rgb.getPixelsRef().getChannel(0));
+    g.setFromPixels(rgb.getPixelsRef().getChannel(1));
+    b.setFromPixels(rgb.getPixelsRef().getChannel(2));
+    
+    // convert rgb to hsv and grab each channel individually
+    cvCvtColor(rgb.getCvImage(), hsv.getCvImage(), CV_BGR2HSV);
+    h.setFromPixels(hsv.getPixelsRef().getChannel(0));
+    s.setFromPixels(hsv.getPixelsRef().getChannel(1));
+    v.setFromPixels(hsv.getPixelsRef().getChannel(2));
+    
+    // get histograms
+    histogramR = histogram.getHistogram(r, 30); // 30 bins
+    histogramG = histogram.getHistogram(g, 30);
+    histogramB = histogram.getHistogram(b, 30);
+    histogramH = histogram.getHistogram(h, 30);
+    histogramS = histogram.getHistogram(s, 30);
+    histogramV = histogram.getHistogram(v, 30);
+}
+
+//-----------
+void ModuleImageAnalyzer::drawHistograms() {
+    ofSetColor(255, 0, 0);
+    r.draw(0, 0);
+    drawHistogram(histogramR);
+    
+    ofTranslate(width, 0);
+    
+    ofSetColor(0, 255, 0);
+    g.draw(0, 0);
+    drawHistogram(histogramG);
+    
+    ofTranslate(width, 0);
+    
+    ofSetColor(0, 0, 255);
+    b.draw(0, 0);
+    drawHistogram(histogramB);
+    
+    ofTranslate(-2*width, height);
+    
+    ofSetColor(255);
+    h.draw(0, 0);
+    drawHistogram(histogramH);
+    
+    ofTranslate(width, 0);
+    
+    ofSetColor(255);
+    s.draw(0, 0);
+    drawHistogram(histogramS);
+    
+    ofTranslate(width, 0);
+    
+    ofSetColor(255);
+    v.draw(0, 0);
+    drawHistogram(histogramV);
+    
+    
+    ofTranslate(-2*width, -height);
+    ofDrawBitmapString("red", 0, 15);
+    ofDrawBitmapString("green", width, 15);
+    ofDrawBitmapString("blue", 2*width, 15);
+    ofDrawBitmapString("hue", 0, 15+height);
+    ofDrawBitmapString("saturation", width, 15+height);
+    ofDrawBitmapString("value", 2*width, 15+height);
+}
+
+//--------------------------------------------------------------
+void ModuleImageAnalyzer::drawHistogram(vector<float> & h) {
+    ofBeginShape();
+    ofNoFill();
+    ofSetLineWidth(3);
+    for (int i=0; i<h.size(); i++) {
+        float x = ofMap(i, 0, h.size(), 0, 320);
+        float y = ofMap(h[i], 0, 0.3, 240, 0);
+        ofVertex(x, y);
+    }
+    ofEndShape();
+}
+
 
 //-----------
 void ModuleImageAnalyzer::update() {
@@ -117,6 +229,7 @@ void ModuleImageAnalyzer::update() {
 		}
 
         
+        getHistograms();
         
 	}
     
@@ -125,6 +238,40 @@ void ModuleImageAnalyzer::update() {
 
 //-----------
 void ModuleImageAnalyzer::draw() {
+    
+    
+    drawHistograms();
+    
+    //ofTranslate(320, 240);
+    //ofSetHexColor(0xffffff);
+//	colorImg = img;
+//	colorImg.draw(20,20);
+    /*
+	int scale = 10;
+	hist_img = outHistImg.getCvImage();
+	cvZero ( hist_img );
+    
+	float max_value = 0;
+	cvGetMinMaxHistValue( hist, 0, &max_value, 0, 0 );
+	for( int h = 0; h < h_bins; h++ ){
+		for( int s = 0; s < s_bins; s++ ){
+			float bin_val = cvQueryHistValue_2D( hist, h, s );
+			int intensity = cvRound( bin_val * 255 / max_value );
+            cout << "intensity " << h << " " << s << " " << intensity << " " << bin_val << endl;
+			cvRectangle( hist_img, cvPoint( h*scale, s*scale ),
+						cvPoint( (h+1)*scale - 1, (s+1)*scale - 1 ),
+						CV_RGB( intensity, intensity, intensity ),
+						CV_FILLED );
+		}
+	}
+	outImg = hist_img;
+	outImg.draw(20, 20);
+    */
+    
+    
+    return;
+    
+    
     if (visible) {
         Learn::draw();
         

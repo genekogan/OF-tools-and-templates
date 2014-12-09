@@ -2,7 +2,11 @@
 
 #include "ofMain.h"
 #include "Learn.h"
+
+
 #include "ofxCv.h"
+#include "ofxOpenCv.h"
+#include "ofxHistogram.h"
 
 
 /*
@@ -23,6 +27,8 @@
   - camera feed
   - webcam
  */
+
+
 
 
 using namespace ofxCv;
@@ -46,6 +52,20 @@ public:
     
 protected:
     
+    void getHistograms();
+    void drawHistograms();
+    void drawHistogram(vector<float> & h);
+    ofxHistogram histogram;
+    ofxCvColorImage rgb, hsv;
+    ofxCvGrayscaleImage r, g, b;
+    ofxCvGrayscaleImage h, s, v;
+    vector<float> histogramR, histogramG, histogramB;
+    vector<float> histogramH, histogramS, histogramV;
+
+    
+    
+    int width, height;
+    
     Control control;
     
     ofVideoGrabber cam;
@@ -56,6 +76,8 @@ protected:
 	ofImage diff;
 	cv::Scalar diffMean;
     cv::Mat columnMean;
+    
+    
     
     
     

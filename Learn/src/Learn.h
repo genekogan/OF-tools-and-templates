@@ -7,12 +7,15 @@
 #include "ThreadedLearner.h"
 
 
-/*
-analysis to-do
-- auto mapping
-- GMM w/ N clusters
-- assign the N cluster means to N evenly distributed output values
-*/
+#define DEFAULT_INPUT_X 10
+#define DEFAULT_INPUT_Y 75
+#define DEFAULT_INPUT_H 55
+#define DEFAULT_OUTPUT_X 420
+#define DEFAULT_OUTPUT_Y 75
+#define DEFAULT_OUTPUT_H 55
+#define DEFAULT_OUTPUT_SELECTOR_X 218
+#define DEFAULT_OUTPUT_SELECTOR_Y 75
+
 
 
 class Learn
@@ -27,8 +30,8 @@ public:
     // managing parameters
     virtual LearnInputParameter  * addInput (string name, float *value, float min, float max, bool rangeLocked=false);
     virtual LearnOutputParameter * addOutput(string name, float *value, float min, float max, bool rangeLocked=false);
-    LearnInputParameter  * addInput (string name, float min, float max, bool rangeLocked=false);
-    LearnOutputParameter * addOutput(string name, float min, float max, bool rangeLocked=false);
+    virtual LearnInputParameter  * addInput (string name, float min, float max);
+    virtual LearnOutputParameter * addOutput(string name, float min, float max);
     void addParameterAsInput(string name, LearnInputParameter* newInput);
     void addParametersAsInput(string name, vector<LearnInputParameter*> &newInputs);
     void initializeOutput(LearnOutputParameter *output, bool sendOsc=true, bool receiveOsc=true);
@@ -53,6 +56,11 @@ public:
     void setGuiSummaryView(bool viewSummary);
     void toggleGuiSummaryView() {setGuiSummaryView(!summaryVisible);}
     
+    // gui
+    void setGuiInputPosition(int x, int y, int h);
+    void setGuiOutputPosition(int x, int y, int h);
+    void setGuiInputSelectorPosition(int x, int y);
+    
     // touch osc
     void saveInputsToTouchOsc();
     void saveOutputsToTouchOsc();
@@ -69,7 +77,7 @@ public:
     // presets
     virtual bool savePreset(string filename="");
     virtual void loadPreset(string path);
-
+    
     
 protected:
     
@@ -135,13 +143,16 @@ protected:
     ofxUICanvas *gui1, *gui2, *gui3;
     ofxUIDropDownList *guiSelector;
     ofxUILabel *guiStatusLabel;
+    int guiInputX, guiInputY, guiInputH;
+    int guiOutputX, guiOutputY, guiOutputH;
+    int guiOutputSelectorX, guiOutputSelectorY;
     bool visible, inputsVisible, outputsVisible;
     int summaryX, summaryY;
     bool summaryVisible, dragging;
     int draggedFrames;
     int activeOutput;
     vector<int> activeInputs;
-    
+
     // recording variables
     float startTime, trainCountdown, trainDuration;
     int instanceRate, framesPerInstance, currentNewInstances;

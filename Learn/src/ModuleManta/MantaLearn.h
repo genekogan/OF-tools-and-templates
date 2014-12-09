@@ -27,7 +27,6 @@ public:
     void addAverageInterFingerDistanceAsInput();
     void addCentroidAsInput();
     void addWeightedCentroidAsInput();
-    
     void addAllPadVelocitiesAsInput();
     void addSliderVelocitiesAsInput();
     void addButtonVelocitiesAsInput();
@@ -42,9 +41,12 @@ public:
     void addCentroidVelocityAsInput();
     void addWeightedCentroidVelocityAsInput();
     
+    //LearnOutputParameter * addOutput(string name, float min, float max);
+    LearnInputParameter * addInput(string name, float min, float max);
+    
     void setMantaVisible(bool mantaVisible);
     void toggleMantaVisible() {setMantaVisible(!mantaVisible);}
-        
+
 protected:
     
     void setupInputs();

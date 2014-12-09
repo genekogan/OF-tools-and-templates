@@ -30,6 +30,14 @@ void ofApp::keyPressed(int key){
         learn.toggleVisible();
     else if (key=='!')
         learn.toggleMantaVisible();
+    
+    
+    else if (key=='1') {
+        learn.clearInputs();
+    }
+    else if (key=='2') {
+        learn.clearOutputs();
+    }
 }
 
 //--------------------------------------------------------------

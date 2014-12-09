@@ -549,7 +549,7 @@ void LearnOutputParameter::setupGuiInputSelector() {
         }
     }
     
-    guiSelector = guiInputSelect->addDropDownList("select inputs", inputLabels, 200.0f);
+    guiSelector = guiInputSelect->addDropDownList("select inputs", inputLabels, 190.0f);
     vector<ofxUILabelToggle *> toggles = guiSelector->getToggles();
     for (int i=0; i<toggles.size(); i++) {
         string inputName = toggles[i]->getName();
@@ -865,7 +865,11 @@ void LearnOutputParameter::setVisible(bool visible){
 //-----------
 void LearnOutputParameter::setGuiPosition(int x, int y) {
     gui->setPosition(x, y);
-    guiInputSelect->setPosition(x, 460);
+}
+
+//-----------
+void LearnOutputParameter::setGuiInputsPosition(int x, int y) {
+    guiInputSelect->setPosition(x, y);
 }
 
 //-----------

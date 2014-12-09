@@ -70,6 +70,7 @@ Addons
  - [ofxLearn](https://github.com/genekogan/ofxLearn)
  - [ofxSelfOrganizingMap](https://github.com/genekogan/ofxSelfOrganizingMap)
  - [ofxGMM](https://github.com/genekogan/ofxGMM)
+ - [ofxHistogram](https://github.com/genekogan/ofxHistogram)
  - [ofxSpreadsheet](https://github.com/genekogan/ofxSpreadsheet)
  - [ofxPointInPolyline](https://github.com/genekogan/ofxPointInPolyline)
  - [ofxTouchOsc](https://github.com/genekogan/ofxTouchOsc)

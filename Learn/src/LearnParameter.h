@@ -11,7 +11,6 @@
 #define DEFAULT_MLP_TARGET_RMSE 0.001
 #define DEFAULT_MLP_MAX_SAMPLES 1000000
 
-
 // hack to fix ofxUI rect width bug
 #define GUI_INPUT_WIDTH 386
 #define GUI_OUTPUT_WIDTH 586
@@ -135,6 +134,7 @@ public:
 
     void setVisible(bool visible);
     void setGuiPosition(int x, int y);
+    void setGuiInputsPosition(int x, int y);
     void setInputsVisible(bool b);
     void setExamplesVisible(bool b);
     void setDataSize(int width, int height);

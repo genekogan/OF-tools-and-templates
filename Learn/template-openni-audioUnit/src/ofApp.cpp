@@ -32,8 +32,6 @@ void ofApp::update(){
     output.update();
     audio.update();
     learn.update();
-    
-    ofSetWindowTitle(ofToString(ofGetFrameRate()));
 }
 
 //--------------------------------------------------------------

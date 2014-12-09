@@ -93,6 +93,7 @@
 		B03DC0551A045DA00032E260 /* PAW.cc in Sources */ = {isa = PBXBuildFile; fileRef = B03DC04A1A045DA00032E260 /* PAW.cc */; };
 		B03DC0561A045DA00032E260 /* PDM.cc in Sources */ = {isa = PBXBuildFile; fileRef = B03DC04B1A045DA00032E260 /* PDM.cc */; };
 		B03DC0571A045DA00032E260 /* Tracker.cc in Sources */ = {isa = PBXBuildFile; fileRef = B03DC04C1A045DA00032E260 /* Tracker.cc */; };
+		B042E95C1A36EFC300E29E67 /* ofxHistogram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B042E95A1A36EFC300E29E67 /* ofxHistogram.cpp */; };
 		B08625F61A2C626700FEF5CC /* ModuleImageAnalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B08625F41A2C625E00FEF5CC /* ModuleImageAnalyzer.cpp */; };
 		B0AF3E811A29EE4D004A6C3E /* Analyze.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0AF3E7F1A29EE4D004A6C3E /* Analyze.cpp */; };
 		B0AF3E8C1A29EE51004A6C3E /* ofxGMM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0AF3E841A29EE51004A6C3E /* ofxGMM.cpp */; };
@@ -444,6 +445,8 @@
 		B03DC04A1A045DA00032E260 /* PAW.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PAW.cc; sourceTree = "<group>"; };
 		B03DC04B1A045DA00032E260 /* PDM.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PDM.cc; sourceTree = "<group>"; };
 		B03DC04C1A045DA00032E260 /* Tracker.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Tracker.cc; sourceTree = "<group>"; };
+		B042E95A1A36EFC300E29E67 /* ofxHistogram.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxHistogram.cpp; sourceTree = "<group>"; };
+		B042E95B1A36EFC300E29E67 /* ofxHistogram.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxHistogram.h; sourceTree = "<group>"; };
 		B08625F41A2C625E00FEF5CC /* ModuleImageAnalyzer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ModuleImageAnalyzer.cpp; sourceTree = "<group>"; };
 		B08625F51A2C625E00FEF5CC /* ModuleImageAnalyzer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModuleImageAnalyzer.h; sourceTree = "<group>"; };
 		B0AF3E7F1A29EE4D004A6C3E /* Analyze.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Analyze.cpp; sourceTree = "<group>"; };
@@ -1203,6 +1206,24 @@
 			path = lib;
 			sourceTree = "<group>";
 		};
+		B042E9581A36EFC300E29E67 /* ofxHistogram */ = {
+			isa = PBXGroup;
+			children = (
+				B042E9591A36EFC300E29E67 /* src */,
+			);
+			name = ofxHistogram;
+			sourceTree = "<group>";
+		};
+		B042E9591A36EFC300E29E67 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B042E95A1A36EFC300E29E67 /* ofxHistogram.cpp */,
+				B042E95B1A36EFC300E29E67 /* ofxHistogram.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxHistogram/src;
+			sourceTree = "<group>";
+		};
 		B08625F31A2C625E00FEF5CC /* ModuleImageAnalyzer */ = {
 			isa = PBXGroup;
 			children = (
@@ -1312,6 +1333,7 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				B042E9581A36EFC300E29E67 /* ofxHistogram */,
 				B0BA148C19CDDC8C00D64AAB /* Learn */,
 				B0BA148B19CDDC8700D64AAB /* Control */,
 				B0AF3E821A29EE51004A6C3E /* ofxGMM */,
@@ -1769,6 +1791,7 @@
 				E3D59A6B55F05669B3FBF8BD /* ofxUINumberDialer.cpp in Sources */,
 				D60E54E7FD6E19BC8636E0D2 /* ofxUIRadio.cpp in Sources */,
 				1587708E3CAC72997E43504E /* ofxUIRangeSlider.cpp in Sources */,
+				B042E95C1A36EFC300E29E67 /* ofxHistogram.cpp in Sources */,
 				59C5F2F5D7254C33C00F97CB /* ofxUIRectangle.cpp in Sources */,
 				FE0F1DB69ACCD163E9DA2A15 /* ofxUIRotarySlider.cpp in Sources */,
 				B03DC0231A045D9C0032E260 /* ofxCvGrayscaleImage.cpp in Sources */,
