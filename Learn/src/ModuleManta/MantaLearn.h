@@ -58,7 +58,7 @@ public:
 
 protected:
     
-    void setupInputs();
+    //void setupInputs();
     void setupGuiInputs();
     void guiEvent(ofxUIEventArgs &e);
     void guiInputEvent(ofxUIEventArgs &e);
@@ -85,27 +85,5 @@ protected:
     
     MantaController manta;
     bool mantaVisible, inputsVisible;
-    
-    
-    
-    
-    
-    struct InputFeature {
-        float *value;
-        float min, max;
-        string name;
-        InputFeature(float *value, float min, float max, string name="") {
-            this->value = value;
-            this->min = min;
-            this->max = max;
-            this->name = name;
-            cout << "name is " << name << endl;
-        }
-    };
-    
-    map<string, vector<InputFeature> > inputFeatures;
-    
-    
-    
 };
 

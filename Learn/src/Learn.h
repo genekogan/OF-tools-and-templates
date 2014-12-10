@@ -83,6 +83,19 @@ public:
     
 protected:
     
+    // input feature mapppings
+    struct InputFeature {
+        float *value;
+        float min, max;
+        string name;
+        InputFeature(float *value, float min, float max, string name="") {
+            this->value = value;
+            this->min = min;
+            this->max = max;
+            this->name = name;
+        }
+    };
+    
     // managing parameters
     virtual void resetInputs();
     virtual void resetInputGroups();
@@ -124,6 +137,7 @@ protected:
     string loadPresetDialog(string filename);
     void loadInputs(ofXml &xml);
     void loadOutputs(ofXml &xml, bool loadExamples=true, bool loadClassifier=true);
+    void loadHelperGetParameters(ofXml &xml);
     virtual void resetPresets();
     
     // style
@@ -134,6 +148,7 @@ protected:
     vector<LearnInputParameter *> inputs;
     vector<LearnOutputParameter *> outputs;
     vector<LearnOutputParameter::GuiInputGroup> inputGroups;
+    map<string, vector<InputFeature> > inputFeatures;
     
     // osc management
     OscManager oscManager;

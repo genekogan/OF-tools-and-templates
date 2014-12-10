@@ -14,7 +14,10 @@ public:
     Type getType()   {return type;}
 
     void setName(string name) {this->name = name; }
-    void setOscAddress(string oscAddress) {this->oscAddress = oscAddress; }
+    void setOscAddress(string oscAddress) {
+        this->oscAddress = oscAddress;
+        ofStringReplace(oscAddress, " ", "_");
+    }
     template<class T> void setType();
 
     template<class T> void setReference(T *val);
@@ -46,7 +49,7 @@ public:
     
     Parameter(string name, T &val) {
         this->name = name;
-        this->oscAddress = "/"+name;
+        setOscAddress("/"+name);
         setType<T>();
         value = &val;
         warp = 1.0;
@@ -54,7 +57,7 @@ public:
     
     Parameter(string name, T &val, T min, T max, float warp_=1.0) : minValue(min), maxValue(max) {
         this->name = name;
-        this->oscAddress = "/"+name;
+        setOscAddress("/"+name);
         setType<T>();
         value = &val;
         warp = warp_;

@@ -1029,9 +1029,24 @@ void Learn::saveInputs(string filename, ofXml &xml) {
     Presets presets;
     xml.addChild("Inputs");
     xml.setTo("Inputs");
-    for (int i=0; i<inputs.size(); i++) {
-        ofXml xmlp = presets.getXml(inputs[i]);
-        xml.addXml(xmlp);
+    if (inputGroups.size() > 0) {
+        for (int i=0; i<inputGroups.size(); i++) {
+            ofXml xmlg;
+            xmlg.addChild("InputGroup");
+            xmlg.setTo("InputGroup");
+            xmlg.addValue("Name", inputGroups[i].name);
+            for (int j=0; j<inputGroups[i].inputs.size(); j++) {
+                ofXml xmlp = presets.getXml(inputGroups[i].inputs[j]);
+                xmlg.addXml(xmlp);
+            }
+            xml.addXml(xmlg);
+        }
+    }
+    else {
+        for (int i=0; i<inputs.size(); i++) {
+            ofXml xmlp = presets.getXml(inputs[i]);
+            xml.addXml(xmlp);
+        }
     }
     xml.setToParent();
 }
@@ -1042,15 +1057,40 @@ void Learn::saveOutputs(string filename, ofXml &xml) {
     xml.addChild("Outputs");
     xml.setTo("Outputs");
     for (int i=0; i<outputs.size(); i++) {
-        vector<LearnInputParameter *> activeInputs = outputs[i]->getActiveInputs();
-        vector<vector<vector<float> > > instances = outputs[i]->getInstances();
         
         // add inputs
         ofXml xmlp = presets.getXml(outputs[i]);
         xmlp.addChild("Inputs");
         xmlp.setTo("Inputs");
-        for (int j=0; j<activeInputs.size(); j++) {
-            xmlp.addValue("Input", activeInputs[j]->getName());
+
+        vector<vector<vector<float> > > instances = outputs[i]->getInstances();
+        vector<string> activeInputGroups = outputs[i]->getActiveInputGroups();
+
+        // add input groups if any exist, or...
+        if (activeInputGroups.size() > 0) {
+            for (int i=0; i<activeInputGroups.size(); i++) {
+                for (int j=0; j<inputGroups.size(); j++) {
+                    if (activeInputGroups[i] != inputGroups[j].name) continue;
+                    ofXml xmlg;
+                    xmlg.addChild("InputGroup");
+                    xmlg.setTo("InputGroup");
+                    xmlg.addValue("Name", inputGroups[j].name);
+                    for (int k=0; k<inputGroups[j].inputs.size(); k++) {
+                        ofXml xmlgp = presets.getXml(inputGroups[j].inputs[k]);
+                        xmlg.addXml(xmlgp);
+                    }
+                    xmlp.addXml(xmlg);
+                }
+            }
+        }
+        
+        // add individual inputs if no groups
+        else {
+            vector<LearnInputParameter *> activeInputs = outputs[i]->getActiveInputs();
+            for (int j=0; j<activeInputs.size(); j++) {
+                xmlp.addValue("Input", activeInputs[j]->getName());
+            }
+            
         }
         xmlp.setToParent();
         
@@ -1129,14 +1169,6 @@ void Learn::loadPreset(string filename) {
 
 //-------
 void Learn::loadInputs(ofXml &xml) {
-    // store existing parameters to delete non-overwritten ones after loading done
-
-    /*
-    map<string, bool> inputsToDelete;
-    for (int i=0; i<inputs.size(); i++) {
-        inputsToDelete[inputs[i]->getName()] = true;
-    }*/
-    
     clearInputs();
     
     // delete inputs
@@ -1153,59 +1185,30 @@ void Learn::loadInputs(ofXml &xml) {
 //    inputsToDelete.clear();
 
     
+    cout << "LOAD INPUTS" <<endl;
 
     xml.setTo("Inputs");
-    if (xml.exists("Parameter")) {
-        xml.setTo("Parameter[0]");
+    
+    if (xml.exists("InputGroup")) {
+        xml.setTo("InputGroup[0]");
         do {
             string name = xml.getValue<string>("Name");
-            string oscAddress = xml.getValue<string>("OscAddress");
-            string type = xml.getValue<string>("Type");
-            float value = xml.getValue<float>("Value");
-            float min = xml.getValue<float>("Min");
-            float max = xml.getValue<float>("Max");
-            float warp = xml.getValue<float>("Warp");
+            cout << "GROUP " << name << endl;
+            loadHelperGetParameters(xml);
+            cout << "/GROUP" <<endl;
             
-            // input to load settings into
-            //LearnInputParameter * input;
-            
-            // try to find existing input with same name...
-///////
-            /*
-            bool inputExists = false;
-            for (int i=0; i<inputs.size(); i++) {
-                if (inputs[i]->getName() == name) {
-                    input = inputs[i];
-                    inputExists = true;
-                    break;
-                }
-            }
-            // ...or make new one if none found
-            if (!inputExists) {
-                input = addInput(name, new float(), min, max);
-            }
-            */
-////////
-            
-            //LearnInputParameter * input = addInput(name, new float(), min, max);
-            
-            //LearnInputParameter * input = createNewParameter(name, min, max);
-            
-            LearnInputParameter * input = addInput(name, min, max);
-            
-            //resetInputParameterMapping(input);
-             
-            input->setOscAddress(oscAddress);
-            input->setMin(min);
-            input->setMax(max);
-            input->setWarp(warp);
-            input->set(value);
-            //inputsToDelete[name] = false;
         }
         while (xml.setToSibling());
         xml.setToParent();
     }
+
+    // individual inputs
+    loadHelperGetParameters(xml); // eventually should not need this...
+
     xml.setToParent();
+
+    
+    cout << "/LOAD INPUTS" <<endl;
 
     
     // delete non-overwritten inputs from before loading
@@ -1226,6 +1229,68 @@ void Learn::loadInputs(ofXml &xml) {
 //    for (int i=0; i<inputs.size(); i++) {
 //        resetInputParameterMapping(inputs[i]);
 //    }
+}
+
+
+//-------
+void Learn::loadHelperGetParameters(ofXml &xml) {
+    if (xml.exists("Parameter")) {
+        xml.setTo("Parameter[0]");
+        do {
+            string name = xml.getValue<string>("Name");
+            string oscAddress = xml.getValue<string>("OscAddress");
+            string type = xml.getValue<string>("Type");
+            float value = xml.getValue<float>("Value");
+            float min = xml.getValue<float>("Min");
+            float max = xml.getValue<float>("Max");
+            float warp = xml.getValue<float>("Warp");
+            
+            // input to load settings into
+            //LearnInputParameter * input;
+            
+            // try to find existing input with same name...
+            ///////
+            /*
+             bool inputExists = false;
+             for (int i=0; i<inputs.size(); i++) {
+             if (inputs[i]->getName() == name) {
+             input = inputs[i];
+             inputExists = true;
+             break;
+             }
+             }
+             // ...or make new one if none found
+             if (!inputExists) {
+             input = addInput(name, new float(), min, max);
+             }
+             */
+            ////////
+            
+            //LearnInputParameter * input = addInput(name, new float(), min, max);
+            
+            //LearnInputParameter * input = createNewParameter(name, min, max);
+            
+            cout << "param " << name << " " << min << " " << max << endl;
+            
+            /*
+            LearnInputParameter * input = addInput(name, min, max);
+            
+            //resetInputParameterMapping(input);
+            
+            
+            
+            
+            input->setOscAddress(oscAddress);
+            input->setMin(min);
+            input->setMax(max);
+            input->setWarp(warp);
+            input->set(value);*/
+            
+            //inputsToDelete[name] = false;
+        }
+        while (xml.setToSibling());
+        xml.setToParent();
+    }
 }
 
 //-------

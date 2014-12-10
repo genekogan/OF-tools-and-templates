@@ -125,15 +125,12 @@ public:
     bool removeInput(LearnInputParameter * input);
     int getNumInputs() {return activeInputs.size();}
     vector<LearnInputParameter *> & getActiveInputs() {return activeInputs;}
+    vector<string> & getActiveInputGroups() {return activeInputGroups;}
     bool getInputActive(LearnInputParameter * input);
-    
     void activateAllInputs();
     
     void setupGui();
     void setupGuiInputSelector();
-    
-    
-    
     
     void setVisible(bool visible);
     void setGuiPosition(int x, int y);
