@@ -14,6 +14,16 @@ public:
     void update();
     void draw();
         
+    void setGuiPosition(int x, int y);
+    void setVisible(bool visible);
+    void toggleVisible() {setVisible(!visible);}
+    void toggleGuiSummaryView();
+
+protected:
+    
+    void setupGuiInputs();
+    void guiInputEvent(ofxUIEventArgs &e);
+
     void addLeftHandFingerTipsAsInput();
     void addLeftHandIndexFingerTipAsInput();
     void addLeftHandVelocityAsInput();
@@ -34,15 +44,21 @@ public:
     void addRightHandPitchAsInput();
     void addRightHandYawAsInput();
     
-    void setGuiPosition(int x, int y);
-    void setVisible(bool visible);
-    void toggleVisible() {setVisible(!visible);}
-    void toggleGuiSummaryView();
-
-protected:
-    
     LeapMotion leap;
     
     bool visible;
     int x, y;
+    
+    ofxUICanvas *guiInputs;
+    
+    bool lTips, rTips;
+    bool lIndex, rIndex;
+    bool lVel, rVel;
+    bool lSize, rSize;
+    bool lNormal, rNormal;
+    bool lDir, rDir;
+    bool lRoll, rRoll;
+    bool lPitch, rPitch;
+    bool lYaw, rYaw;
+
 };

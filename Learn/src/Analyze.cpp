@@ -6,7 +6,6 @@
 Analyze::Analyze() {
     control.setVisible(false);
     idxView = -1;
-    
     numAutoSamples = 25;
 }
 

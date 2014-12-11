@@ -22,4 +22,5 @@ class ofApp : public ofBaseApp{
 		
     Learn learn;
     float myVal1, myVal2;
+    float myOutputValue;
 };

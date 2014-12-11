@@ -16,7 +16,8 @@ void ofApp::setup(){
     learn.addInputToGroup("myGroup", "myGroup-3", &myVal2, 1, 10);
     
     // add output
-    learn.addOutput("myOutput", 0, 100);
+    learn.addOutput("myOutput1", 0, 10);
+    learn.addOutput("myOutput2", &myOutputValue, 0, 100);
     
     // setup osc
     learn.setupOscSender("localhost", 1234);

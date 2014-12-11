@@ -15,6 +15,7 @@ public:
     void              setGuiPosition(int x, int y);
     void              close() { leap.close(); }
     void              setVelocityTracking(bool trackVelocity, int numFrames=10);
+    void              setNormalizeTips(bool normalizeTips) {this->normalizeTips = normalizeTips;}
     void              update();
     void              draw(int x, int y, int w, int h);
     void              drawVelocityGraph(Handedness hand, int x, int y, int w, int h);

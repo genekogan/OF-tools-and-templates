@@ -19,6 +19,8 @@ void LeapMotion::setup(){
     for (int i=0; i<5; i++) {
         leftHandTips.push_back(ofPoint(0, 0, 0));
         rightHandTips.push_back(ofPoint(0, 0, 0));
+        vLeftHandTips.push_back(ofPoint(0, 0, 0));
+        vRightHandTips.push_back(ofPoint(0, 0, 0));
     }
     
     finger[0] = THUMB;
