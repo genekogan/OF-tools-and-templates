@@ -98,8 +98,9 @@ void LearnParameter::setName(string name){
 }
 
 //-----------
-void LearnParameter::setOscAddress(string oscAddress){
-    Parameter<float>::setOscAddress(oscAddress);
+void LearnParameter::setOscAddress(string oscAddress_){
+    ofStringReplace(oscAddress_, " ", "_");
+    Parameter<float>::setOscAddress(oscAddress_);
     guiOsc->setTextString(getOscAddress());
 }
 
@@ -173,6 +174,14 @@ void LearnInputGroup::removeParameter(LearnInputParameter * parameter) {
         }
         else ++it;
     }
+}
+
+//-----------
+void LearnInputGroup::clearParameters() {
+    for (int i=0; i<inputs.size(); i++) {
+        delete inputs[i];
+    }
+    inputs.clear();
 }
 
 

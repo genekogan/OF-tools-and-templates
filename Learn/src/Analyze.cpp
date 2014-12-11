@@ -6,6 +6,8 @@
 Analyze::Analyze() {
     control.setVisible(false);
     idxView = -1;
+    
+    numAutoSamples = 25;
 }
 
 //-----------
@@ -26,20 +28,15 @@ void Analyze::setupGui() {
     control.addParameter("remapping?", &remapping);
     control.addEvent("clear", this, &Analyze::clear);
     control.addSpacer();
-    control.addEvent("train kmeans", this, &Analyze::startTraining);
+    //control.addEvent("train kmeans", this, &Analyze::startTraining);
     control.addEvent("train gmm", this, &Analyze::trainGMM);
+    control.addSpacer();
     
     if (gmmTrained) {
-        
+        control.addParameter("num auto samples", &numAutoSamples, 10, 200);
+        control.addEvent("auto train", this, &Analyze::autoTrain);
     }
 }
-
-//-----------
-/*
-void Analyze::setInputs(vector<LearnInputParameter *> *inputs) {
-    this->inputs = inputs;
-}
-*/
 
 //-----------
 void Analyze::setInputs(vector<LearnInputGroup *> *inputs) {
@@ -65,8 +62,6 @@ void Analyze::toggleCollecting(string &s) {
             outputs->at(i)->clearInstances();
         }
         for (int i=0; i<inputs->size(); i++) {
-//            inputs->at(i)->setMax(-9999999);
-  //          inputs->at(i)->setMin( 9999999);
             vector<LearnInputParameter*> params = inputs->at(i)->getInputs();
             for (int j=0; j<params.size(); j++) {
                 params[j]->setMax(-9999999);
@@ -96,15 +91,16 @@ void Analyze::clear(string &s) {
 //-----------
 void Analyze::setInputMapping() {
     for (int i=0; i<inputs->size(); i++) {
-        /*
-        if (inputs->at(i)->getRangeLocked())   continue;
-        if (inputs->at(i)->get() > inputs->at(i)->getMax()) {
-            inputs->at(i)->setMax(inputs->at(i)->get());
+        vector<LearnInputParameter*> params = inputs->at(i)->getInputs();
+        for (int j=0; j<params.size(); j++) {
+            if (params[j]->getRangeLocked())   continue;
+            if (params[j]->get() > params[j]->getMax()) {
+                params[j]->setMax(params[j]->get());
+            }
+            if (params[j]->get() < params[j]->getMin()) {
+                params[j]->setMin(params[j]->get());
+            }
         }
-        if (inputs->at(i)->get() < inputs->at(i)->getMin()) {
-            inputs->at(i)->setMin(inputs->at(i)->get());
-        }
-         */
     }
 }
 
@@ -129,18 +125,21 @@ void Analyze::selectOutput(string &s) {
 
 //-----------
 void Analyze::startCollecting() {
-    /*
     vector<string> outputNames;
     outputNames.push_back("_hide_");
     for (int i=0; i<outputs->size(); i++) {
         outputNames.push_back(outputs->at(i)->getName());
         
-        vector<LearnInputParameter *> ainputs = outputs->at(i)->getActiveInputs();
+        vector<LearnInputGroup *> ainputs = outputs->at(i)->getActiveInputs();
         ofxSpreadsheet *spreadsheet = new ofxSpreadsheet();
         vector<string> headers;
         headers.push_back("cluster");
+
         for (int j=0; j<ainputs.size(); j++) {
-            headers.push_back(ainputs[j]->getName());
+            vector<LearnInputParameter*> params = ainputs[j]->getInputs();
+            for (int k=0; k<params.size(); k++) {
+                headers.push_back(params[k]->getName());
+            }
         }
         spreadsheet->setup(600, 300);
         spreadsheet->clear();
@@ -152,7 +151,6 @@ void Analyze::startCollecting() {
     }
     idxView = 0;
     control.addMenu("outputs", outputNames, this, &Analyze::selectOutput);
-     */
 }
 
 //-----------
@@ -186,6 +184,7 @@ void Analyze::trainGMM(string &s) {
         gmmClusterSets.push_back(paramCluster);
     }
     gmmTrained = true;
+    setupGui();
 }
 
 //-----------
@@ -200,17 +199,19 @@ void Analyze::trainNextOutput() {
 
 //-----------
 void Analyze::update() {
-    /*
     if (remapping) {
         setInputMapping();
     }
     if (collecting) {
         for (int i=0; i<outputs->size(); i++) {
-            vector<LearnInputParameter *> ainputs = outputs->at(i)->getActiveInputs();
+            vector<LearnInputGroup *> ainputs = outputs->at(i)->getActiveInputs();
             vector<float> entry;
             entry.push_back(-1);
-            for (int i=0; i<ainputs.size(); i++) {
-                entry.push_back(ainputs[i]->get());
+            for (int j=0; j<ainputs.size(); j++) {
+                vector<LearnInputParameter*> params = ainputs[j]->getInputs();
+                for (int k=0; k<params.size(); k++) {
+                    entry.push_back(params[k]->get());
+                }
             }
             spreadsheets[i]->addEntry(entry);
         }
@@ -230,7 +231,6 @@ void Analyze::update() {
             kMeansTrained = true;
         }
     }
-     */
 }
 
 //-----------
@@ -279,15 +279,18 @@ void Analyze::setVisible(bool visible) {
 
 //-----------
 void Analyze::drawGMM(int g) {
-    /*
-    vector<LearnInputParameter *> ainputs = outputs->at(g)->getActiveInputs();
+    vector<LearnInputGroup *> ainputs = outputs->at(g)->getActiveInputs();
+    int numParams = 0;
+    for (int i=0; i<ainputs.size(); i++) {
+        numParams += ainputs[i]->getInputs().size();
+    }
     
     ofPushMatrix();
     ofPushStyle();
     
     ofSetColor(100);
     ofFill();
-    ofRect(0, 0, 170 + 105*gmmClusterSets[g].size(), 64+12*ainputs.size());
+    ofRect(0, 0, 170 + 105*gmmClusterSets[g].size(), 64+12*numParams);
 
     ofSetColor(0, 255, 0);
     ofRect(5, 8, 100, 12);
@@ -332,39 +335,100 @@ void Analyze::drawGMM(int g) {
         
         ofTranslate(0, 16);
         
-        for (int p=0; p<mean.size(); p++) {
-            float m = (mean[p] - ainputs[p]->getMin()) / (ainputs[p]->getMax() - ainputs[p]->getMin());
-            float s = std[p] / (ainputs[p]->getMax() - ainputs[p]->getMin());
-            
-            ofPushMatrix();
-            ofTranslate(0, p*12);
-            ofSetColor(0);
-            ofRect(0, 0, 100, 11);
-            
-            ofSetColor(0, 255, 0);
-            ofLine(100*(m-s), 0, 100*(m-s), 11);
-            ofLine(100*(m+s), 0, 100*(m+s), 11);
-            ofSetColor(255, 0, 0);
-            ofLine(100*m, 0, 100*m, 11);
-            
-            ofPopMatrix();
+        
+        int idxP = 0;
+        for (int i=0; i<ainputs.size(); i++) {
+            vector<LearnInputParameter*> params = ainputs[i]->getInputs();
+
+            for (int p=0; p<params.size(); p++) {
+                float m = (mean[idxP] - params[p]->getMin()) / (params[p]->getMax() - params[p]->getMin());
+                float s = std[idxP] / (params[p]->getMax() - params[p]->getMin());
+
+                ofPushMatrix();
+                ofTranslate(0, idxP*12);
+                ofSetColor(0);
+                ofRect(0, 0, 100, 11);
+                
+                ofSetColor(0, 255, 0);
+                ofLine(100*(m-s), 0, 100*(m-s), 11);
+                ofLine(100*(m+s), 0, 100*(m+s), 11);
+                ofSetColor(255, 0, 0);
+                ofLine(100*m, 0, 100*m, 11);
+                
+                ofPopMatrix();
+                
+                idxP++;
+            }
         }
         ofPopMatrix();
     }
     
+    int idxP = 0;
     for (int i=0; i<ainputs.size(); i++) {
-        ofPushMatrix();
-        ofPushStyle();
-        ofTranslate(0, 68+i*12);
-        ofSetColor(255);
-        ofDrawBitmapString(ainputs[i]->getName(), 2, 0);
-        ofPopStyle();
-        ofPopMatrix();
+        vector<LearnInputParameter*> params = ainputs[i]->getInputs();
+        for (int p=0; p<params.size(); p++) {
+            ofPushMatrix();
+            ofPushStyle();
+            ofTranslate(0, 68+idxP*12);
+            ofSetColor(255);
+            ofDrawBitmapString(params[p]->getName(), 2, 0);
+            ofPopStyle();
+            ofPopMatrix();
+            idxP++;
+        }
     }
     
     ofPopStyle();
     ofPopMatrix();
-*/
+}
+
+//-----------
+void Analyze::autoTrain(string &s) {
+    makeTrainingSetFromGMMAll();
+}
+
+//-----------
+void Analyze::makeTrainingSetFromGMM(int idxOutput) {
+    LearnOutputParameter * output = outputs->at(idxOutput);
+
+    float min = output->getMin();
+    float max = output->getMax();
+    int numClusters = gmmClusterSets[idxOutput].size();
+    
+    vector<float> instance;
+    for (int i=0; i<numAutoSamples; i++) {
+        // sample from one of the gaussians, according to its prior
+        int idxCurrent = 0;
+        float rand = ofRandom(1);
+        float current = 0.0;
+        while (rand > current) {
+            current += gmmClusterSets[idxOutput][idxCurrent].prior;
+            idxCurrent++;
+        }
+        vector<double> *mean = &gmmClusterSets[idxOutput][idxCurrent-1].mean;
+        vector<double> *std = &gmmClusterSets[idxOutput][idxCurrent-1].std;
+        
+        // get fake output value
+        double valAssigned = gmmClusterSets[idxOutput][idxCurrent-1].assignedValue;
+        double valStd = gmmClusterSets[idxOutput][idxCurrent-1].assignedStd;
+        double val = ofLerp(min, max, valAssigned + ofRandom(-1, 1) * valStd);
+        
+        // create instance
+        instance.clear();
+        instance.push_back(val);
+        for (int p=0; p<mean->size(); p++) {
+            float featValue = mean->at(p) + ofRandom(-1, 1) * std->at(p);
+            instance.push_back(featValue);
+        }
+        output->addInstance(instance);
+    }
+}
+
+//-----------
+void Analyze::makeTrainingSetFromGMMAll() {
+    for (int i=0; i<outputs->size(); i++) {
+        makeTrainingSetFromGMM(i);
+    }
 }
 
 //-----------

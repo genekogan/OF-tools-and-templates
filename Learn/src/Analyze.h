@@ -16,9 +16,9 @@ public:
     Analyze();
     
     void setup();
-    //void setInputs(vector<LearnInputParameter *> *inputs);
     void setInputs(vector<LearnInputGroup *> *inputs);
     void setOutputs(vector<LearnOutputParameter *> *outputs);
+
     void update();
     void draw();
     
@@ -37,72 +37,9 @@ public:
     void setVisible(bool visible);
     void toggleVisible() {setVisible(!visible);}
     
-    void makeTrainingSetFromGMM(int idxOutput) {
-        
-        int numInstances = 12;
-        
-        
-        LearnOutputParameter * output = outputs->at(idxOutput);
-        
-        //vector<LearnInputParameter*> ainputs = output->getActiveInputs();
-        
-        //vector<LearnInputGroup*> ainputs = output->getActiveInputs();
-        
-        
-        float min = output->getMin();
-        float max = output->getMax();
-        
-        
-        
-        int numClusters = gmmClusterSets[idxOutput].size();
-        
-        
-
-
-        
-        vector<float> instance;
-        for (int i=0; i<numInstances; i++) {
-            
-            // sample from one of the gaussians, according to its prior
-            int idxCurrent = 0;
-            float rand = ofRandom(1);
-            float current = 0.0;
-            while (rand > current) {
-                current += gmmClusterSets[idxOutput][idxCurrent].prior;
-                idxCurrent++;
-            }
-            vector<double> *mean = &gmmClusterSets[idxOutput][idxCurrent-1].mean;
-            vector<double> *std = &gmmClusterSets[idxOutput][idxCurrent-1].std;
-
-            // get fake output value
-            double valAssigned = gmmClusterSets[idxOutput][idxCurrent-1].assignedValue;
-            double valStd = gmmClusterSets[idxOutput][idxCurrent-1].assignedStd;
-            //cout << valAssigned << " " << valStd << "---"<<endl;
-            double val = ofLerp(min, max, valAssigned + ofRandom(-1, 1) * valStd);
-            
-            // create instance
-            instance.clear();
-            instance.push_back(val);
-            for (int p=0; p<mean->size(); p++) {
-                float featValue = mean->at(p) + ofRandom(-1, 1) * std->at(p);
-                instance.push_back(featValue);
-            }
-            output->addInstance(instance);
-        }
-        
-        
-        
-        
-        
-        
-    }
-    
-    void makeTrainingSetFromGMMAll() {
-        for (int i=0; i<outputs->size(); i++) {
-            makeTrainingSetFromGMM(i);
-        }
-    }
-    
+    void autoTrain(string &s);
+    void makeTrainingSetFromGMM(int idxOutput);
+    void makeTrainingSetFromGMMAll();
     
 private:
     
@@ -140,7 +77,6 @@ private:
     int idxView, idxTrain;
     
     vector<LearnOutputParameter *> *outputs;
-    //vector<LearnInputParameter *> *inputs;
     vector<LearnInputGroup *> *inputs;
     
     ofxGMM gmm;
@@ -154,6 +90,8 @@ private:
     
     int idxDraggingCluster;
     bool dragging;
+    
+    int numAutoSamples;
     
 };
 

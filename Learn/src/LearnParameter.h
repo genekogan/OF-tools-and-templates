@@ -111,13 +111,7 @@ public:
     void addInputParameter(LearnInputParameter * newInput);
     void addInputParameters(vector<LearnInputParameter *> newInputs);
     void removeParameter(LearnInputParameter * parameter);
-    
-    void clearParameters() {
-        for (int i=0; i<inputs.size(); i++) {
-            delete inputs[i];
-        }
-        inputs.clear();
-    }
+    void clearParameters();
     
     void setName(string name) {this->name = name;}
     string getName() {return name;}

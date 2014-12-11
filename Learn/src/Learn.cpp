@@ -480,7 +480,6 @@ void Learn::addInputFeatureSet(string groupName) {
         addInputGroup(groupName);
         for (int f=0; f<inputFeatures[groupName].size(); f++) {
             string name = inputFeatures[groupName][f].name == "" ? groupName : inputFeatures[groupName][f].name;
-            cout << "add fs " << groupName << " " << name << endl;
             addInputToGroup(groupName, name,
                             inputFeatures[groupName][f].value,
                             inputFeatures[groupName][f].min,
