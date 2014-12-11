@@ -43,9 +43,7 @@ MantaLearn::MantaLearn() : Learn() {
     gui1->setVisible(false);
     
     
-    
-    
-    
+    // add all features as saved feature inputs
     addAllPadsAsInput();
     addSlidersAsInput();
     addButtonsAsInput();
@@ -72,11 +70,12 @@ MantaLearn::MantaLearn() : Learn() {
     addAverageInterFingerDistanceVelocityAsInput();
     addCentroidVelocityAsInput();
     addWeightedCentroidVelocityAsInput();
-    
-    
-    
-    //addWeightedCentroidVelocityAsInput2();
+}
 
+//-----------
+void MantaLearn::loadPreset(string path) {
+    Learn::loadPreset(path);
+    resetMantaInputSelector();
 }
 
 //-----------
@@ -329,37 +328,6 @@ void MantaLearn::addWeightedCentroidVelocityAsInput() {
 }
 
 //-----------
-void MantaLearn::addInputFeatureSet(string name) {
-    if (inputFeatures.count(name) == 0) {
-        ofLog(OF_LOG_ERROR, "Error: no feature set named "+name+" found");
-        return;
-    }
-    else {
-        vector<LearnInputParameter*> newInputs;
-        for (int f=0; f<inputFeatures[name].size(); f++) {
-            string featureName = inputFeatures[name][f].name == "" ? name : inputFeatures[name][f].name;
-            newInputs.push_back(Learn::addInput(featureName,
-                                                inputFeatures[name][f].value,
-                                                inputFeatures[name][f].min,
-                                                inputFeatures[name][f].max,
-                                                true));
-        }
-        addParametersAsInput(name, newInputs);
-    }
-}
-
-//-----------
-void MantaLearn::removeInputFeatureSet(string name) {
-    if (inputFeatures.count(name) == 0) {
-        ofLog(OF_LOG_ERROR, "Error: no feature set named "+name+" found");
-        return;
-    }
-    else {
-        Learn::removeParameterGroupAsInput(name);
-    }
-}
-
-//-----------
 void MantaLearn::setupGuiInputs() {
     guiInputs->clearWidgets();
     guiInputs->addLabel("Manta features");
@@ -488,7 +456,6 @@ void MantaLearn::guiEvent(ofxUIEventArgs &e) {
 
 //-----------
 void MantaLearn::guiInputEvent(ofxUIEventArgs &e) {
-    
     if      (e.getParentName() == "Row") {
         guiRow = ofToInt(e.getName());
         setupGuiInputs();
@@ -500,38 +467,35 @@ void MantaLearn::guiInputEvent(ofxUIEventArgs &e) {
     else if (e.getName()=="pad individual value") {
         if (guiRow >= -1 && guiCol >= -1) {
             string name = "pad "+ofToString(guiRow)+" "+ofToString(guiCol);
-            e.getButton()->getValue() ? addInputFeatureSet(name) : removeInputFeatureSet(name);
+            e.getButton()->getValue() ? addInputFeatureSet(name) : Learn::removeInputGroup(name);
         }
     }
     else if (e.getName()=="pad individual velocity") {
         if (guiRow >= -1 && guiCol >= -1) {
             string name = "pad velocity "+ofToString(guiRow)+" "+ofToString(guiCol);
-            e.getButton()->getValue() ? addInputFeatureSet(name) : removeInputFeatureSet(name);
+            e.getButton()->getValue() ? addInputFeatureSet(name) : Learn::removeInputGroup(name);
         }
     }
     else if (inputFeatures.count(e.getName()) != 0) {
-        e.getButton()->getValue() ? addInputFeatureSet(e.getName()) : removeInputFeatureSet(e.getName());
+        e.getButton()->getValue() ? addInputFeatureSet(e.getName()) : Learn::removeInputGroup(e.getName());
     }
 
-    // reset
-    // add individual ones as well!
-    if (e.getName() == "all pads" ||
-        e.getName() == "all sliders" ||
-        e.getName() == "all buttons") {
+
+    // reset manta
+    if (e.getName() == "all pads" || e.getName() == "all sliders" || e.getName() == "all buttons" ||
+        e.getName() == "slider 0" || e.getName() == "slider 1" ||
+        e.getName() == "button 0" || e.getName() == "button 1" || e.getName() == "button 2" || e.getName() == "button 3") {
         resetManta();
     }
-}
-
-//-----------
-LearnInputParameter * MantaLearn::addInput(string name, float min, float max) {
-    if (inputFeatures.count(name) != 0) {
-        for (int i=0; i<inputFeatures[name].size(); i++) {
-            inputFeatures[name][i].min = min;
-            inputFeatures[name][i].max = max;
+    else {
+        for (int r=0; r<6; r++) {
+            for (int c=0; c<8; c++) {
+                if (e.getName() == "pad "+ofToString(r)+" "+ofToString(c)) {
+                    resetManta();
+                    return;
+                }
+            }
         }
-        
-        // NO RETURN!!!
-        addInputFeatureSet(name);
     }
 }
 
@@ -565,4 +529,89 @@ MantaLearn::~MantaLearn() {
     guiInputs->disable();
     delete guiInputs;
     manta.close();
+}
+
+//-----------
+void MantaLearn::resetMantaInputSelector() {
+    allPads = false;
+    allSliders = false;
+    allButtons = false;
+    numPads = false;
+    padSum = false;
+    padAvg = false;
+    perimeter = false;
+    width = false;
+    height = false;
+    whRatio = false;
+    avgInterDist = false;
+    centroid = false;
+    wCentroid = false;
+    vAllPads = false;
+    vAllSliders = false;
+    vAllButtons = false;
+    vNumPads = false;
+    vPadSum = false;
+    vPadAvg = false;
+    vPerimeter = false;
+    vWidth = false;
+    vHeight = false;
+    vWhRatio = false;
+    vAvgInterDist = false;
+    vCentroid = false;
+    vWCentroid = false;
+    for (int r=0; r<6; r++) {
+        for (int c=0; c<8; c++) {
+            padVal[r][c] = false;
+            padVel[r][c] = false;
+        }
+    }
+    for (int s=0; s<2; s++) {
+        sliderVal[s] = false;
+        sliderVel[s] = false;
+    }
+    for (int b=0; b<4; b++) {
+        buttonVal[b] = false;
+        buttonVel[b] = false;
+    }
+    
+    for (int i=0; i<inputs.size(); i++) {
+        if      (inputs[i]->getName() == "all pads")  allPads = true;
+        else if (inputs[i]->getName() == "all pad velocities")  vAllPads = true;
+        else if (inputs[i]->getName() == "all sliders")  allSliders = true;
+        else if (inputs[i]->getName() == "all slider velocities")  vAllSliders = true;
+        else if (inputs[i]->getName() == "all buttons")  allButtons = true;
+        else if (inputs[i]->getName() == "all button velocities")  vAllButtons = true;
+        else if (inputs[i]->getName() == "number pads")  numPads = true;
+        else if (inputs[i]->getName() == "number pads velocity")  vNumPads = true;
+        else if (inputs[i]->getName() == "pad sum")  padSum = true;
+        else if (inputs[i]->getName() == "pad sum velocity")  vPadSum = true;
+        else if (inputs[i]->getName() == "pad average")  padAvg = true;
+        else if (inputs[i]->getName() == "pad average velocity")  vPadAvg = true;
+        else if (inputs[i]->getName() == "perimeter")  perimeter = true;
+        else if (inputs[i]->getName() == "perimeter velocity")  vPerimeter = true;
+        else if (inputs[i]->getName() == "width")  width = true;
+        else if (inputs[i]->getName() == "width velocity")  vWidth = true;
+        else if (inputs[i]->getName() == "height")  height = true;
+        else if (inputs[i]->getName() == "height velocity")  vHeight = true;
+        else if (inputs[i]->getName() == "width/height ratio")  whRatio = true;
+        else if (inputs[i]->getName() == "width/height ratio velocity")  vWhRatio = true;
+        else if (inputs[i]->getName() == "avg finger distance")  avgInterDist = true;
+        else if (inputs[i]->getName() == "avg finger distance velocity")  vAvgInterDist = true;
+        else if (inputs[i]->getName() == "centroid")  centroid = true;
+        else if (inputs[i]->getName() == "centroid velocity")  vCentroid = true;
+        else if (inputs[i]->getName() == "weighted centroid")  wCentroid = true;
+        else if (inputs[i]->getName() == "weighted centroid velocity")  vWCentroid = true;
+        else if (inputs[i]->getName() == "slider 0")  sliderVal[0] = true;
+        else if (inputs[i]->getName() == "slider velocity 0")  sliderVel[0] = true;
+        else if (inputs[i]->getName() == "slider 1")  sliderVal[1] = true;
+        else if (inputs[i]->getName() == "slider velocity 1")  sliderVel[1] = true;
+        else if (inputs[i]->getName() == "button 0")  buttonVal[0] = true;
+        else if (inputs[i]->getName() == "button velocity 0")  buttonVel[0] = true;
+        else if (inputs[i]->getName() == "button 1")  buttonVal[1] = true;
+        else if (inputs[i]->getName() == "button velocity 1")  buttonVel[1] = true;
+        else if (inputs[i]->getName() == "button 2")  buttonVal[2] = true;
+        else if (inputs[i]->getName() == "button velocity 2")  buttonVel[2] = true;
+        else if (inputs[i]->getName() == "button 3")  buttonVal[3] = true;
+        else if (inputs[i]->getName() == "button velocity 3")  buttonVel[3] = true;
+    }
 }

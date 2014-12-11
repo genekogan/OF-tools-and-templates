@@ -79,7 +79,6 @@ protected:
     bool visible;
     
     ofEvent<LearnParameter> pSelectedEvent, pChangedEvent, pDeletedEvent;
-//    ofEvent<LearnParameter> pSelectedEvent, pChangedEvent;
 };
 
 
@@ -88,62 +87,48 @@ protected:
 class LearnInputParameter : public LearnParameter
 {
 public:
-    LearnInputParameter(string name, float *value, float min=0, float max=1, bool rangeLocked=false);
-
+    LearnInputParameter(string name, float *value,
+                        float min=0, float max=1,
+                        bool rangeLocked=false);
 protected:
     void setupGui();
     void guiEvent(ofxUIEventArgs &e);
 };
 
 
-//////////////////////////////////////////////////////////////////
+
 
 //-----------
 class LearnInputGroup
 {
 public:
-    LearnInputGroup(string name) {
-        this->name = name;
-    }
-    void addInputParameter(LearnInputParameter * newInput);
-    
-    void addInputParameters(vector<LearnInputParameter *> newInputs) {
-        for (int i=0; i<newInputs.size(); i++) {
-            inputs.push_back(newInputs[i]);
-        }
-    }
-    LearnInputParameter * addInputParameter(string name, float *value, float min, float max, bool rangeLocked=false) {
-        LearnInputParameter *newInput = new LearnInputParameter(name, value, min, max, rangeLocked);
-        inputs.push_back(newInput);
-        return newInput;
-    }
-    void addInputParameter(string name, float min, float max, bool rangeLocked=false) {
-        addInputParameter(name, new float(), min, max, rangeLocked);
-    }
-    
-    void removeParameter(LearnInputParameter * parameter) {
-        cout << "remove a param ("<<inputs.size()<<") ";
-        vector<LearnInputParameter *>::iterator it=inputs.begin();
-        while (it != inputs.end()) {
-            if (*it == parameter) {
-                delete (*it);
-                it = inputs.erase(it);
-            }
-            else ++it;
-        }
-        cout << "now " << inputs.size() << endl;
-    }
-    
+    LearnInputGroup(string name);
+
     vector<LearnInputParameter *> & getInputs() { return inputs;}
-    string getName() {return name;}
+
+    LearnInputParameter * addInputParameter(string name, float *value, float min, float max, bool rangeLocked=false);
+    void addInputParameter(string name, float min, float max, bool rangeLocked=false);
+    void addInputParameter(LearnInputParameter * newInput);
+    void addInputParameters(vector<LearnInputParameter *> newInputs);
+    void removeParameter(LearnInputParameter * parameter);
+    
+    void clearParameters() {
+        for (int i=0; i<inputs.size(); i++) {
+            delete inputs[i];
+        }
+        inputs.clear();
+    }
+    
     void setName(string name) {this->name = name;}
+    string getName() {return name;}
     
 protected:
+    
     vector<LearnInputParameter *> inputs;
     string name;
 };
 
-//////////////////////////////////////////////////////////////////
+
 
 
 //-----------
@@ -151,30 +136,23 @@ class LearnOutputParameter : public LearnParameter
 {
 public:
     enum LearnModel { SVM, MLP };
-
-    /*
-    struct GuiInputGroup {
-        string name;
-        vector<LearnInputParameter *> inputs;
-    };
-     */
     
     ~LearnOutputParameter();
     LearnOutputParameter(string name, float *value, float min=0, float max=1, bool rangeLocked=false);
     
     virtual void draw();
-
-    //////////////////////////////////////////////////////////////////
-    //void setInputParameters(vector<LearnInputParameter *> &allInputs);
-    //void setInputGroups(vector<GuiInputGroup> inputGroups);
+    
+    // manage inputs
+    void addInput(LearnInputGroup * input);
+    bool removeInput(LearnInputGroup * input);
+    vector<LearnInputGroup *> & getActiveInputs() {return activeInputs;}
+    int getNumInputs() {return activeInputs.size();}
+    int getNumParameters();
+    bool getInputActive(LearnInputGroup * input);
+    void activateAllInputs();
+    
+    // manage data
     void setInputParameters(vector<LearnInputGroup *> &allInputs);
-    //////////////////////////////////////////////////////////////////
-    
-    
-    void setupHeaders(int p=-1);
-    void addDataPage();
-    void setPage(int p);
-
     void addInstance(vector<float> instance);
     void addInstance();
     void clearInstances();
@@ -182,33 +160,12 @@ public:
     void exportData(string filename="");
     vector<vector<vector<float> > > getInstances();
 
-    //////////////////////////////////////////////////////////////////
-//    void addInput(LearnInputParameter * input);
-//    bool removeInput(LearnInputParameter * input);
-    void addInput(LearnInputGroup * input);
-    bool removeInput(LearnInputGroup * input);
+    // spreadsheet data
+    void setupHeaders(int p=-1);
+    void addDataPage();
+    void setPage(int p);
 
-    int getNumInputs() {return activeInputs.size();}
-    int getNumParameters() {
-        int n = 0;
-        for (int i=0; i<activeInputs.size(); i++) {
-            n += activeInputs[i]->getInputs().size();
-        }
-        return n;
-    }
-    //vector<LearnInputParameter *> & getActiveInputs() {return activeInputs;}
-    vector<LearnInputGroup *> & getActiveInputs() {return activeInputs;}
-    //vector<string> & getActiveInputGroups() {return activeInputGroups;}
-    //bool getInputActive(LearnInputParameter * input);
-    bool getInputActive(LearnInputGroup * input);
-    void activateAllInputs();
-
-    //////////////////////////////////////////////////////////////////
-
-    
-    void setupGui();
-    void setupGuiInputSelector();
-    
+    // visibility
     void setVisible(bool visible);
     void setGuiPosition(int x, int y);
     void setGuiInputsPosition(int x, int y);
@@ -216,22 +173,22 @@ public:
     void setExamplesVisible(bool b);
     void setDataSize(int width, int height);
 
+    // set training/recording status
     virtual void setTrained(bool trained);
     virtual void setRecording(bool record);
     void toggleRecording() {setRecording(!record);}
     bool getRecording() {return record;}
     bool getTrained() {return trained;}
     
+    // learn/manage model + data
     void setTrainingMlp(int numHiddenLayers, float targetRmse, int maxSamples);
     void setTrainingSvm();
-    void trainClassifier(TrainMode trainMode);
-    void trainClassifierFast() {trainClassifier(FAST);}
-    void trainClassifierAccurate() {trainClassifier(ACCURATE);}
-
     void setMlpNumHiddenLayers(int n) {return learn.setMlpNumHiddenLayers(n);}
     void setMlpMaxSamples(int n) {learn.setMlpMaxSamples(n);}
     void setMlpTargetRmse(float r) {learn.setMlpTargetRmse(r);}
-
+    void trainClassifier(TrainMode trainMode);
+    void trainClassifierFast() {trainClassifier(FAST);}
+    void trainClassifierAccurate() {trainClassifier(ACCURATE);}
     LearnModel getLearnModel() {return learnModel;}
     int getMlpNumHiddenLayers() {return learn.getMlpNumHiddenLayers();}
     int getMlpMaxSamples() {return learn.getMlpMaxSamples();}
@@ -239,20 +196,20 @@ public:
     vector<double> getMlpCoefficients1() {return mlpCoefficientsW1;}
     vector<double> getMlpCoefficients2() {return mlpCoefficientsW3;}
     
-    void setupMlpCoefficients();
-    double predictMlp(vector<double> example);
+    // learn/prediction
     virtual void predict();
     virtual void predict(vector<double> instance);
-
-    void setDirect();
     
+    // save load
     void loadClassifierSvm(string path);
     void loadClassifierMlp(vector<double> w1, vector<double> w3);
     void saveClassifier(string path);
     
+    // style
     virtual void setFont(string path);
     virtual void setFontSizes(int small, int medium, int large);
     
+    // add listener
     template<typename ListenerClass, typename ListenerMethod>
     void addParameterViewedListener(ListenerClass *listener, ListenerMethod method) {
         ofAddListener(pViewedEvent, listener, method);
@@ -262,20 +219,34 @@ protected:
 
     inline double sigmoid(double x);
 
+    // manage data
     template <typename T> vector<T> grabFeatureVector(bool labelFirst, bool normalize=false);
     void addSpreadsheetDataToLearn();
-    
+
+    // learn
+    void setupMlpCoefficients();
+    double predictMlp(vector<double> example);
+    void setDirect();
+
+    // gui
+    void setupGui();
+    void setupGuiInputSelector();
+
+    // gui events
     void guiEvent(ofxUIEventArgs &e);
     void guiInputSelectEvent(ofxUIEventArgs &e);
     void guiDataEvent(ofxUIEventArgs &e);
     void dataChangedEvent(bool &b);
+    ofEvent<LearnOutputParameter> pViewedEvent;
 
+    // gui elements
     ofxUICanvas *guiInputSelect, *guiData;
     ofxUIDropDownList *guiSelector;
     ofxUILabelToggle *guiDirect, *guiInputs, *guiExamples, *guiRecord;
     ofxUILabelButton *guiDataStatus, *guiDataPage;
     ofxUISlider *guiLerpRate;
     
+    // learn
     ofxLearn learn;
     LearnModel learnModel;
     int mlpNumHiddenLayers, mlpMaxSamples;
@@ -283,22 +254,17 @@ protected:
     vector<double> mlpCoefficientsW1, mlpCoefficientsW3;
     float directLerp;
 
-    //////////////////////////////////////////////////////////////////////
-    //vector<LearnInputParameter *> allInputs, activeInputs;
-    //vector<GuiInputGroup> inputGroups;
-    //vector<string> activeInputGroups;
+    // inputs
     vector<LearnInputGroup *> allInputs, activeInputs;
-    ////////////////////////////////////////////////////////
     
+    //  data/spreadsheet
     vector<ofxSpreadsheet *> data;
     int page, dataWidth, dataHeight;
     
+    // status
     bool direct;
     bool record, trained, training;
     bool viewExamples, viewInputs;
-    //bool inputGroupsEnabled;
-    
-    ofEvent<LearnOutputParameter> pViewedEvent;
 };
 
 
@@ -307,40 +273,12 @@ template <typename T> vector<T> LearnOutputParameter::grabFeatureVector(bool lab
     vector<T> instance;
     if (labelFirst) instance.push_back((T) get());
     for (int i=0; i<activeInputs.size(); i++) {
-
-        ////////////////////////////////////////////////////////
-        /*
-        if (normalize) {
-            float val = (activeInputs[i]->get() - activeInputs[i]->getMin()) / (activeInputs[i]->getMax() - activeInputs[i]->getMin());
-            instance.push_back(val);
-        }
-        else {
-            instance.push_back(activeInputs[i]->get());
-        }
-        */
-        
         vector<LearnInputParameter *> params = activeInputs[i]->getInputs();
         for (int j=0; j<params.size(); j++) {
-            if (normalize) {
-                float val = (params[j]->get() - params[j]->getMin()) / (params[j]->getMax() - params[j]->getMin());
-                instance.push_back(val);
-            }
-            else {
-                instance.push_back(params[j]->get());
-            }
-            
-            /*
-            cout << "GOT FEAT VEC "<<endl;
-            for (int k=0; k<instance.size(); k++) {
-                cout << instance[k]<<",";
-            }
-            cout << endl;
-            */
+            float val = normalize ? (params[j]->get() - params[j]->getMin()) / (params[j]->getMax() - params[j]->getMin()) : params[j]->get();
+            instance.push_back(val);
         }
-
-        ////////////////////////////////////////////////////////
     }
     return instance;
 }
-
 

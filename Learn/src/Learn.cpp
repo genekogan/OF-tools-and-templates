@@ -103,16 +103,6 @@ void Learn::update(){
         }
     }
     
-    ////////////////////////////////////////////////////
-    // update gui values
-    /*
-     if (inputsVisible) {
-     for (int i=0; i<inputs.size(); i++) {
-     inputs[i]->deselect();
-     }
-     }
-     */
-    
     /*
     // update gui values
     if (inputsVisible) {
@@ -123,8 +113,7 @@ void Learn::update(){
             }
         }
     }
-     */
-    /////////////////////////////////////////////////////
+    */
 }
 
 //-------
@@ -165,45 +154,6 @@ void Learn::drawSummary(){
     ofSetColor(255);
     ofDrawBitmapString("Learn summary", 4, 17);
     ofTranslate(0, 22);
-    //////////////////////////////////////////////////////////////////////////
-    /*
-     for (int i=0; i<activeInputs.size(); i++) {
-     int idx = activeInputs[i];
-     float rv = (inputs[idx]->get() - inputs[idx]->getMin()) / (inputs[idx]->getMax() - inputs[idx]->getMin());
-     ofPushMatrix();
-     ofTranslate(5, 15*i);
-     ofSetColor(100);
-     ofRect(0, 0, 120, 14);
-     ofSetColor(50);
-     ofRect(0, 0, 120 * rv, 14);
-     ofSetColor(255);
-     ofDrawBitmapString(inputs[idx]->getName(), 0, 12);
-     ofPopMatrix();
-     }
-     */
-    
-    
-    /*
-    int idxLeftParam = 0;
-    for (int i=0; i<activeInputs.size(); i++) {
-        int idx = activeInputs[i];
-        vector<LearnInputParameter*> params = inputs[idx]->getInputs();
-        for (int j=0; j<params.size(); j++) {
-            float rv = (params[j]->get() - params[j]->getMin()) / (params[j]->getMax() - params[j]->getMin());
-            ofPushMatrix();
-            ofTranslate(5, 15*idxLeftParam);
-            ofSetColor(100);
-            ofRect(0, 0, 120, 14);
-            ofSetColor(50);
-            ofRect(0, 0, 120 * rv, 14);
-            ofSetColor(255);
-            ofDrawBitmapString(params[j]->getName(), 0, 12);
-            ofPopMatrix();
-            idxLeftParam++;
-        }
-    }
-     */
-    
     for (int i=0; i<activeInputs.size(); i++) {
         float rv = (activeInputs[i]->get() - activeInputs[i]->getMin()) / (activeInputs[i]->getMax() - activeInputs[i]->getMin());
         ofPushMatrix();
@@ -216,9 +166,6 @@ void Learn::drawSummary(){
         ofDrawBitmapString(activeInputs[i]->getName(), 0, 12);
         ofPopMatrix();
     }
-    
-    //////////////////////////////////////////////////////////////////////////
-    
     ofTranslate(125, 0);
     for (int i=0; i<outputs.size(); i++) {
         float rv = (outputs[i]->get() - outputs[i]->getMin()) / (outputs[i]->getMax() - outputs[i]->getMin());
@@ -238,16 +185,12 @@ void Learn::drawSummary(){
     ofPopMatrix();
 }
 
-
-//////////////////////////////////////////////////////////////////////////
-
 //-------
 void Learn::summaryClickParameters(int x, int y) {
     int idx = (int) ((y - summaryY - 22.0) / 15.0);
     if (x > 5+summaryX && x <= 125+summaryX) {
         if (idx >= 0 && idx < activeInputs.size()) {
             float val = (x - summaryX - 5.0) / 120.0;
-            //inputs[activeInputs[idx]]->set(ofLerp(inputs[activeInputs[idx]]->getMin(), inputs[activeInputs[idx]]->getMax(), val));
             activeInputs[idx]->set(ofLerp(activeInputs[idx]->getMin(), activeInputs[idx]->getMax(), val));
             return;
         }
@@ -267,36 +210,12 @@ void Learn::summaryClickParameters(int x, int y) {
             return;
         }
     }
-    /*
-     int idx = (int) ((y - summaryY - 22.0) / 15.0);
-     if (x > 5+summaryX && x <= 125+summaryX) {
-     if (idx >= 0 && idx < activeInputs.size()) {
-     float val = (x - summaryX - 5.0) / 120.0;
-     inputs[activeInputs[idx]]->set(ofLerp(inputs[activeInputs[idx]]->getMin(), inputs[activeInputs[idx]]->getMax(), val));
-     }
-     }
-     else if (x > 130+summaryX && x <= 250+summaryX) {
-     if (idx >= 0 && idx < outputs.size()) {
-     if (draggedFrames > 1) {
-     float val = (x - summaryX - 130.0) / 120.0;
-     outputs[idx]->set(ofLerp(outputs[idx]->getMin(), outputs[idx]->getMax(), val));
-     }
-     }
-     }
-     else if (x > 250+summaryX && x <= 265+summaryX) {
-     if (idx >= 0 && idx < outputs.size()) {
-     outputs[idx]->toggleRecording();
-     }
-     }
-     */
 }
-//////////////////////////////////////////////////////////////////////////
-
 
 //-------
 void Learn::summaryActiveParameter(int x, int y) {
     int idx = (int) ((y - summaryY - 22.0) / 15.0);
-    if (x > 130+summaryX && x <= 250+summaryX) {//250+summaryX) {
+    if (x > 130+summaryX && x <= 250+summaryX) {
         if (idx >= 0 && idx < outputs.size() && idx != activeOutput) {
             summaryActivateParameter(idx);
         }
@@ -304,11 +223,8 @@ void Learn::summaryActiveParameter(int x, int y) {
             summaryActivateParameter(-1);
         }
     }
-    else if (x > 250+summaryX && x <= 265+summaryX) {//250+summaryX) {
+    else if (x > 250+summaryX && x <= 265+summaryX) {
         summaryActivateParameter(idx);
-    }
-    else {
-        //summaryActivateParameter(-1);
     }
 }
 
@@ -316,7 +232,6 @@ void Learn::summaryActiveParameter(int x, int y) {
 void Learn::summaryActivateParameter(int idx) {
     activeOutput = idx;
     activeInputs.clear();
-    
     for (int i=0; i<inputs.size(); i++) {
         vector<LearnInputParameter *> params = inputs[i]->getInputs();
         for (int j=0; j<params.size(); j++) {
@@ -325,19 +240,6 @@ void Learn::summaryActivateParameter(int idx) {
             }
         }
     }
-
-    /*
-    int idxParameter = 0;
-    for (int i=0; i<inputs.size(); i++) {
-        vector<LearnInputParameter *> params = inputs[i]->getInputs();
-        for (int j=0; j<params.size(); j++) {
-            if (activeOutput == -1 || outputs[activeOutput]->getInputActive(inputs[i])) {
-                activeInputs.push_back(idxParameter);
-            }
-            idxParameter++;
-        }
-    }
-     */
 }
 
 //-------
@@ -373,180 +275,6 @@ void Learn::mouseReleased(ofMouseEventArgs &e) {
 //===========================================
 //  MANAGING PARAMETERS
 
-
-
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-
-/*
- //-------
- LearnInputParameter * Learn::addInput(string name, float *value, float min, float max, bool rangeLocked) {
- LearnInputParameter *newInput = new LearnInputParameter(name, value, min, max);
- if (customFont) {
- newInput->setFont(fontPath);
- newInput->setFontSizes(fontSmall, fontMedium, fontLarge);
- }
- newInput->setGuiPosition(10, 75+55*inputs.size());
- newInput->setVisible(inputsVisible);
- newInput->addParameterChangedListener(this, &Learn::inputParameterChanged);
- newInput->addParameterDeletedListener(this, &Learn::inputParameterDeleted);
- newInput->addParameterSelectedListener(this, &Learn::parameterSelected);
- inputs.push_back(newInput);
- 
- //resetInputs();
- for (int i=0; i<outputs.size(); i++) {
- outputs[i]->setInputParameters(inputs);
- }
- oscManager.registerToOsc((ParameterBase *) newInput, false);
- resetGuiPositions();
- return newInput;
- }
- 
- //-------
- LearnOutputParameter * Learn::addOutput(string name, float *value, float min, float max, bool rangeLocked) {
- LearnOutputParameter *newOutput = new LearnOutputParameter(name, value, min, max, rangeLocked);
- initializeOutput(newOutput);
- return newOutput;
- }
- 
- //-------
- void Learn::initializeOutput(LearnOutputParameter *output, bool sendOsc, bool receiveOsc) {
- if (customFont) {
- output->setFont(fontPath);
- output->setFontSizes(fontSmall, fontMedium, fontLarge);
- }
- output->setGuiPosition(420, 75+55*outputs.size());
- output->setGuiInputsPosition(215, 75);
- output->setInputParameters(inputs);
- output->setVisible(outputsVisible);
- output->addParameterChangedListener(this, &Learn::outputParameterChanged);
- output->addParameterDeletedListener(this, &Learn::outputParameterDeleted);
- output->addParameterSelectedListener(this, &Learn::parameterSelected);
- output->addParameterViewedListener(this, &Learn::outputParameterViewed);
- if (inputGroups.size() > 0) {
- output->setInputGroups(inputGroups);
- }
- if (oscManager.getSending() && sendOsc) {
- oscManager.registerToOsc(output, true);
- }
- if (oscManager.getReceiving() && receiveOsc) {
- oscManager.registerToOsc(output, false);
- }
- outputs.push_back(output);
- }
- 
- //-------
- LearnInputParameter * Learn::addInput(string name, float min, float max) {
- return addInput(name, new float(), min, max, false);
- }
- 
- //-------
- LearnOutputParameter * Learn::addOutput(string name, float min, float max) {
- return addOutput(name, new float(), min, max, false);
- }
- 
- 
- 
- //-------
- void Learn::addParameterAsInput(string name, LearnInputParameter* newInput) {
- vector<LearnInputParameter*> newInputs;
- newInputs.push_back(newInput);
- addParametersAsInput(name, newInputs);
- }
- 
- //-------
- void Learn::addParametersAsInput(string name, vector<LearnInputParameter*> &newInputs) {
- LearnOutputParameter::GuiInputGroup newGroup;
- newGroup.name = name;
- newGroup.inputs = newInputs;
- inputGroups.push_back(newGroup);
- resetInputGroups();
- }
- 
- //-------
- void Learn::removeParameterAsInput(string name) {
- for (int i=0; i<inputs.size(); i++) {
- if (name == inputs[i]->getName()) {
- inputParameterDeleted((LearnParameter &) *inputs[i]);
- resetInputs();
- return;
- }
- }
- }
- 
- //-------
- void Learn::removeParameterGroupAsInput(string name) {
- for (int i=0; i<inputGroups.size(); i++) {
- if (name == inputGroups[i].name) {
- for (int j=0; j<inputGroups[i].inputs.size(); j++) {
- inputParameterDeleted((LearnParameter &) *inputGroups[i].inputs[j]);
- }
- inputGroups.erase(inputGroups.begin() + i);
- resetInputs();
- resetInputGroups();
- return;
- }
- }
- }
- 
- //-------
- void Learn::resetInputs() {
- for (int i=0; i<outputs.size(); i++) {
- outputs[i]->setInputParameters(inputs);
- }
- if (oscManager.getReceiving()) {
- oscManager.clearInputTrackers();
- oscManager.registerToOscReceiver((vector<ParameterBase *> &) inputs);
- oscManager.registerToOscReceiver((vector<ParameterBase *> &) outputs);
- }
- resetGuiPositions();
- summaryActivateParameter(activeOutput);
- }
- 
- //-------
- void Learn::resetInputGroups() {
- for (int i=0; i<outputs.size(); i++) {
- outputs[i]->setInputGroups(inputGroups);
- }
- }
- 
- //-------
- void Learn::resetOutputs() {
- if (oscManager.getSending()) {
- oscManager.clearOutputTrackers();
- oscManager.registerToOscSender((vector<ParameterBase *> &) outputs);
- }
- if (oscManager.getReceiving()) {
- oscManager.clearInputTrackers();
- oscManager.registerToOscReceiver((vector<ParameterBase *> &) inputs);
- oscManager.registerToOscReceiver((vector<ParameterBase *> &) outputs);
- }
- }
- 
- //-------
- void Learn::clearInputs() {
- inputGroups.clear();
- for (int i=0; i<inputs.size(); i++) {
- inputParameterDeleted((LearnParameter &) *inputs[i]);
- }
- inputs.clear();
- resetInputs();
- }
- 
- //-------
- void Learn::clearOutputs() {
- for (int i=0; i<outputs.size(); i++) {
- outputParameterDeleted((LearnParameter &) *outputs[i]);
- }
- outputs.clear();
- resetOutputs();
- }
- */
-
 //-------
 LearnInputGroup * Learn::addInput(string name, float *value, float min, float max, bool rangeLocked) {
     LearnInputParameter *newInput = new LearnInputParameter(name, value, min, max);
@@ -565,21 +293,29 @@ LearnInputGroup * Learn::addInputGroup(string name) {
 }
 
 //-------
-void Learn::addInputToGroup(string groupName, string parameterName, float *value, float min, float max, bool rangeLocked) {
+LearnInputParameter * Learn::addInputToGroup(string groupName, string parameterName, float *value, float min, float max, bool rangeLocked) {
     for (int i=0; i<inputs.size(); i++) {
         if (groupName == inputs[i]->getName()) {
-            LearnInputParameter *newInput = inputs[i]->addInputParameter(parameterName, value, min, max, rangeLocked);
+            LearnInputParameter * newInput = inputs[i]->addInputParameter(parameterName, value, min, max, rangeLocked);
             initializeInput(newInput);
             resetInputs();
-            return;
+            return newInput;
         }
     }
     ofLog(OF_LOG_ERROR, "Error: no input group found named "+groupName+"!");
 }
 
 //-------
-void Learn::addInputToGroup(string groupName, string parameterName, float min, float max, bool rangeLocked) {
-    addInputToGroup(groupName, parameterName, new float(), min, max, rangeLocked);
+LearnInputParameter * Learn::addInputToGroup(string groupName, string parameterName, float min, float max, bool rangeLocked) {
+    for (map<string, vector<InputFeature> >::iterator it=inputFeatures.begin(); it!=inputFeatures.end(); ++it){
+        for (int i=0; i<it->second.size(); i++) {
+            string inputFeatureName = it->second[i].name=="" ? it->first : it->second[i].name;
+            if (parameterName == inputFeatureName) {
+                return addInputToGroup(groupName, parameterName, it->second[i].value, min, max, rangeLocked);
+            }
+        }
+    }
+    return addInputToGroup(groupName, parameterName, new float(), min, max, rangeLocked);
 }
 
 
@@ -624,11 +360,6 @@ void Learn::initializeOutput(LearnOutputParameter *output, bool sendOsc, bool re
     output->addParameterDeletedListener(this, &Learn::outputParameterDeleted);
     output->addParameterSelectedListener(this, &Learn::parameterSelected);
     output->addParameterViewedListener(this, &Learn::outputParameterViewed);
-    /*
-     if (inputGroups.size() > 0) {
-     output->setInputGroups(inputGroups);
-     }
-     */
     if (oscManager.getSending() && sendOsc) {
         oscManager.registerToOsc(output, true);
     }
@@ -640,6 +371,13 @@ void Learn::initializeOutput(LearnOutputParameter *output, bool sendOsc, bool re
 
 //-------
 LearnInputGroup * Learn::addInput(string name, float min, float max) {
+    for (map<string, vector<InputFeature> >::iterator it=inputFeatures.begin(); it!=inputFeatures.end(); ++it){
+        for (int i=0; i<it->second.size(); i++) {
+            if (it->second[i].name == name) {
+                return addInput(name, it->second[i].value, min, max, false);
+            }
+        }
+    }
     return addInput(name, new float(), min, max, false);
 }
 
@@ -647,14 +385,7 @@ LearnInputGroup * Learn::addInput(string name, float min, float max) {
 LearnOutputParameter * Learn::addOutput(string name, float min, float max) {
     return addOutput(name, new float(), min, max, false);
 }
-/*
- //-------
- void Learn::addParameterAsInput(string name, LearnInputParameter* newInput) {
- vector<LearnInputParameter*> newInputs;
- newInputs.push_back(newInput);
- addParametersAsInput(name, newInputs);
- }
- */
+
 //-------
 void Learn::addParametersAsInputGroup(string name, vector<LearnInputParameter*> &newInputs) {
     LearnInputGroup *newGroup = addInputGroup(name);
@@ -662,64 +393,25 @@ void Learn::addParametersAsInputGroup(string name, vector<LearnInputParameter*> 
     resetInputs();
 }
 
-/*
- //-------
- void Learn::removeParameterAsInput(string name) {
- for (int i=0; i<inputs.size(); i++) {
- if (name == inputs[i]->getName()) {
- inputParameterDeleted((LearnParameter &) *inputs[i]);
- resetInputs();
- return;
- }
- }
- }
- */
 
 //-------
 void Learn::removeInputGroup(string name) {
-    for (int i=0; i<inputs.size(); i++) {
-        if (name == inputs[i]->getName()) {
-            inputGroupDeleted((LearnInputGroup &) *inputs[i]);
-            inputs.erase(inputs.begin() + i);
-            resetInputs();
-            //resetInputGroups();
-            return;
+    vector<LearnInputGroup *>::iterator it=inputs.begin();
+    while (it != inputs.end()) {
+        if ((*it)->getName() == name) {
+            (*it)->clearParameters();
+            delete *it;
+            it = inputs.erase(it);
+        }
+        else {
+            ++it;
         }
     }
+    resetInputs();
 }
 
-/*
- //-------
- void Learn::removeParameterGroupAsInput(string name) {
- for (int i=0; i<inputGroups.size(); i++) {
- if (name == inputGroups[i].name) {
- for (int j=0; j<inputGroups[i].inputs.size(); j++) {
- inputParameterDeleted((LearnParameter &) *inputGroups[i].inputs[j]);
- }
- inputGroups.erase(inputGroups.begin() + i);
- resetInputs();
- resetInputGroups();
- return;
- }
- }
- }
- */
-
-//-------
-/*
- void Learn::resetInputGroups() {
- for (int i=0; i<outputs.size(); i++) {
- outputs[i]->setInputGroups(inputGroups);
- }
- }
- */
 //-------
 void Learn::resetInputs() {
-    cout << "GROUPS NOW " << endl;
-    for (int i=0; i<inputs.size(); i++) {
-        cout << inputs[i]->getName() << endl;
-    }
-    cout << "==="<<endl;
     for (int i=0; i<outputs.size(); i++) {
         outputs[i]->setInputParameters(inputs);
     }
@@ -731,7 +423,6 @@ void Learn::resetInputs() {
     resetGuiPositions();
     summaryActivateParameter(activeOutput);
 }
-
 
 //-------
 void Learn::resetOutputs() {
@@ -748,9 +439,11 @@ void Learn::resetOutputs() {
 
 //-------
 void Learn::clearInputs() {
-    //inputGroups.clear();
-    for (int i=0; i<inputs.size(); i++) {
-        inputGroupDeleted((LearnInputGroup &) *inputs[i]);
+    vector<LearnInputGroup *>::iterator it=inputs.begin();
+    while (it != inputs.end()) {
+        (*it)->clearParameters();
+        delete *it;
+        it = inputs.erase(it);
     }
     inputs.clear();
     resetInputs();
@@ -758,27 +451,43 @@ void Learn::clearInputs() {
 
 //-------
 void Learn::clearOutputs() {
-    for (int i=0; i<outputs.size(); i++) {
-        outputParameterDeleted((LearnParameter &) *outputs[i]);
+    vector<LearnOutputParameter *>::iterator it=outputs.begin();
+    while (it != outputs.end()) {
+        delete *it;
+        it = outputs.erase(it);
     }
     outputs.clear();
     resetOutputs();
+    resetInputs();
 }
 
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
+//-------
+int Learn::getNumberOfInputParameters() {
+    int n = 0;
+    for (int i=0; i<inputs.size(); i++) {
+        n += inputs[i]->getInputs().size();
+    }
+    return n;
+}
 
-
-
-
-
-
-
+//-----------
+void Learn::addInputFeatureSet(string groupName) {
+    if (inputFeatures.count(groupName) == 0) {
+        ofLog(OF_LOG_ERROR, "Error: no feature set named "+groupName+" found");
+        return;
+    }
+    else {
+        addInputGroup(groupName);
+        for (int f=0; f<inputFeatures[groupName].size(); f++) {
+            string name = inputFeatures[groupName][f].name == "" ? groupName : inputFeatures[groupName][f].name;
+            cout << "add fs " << groupName << " " << name << endl;
+            addInputToGroup(groupName, name,
+                            inputFeatures[groupName][f].value,
+                            inputFeatures[groupName][f].min,
+                            inputFeatures[groupName][f].max);
+        }
+    }
+}
 
 
 
@@ -1041,7 +750,6 @@ void Learn::gui3Event(ofxUIEventArgs &e) {
 void Learn::resetGuiPositions() {
     int idx = 0;
     for (int i=0; i<inputs.size(); i++) {
-        //inputs[i]->setGuiPosition(10, 75+55*i);
         vector<LearnInputParameter*> params = inputs[i]->getInputs();
         for (int j=0; j<params.size(); j++) {
             params[j]->setGuiPosition(10, 75+55*idx);
@@ -1064,7 +772,6 @@ void Learn::resetGuiPositions() {
 void Learn::setVisible(bool visible) {
     this->visible = visible;
     for (int i=0; i<inputs.size(); i++) {
-        //        inputs[i]->setVisible(visible && inputsVisible);
         vector<LearnInputParameter*> params = inputs[i]->getInputs();
         for (int j=0; j<params.size(); j++) {
             params[j]->setVisible(visible && inputsVisible);
@@ -1082,7 +789,6 @@ void Learn::setVisible(bool visible) {
 void Learn::setGuiInputsVisible(bool visible) {
     this->inputsVisible = visible;
     for (int i=0; i<inputs.size(); i++) {
-        //inputs[i]->setVisible(inputsVisible);
         vector<LearnInputParameter*> params = inputs[i]->getInputs();
         for (int j=0; j<params.size(); j++) {
             params[j]->setVisible(inputsVisible);
@@ -1156,93 +862,8 @@ void Learn::outputParameterChanged(LearnParameter & output) {
     resetOutputs();
 }
 
-
-////////////////////////////////////////////////////////////
-//-------
-/*
- void Learn::inputParameterDeleted(LearnParameter & input) {
- vector<LearnInputParameter *>::iterator it=inputs.begin();
- while (it != inputs.end()) {
- if (*it == &input) {
- vector<string> dependentOutputs;
- for (int i=0; i<outputs.size(); i++) {
- if (outputs[i]->getInputActive(*it) && (outputs[i]->getNumInstances()>0 || outputs[i]->getTrained())) {
- dependentOutputs.push_back(outputs[i]->getName());
- }
- }
- if (dependentOutputs.size() > 0) {
- string msg = "The following output parameters are trained with this input: ";
- msg += ofJoinString(dependentOutputs, ", ");
- msg += ".\nAll of their examples and classifiers will be erased. Confirm?";
- bool confirm = ofSystemChoiceDialog(msg);
- if (!confirm)   return;
- }
- // remove deleted input from all the outputs and delete itself
- for (int i=0; i<outputs.size(); i++) {
- outputs[i]->removeInput(*it);
- }
- (*it)->setVisible(false);
- delete (*it);
- it = inputs.erase(it);
- }
- else ++it;
- }
- resetGuiPositions();
- }
- */
-/*
 //-------
 void Learn::inputParameterDeleted(LearnParameter & parameter) {
-    vector<LearnInputGroup *>::iterator it=inputs.begin();
-    while (it != inputs.end()) {
-        
-        
-        vector<string> dependentOutputs;
-        for (int i=0; i<outputs.size(); i++) {
-            if (outputs[i]->getInputActive(*it) && (outputs[i]->getNumInstances()>0 || outputs[i]->getTrained())) {
-                dependentOutputs.push_back(outputs[i]->getName());
-            }
-        }
-        if (dependentOutputs.size() > 0) {
-            string msg = "The following output parameters are trained with this input: ";
-            msg += ofJoinString(dependentOutputs, ", ");
-            msg += ".\nAll of their examples and classifiers will be erased. Confirm?";
-            bool confirm = ofSystemChoiceDialog(msg);
-            if (!confirm)   return;
-        }
-        
-        vector<LearnInputParameter *> params = (*it)->getInputs();
-        vector<LearnInputParameter *>::iterator itp=params.begin();
-        while (itp != params.end()) {
-
-            
-            
-            (*it)->removeParameter(*itp);
-
-            
-        }
-        
-        
-            //(*it)->setVisible(false);
-            vector<LearnInputParameter*> params = (*it)->getInputs();
-            vector<LearnInputParameter*>::iterator itp=params.begin();
-            while (itp != params.end()) {
-                (*itp)->setVisible(false);
-                delete (*itp);
-                itp = params.erase(itp);
-            }
-            delete (*it);
-            it = inputs.erase(it);
-        }
-        else ++it;
-    }
-    resetGuiPositions();
-}
-*/
-
-//-------
-void Learn::inputParameterDeleted(LearnParameter & parameter) {
-    cout << "DELELELELE " << parameter.getName() << endl;
     vector<LearnInputGroup *>::iterator it=inputs.begin();
     while (it != inputs.end()) {
         vector<LearnInputParameter *> params = (*it)->getInputs();
@@ -1262,17 +883,12 @@ void Learn::inputParameterDeleted(LearnParameter & parameter) {
                     bool confirm = ofSystemChoiceDialog(msg);
                     if (!confirm)   return;
                 }
-                //(*itp)->setVisible(false);
                 (*it)->removeParameter(*itp);
-                
                 itp = params.erase(itp);
-                
-                
             }
             else ++itp;
         }
         if ((*it)->getInputs().size() == 0) {
-            cout << "delete group " << endl;
             inputGroupDeleted((LearnInputGroup &) *it);
             it = inputs.erase(it);
         }
@@ -1283,44 +899,21 @@ void Learn::inputParameterDeleted(LearnParameter & parameter) {
     resetInputs();
 }
 
-
 //-------
 void Learn::inputGroupDeleted(LearnInputGroup & input) {
     vector<LearnInputGroup *>::iterator it=inputs.begin();
     while (it != inputs.end()) {
         if (*it == &input) {
-            vector<string> dependentOutputs;
-            for (int i=0; i<outputs.size(); i++) {
-                if (outputs[i]->getInputActive(*it) && (outputs[i]->getNumInstances()>0 || outputs[i]->getTrained())) {
-                    dependentOutputs.push_back(outputs[i]->getName());
-                }
-            }
-            if (dependentOutputs.size() > 0) {
-                string msg = "The following output parameters are trained with this input: ";
-                msg += ofJoinString(dependentOutputs, ", ");
-                msg += ".\nAll of their examples and classifiers will be erased. Confirm?";
-                bool confirm = ofSystemChoiceDialog(msg);
-                if (!confirm)   return;
-            }
-            // remove deleted input from all the outputs and delete itself
-            for (int i=0; i<outputs.size(); i++) {
-                outputs[i]->removeInput(*it);
-            }
-            vector<LearnInputParameter*> params = (*it)->getInputs();
-            vector<LearnInputParameter*>::iterator itp=params.begin();
-            while (itp != params.end()) {
-                (*itp)->setVisible(false);
-                delete (*itp);
-                itp = params.erase(itp);
-            }
-            delete (*it);
+            (*it)->clearParameters();
+            delete *it;
             it = inputs.erase(it);
         }
-        else ++it;
+        else {
+            ++it;
+        }
     }
-    resetGuiPositions();
+    resetInputs();
 }
-/////////////////////////////////////////////////////////////////
 
 //-------
 void Learn::outputParameterDeleted(LearnParameter & output) {
@@ -1333,9 +926,9 @@ void Learn::outputParameterDeleted(LearnParameter & output) {
         }
         else ++it;
     }
-    resetGuiPositions();
     oscManager.registerToOscReceiver((vector<ParameterBase *> &) outputs);
     resetOutputs();
+    resetGuiPositions();
 }
 
 //-------
@@ -1381,7 +974,6 @@ void Learn::startAnalyzer() {
 void Learn::stopAnalyzer() {
     analyzing = false;
     for (int i=0; i<inputs.size(); i++) {
-        //inputs[i]->deselect();
         vector<LearnInputParameter *> params = inputs[i]->getInputs();
         for (int j=0; j<params.size(); j++) {
             params[j]->deselect();
@@ -1527,121 +1119,89 @@ bool Learn::savePreset(string filename) {
 
 //-------
 void Learn::saveInputs(string filename, ofXml &xml) {
-    /*
-     Presets presets;
-     xml.addChild("Inputs");
-     xml.setTo("Inputs");
-     if (inputGroups.size() > 0) {
-     for (int i=0; i<inputGroups.size(); i++) {
-     ofXml xmlg;
-     xmlg.addChild("InputGroup");
-     xmlg.setTo("InputGroup");
-     xmlg.addValue("Name", inputGroups[i].name);
-     for (int j=0; j<inputGroups[i].inputs.size(); j++) {
-     ofXml xmlp = presets.getXml(inputGroups[i].inputs[j]);
-     xmlg.addXml(xmlp);
-     }
-     xml.addXml(xmlg);
-     }
-     }
-     else {
-     for (int i=0; i<inputs.size(); i++) {
-     ofXml xmlp = presets.getXml(inputs[i]);
-     xml.addXml(xmlp);
-     }
-     }
-     xml.setToParent();*/
+    Presets presets;
+    xml.addChild("Inputs");
+    xml.setTo("Inputs");
+    for (int i=0; i<inputs.size(); i++) {
+        ofXml xmlg;
+        xmlg.addChild("InputGroup");
+        xmlg.setTo("InputGroup");
+        xmlg.addValue("Name", inputs[i]->getName());
+        
+        vector<LearnInputParameter*> params = inputs[i]->getInputs();
+        for (int j=0; j<params.size(); j++) {
+            ofXml xmlp = presets.getXml(params[j]);
+            xmlg.addXml(xmlp);
+        }
+        xml.addXml(xmlg);
+    }
+    xml.setToParent();
 }
 
 //-------
 void Learn::saveOutputs(string filename, ofXml &xml) {
-    /*
-     Presets presets;
-     xml.addChild("Outputs");
-     xml.setTo("Outputs");
-     for (int i=0; i<outputs.size(); i++) {
-     
-     // add inputs
-     ofXml xmlp = presets.getXml(outputs[i]);
-     xmlp.addChild("Inputs");
-     xmlp.setTo("Inputs");
-     
-     vector<vector<vector<float> > > instances = outputs[i]->getInstances();
-     vector<string> activeInputGroups = outputs[i]->getActiveInputGroups();
-     
-     // add input groups if any exist, or...
-     if (activeInputGroups.size() > 0) {
-     for (int i=0; i<activeInputGroups.size(); i++) {
-     for (int j=0; j<inputGroups.size(); j++) {
-     if (activeInputGroups[i] != inputGroups[j].name) continue;
-     ofXml xmlg;
-     xmlg.addChild("InputGroup");
-     xmlg.setTo("InputGroup");
-     xmlg.addValue("Name", inputGroups[j].name);
-     for (int k=0; k<inputGroups[j].inputs.size(); k++) {
-     ofXml xmlgp = presets.getXml(inputGroups[j].inputs[k]);
-     xmlg.addXml(xmlgp);
-     }
-     xmlp.addXml(xmlg);
-     }
-     }
-     }
-     
-     // add individual inputs if no groups
-     else {
-     vector<LearnInputParameter *> activeInputs = outputs[i]->getActiveInputs();
-     for (int j=0; j<activeInputs.size(); j++) {
-     xmlp.addValue("Input", activeInputs[j]->getName());
-     }
-     
-     }
-     xmlp.setToParent();
-     
-     // add pages of examples
-     xmlp.addChild("Examples");
-     xmlp.setTo("Examples");
-     for (int p=0; p<instances.size(); p++) {
-     xmlp.addChild("Page");
-     xmlp.setTo("Page["+ofToString(p)+"]");
-     for (int j=0; j<instances[p].size(); j++) {
-     string instanceString = ofToString(instances[p][j][0]);
-     for (int k=1; k<instances[p][j].size(); k++) {
-     instanceString += ","+ofToString(instances[p][j][k]);
-     }
-     xmlp.addValue("Example", instanceString);
-     }
-     xmlp.setToParent();
-     }
-     xmlp.setToParent();
-     
-     // add classifier info
-     if (outputs[i]->getTrained()) {
-     xmlp.addChild("Classifier");
-     xmlp.setTo("Classifier");
-     if (outputs[i]->getLearnModel() == LearnOutputParameter::SVM) {
-     ofDirectory dir;
-     string classifierPath = dir.getAbsolutePath();
-     classifierPath += "presets/classifiers/"+filename+"_"+outputs[i]->getName()+".dat";
-     outputs[i]->saveClassifier(classifierPath);
-     xmlp.addValue("Type", "SVM");
-     xmlp.addValue("Path", classifierPath);
-     }
-     else if (outputs[i]->getLearnModel() == LearnOutputParameter::MLP) {
-     xmlp.addValue("Type", "MLP");
-     xmlp.addValue("NumHiddenLayers", ofToString(outputs[i]->getMlpNumHiddenLayers()));
-     xmlp.addValue("MaxNumSamples", ofToString(outputs[i]->getMlpMaxSamples()));
-     xmlp.addValue("TargetRmse", ofToString(outputs[i]->getMlpTargetRmse()));
-     string w1s = ofToString(outputs[i]->getMlpCoefficients1());
-     string w3s = ofToString(outputs[i]->getMlpCoefficients2());
-     xmlp.addValue("W1", w1s.substr(1, w1s.size()-2));
-     xmlp.addValue("W3", w3s.substr(1, w3s.size()-2));
-     }
-     xmlp.setToParent();
-     }
-     xml.addXml(xmlp);
-     }
-     xml.setToParent();
-     */
+    Presets presets;
+    xml.addChild("Outputs");
+    xml.setTo("Outputs");
+    for (int i=0; i<outputs.size(); i++) {
+
+        // add inputs
+        ofXml xmlp = presets.getXml(outputs[i]);
+        xmlp.addChild("Inputs");
+        xmlp.setTo("Inputs");
+
+        vector<vector<vector<float> > > instances = outputs[i]->getInstances();
+        vector<LearnInputGroup*> activeInputs = outputs[i]->getActiveInputs();
+
+        for (int i=0; i<activeInputs.size(); i++) {
+            xmlp.addValue("Input", activeInputs[i]->getName());
+        }
+        xmlp.setToParent();
+
+        // add pages of examples
+        xmlp.addChild("Examples");
+        xmlp.setTo("Examples");
+        for (int p=0; p<instances.size(); p++) {
+            xmlp.addChild("Page");
+            xmlp.setTo("Page["+ofToString(p)+"]");
+            for (int j=0; j<instances[p].size(); j++) {
+                string instanceString = ofToString(instances[p][j][0]);
+                for (int k=1; k<instances[p][j].size(); k++) {
+                    instanceString += ","+ofToString(instances[p][j][k]);
+                }
+                xmlp.addValue("Example", instanceString);
+            }
+            xmlp.setToParent();
+        }
+        xmlp.setToParent();
+
+        // add classifier info
+        if (outputs[i]->getTrained()) {
+            xmlp.addChild("Classifier");
+            xmlp.setTo("Classifier");
+            if (outputs[i]->getLearnModel() == LearnOutputParameter::SVM) {
+                ofDirectory dir;
+                string classifierPath = dir.getAbsolutePath();
+                classifierPath += "presets/classifiers/"+filename+"_"+outputs[i]->getName()+".dat";
+                outputs[i]->saveClassifier(classifierPath);
+                xmlp.addValue("Type", "SVM");
+                xmlp.addValue("Path", classifierPath);
+            }
+            else if (outputs[i]->getLearnModel() == LearnOutputParameter::MLP) {
+                xmlp.addValue("Type", "MLP");
+                xmlp.addValue("NumHiddenLayers", ofToString(outputs[i]->getMlpNumHiddenLayers()));
+                xmlp.addValue("MaxNumSamples", ofToString(outputs[i]->getMlpMaxSamples()));
+                xmlp.addValue("TargetRmse", ofToString(outputs[i]->getMlpTargetRmse()));
+                string w1s = ofToString(outputs[i]->getMlpCoefficients1());
+                string w3s = ofToString(outputs[i]->getMlpCoefficients2());
+                xmlp.addValue("W1", w1s.substr(1, w1s.size()-2));
+                xmlp.addValue("W3", w3s.substr(1, w3s.size()-2));
+            }
+            xmlp.setToParent();
+        }
+        xml.addXml(xmlp);
+    }
+    xml.setToParent();
 }
 
 //-------
@@ -1674,70 +1234,46 @@ void Learn::loadPreset(string filename) {
 //-------
 void Learn::loadInputs(ofXml &xml) {
     clearInputs();
-    
-    // delete inputs
-    //    cout << inputs.size() << endl;
-    /*
-     //vector<LearnInputParameter *> parametersToDelete;
-     for (int i=0; i<inputs.size(); i++) {
-     inputParameterDeleted((LearnParameter &) inputs[i]);
-     }
-     inputs.clear();
-     cout << inputs.size() << endl;
-     */
-    //    parametersToDelete.clear();
-    //    inputsToDelete.clear();
-    /*
-     
-     cout << "LOAD INPUTS" <<endl;
-     
-     xml.setTo("Inputs");
-     
-     if (xml.exists("InputGroup")) {
-     xml.setTo("InputGroup[0]");
-     do {
-     string name = xml.getValue<string>("Name");
-     cout << "GROUP " << name << endl;
-     loadHelperGetParameters(xml);
-     cout << "/GROUP" <<endl;
-     
-     }
-     while (xml.setToSibling());
-     xml.setToParent();
-     }
-     
-     // individual inputs
-     loadHelperGetParameters(xml); // eventually should not need this...
-     
-     xml.setToParent();
-     
-     */
-    cout << "/LOAD INPUTS" <<endl;
-    
-    
-    // delete non-overwritten inputs from before loading
-    /*
-     vector<LearnInputParameter *> parametersToDelete;
-     for (int i=0; i<inputs.size(); i++) {
-     if (inputsToDelete[inputs[i]->getName()]) {
-     parametersToDelete.push_back(inputs[i]);
-     }
-     }
-     for (int i=0; i<parametersToDelete.size(); i++) {
-     inputParameterDeleted((LearnParameter &) *parametersToDelete[i]);
-     }
-     parametersToDelete.clear();
-     inputsToDelete.clear();
-     */
-    
-    //    for (int i=0; i<inputs.size(); i++) {
-    //        resetInputParameterMapping(inputs[i]);
-    //    }
+    xml.setTo("Inputs");
+    if (xml.exists("InputGroup")) {
+        xml.setTo("InputGroup[0]");
+        do {
+            string groupName = xml.getValue<string>("Name");
+            if (xml.exists("Parameter")) {
+                LearnInputGroup *newGroup = addInputGroup(groupName);
+                xml.setTo("Parameter[0]");
+                do {
+                    string name = xml.getValue<string>("Name");
+                    string oscAddress = xml.getValue<string>("OscAddress");
+                    string type = xml.getValue<string>("Type");
+                    float value = xml.getValue<float>("Value");
+                    float min = xml.getValue<float>("Min");
+                    float max = xml.getValue<float>("Max");
+                    float warp = xml.getValue<float>("Warp");
+                    
+                    // input to load settings into
+                    LearnInputParameter * newInput = addInputToGroup(groupName, name, min, max);
+                    newInput->setOscAddress(oscAddress);
+                    newInput->setMin(min);
+                    newInput->setMax(max);
+                    newInput->setWarp(warp);
+                    newInput->set(value);
+                }
+                while (xml.setToSibling());
+                xml.setToParent();
+            }
+        }
+        while (xml.setToSibling());
+        xml.setToParent();
+    }
+    xml.setToParent();
 }
 
-
 //-------
-void Learn::loadHelperGetParameters(ofXml &xml) {
+void Learn::loadOutputs(ofXml &xml, bool loadExamples, bool loadClassifier) {
+    clearOutputs();
+    
+    xml.setTo("Outputs");
     if (xml.exists("Parameter")) {
         xml.setTo("Parameter[0]");
         do {
@@ -1748,238 +1284,98 @@ void Learn::loadHelperGetParameters(ofXml &xml) {
             float min = xml.getValue<float>("Min");
             float max = xml.getValue<float>("Max");
             float warp = xml.getValue<float>("Warp");
-            
-            // input to load settings into
-            //LearnInputParameter * input;
-            
-            // try to find existing input with same name...
-            ///////
-            /*
-             bool inputExists = false;
-             for (int i=0; i<inputs.size(); i++) {
-             if (inputs[i]->getName() == name) {
-             input = inputs[i];
-             inputExists = true;
-             break;
-             }
-             }
-             // ...or make new one if none found
-             if (!inputExists) {
-             input = addInput(name, new float(), min, max);
-             }
-             */
-            ////////
-            
-            //LearnInputParameter * input = addInput(name, new float(), min, max);
-            
-            //LearnInputParameter * input = createNewParameter(name, min, max);
-            
-            cout << "param " << name << " " << min << " " << max << endl;
-            
-            /*
-             LearnInputParameter * input = addInput(name, min, max);
-             
-             //resetInputParameterMapping(input);
-             
-             
-             
-             
-             input->setOscAddress(oscAddress);
-             input->setMin(min);
-             input->setMax(max);
-             input->setWarp(warp);
-             input->set(value);*/
-            
-            //inputsToDelete[name] = false;
+
+            LearnOutputParameter * newOutput = addOutput(name, min, max);
+            newOutput->setOscAddress(oscAddress);
+            newOutput->setMin(min);
+            newOutput->setMax(max);
+            newOutput->setWarp(warp);
+            newOutput->set(value);
+            newOutput->setInputParameters(inputs);
+
+            // plug inputs into output
+            bool allInputsFound = true;
+            xml.setTo("Inputs");
+            if (xml.exists("Input[0]")) {
+                xml.setTo("Input[0]");
+                do {
+                    string inputName = xml.getValue();
+                    bool foundInput = false;
+                    for (int i=0; i<inputs.size(); i++) {
+                        if (inputs[i]->getName() == inputName) {
+                            newOutput->addInput(inputs[i]);
+                            foundInput = true;
+                            break;
+                        }
+                    }
+                    if (!foundInput) allInputsFound = false;
+                }
+                while (xml.setToSibling());
+                xml.setToParent();
+            }
+            xml.setToParent();
+
+            // add saved examples to output
+            if (allInputsFound) {
+                if (loadExamples) {
+                    xml.setTo("Examples");
+                    if (xml.exists("Page[0]")) {
+                        xml.setTo("Page[0]");
+                        do {
+                            if (newOutput->getNumInstances() > 0) {
+                                newOutput->addDataPage();
+                            }
+                            if (xml.exists("Example[0]")) {
+                                xml.setTo("Example[0]");
+                                do {
+                                    vector<string> instanceStr = ofSplitString(xml.getValue(), ",");
+                                    vector<float> instance;
+                                    for (int i=0; i<instanceStr.size(); i++) {
+                                        instance.push_back(ofToFloat(instanceStr[i]));
+                                    }
+                                    newOutput->addInstance(instance);
+                                }
+                                while (xml.setToSibling());
+                                xml.setToParent();
+                            }
+                        }
+                        while (xml.setToSibling());
+                        xml.setToParent();
+                    }
+                    xml.setToParent();
+                }
+
+                if (loadClassifier) {
+                    if (xml.exists("Classifier")) {
+                        xml.setTo("Classifier");
+                        string type = xml.getValue<string>("Type");
+                        if (type == "SVM") {
+                            string classifierPath = xml.getValue<string>("Path");
+                            newOutput->loadClassifierSvm(classifierPath);
+                        }
+                        else if (type == "MLP") {
+                            newOutput->setMlpNumHiddenLayers(xml.getValue<int>("NumHiddenLayers"));
+                            newOutput->setMlpMaxSamples(xml.getValue<int>("MaxNumSamples"));
+                            newOutput->setMlpTargetRmse(xml.getValue<float>("TargetRmse"));
+                            vector<string> w1s = ofSplitString(xml.getValue<string>("W1"), ",");
+                            vector<string> w3s = ofSplitString(xml.getValue<string>("W3"), ",");
+                            vector<double> w1, w3;
+                            for (int i=0; i<w1s.size(); i++)  w1.push_back(ofToDouble(w1s[i]));
+                            for (int i=0; i<w3s.size(); i++)  w3.push_back(ofToDouble(w3s[i]));
+                            newOutput->loadClassifierMlp(w1, w3);
+                        }
+                        xml.setToParent();
+                    }
+                }
+            }
+            else {
+                ofLog(OF_LOG_ERROR, "Error for output "+newOutput->getName()+" : not all inputs found, so skip loading examples.");
+            }
         }
         while (xml.setToSibling());
         xml.setToParent();
     }
-}
-
-//-------
-void Learn::loadOutputs(ofXml &xml, bool loadExamples, bool loadClassifier) {
-    
-    // delete outputs
-    /*
-     for (int i=0; i<outputs.size(); i++) {
-     outputParameterDeleted((LearnParameter &) outputs[i]);
-     }
-     outputs.clear();
-     */
-    
-    clearOutputs();
-    // store existing parameters to delete non-overwritten ones after loading done
-    
-    /*
-     map<string, bool> outputsToDelete;
-     for (int i=0; i<outputs.size(); i++) {
-     
-     
-     
-     
-     // HACK!!
-     having strange issues when trying to overwrite parameters with same name.
-     so just give each name a random number offset so it will delete,
-     until this bug is corrected in the future...
-     
-     outputs[i]->setName("param"+ofToString(ofRandom(100000)));
-     
-     
-     
-     outputsToDelete[outputs[i]->getName()] = true;
-     }
-     */
-    
-    
-    /*
-     
-     xml.setTo("Outputs");
-     if (xml.exists("Parameter")) {
-     xml.setTo("Parameter[0]");
-     do {
-     string name = xml.getValue<string>("Name");
-     string oscAddress = xml.getValue<string>("OscAddress");
-     string type = xml.getValue<string>("Type");
-     float value = xml.getValue<float>("Value");
-     float min = xml.getValue<float>("Min");
-     float max = xml.getValue<float>("Max");
-     float warp = xml.getValue<float>("Warp");
-     
-     // output to load settings into
-     //LearnOutputParameter * output;
-     
-     
-     //////////////////=====
-     // try to find existing output with same name...
-     bool outputExists = false;
-     for (int i=0; i<outputs.size(); i++) {
-     if (outputs[i]->getName() == name) {
-     output = outputs[i];
-     outputExists = true;
-     break;
-     }
-     }
-     
-     // ...or make new one if none found
-     if (!outputExists) {
-     output = addOutput(name, new float(), min, max);
-     }
-     outputsToDelete[name] = false;
-     ///////////////////====
-     
-     LearnOutputParameter * output = addOutput(name, min, max);
-     
-     //resetOutputParameterMapping(output);
-     
-     output->setOscAddress(oscAddress);
-     output->setMin(min);
-     output->setMax(max);
-     output->setWarp(warp);
-     output->set(value);
-     output->setInputParameters(inputs);
-     
-     // plug inputs into output
-     bool allInputsFound = true;
-     xml.setTo("Inputs");
-     if (xml.exists("Input[0]")) {
-     xml.setTo("Input[0]");
-     do {
-     string inputName = xml.getValue();
-     bool foundInput = false;
-     for (int i=0; i<inputs.size(); i++) {
-     if (inputs[i]->getName() == inputName) {
-     output->addInput(inputs[i]);
-     foundInput = true;
-     break;
-     }
-     }
-     if (!foundInput) allInputsFound = false;
-     }
-     while (xml.setToSibling());
-     xml.setToParent();
-     }
-     xml.setToParent();
-     
-     // add saved examples to output
-     if (allInputsFound) {
-     if (loadExamples) {
-     xml.setTo("Examples");
-     if (xml.exists("Page[0]")) {
-     xml.setTo("Page[0]");
-     do {
-     if (output->getNumInstances() > 0) {
-     output->addDataPage();
-     }
-     if (xml.exists("Example[0]")) {
-     xml.setTo("Example[0]");
-     do {
-     vector<string> instanceStr = ofSplitString(xml.getValue(), ",");
-     vector<float> instance;
-     for (int i=0; i<instanceStr.size(); i++) {
-     instance.push_back(ofToFloat(instanceStr[i]));
-     }
-     output->addInstance(instance);
-     }
-     while (xml.setToSibling());
-     xml.setToParent();
-     }
-     }
-     while (xml.setToSibling());
-     xml.setToParent();
-     }
-     xml.setToParent();
-     }
-     
-     if (loadClassifier) {
-     if (xml.exists("Classifier")) {
-     xml.setTo("Classifier");
-     string type = xml.getValue<string>("Type");
-     if (type == "SVM") {
-     string classifierPath = xml.getValue<string>("Path");
-     output->loadClassifierSvm(classifierPath);
-     }
-     else if (type == "MLP") {
-     output->setMlpNumHiddenLayers(xml.getValue<int>("NumHiddenLayers"));
-     output->setMlpMaxSamples(xml.getValue<int>("MaxNumSamples"));
-     output->setMlpTargetRmse(xml.getValue<float>("TargetRmse"));
-     vector<string> w1s = ofSplitString(xml.getValue<string>("W1"), ",");
-     vector<string> w3s = ofSplitString(xml.getValue<string>("W3"), ",");
-     vector<double> w1, w3;
-     for (int i=0; i<w1s.size(); i++)  w1.push_back(ofToDouble(w1s[i]));
-     for (int i=0; i<w3s.size(); i++)  w3.push_back(ofToDouble(w3s[i]));
-     output->loadClassifierMlp(w1, w3);
-     }
-     xml.setToParent();
-     }
-     }
-     }
-     else {
-     ofLog(OF_LOG_ERROR, "Error for output "+output->getName()+" : not all inputs found, so skip loading examples.");
-     }
-     }
-     while (xml.setToSibling());
-     xml.setToParent();
-     }
-     xml.setToParent();
-     
-     */
-    
-    
-    // delete non-overwritten inputs from before loading
-    /*
-     vector<LearnOutputParameter *> parametersToDelete;
-     for (int i=0; i<outputs.size(); i++) {
-     if (outputsToDelete[outputs[i]->getName()]) {
-     parametersToDelete.push_back(outputs[i]);
-     }
-     }
-     for (int i=0; i<parametersToDelete.size(); i++) {
-     outputParameterDeleted((LearnParameter &) *parametersToDelete[i]);
-     }
-     parametersToDelete.clear();
-     outputsToDelete.clear();
-     */
+    xml.setToParent();
 }
 
 //-------
@@ -2011,7 +1407,6 @@ void Learn::setFont(string path) {
         for (int j=0; j<params.size(); j++) {
             params[j]->setFont(fontPath);
         }
-        //inputs[i]->setFont(fontPath);
     }
     for (int i=0; i<outputs.size(); i++) {
         outputs[i]->setFont(fontPath);
@@ -2041,7 +1436,6 @@ void Learn::setFontSizes(int small, int medium, int large) {
         for (int j=0; j<params.size(); j++) {
             params[j]->setFontSizes(fontSmall, fontMedium, fontLarge);
         }
-        //inputs[i]->setFontSizes(fontSmall, fontMedium, fontLarge);
     }
     for (int i=0; i<outputs.size(); i++) {
         outputs[i]->setFontSizes(fontSmall, fontMedium, fontLarge);

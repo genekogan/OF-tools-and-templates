@@ -14,10 +14,21 @@ public:
     void update();
     void draw();
     
+    void setMantaVisible(bool mantaVisible);
+    void toggleMantaVisible() {setMantaVisible(!mantaVisible);}
+
+protected:
     
-    void addInputFeatureSet(string name);
-    void removeInputFeatureSet(string name);
+    void loadPreset(string path);
     
+    void setupGuiInputs();
+    void guiEvent(ofxUIEventArgs &e);
+    void guiInputEvent(ofxUIEventArgs &e);
+    
+    void resetManta();
+    void resetMantaInputSelector();
+
+    // all feature sets
     void addAllPadsAsInput();
     void addSlidersAsInput();
     void addButtonsAsInput();
@@ -44,25 +55,6 @@ public:
     void addAverageInterFingerDistanceVelocityAsInput();
     void addCentroidVelocityAsInput();
     void addWeightedCentroidVelocityAsInput();
-    
-    
-//    void addWeightedCentroidVelocityAsInput2();
-    
-    
-    
-    //LearnOutputParameter * addOutput(string name, float min, float max);
-    LearnInputParameter * addInput(string name, float min, float max);
-    
-    void setMantaVisible(bool mantaVisible);
-    void toggleMantaVisible() {setMantaVisible(!mantaVisible);}
-
-protected:
-    
-    //void setupInputs();
-    void setupGuiInputs();
-    void guiEvent(ofxUIEventArgs &e);
-    void guiInputEvent(ofxUIEventArgs &e);
-    void resetManta();
 
     // input selector
     bool allPads, allSliders, allButtons,
@@ -73,16 +65,18 @@ protected:
         vNumPads, vPadSum, vPadAvg, vPerimeter,
         vWidth, vHeight, vWhRatio,
         vAvgInterDist, vCentroid, vWCentroid;
-    bool padVal[8][6], padVel[8][6];
+    bool padVal[6][8], padVel[6][8];
     bool sliderVal[2], sliderVel[2];
     bool buttonVal[4], buttonVel[4];
     
+    // gui
     ofxUICanvas *gui, *guiInputs;
     ofxUIDropDownList *guiJointsFeatures, *guiGloalStatSelector, *guiJointSelector, *guiStatSelector;
     vector<string> rows, cols;
     vector<string> customPads;
     int guiRow, guiCol;
     
+    // manta
     MantaController manta;
     bool mantaVisible, inputsVisible;
 };

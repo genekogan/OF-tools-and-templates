@@ -18,6 +18,12 @@ LearnInputParameter::LearnInputParameter(string name, float *value, float min, f
 }
 
 //-----------
+LearnInputGroup::LearnInputGroup(string name) {
+    this->name = name;
+}
+
+
+//-----------
 LearnOutputParameter::LearnOutputParameter(string name, float *value, float min, float max, bool rangeLocked) : LearnParameter(name, value, min, max, rangeLocked) {
     vector<string> emptyInputLabels;
     guiInputSelect = new ofxUICanvas(name+"_inputs");
@@ -30,7 +36,6 @@ LearnOutputParameter::LearnOutputParameter(string name, float *value, float min,
     training = false;
     viewExamples = false;
     viewInputs = false;
-    //inputGroupsEnabled = false;
 
     dataWidth = 600;
     dataHeight = 300;
@@ -63,11 +68,6 @@ LearnParameter::~LearnParameter() {
     pDeletedEvent.disable();
     pDeletedEvent.clear();
 }
-
-void LearnInputGroup::addInputParameter(LearnInputParameter * newInput) {
-    inputs.push_back(newInput);
-}
-
 
 //-----------
 LearnOutputParameter::~LearnOutputParameter() {
@@ -135,6 +135,49 @@ void LearnParameter::setVisible(bool visible){
 
 
 
+
+//===========================================
+//  MANAGING INPUT GROUP PARAMETERS
+
+//-----------
+void LearnInputGroup::addInputParameter(LearnInputParameter * newInput) {
+    inputs.push_back(newInput);
+}
+
+//-----------
+void LearnInputGroup::addInputParameters(vector<LearnInputParameter *> newInputs) {
+    for (int i=0; i<newInputs.size(); i++) {
+        inputs.push_back(newInputs[i]);
+    }
+}
+
+//-----------
+LearnInputParameter * LearnInputGroup::addInputParameter(string name, float *value, float min, float max, bool rangeLocked) {
+    LearnInputParameter *newInput = new LearnInputParameter(name, value, min, max, rangeLocked);
+    inputs.push_back(newInput);
+    return newInput;
+}
+
+//-----------
+void LearnInputGroup::addInputParameter(string name, float min, float max, bool rangeLocked) {
+    addInputParameter(name, new float(), min, max, rangeLocked);
+}
+
+//-----------
+void LearnInputGroup::removeParameter(LearnInputParameter * parameter) {
+    vector<LearnInputParameter *>::iterator it=inputs.begin();
+    while (it != inputs.end()) {
+        if (*it == parameter) {
+            delete (*it);
+            it = inputs.erase(it);
+        }
+        else ++it;
+    }
+}
+
+
+
+
 //===========================================
 //  LEARNING
 
@@ -171,30 +214,11 @@ int LearnOutputParameter::getNumInstances() {
     return numInstances;
 }
 
-
-////////////////////////////////////////////////////
-//-----------
-/*
-void LearnOutputParameter::setInputParameters(vector<LearnInputParameter *> &allInputs) {
-    this->allInputs = allInputs;
-    setupGuiInputSelector();
-}
-
-//-----------
-void LearnOutputParameter::setInputGroups(vector<GuiInputGroup> inputGroups) {
-    this->inputGroups = inputGroups;
-    inputGroupsEnabled = true;
-    setupGuiInputSelector();
-}
- */
-
 //-----------
 void LearnOutputParameter::setInputParameters(vector<LearnInputGroup *> &allInputs) {
     this->allInputs = allInputs;
     setupGuiInputSelector();
 }
-
-////////////////////////////////////////////////////
 
 //-----------
 void LearnOutputParameter::addDataPage() {
@@ -226,8 +250,6 @@ void LearnOutputParameter::setupHeaders(int p) {
     }
 }
 
-
-//////////////////////////////////////////
 //-----------
 void LearnOutputParameter::addSpreadsheetDataToLearn() {
     learn.clearTrainingInstances();
@@ -236,13 +258,6 @@ void LearnOutputParameter::addSpreadsheetDataToLearn() {
         for (int i=0; i<entries.size(); i++) {
             double normalizedLabel = (double) ofMap(entries[i][0], getMin(), getMax(), 0.0f, 1.0f);
             vector<double> instance;
-            /*
-            for (int j=1; j<entries[i].size(); j++) {
-                //instance.push_back((double) entries[i][j]);
-                float val = ((double) entries[i][j] - activeInputs[j-1]->getMin()) / (activeInputs[j-1]->getMax() - activeInputs[j-1]->getMin());
-                instance.push_back(val);
-            }
-             */
             int idxEntry = 1;
             for (int j=0; j<activeInputs.size(); j++) {
                 vector<LearnInputParameter *> params = activeInputs[j]->getInputs();
@@ -252,12 +267,10 @@ void LearnOutputParameter::addSpreadsheetDataToLearn() {
                     idxEntry++;
                 }
             }
-//            learn.addTrainingInstance(instance, normalizedLabel);
             learn.addTrainingInstance(getName(), instance, normalizedLabel);
         }
     }
 }
-//////////////////////////////
 
 //-----------
 void LearnOutputParameter::setDataSize(int width, int height) {
@@ -362,14 +375,7 @@ void LearnOutputParameter::predict(vector<double> instance) {
         normalizedPrediction = learn.predict(instance);
     }
     else if (learnModel == MLP) {
-        /*
-        cout << "predict mlp instance " << endl;
-        for (int j=0; j<instance.size(); j++) {
-            cout << instance[j] <<",";
-        }
-        cout << endl;*/
         normalizedPrediction = predictMlp(instance);
-        //cout << "pred " << normalizedPrediction << endl;
     }
     set((float) ofMap(normalizedPrediction, 0.0, 1.0, getMin(), getMax()));
     guiValueText->setTextString(ofToString(guiValue->getValue()));
@@ -377,16 +383,8 @@ void LearnOutputParameter::predict(vector<double> instance) {
 
 //-----------
 double LearnOutputParameter::predictMlp(vector<double> example) {
-    
-    
-    cout << getName() << " :: predict mlp ("<< ofToString(learn.getMlpNumHiddenLayers()) <<","<< ofToString(getNumParameters()) <<") :: ";
-    for (int i=0; i<example.size(); i++) {
-        cout << example[i] << ", ";
-    }
-    
-
     int numLayers = learn.getMlpNumHiddenLayers();
-    int numFeatures = getNumParameters(); //getNumInputs();
+    int numFeatures = getNumParameters();
     
     vector<double> z;
     for (int i=0; i<example.size(); i++) {
@@ -408,27 +406,12 @@ double LearnOutputParameter::predictMlp(vector<double> example) {
     for (int j=0; j<numLayers+1; j++) {
         tmp2 += (mlpCoefficientsW3[j] * tmp1[j]);
     }
-    cout << ":: pred :: " << sigmoid(tmp2) << endl;
     return sigmoid(tmp2);
 }
 
-//////////////////////////////
-/*
 //-----------
 void LearnOutputParameter::setDirect() {
     float newValue = 0.0;
-    float directWeight = 1.0 / activeInputs.size();
-    for (int i=0; i<activeInputs.size(); i++) {
-        newValue += directWeight * (((Parameter<float> *) activeInputs[i])->get() - activeInputs[i]->getMin()) / (activeInputs[i]->getMax() - activeInputs[i]->getMin());
-    }
-    set(ofLerp(get(), ofMap(newValue, 0.0, 1.0, getMin(), getMax()), directLerp));
-    guiValueText->setTextString(ofToString(guiValue->getValue()));
-}
- */
-//-----------
-void LearnOutputParameter::setDirect() {
-    float newValue = 0.0;
-    
     int numActiveParameters = 0;
     for (int i=0; i<activeInputs.size(); i++) {
         vector<LearnInputParameter*> params = activeInputs[i]->getInputs();
@@ -441,8 +424,6 @@ void LearnOutputParameter::setDirect() {
     set(ofLerp(get(), ofMap(newValue, 0.0, 1.0, getMin(), getMax()), directLerp));
     guiValueText->setTextString(ofToString(guiValue->getValue()));
 }
-
-/////////////////////////////////
 
 //-----------
 void LearnOutputParameter::draw() {
@@ -599,8 +580,6 @@ void LearnOutputParameter::setupGui() {
     }
 }
 
-
-////////////////////////////////////////////////////
 //-----------
 void LearnOutputParameter::setupGuiInputSelector() {
     guiInputSelect->clearWidgets();
@@ -628,82 +607,7 @@ void LearnOutputParameter::setupGuiInputSelector() {
     guiInputSelect->autoSizeToFitWidgets();
     guiInputSelect->setVisible(viewInputs);
     setupHeaders();
-    
-   // cout << "==============="<<endl;
-
-    /*
-    vector<ofxUILabelToggle *> oldToggles = guiSelector->getToggles();
-    for (int i=0; i<oldToggles.size(); i++) {
-        string inputName = oldToggles[i]->getName();
-     //   cout <<"old " << inputName << " " << oldToggles[i]->getValue() << endl;
-    }
-    
-    
-    guiInputSelect->clearWidgets();
-    guiInputSelect->setColorOutline(ofColor(255,200));
-    guiInputSelect->setDrawOutline(true);
-    
-    vector<string> inputLabels;
-    if (inputGroupsEnabled) {
-        for (int i=0; i<inputGroups.size(); i++) {
-            inputLabels.push_back(inputGroups[i].name);
-        }
-    }
-    else {
-        for (int i=0; i<allInputs.size(); i++) {
-            inputLabels.push_back(allInputs[i]->getName());
-        }
-    }
-
-    
-    guiSelector = guiInputSelect->addDropDownList("select inputs", inputLabels, 190.0f);
-    vector<ofxUILabelToggle *> toggles = guiSelector->getToggles();
-    
-    
-    for (int i=0; i<toggles.size(); i++) {
-        string inputName = toggles[i]->getName();
-        //cout << inputName << " " << toggles[i]->getValue() << endl;
-    }
-    
-    for (int i=0; i<toggles.size(); i++) {
-        string inputName = toggles[i]->getName();
-        
-        //cout << ofGetFrameNum() << " "<<i << " " << getName() << " /// " <<inputName << endl;
-        
-        if (inputGroupsEnabled) {
-            
-            //////////////////
-            for (int j=0; j<activeInputGroups.size(); j++) {
-                if (inputName == activeInputGroups[j]) {
-                    
-                    
-                    toggles[i]->setValue(value);
-                    
-                    
-                }
-            }
-
-            
-            
-        }
-        else {
-            for (int j=0; j<activeInputs.size(); j++) {
-                if (inputName == activeInputs[j]->getName()) {
-                    toggles[i]->setValue(value);
-                }
-            }
-        }
-        
-    }
-    guiSelector->setAutoClose(false);
-    guiSelector->setAllowMultiple(true);
-    guiSelector->open();
-    guiInputSelect->autoSizeToFitWidgets();
-    guiInputSelect->setVisible(viewInputs);
-    setupHeaders();
-     */
 }
-////////////////////////////////////////////////////////////////
 
 //-----------
 void LearnParameter::guiEvent(ofxUIEventArgs &e) {
@@ -815,8 +719,6 @@ void LearnInputParameter::guiEvent(ofxUIEventArgs &e) {
     LearnParameter::guiEvent(e);
     if (e.getName() == "X") {
         if (e.getButton()->getValue() == 1) return;
-        string name = getName();
-        cout << "yoyoyoyooy "<< endl;
         ofNotifyEvent(pDeletedEvent, (LearnParameter &) *this, this);
     }
 }
@@ -826,7 +728,7 @@ void LearnOutputParameter::guiEvent(ofxUIEventArgs &e) {
     if (e.getName() == "X") {
         if (e.getButton()->getValue() == 1) return;
         if (ofSystemChoiceDialog("Really delete "+getName()+"?")) {
-            //ofNotifyEvent(pDeletedEvent, (LearnParameter &) *this, this);
+            ofNotifyEvent(pDeletedEvent, (LearnParameter &) *this, this);
         }
     }
     else if (e.getName() == "record") {
@@ -883,26 +785,6 @@ void LearnOutputParameter::setExamplesVisible(bool b) {
 
 //-----------
 void LearnOutputParameter::guiInputSelectEvent(ofxUIEventArgs &e) {
-    /*
-    vector<ofxUILabelToggle *> toggles = guiSelector->getToggles();
-    activeInputs.clear();
-    activeInputGroups.clear();
-    for (int i=0; i<toggles.size(); i++) {
-        if (toggles[i]->getValue()) {
-            if (inputGroupsEnabled) {
-                activeInputGroups.push_back(inputGroups[i].name);
-                for (int j=0; j<inputGroups[i].inputs.size(); j++) {
-                    addInput(inputGroups[i].inputs[j]);
-                }
-            }
-            else {
-                addInput(allInputs[i]);
-            }
-        }
-    }
-     */
-    cout << "YOYOYOYO "<< endl;
-    
     vector<ofxUILabelToggle *> toggles = guiSelector->getToggles();
     activeInputs.clear();
     for (int i=0; i<toggles.size(); i++) {
@@ -911,43 +793,6 @@ void LearnOutputParameter::guiInputSelectEvent(ofxUIEventArgs &e) {
         }
     }
 }
-
-
-//////////////////////////////////////////////////////////////////
-//-----------
-/*
-void LearnOutputParameter::addInput(LearnInputParameter * input) {
-    for (int i=0; i<activeInputs.size(); i++) {
-        if (input == activeInputs[i]) return;   // prevent duplicates
-    }
-    activeInputs.push_back(input);
-    vector<ofxUILabelToggle *> toggles = guiSelector->getToggles();
-    for (int i=0; i<toggles.size(); i++) {
-        if (toggles[i]->getName() == input->getName()) {
-            toggles[i]->setValue(true);
-        }
-    }
-    setupHeaders();
-}
-
-//-----------
-bool LearnOutputParameter::removeInput(LearnInputParameter * input) {
-    for (int i=0; i<allInputs.size(); i++) {
-        if (input == allInputs[i]) {
-            allInputs.erase(allInputs.begin() + i);
-        }
-    }
-    for (int i=0; i<activeInputs.size(); i++) {
-        if (input == activeInputs[i]) {
-            activeInputs.erase(activeInputs.begin() + i);
-            clearInstances();
-            setTrained(false);
-        }
-    }
-    guiSelector->removeToggle(input->getName());
-}
-
- */
 
 //-----------
 void LearnOutputParameter::addInput(LearnInputGroup * input) {
@@ -960,10 +805,6 @@ void LearnOutputParameter::addInput(LearnInputGroup * input) {
         if (toggles[i]->getName() == input->getName()) {
             toggles[i]->setValue(true);
         }
-    }
-    cout << "NOW "<< endl;
-    for (int i=0; i<activeInputs.size(); i++) {
-        cout << activeInputs[i] << endl;
     }
     setupHeaders();
 }
@@ -985,18 +826,17 @@ bool LearnOutputParameter::removeInput(LearnInputGroup * input) {
     }
     guiSelector->removeToggle(input->getName());
 }
-//////////////////////////////////////////////////////////////////
-
 
 //-----------
-/*
-bool LearnOutputParameter::getInputActive(LearnInputParameter * input) {
+int LearnOutputParameter::getNumParameters() {
+    int n = 0;
     for (int i=0; i<activeInputs.size(); i++) {
-        if (input == activeInputs[i])   return true;
+        n += activeInputs[i]->getInputs().size();
     }
-    return false;
+    return n;
 }
- */
+
+//-----------
 bool LearnOutputParameter::getInputActive(LearnInputGroup * input) {
     for (int i=0; i<activeInputs.size(); i++) {
         if (input == activeInputs[i])   return true;

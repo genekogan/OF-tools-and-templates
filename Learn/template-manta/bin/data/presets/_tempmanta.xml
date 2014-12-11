@@ -1,0 +1,641 @@
+<LearnPreset>
+	<Inputs>
+		<InputGroup>
+			<Name>all pads</Name>
+			<Parameter>
+				<Name>pad 0 0</Name>
+				<OscAddress>/pad 0 0</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 0 1</Name>
+				<OscAddress>/pad 0 1</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 0 2</Name>
+				<OscAddress>/pad 0 2</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 0 3</Name>
+				<OscAddress>/pad 0 3</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 0 4</Name>
+				<OscAddress>/pad 0 4</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 0 5</Name>
+				<OscAddress>/pad 0 5</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 0 6</Name>
+				<OscAddress>/pad 0 6</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 0 7</Name>
+				<OscAddress>/pad 0 7</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 1 0</Name>
+				<OscAddress>/pad 1 0</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 1 1</Name>
+				<OscAddress>/pad 1 1</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 1 2</Name>
+				<OscAddress>/pad 1 2</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 1 3</Name>
+				<OscAddress>/pad 1 3</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 1 4</Name>
+				<OscAddress>/pad 1 4</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 1 5</Name>
+				<OscAddress>/pad 1 5</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 1 6</Name>
+				<OscAddress>/pad 1 6</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 1 7</Name>
+				<OscAddress>/pad 1 7</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 2 0</Name>
+				<OscAddress>/pad 2 0</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 2 1</Name>
+				<OscAddress>/pad 2 1</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 2 2</Name>
+				<OscAddress>/pad 2 2</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 2 3</Name>
+				<OscAddress>/pad 2 3</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 2 4</Name>
+				<OscAddress>/pad 2 4</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 2 5</Name>
+				<OscAddress>/pad 2 5</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 2 6</Name>
+				<OscAddress>/pad 2 6</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 2 7</Name>
+				<OscAddress>/pad 2 7</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 3 0</Name>
+				<OscAddress>/pad 3 0</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 3 1</Name>
+				<OscAddress>/pad 3 1</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 3 2</Name>
+				<OscAddress>/pad 3 2</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 3 3</Name>
+				<OscAddress>/pad 3 3</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 3 4</Name>
+				<OscAddress>/pad 3 4</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 3 5</Name>
+				<OscAddress>/pad 3 5</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 3 6</Name>
+				<OscAddress>/pad 3 6</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 3 7</Name>
+				<OscAddress>/pad 3 7</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 4 0</Name>
+				<OscAddress>/pad 4 0</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 4 1</Name>
+				<OscAddress>/pad 4 1</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 4 2</Name>
+				<OscAddress>/pad 4 2</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 4 3</Name>
+				<OscAddress>/pad 4 3</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 4 4</Name>
+				<OscAddress>/pad 4 4</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 4 5</Name>
+				<OscAddress>/pad 4 5</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 4 6</Name>
+				<OscAddress>/pad 4 6</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 4 7</Name>
+				<OscAddress>/pad 4 7</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 5 0</Name>
+				<OscAddress>/pad 5 0</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 5 1</Name>
+				<OscAddress>/pad 5 1</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 5 2</Name>
+				<OscAddress>/pad 5 2</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 5 3</Name>
+				<OscAddress>/pad 5 3</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 5 4</Name>
+				<OscAddress>/pad 5 4</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 5 5</Name>
+				<OscAddress>/pad 5 5</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 5 6</Name>
+				<OscAddress>/pad 5 6</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+			<Parameter>
+				<Name>pad 5 7</Name>
+				<OscAddress>/pad 5 7</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>196</Max>
+				<Warp>1</Warp>
+			</Parameter>
+		</InputGroup>
+		<InputGroup>
+			<Name>pad sum</Name>
+			<Parameter>
+				<Name>pad sum</Name>
+				<OscAddress>/pad sum</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>3000</Max>
+				<Warp>1</Warp>
+			</Parameter>
+		</InputGroup>
+		<InputGroup>
+			<Name>pad average velocity</Name>
+			<Parameter>
+				<Name>pad average velocity</Name>
+				<OscAddress>/pad average velocity</OscAddress>
+				<Type>Float</Type>
+				<Value>-5.99006e-05</Value>
+				<Min>-30</Min>
+				<Max>30</Max>
+				<Warp>1</Warp>
+			</Parameter>
+		</InputGroup>
+		<InputGroup>
+			<Name>perimeter</Name>
+			<Parameter>
+				<Name>perimeter</Name>
+				<OscAddress>/perimeter</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>3</Max>
+				<Warp>1</Warp>
+			</Parameter>
+		</InputGroup>
+		<InputGroup>
+			<Name>width velocity</Name>
+			<Parameter>
+				<Name>width velocity</Name>
+				<OscAddress>/width velocity</OscAddress>
+				<Type>Float</Type>
+				<Value>-1.10907e-06</Value>
+				<Min>-0.1</Min>
+				<Max>0.1</Max>
+				<Warp>1</Warp>
+			</Parameter>
+		</InputGroup>
+		<InputGroup>
+			<Name>slider 0</Name>
+			<Parameter>
+				<Name>slider 0</Name>
+				<OscAddress>/slider 0</OscAddress>
+				<Type>Float</Type>
+				<Value>0.709291</Value>
+				<Min>0</Min>
+				<Max>1</Max>
+				<Warp>1</Warp>
+			</Parameter>
+		</InputGroup>
+		<InputGroup>
+			<Name>slider velocity 1</Name>
+			<Parameter>
+				<Name>slider velocity 1</Name>
+				<OscAddress>/slider velocity 1</OscAddress>
+				<Type>Float</Type>
+				<Value>6.37315e-08</Value>
+				<Min>-0.1</Min>
+				<Max>0.1</Max>
+				<Warp>1</Warp>
+			</Parameter>
+		</InputGroup>
+		<InputGroup>
+			<Name>button 1</Name>
+			<Parameter>
+				<Name>button 1</Name>
+				<OscAddress>/button 1</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>1</Max>
+				<Warp>1</Warp>
+			</Parameter>
+		</InputGroup>
+		<InputGroup>
+			<Name>button velocity 2</Name>
+			<Parameter>
+				<Name>button velocity 2</Name>
+				<OscAddress>/button velocity 2</OscAddress>
+				<Type>Float</Type>
+				<Value>-2.90731e-10</Value>
+				<Min>-0.1</Min>
+				<Max>0.1</Max>
+				<Warp>1</Warp>
+			</Parameter>
+		</InputGroup>
+		<InputGroup>
+			<Name>button 3</Name>
+			<Parameter>
+				<Name>button 3</Name>
+				<OscAddress>/button 3</OscAddress>
+				<Type>Float</Type>
+				<Value>0</Value>
+				<Min>0</Min>
+				<Max>1</Max>
+				<Warp>1</Warp>
+			</Parameter>
+		</InputGroup>
+	</Inputs>
+	<Outputs>
+		<Parameter>
+			<Name>output1</Name>
+			<OscAddress>/output1</OscAddress>
+			<Type>Float</Type>
+			<Value>44.5</Value>
+			<Min>20</Min>
+			<Max>50</Max>
+			<Warp>1</Warp>
+			<Inputs>
+				<Input>all pads</Input>
+			</Inputs>
+			<Examples>
+				<Page>
+					<Example>44.5,0,0,0,0,0,0,0,0,0,52,0,0,0,66,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,22,0,0,0,0,0,0,0,0,0,41,0,39</Example>
+					<Example>44.5,0,0,0,0,0,50,0,0,0,26,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,58,0,0,0,0,0,21,0,54,57,13</Example>
+					<Example>44.5,0,0,0,0,0,86,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,39,0,0,7,0,0,0,0,0,30,35,29,0,0,35,0,0,0,0,0</Example>
+					<Example>44.5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,11,0,0,0,0,0,0,0,0,0,34,0,0,66,0,0,0,0,0,0,36,0,0,0,0,0,0,0,0,0</Example>
+					<Example>44.5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,30,0,0,0,0,0,0,0,33,0,44,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0</Example>
+					<Example>44.5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,18,0,21,0,0,0,0,0,0,0,25,0,50,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0</Example>
+					<Example>44.5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,25,0,0,0,0,0,0,0,8,0,62,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0</Example>
+					<Example>44.5,0,0,0,0,0,45,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,24,0,0,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,0</Example>
+					<Example>44.5,0,0,0,0,0,0,0,0,0,0,0,0,0,55,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,32,0,0,0,0,0,0,0,31,40,0</Example>
+					<Example>44.5,0,0,0,0,0,0,0,0,0,0,0,0,0,45,0,0,0,0,28,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,0,37,0,0</Example>
+					<Example>44.5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0</Example>
+					<Example>44.5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,68,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0</Example>
+					<Example>44.5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,73,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0</Example>
+					<Example>44.5,0,0,0,0,0,0,0,0,0,50,0,0,0,0,0,0,0,0,0,0,0,92,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,27,0,0,0,0,0</Example>
+					<Example>44.5,0,0,0,0,0,0,0,0,0,58,4,0,52,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,38,0,58,0,0,70</Example>
+					<Example>44.5,0,0,0,0,0,0,0,0,0,44,5,0,99,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,37,0,32,0,0,75</Example>
+					<Example>44.5,0,0,0,0,0,0,0,0,0,0,0,0,66,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,38,0,0,0,0,0,0,58,36,11,0,64</Example>
+					<Example>44.5,0,0,77,0,8,39,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,11,0,0,0,0,50,0,0,27,5,0,0,25,0,0,0,73,34,40,0,0</Example>
+					<Example>44.5,0,0,55,0,0,63,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,29,0,0,0,0,69,0,0,0,59,0,0,44,0,0,0,50,0,31,0,0</Example>
+					<Example>44.5,0,0,79,0,0,65,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,3,43,39,0,0,0,74,0,0,4,13,42,42,35,0,0,0,50,0,0,0,0</Example>
+					<Example>44.5,0,0,50,0,0,0,0,0,0,0,0,0,0,43,0,0,0,0,0,0,0,0,0,0,0,0,0,58,0,0,0,0,76,0,0,0,80,40,0,0,0,0,0,85,0,20,53,0</Example>
+					<Example>44.5,0,0,66,0,0,0,0,0,47,0,0,0,0,85,0,0,0,6,0,0,0,0,0,0,0,0,0,43,0,0,0,0,59,0,0,0,55,33,0,0,0,0,0,54,0,63,61,0</Example>
+					<Example>44.5,0,0,0,0,0,0,0,0,82,0,19,0,0,106,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,32,0,0,27,0,0,0,0,0,0,0,0,0,81,0,0</Example>
+					<Example>44.5,0,0,0,0,0,0,0,0,126,0,33,0,0,52,0,0,0,0,0,0,0,46,0,0,0,0,0,0,0,0,0,0,13,0,0,0,0,0,0,0,0,0,0,63,0,38,0,0</Example>
+					<Example>44.5,0,0,0,0,0,0,0,0,61,0,46,0,0,0,0,0,0,0,0,0,0,99,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,79,0,0,0,0</Example>
+					<Example>44.5,0,0,0,0,0,0,0,0,4,0,48,0,0,0,0,0,0,0,0,0,0,73,0,0,0,27,0,0,0,0,0,0,40,0,0,33,0,0,0,0,0,0,0,61,0,0,0,0</Example>
+				</Page>
+			</Examples>
+		</Parameter>
+		<Parameter>
+			<Name>newOutput_1</Name>
+			<OscAddress>/newOutput_1</OscAddress>
+			<Type>Float</Type>
+			<Value>0.154167</Value>
+			<Min>0</Min>
+			<Max>1</Max>
+			<Warp>1</Warp>
+			<Inputs>
+				<Input>pad sum</Input>
+				<Input>pad average velocity</Input>
+				<Input>perimeter</Input>
+				<Input>width velocity</Input>
+				<Input>slider 0</Input>
+				<Input>slider velocity 1</Input>
+				<Input>button 1</Input>
+				<Input>button velocity 2</Input>
+				<Input>button 3</Input>
+			</Inputs>
+			<Examples>
+				<Page>
+					<Example>0.154167,220,-0.123002,0.931847,0.0223594,0.343276,0.0205682,0,-0.00117056,0.5</Example>
+					<Example>0.154167,283,-0.628952,1.20899,0.01467,0.343276,-0.0487258,0,-0.000768003,0.5</Example>
+					<Example>0.154167,265,-0.611366,1.06526,0.0111305,0.403178,0.00427295,0,-0.000503887,0.5</Example>
+					<Example>0.154167,150,-0.695284,1.01751,0.0208027,0.679218,0.00280349,0,-0.0003306,0.5</Example>
+					<Example>0.154167,107,0.290983,0.170446,-0.0358847,0.679218,0.00183937,0,-0.000216907,0.5</Example>
+					<Example>0.154167,114,-0.215136,0.293903,-0.00554392,0.765526,0.00120681,0,-0.000142313,0.5</Example>
+					<Example>0.154167,96,-0.572026,0.192744,-0.0236374,0.949878,0.000791787,0,-9.33713e-05,0.5</Example>
+					<Example>0.154167,84,0.0636189,0.536785,-0.0349529,0.297066,0.000519492,0,-6.12609e-05,0.5</Example>
+					<Example>0.154167,158,1.04164,0.561476,-0.0137215,0.816137,0.000340838,0,-4.01933e-05,0.5</Example>
+					<Example>0.154167,116,-0.565546,0.759007,0.0137751,0.711491,0.000223624,0,-2.63708e-05,0.5</Example>
+					<Example>0.154167,3,-2.67596,0,-0.0269122,0.506357,0.0207824,0,-0.00241494,0</Example>
+					<Example>0.154167,68,4.35741,0,-0.0217126,0.27066,0.0136353,0.330709,0.0106459,0</Example>
+					<Example>0.154167,73,3.96554,0,-0.0218456,0.649878,0.00894615,0.0472441,0.0186245,0</Example>
+					<Example>0.154167,169,1.49968,0.771353,0.0140171,0.614425,-0.0249529,0,-0.007871,0</Example>
+					<Example>0.154167,280,0.302651,0.99874,0.0294466,0.323227,-0.00133996,0,0.0137854,0</Example>
+					<Example>0.154167,292,0.25905,0.99874,0.0193199,0.431785,0.00723934,0,-0.0134908,0</Example>
+					<Example>0.154167,273,0.0312123,0.850592,-0.00954643,0.493888,0.0189376,0,-0.00885132,0</Example>
+					<Example>0.154167,389,-0.638094,1.05808,0.0188866,0.493888,-0.0329044,0,-0.00580735,0</Example>
+					<Example>0.154167,400,0.745558,1.13215,0.0123915,0.493888,-0.0198788,0,-0.0038102,0</Example>
+					<Example>0.154167,494,-0.42404,1.01827,0.00813006,0.493888,-0.00952228,0,-0.00249987,0</Example>
+					<Example>0.154167,505,1.34449,1.1198,0.00173413,0.493888,-0.00225896,0,-0.00164017,0</Example>
+					<Example>0.154167,572,0.540395,0.978836,0.00113776,0.493888,-0.0014821,0,-0.00107611,0</Example>
+					<Example>0.154167,354,0.404646,1.06765,-0.0103646,0.493888,-0.0152226,0,-0.000706038,0</Example>
+					<Example>0.154167,371,0.596274,0.89481,-0.00680023,0.663814,-0.0105579,0,-0.000463232,0</Example>
+					<Example>0.154167,287,0.556265,0.796044,-0.0135116,0.668215,-0.00692705,0,-0.000303926,0</Example>
+					<Example>0.154167,286,-1.00499,0.716805,-0.00436498,0.237408,-0.00454484,0,0.000587996,0</Example>
+				</Page>
+			</Examples>
+		</Parameter>
+	</Outputs>
+</LearnPreset>
