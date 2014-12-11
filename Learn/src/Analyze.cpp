@@ -1,6 +1,7 @@
 #include "Analyze.h"
 
 
+
 //-----------
 Analyze::Analyze() {
     control.setVisible(false);
@@ -34,10 +35,17 @@ void Analyze::setupGui() {
 }
 
 //-----------
+/*
 void Analyze::setInputs(vector<LearnInputParameter *> *inputs) {
     this->inputs = inputs;
 }
+*/
 
+//-----------
+void Analyze::setInputs(vector<LearnInputGroup *> *inputs) {
+    this->inputs = inputs;
+}
+ 
 //-----------
 void Analyze::setOutputs(vector<LearnOutputParameter *> *outputs) {
     this->outputs = outputs;
@@ -57,8 +65,13 @@ void Analyze::toggleCollecting(string &s) {
             outputs->at(i)->clearInstances();
         }
         for (int i=0; i<inputs->size(); i++) {
-            inputs->at(i)->setMax(-9999999);
-            inputs->at(i)->setMin( 9999999);
+//            inputs->at(i)->setMax(-9999999);
+  //          inputs->at(i)->setMin( 9999999);
+            vector<LearnInputParameter*> params = inputs->at(i)->getInputs();
+            for (int j=0; j<params.size(); j++) {
+                params[j]->setMax(-9999999);
+                params[j]->setMin( 9999999);
+            }
         }
     }
 
@@ -83,6 +96,7 @@ void Analyze::clear(string &s) {
 //-----------
 void Analyze::setInputMapping() {
     for (int i=0; i<inputs->size(); i++) {
+        /*
         if (inputs->at(i)->getRangeLocked())   continue;
         if (inputs->at(i)->get() > inputs->at(i)->getMax()) {
             inputs->at(i)->setMax(inputs->at(i)->get());
@@ -90,6 +104,7 @@ void Analyze::setInputMapping() {
         if (inputs->at(i)->get() < inputs->at(i)->getMin()) {
             inputs->at(i)->setMin(inputs->at(i)->get());
         }
+         */
     }
 }
 
@@ -114,6 +129,7 @@ void Analyze::selectOutput(string &s) {
 
 //-----------
 void Analyze::startCollecting() {
+    /*
     vector<string> outputNames;
     outputNames.push_back("_hide_");
     for (int i=0; i<outputs->size(); i++) {
@@ -136,6 +152,7 @@ void Analyze::startCollecting() {
     }
     idxView = 0;
     control.addMenu("outputs", outputNames, this, &Analyze::selectOutput);
+     */
 }
 
 //-----------
@@ -183,6 +200,7 @@ void Analyze::trainNextOutput() {
 
 //-----------
 void Analyze::update() {
+    /*
     if (remapping) {
         setInputMapping();
     }
@@ -212,6 +230,7 @@ void Analyze::update() {
             kMeansTrained = true;
         }
     }
+     */
 }
 
 //-----------
@@ -260,6 +279,7 @@ void Analyze::setVisible(bool visible) {
 
 //-----------
 void Analyze::drawGMM(int g) {
+    /*
     vector<LearnInputParameter *> ainputs = outputs->at(g)->getActiveInputs();
     
     ofPushMatrix();
@@ -344,6 +364,7 @@ void Analyze::drawGMM(int g) {
     
     ofPopStyle();
     ofPopMatrix();
+*/
 }
 
 //-----------

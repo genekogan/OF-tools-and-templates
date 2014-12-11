@@ -2,11 +2,30 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    ofSetLogLevel(OF_LOG_VERBOSE);
+    //ofSetLogLevel(OF_LOG_VERBOSE);
     
-    learn.addInput("input1", &myVal, 5, 8);
+    // can add individual inputs
+    /*
+    learn.addInput("input1", &myVal1, 5, 8);
     learn.addInput("in2", -30, 30);
     learn.addInput("in3", 100, 200);
+    
+    // or can add groups of inputs
+    learn.addInputGroup("myGroup");
+    learn.addInputToGroup("myGroup", "myGroup-1", 4, 8);
+    learn.addInputToGroup("myGroup", "myGroup-2", 0, 3);
+    learn.addInputToGroup("myGroup", "myGroup-3", &myVal2, 1, 10);
+    */
+    
+    learn.addInput("input1", 4, 8);
+    learn.addInput("in2", 0, 3);
+    learn.addInput("in3", 1, 10);
+    
+    // or can add groups of inputs
+    learn.addInputGroup("myGroup");
+    learn.addInputToGroup("myGroup", "myGroup-1", 4, 8);
+    learn.addInputToGroup("myGroup", "myGroup-2", 0, 3);
+    learn.addInputToGroup("myGroup", "myGroup-3", 1, 10);
     
     learn.addOutput("output1", 20, 50);
 
@@ -18,7 +37,8 @@ void ofApp::setup(){
 void ofApp::update(){
     learn.update();
     
-    myVal = ofMap(ofGetMouseX(), 0, ofGetWidth(), 5, 8);
+    myVal1 = ofMap(ofGetMouseX(), 0, ofGetWidth(), 5, 8);
+    myVal2 = ofMap(ofGetMouseY(), 0, ofGetHeight(), 1, 10);
 }
 
 //--------------------------------------------------------------

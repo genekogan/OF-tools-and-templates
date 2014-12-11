@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ofMain.h"
-#include "Control.h"
 #include "Learn.h"
 
 class ofApp : public ofBaseApp{
@@ -22,5 +21,5 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 		
     Learn learn;
-    float myVal;
+    float myVal1, myVal2;
 };

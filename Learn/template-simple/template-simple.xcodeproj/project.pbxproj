@@ -53,6 +53,9 @@
 		ADE367465D2A8EBAD4C7A8D9 /* IpEndpointName.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ADD194746185E2DA11468377 /* IpEndpointName.cpp */; };
 		ADE7C2AFC51E3F7E5E389026 /* ofxUISortableList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5613D5D24B00D8AD909F7E6A /* ofxUISortableList.cpp */; };
 		AE281BEBF3A00F1FC37F3DA0 /* ofxUIWaveform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9345327AA463407B3DADBADE /* ofxUIWaveform.cpp */; };
+		B042E9641A3854B200E29E67 /* Analyze.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0AF3E141A29EC2C004A6C3E /* Analyze.cpp */; };
+		B042E9651A3854B200E29E67 /* Learn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0BA148F19CDDCAA00D64AAB /* Learn.cpp */; };
+		B042E9661A3854B200E29E67 /* LearnParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0BA149119CDDCAA00D64AAB /* LearnParameter.cpp */; };
 		B076706C1A19CA9000723B71 /* ControlPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07670611A19CA7C00723B71 /* ControlPanel.cpp */; };
 		B076706D1A19CA9000723B71 /* MetaController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07670631A19CA7C00723B71 /* MetaController.cpp */; };
 		B076706E1A19CA9000723B71 /* OscManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07670651A19CA7C00723B71 /* OscManager.cpp */; };
@@ -60,13 +63,10 @@
 		B07670701A19CA9000723B71 /* Sequencer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B076706A1A19CA7C00723B71 /* Sequencer.cpp */; };
 		B07670751A19CA9E00723B71 /* ofxSequencer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07670731A19CA9E00723B71 /* ofxSequencer.cpp */; };
 		B076707A1A19CAA500723B71 /* ofxBpm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07670781A19CAA500723B71 /* ofxBpm.cpp */; };
-		B0AF3E161A29EC2C004A6C3E /* Analyze.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0AF3E141A29EC2C004A6C3E /* Analyze.cpp */; };
 		B0AF3E211A29EC34004A6C3E /* ofxGMM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0AF3E191A29EC34004A6C3E /* ofxGMM.cpp */; };
 		B0AF3E221A29EC34004A6C3E /* GMM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0AF3E1D1A29EC34004A6C3E /* GMM.cpp */; };
 		B0AF3E231A29EC34004A6C3E /* KMeans.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0AF3E1F1A29EC34004A6C3E /* KMeans.cpp */; };
 		B0BA13E319CDDC6400D64AAB /* ofxLearn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0BA0FF319CDDC6200D64AAB /* ofxLearn.cpp */; };
-		B0BA149919CDDD3F00D64AAB /* Learn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0BA148F19CDDCAA00D64AAB /* Learn.cpp */; };
-		B0BA149A19CDDD3F00D64AAB /* LearnParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0BA149119CDDCAA00D64AAB /* LearnParameter.cpp */; };
 		B26AAF6694320D2F661F6699 /* Base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 91900D7E1196099B4EAB1DDE /* Base64.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		BFEFCE32DAFE10A8EB519F6C /* ofxUISpacer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30CBAAEC78A0E9EBBB10A05A /* ofxUISpacer.cpp */; };
@@ -972,14 +972,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B042E9641A3854B200E29E67 /* Analyze.cpp in Sources */,
+				B042E9651A3854B200E29E67 /* Learn.cpp in Sources */,
+				B042E9661A3854B200E29E67 /* LearnParameter.cpp in Sources */,
 				B076706C1A19CA9000723B71 /* ControlPanel.cpp in Sources */,
 				B076706D1A19CA9000723B71 /* MetaController.cpp in Sources */,
 				B076706E1A19CA9000723B71 /* OscManager.cpp in Sources */,
 				B076706F1A19CA9000723B71 /* Presets.cpp in Sources */,
 				B0AF3E231A29EC34004A6C3E /* KMeans.cpp in Sources */,
 				B07670701A19CA9000723B71 /* Sequencer.cpp in Sources */,
-				B0BA149919CDDD3F00D64AAB /* Learn.cpp in Sources */,
-				B0BA149A19CDDD3F00D64AAB /* LearnParameter.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				72A929D3561B8232A182ABFC /* ofxOscBundle.cpp in Sources */,
@@ -1031,7 +1032,6 @@
 				222C3AB10FA3158602718602 /* ofxUIMultiImageButton.cpp in Sources */,
 				F9C20834354ACC8337320B8C /* ofxUIMultiImageToggle.cpp in Sources */,
 				E3D59A6B55F05669B3FBF8BD /* ofxUINumberDialer.cpp in Sources */,
-				B0AF3E161A29EC2C004A6C3E /* Analyze.cpp in Sources */,
 				D60E54E7FD6E19BC8636E0D2 /* ofxUIRadio.cpp in Sources */,
 				1587708E3CAC72997E43504E /* ofxUIRangeSlider.cpp in Sources */,
 				59C5F2F5D7254C33C00F97CB /* ofxUIRectangle.cpp in Sources */,

@@ -16,7 +16,8 @@ public:
     Analyze();
     
     void setup();
-    void setInputs(vector<LearnInputParameter *> *inputs);
+    //void setInputs(vector<LearnInputParameter *> *inputs);
+    void setInputs(vector<LearnInputGroup *> *inputs);
     void setOutputs(vector<LearnOutputParameter *> *outputs);
     void update();
     void draw();
@@ -40,9 +41,14 @@ public:
         
         int numInstances = 12;
         
+        
         LearnOutputParameter * output = outputs->at(idxOutput);
         
-        vector<LearnInputParameter*> ainputs = output->getActiveInputs();
+        //vector<LearnInputParameter*> ainputs = output->getActiveInputs();
+        
+        //vector<LearnInputGroup*> ainputs = output->getActiveInputs();
+        
+        
         float min = output->getMin();
         float max = output->getMax();
         
@@ -134,7 +140,9 @@ private:
     int idxView, idxTrain;
     
     vector<LearnOutputParameter *> *outputs;
-    vector<LearnInputParameter *> *inputs;
+    //vector<LearnInputParameter *> *inputs;
+    vector<LearnInputGroup *> *inputs;
+    
     ofxGMM gmm;
     vector<vector<GMMCluster> > gmmClusterSets;
     bool remapping;

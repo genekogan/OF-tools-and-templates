@@ -18,6 +18,7 @@
 
 
 
+
 class Learn
 {
 public:
@@ -28,26 +29,64 @@ public:
     void draw();
     
     // managing parameters
-    virtual LearnInputParameter  * addInput (string name, float *value, float min, float max, bool rangeLocked=false);
+    ////////////////////////////////////////////////////
+    /*
+     virtual LearnInputParameter  * addInput (string name, float *value, float min, float max, bool rangeLocked=false);
+     virtual LearnOutputParameter * addOutput(string name, float *value, float min, float max, bool rangeLocked=false);
+     virtual LearnInputParameter  * addInput (string name, float min, float max);
+     virtual LearnOutputParameter * addOutput(string name, float min, float max);
+     void addParameterAsInput(string name, LearnInputParameter* newInput);
+     void addParametersAsInput(string name, vector<LearnInputParameter*> &newInputs);
+     void removeParameterAsInput(string name);
+     void removeParameterGroupAsInput(string name);
+     void initializeOutput(LearnOutputParameter *output, bool sendOsc=true, bool receiveOsc=true);
+     vector<LearnInputParameter*> * getInputs() {return &inputs;}
+     vector<LearnOutputParameter*> * getOutputs() {return &outputs;}
+     void clearInputs();
+     void clearOutputs();
+     */
+    virtual LearnInputGroup * addInput(string name, float *value, float min, float max, bool rangeLocked=false);
+    virtual LearnInputGroup * addInputGroup(string name);
+    virtual LearnInputGroup * addInput(string name, float min, float max);
+    void addInputToGroup(string groupName, string parameterName, float *value, float min, float max, bool rangeLocked=false);
+    void addInputToGroup(string groupName, string parameterName, float min, float max, bool rangeLocked=false);
+    
+    
     virtual LearnOutputParameter * addOutput(string name, float *value, float min, float max, bool rangeLocked=false);
-    virtual LearnInputParameter  * addInput (string name, float min, float max);
     virtual LearnOutputParameter * addOutput(string name, float min, float max);
-    void addParameterAsInput(string name, LearnInputParameter* newInput);
-    void addParametersAsInput(string name, vector<LearnInputParameter*> &newInputs);
-    void removeParameterAsInput(string name);
-    void removeParameterGroupAsInput(string name);
+    
+    //void addParameterAsInput(string name, LearnInputParameter* newInput);
+    void addParametersAsInputGroup(string name, vector<LearnInputParameter*> &newInputs);
+    
+    void removeInputGroup(string name);
+    //void removeParameterGroupAsInput(string name);
+    
+    void initializeInput(LearnInputParameter *input);
     void initializeOutput(LearnOutputParameter *output, bool sendOsc=true, bool receiveOsc=true);
-    vector<LearnInputParameter*> * getInputs() {return &inputs;}
+    //vector<LearnInputParameter*> * getInputs() {return &inputs;}
+    vector<LearnInputGroup*> * getInputs() {return &inputs;}
     vector<LearnOutputParameter*> * getOutputs() {return &outputs;}
     void clearInputs();
     void clearOutputs();
+    
+    
+    int getNumberOfInputParameters() {
+        int n = 0;
+        for (int i=0; i<inputs.size(); i++) {
+            n += inputs[i]->getInputs().size();
+        }
+        return n;
+    }
+    
+    ////////////////////////////////////////////////////
+    
     
     // osc
     void setupOscSender(string host, int port);
     void setupOscReceiver(int port);
     void enableOscInputs(bool enable);
     void enableOscOutputs(bool enable);
-
+    
     // visibility
     void setVisible(bool visible);
     void setGuiInputsVisible(bool visible);
@@ -71,6 +110,7 @@ public:
     // events
     virtual void inputParameterChanged(LearnParameter & input);
     virtual void inputParameterDeleted(LearnParameter & input);
+    virtual void inputGroupDeleted(LearnInputGroup & input);
     virtual void outputParameterChanged(LearnParameter & output);
     virtual void outputParameterDeleted(LearnParameter & output);
     virtual void outputParameterViewed(LearnOutputParameter & output);
@@ -98,15 +138,15 @@ protected:
     
     // managing parameters
     virtual void resetInputs();
-    virtual void resetInputGroups();
+    //    virtual void resetInputGroups();
     virtual void resetOutputs();
-
+    
     // osc events
     void oscEventSetRecording(bool &b);
     void oscEventSetTrainFast(bool &b);
     void oscEventSetTrainAccurate(bool &b);
     void oscEventSetPredicting(bool &b);
-
+    
     // gui
     virtual void setupGui();
     virtual void resetGuiPositions();
@@ -144,11 +184,18 @@ protected:
     void setFont(string path);
     void setFontSizes(int small, int medium, int large);
     
+    
+    ////////////////////////////////////////////////////
     // parameters and groups
-    vector<LearnInputParameter *> inputs;
+    
+    //vector<LearnInputParameter *> inputs;
+    vector<LearnInputGroup *> inputs;
     vector<LearnOutputParameter *> outputs;
-    vector<LearnOutputParameter::GuiInputGroup> inputGroups;
+    //vector<LearnOutputParameter::GuiInputGroup> inputGroups;
     map<string, vector<InputFeature> > inputFeatures;
+    
+    ////////////////////////////////////////////////////
+    
     
     // osc management
     OscManager oscManager;
@@ -168,8 +215,10 @@ protected:
     bool summaryVisible, dragging;
     int draggedFrames;
     int activeOutput;
-    vector<int> activeInputs;
-
+    
+    //vector<int> activeInputs;
+    vector<LearnInputParameter *> activeInputs;
+    
     // recording variables
     float startTime, trainCountdown, trainDuration;
     int instanceRate, framesPerInstance, currentNewInstances;
@@ -187,5 +236,6 @@ protected:
     int idxTraining;
     
     // analyze
+    //Analyze analyze;
     Analyze analyze;
 };
