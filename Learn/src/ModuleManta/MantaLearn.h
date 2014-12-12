@@ -16,12 +16,16 @@ public:
     
     void setMantaVisible(bool mantaVisible);
     void toggleMantaVisible() {setMantaVisible(!mantaVisible);}
-
+    void setOutputOptionVisible(bool v) {setupGuiOutputs(v);}
+    
+    MantaController * getMantaControllerRef() {return &manta;}
+    
 protected:
     
     void loadPreset(string path);
     
     void setupGuiInputs();
+    void setupGuiOutputs(bool showAddOutputOption=true);
     void guiEvent(ofxUIEventArgs &e);
     void guiInputEvent(ofxUIEventArgs &e);
     

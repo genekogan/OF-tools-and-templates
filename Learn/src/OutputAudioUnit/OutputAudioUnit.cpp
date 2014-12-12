@@ -3,7 +3,7 @@
 
 //-----------
 OutputAudioUnit::OutputAudioUnit() {
-    gui = new ofxUICanvas("paramSelect");
+    gui = new ofxUICanvas("Audio Unit Outputter");
     gui->setPosition(500, 400);
     ofAddListener(gui->newGUIEvent, this, &OutputAudioUnit::guiEvent);
 }
@@ -11,6 +11,11 @@ OutputAudioUnit::OutputAudioUnit() {
 //-----------
 void OutputAudioUnit::setupAudioUnit(ofxAudioUnitSampler *audioUnit) {
     this->audioUnit = audioUnit;
+    
+    parameters.clear();
+    parameterGroupNames.clear();
+    activeParameters.clear();
+    parameterGroups.clear();
     
     // setup audiounit parameters
     vector<AudioUnitParameterInfo> params = audioUnit->getParameterList();
@@ -39,6 +44,8 @@ void OutputAudioUnit::setupAudioUnit(ofxAudioUnitSampler *audioUnit) {
 //-----------
 void OutputAudioUnit::setupGui() {
     gui->clearWidgets();
+    gui->addLabelButton("Show AudioUnit", false);
+    gui->addSpacer();
     gui->addLabel("add output");
     vector<string> parameterNames;
     guiParameterGroups = gui->addDropDownList("parameter groups", parameterGroupNames);
@@ -67,6 +74,10 @@ void OutputAudioUnit::guiEvent(ofxUIEventArgs &e) {
                 learn->addOutput(parameters[i].name, parameters[i].val, parameters[i].min, parameters[i].max);
             }
         }
+    }
+    else if (e.getName() == "Show AudioUnit") {
+        if (e.getButton()->getValue())  return;
+        showUI();
     }
 }
 

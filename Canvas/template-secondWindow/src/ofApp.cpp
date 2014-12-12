@@ -5,7 +5,7 @@ void ofApp::setup(){
     ofSetBackgroundAuto(false);
     
     //window.setup("projection", ofGetScreenWidth()-500, 0, 1280, 800, false);
-    window.setup("projection", ofGetScreenWidth(), 0, 800, 600, true);
+    window.setup("projection", ofGetScreenWidth(), 0, 1280, 800, true);
     
     canvas.setup(window.getWidth(), window.getHeight());
     

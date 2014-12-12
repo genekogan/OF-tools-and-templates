@@ -17,6 +17,8 @@ public:
 
     void update();
     void draw();
+    
+    void showUI() {audioUnit->showUI();}
 
     void setGuiPosition(int x, int y);
     

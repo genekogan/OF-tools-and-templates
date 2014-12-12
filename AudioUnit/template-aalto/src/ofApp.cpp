@@ -3,7 +3,7 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
-    audio.setupInstrument(Instrument::AALTO);
+    audio.setupInstrument(Instrument::KAIVO);
     audio.start();
     
     ofSetFrameRate(30);

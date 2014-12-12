@@ -27,21 +27,14 @@ MantaLearn::MantaLearn() : Learn() {
     
     gui = new ofxUICanvas("MantaLearn");
     gui->setPosition(5, 5);
-    gui->setColorOutline(ofColor(255,200));
-    gui->setDrawOutline(true);
-    gui->clearWidgets();
-    gui->addToggle("input selector", &inputsVisible);
-    gui->addSlider("velocity lerp", 0.0, 1.0, &manta.getVelocityLerpRate())->getRect()->setWidth(100.0f);
-    gui->addLabelButton("add output", false, 90.0f);
-    gui->autoSizeToFitWidgets();
-    gui->getRect()->setWidth(120.0f);
     ofAddListener(gui->newGUIEvent, this, &MantaLearn::guiEvent);
+    setupGuiOutputs(true);
 
+    // setup manta
     manta.setup();
     setMantaVisible(mantaVisible);
     setGuiInputsVisible(false);
     gui1->setVisible(false);
-    
     
     // add all features as saved feature inputs
     addAllPadsAsInput();
@@ -279,6 +272,21 @@ void MantaLearn::addWeightedCentroidVelocityAsInput() {
 	features.push_back(InputFeature(&manta.getWeightedCentroidVelocityX(), -0.1, 0.1, "weighted centroid x velocity"));
 	features.push_back(InputFeature(&manta.getWeightedCentroidVelocityY(), -0.1, 0.1, "weighted centroid y velocity"));
 	inputFeatures["weighted centroid velocity"] = features;
+}
+
+//-----------
+void MantaLearn::setupGuiOutputs(bool showAddOutputOption) {
+    gui->clearWidgets();
+    gui->setColorOutline(ofColor(255,200));
+    gui->setDrawOutline(true);
+    gui->clearWidgets();
+    gui->addToggle("input selector", &inputsVisible);
+    gui->addSlider("velocity lerp", 0.0, 1.0, &manta.getVelocityLerpRate())->getRect()->setWidth(100.0f);
+    if (showAddOutputOption) {
+        gui->addLabelButton("add output", false, 90.0f);
+    }
+    gui->autoSizeToFitWidgets();
+    gui->getRect()->setWidth(120.0f);
 }
 
 //-----------

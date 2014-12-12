@@ -78,6 +78,7 @@ void MoviePlayer::loadMovie(string path) {
     
     
     player[idxLoad].loadMovie(path);
+    player[idxLoad].setVolume(0);
     player[idxLoad].setLoopState(OF_LOOP_NORMAL);
     player[idxLoad].play();
     player[idxLoad].update();

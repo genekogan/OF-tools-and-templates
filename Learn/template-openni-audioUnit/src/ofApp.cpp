@@ -15,7 +15,6 @@ void ofApp::setup(){
     output.setGuiPosition(1030, 5);
     
     // add inputs to learn
-    //learn.setGuiPosition(275, 70);
     learn.setGuiPosition(5, 255);
     learn.toggleGuiSummaryView();
     learn.setup("/Users/Gene/Code/openFrameworks/templates/Kinect/openni_oniRecording/bin/data/alecsroom.oni");
