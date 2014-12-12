@@ -12,9 +12,22 @@ public:
     ~ModuleOpenNi() {openNi.close();}
     ModuleOpenNi();
     
-    void setup(string oni="");
+    void setup(string oniFile="");
     void update();
     void draw();
+    
+    // gui
+    void setGuiPosition(int x, int y);
+    void setVisible(bool visible);
+    void toggleVisible() {setVisible(!visible);}
+    void setOpenNiVisible(bool v) {openNi.setVisible(v);}
+    void toggleOpenNiVisible() {openNi.toggleVisible();}
+    void toggleGuiSummaryView();
+    
+protected:
+    
+    void setupGuiInputs();
+    void guiInputEvent(ofxUIEventArgs &e);
     
     // collective joints
     void addJointsAsInput();
@@ -43,37 +56,23 @@ public:
     void addAccelerationMagnitudeJointAsInput(int joint);
     void addAccelerationMeanJointAsInput(int joint);
     void addAccelerationTrajectoryJointAsInput(int joint);
-
+    
     // stats
     void addSymmetryAsInput();
     void addQomAsInput();
     void addCiAsInput();
     void addDepthAsInput();
     void addYMaxHandsAsInput();
-
-    // gui
-    void setGuiPosition(int x, int y);
-    void setVisible(bool visible);
-    void toggleVisible() {setVisible(!visible);}
-    void setOpenNiVisible(bool v) {openNi.setVisible(v);}
-    void toggleOpenNiVisible() {openNi.toggleVisible();}
-    void toggleGuiSummaryView();
     
-    void setupGuiInputs();
-    
-protected:
-        
+    // helpers for input features
     void addVec3AsInput(string descriptor, ofVec3f *vec, float min, float max);
     void addVectorVec3AsInput(string descriptor, string prefix, vector<ofVec3f *> *vec, float min, float max);
     void addVectorFloatAsInput(string descriptor, string prefix, vector<float *> *vec, float min, float max);
     void addIndividualAsInput(string descriptor, float *value, float min, float max);
-
-    void guiInputEvent(ofxUIEventArgs &e);
     
     OpenNi openNi;
     
     ofxUICanvas *guiInputs;
     ofxUIDropDownList *guiJointsFeatures, *guiGloalStatSelector, *guiJointSelector, *guiStatSelector;
-    
     int x, y;
 };

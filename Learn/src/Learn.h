@@ -96,6 +96,7 @@ protected:
     void initializeInput(LearnInputParameter *input);
     void initializeOutput(LearnOutputParameter *output, bool sendOsc=true, bool receiveOsc=true);
     void addInputFeatureSet(string groupName);
+    void addSingleInputFeature(string name, float * value, float min, float max);
     
     // osc events
     void enableOscInputs(bool enable);

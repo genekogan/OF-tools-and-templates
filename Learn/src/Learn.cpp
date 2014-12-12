@@ -488,6 +488,14 @@ void Learn::addInputFeatureSet(string groupName) {
     }
 }
 
+//-----------
+void Learn::addSingleInputFeature(string name, float * value, float min, float max) {
+    vector<InputFeature> features;
+    features.push_back(InputFeature(value, min, max));
+    inputFeatures[name] = features;
+}
+
+
 
 
 //===========================================
@@ -1220,6 +1228,7 @@ string Learn::loadPresetDialog(string filename) {
 void Learn::loadPreset(string filename) {
     Presets presets;
     ofXml xml;
+    if (filename=="") return;
     bool xmlLoaded = xml.load(filename);
     if (!xmlLoaded) {
         ofLog(OF_LOG_ERROR, "failed to load preset "+ofToString(filename));

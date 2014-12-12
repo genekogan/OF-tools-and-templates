@@ -1,5 +1,0 @@
-ofxOsc
-ofxXmlSettings
-ofxSpreadsheet
-ofxTouchOsc
-ofxUI

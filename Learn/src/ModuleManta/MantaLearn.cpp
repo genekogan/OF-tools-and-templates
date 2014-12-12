@@ -100,9 +100,7 @@ void MantaLearn::addAllPadsAsInput() {
     vector<InputFeature> features;
     for (int row=0; row<6; row++) {
         for (int col=0; col<8; col++) {
-            vector<InputFeature> subFeature;
-            subFeature.push_back(InputFeature(manta.getPadRef(row, col), 0, 196));
-            inputFeatures["pad "+ofToString(row)+" "+ofToString(col)] = subFeature;
+            addSingleInputFeature("pad "+ofToString(row)+" "+ofToString(col), manta.getPadRef(row, col), 0, 196);
             features.push_back(InputFeature(manta.getPadRef(row, col), 0, 196, "pad "+ofToString(row)+" "+ofToString(col)));
         }
     }
@@ -111,88 +109,66 @@ void MantaLearn::addAllPadsAsInput() {
 
 //-----------
 void MantaLearn::addSlidersAsInput() {
-	vector<InputFeature> features, feature0, feature1;
+	vector<InputFeature> features;
 	features.push_back(InputFeature(manta.getSliderRef(0), 0, 1, "slider 0"));
 	features.push_back(InputFeature(manta.getSliderRef(1), 0, 1, "slider 1"));
     inputFeatures["all sliders"] = features;
-	feature0.push_back(InputFeature(manta.getSliderRef(0), 0, 1));
-	feature1.push_back(InputFeature(manta.getSliderRef(1), 0, 1));
-	inputFeatures["slider 0"] = feature0;
-    inputFeatures["slider 1"] = feature1;
+    addSingleInputFeature("slider 0", manta.getSliderRef(0), 0, 1);
+    addSingleInputFeature("slider 1", manta.getSliderRef(1), 0, 1);
 }
 
 //-----------
 void MantaLearn::addButtonsAsInput() {
-	vector<InputFeature> features, feature0, feature1, feature2, feature3;
+	vector<InputFeature> features;
 	features.push_back(InputFeature(manta.getButtonRef(0), 0, 1, "button 0"));
 	features.push_back(InputFeature(manta.getButtonRef(1), 0, 1, "button 1"));
 	features.push_back(InputFeature(manta.getButtonRef(2), 0, 1, "button 2"));
 	features.push_back(InputFeature(manta.getButtonRef(3), 0, 1, "button 3"));
 	inputFeatures["all buttons"] = features;
-	feature0.push_back(InputFeature(manta.getButtonRef(0), 0, 1));
-	feature1.push_back(InputFeature(manta.getButtonRef(1), 0, 1));
-	feature2.push_back(InputFeature(manta.getButtonRef(2), 0, 1));
-	feature3.push_back(InputFeature(manta.getButtonRef(3), 0, 1));
-	inputFeatures["button 0"] = feature0;
-	inputFeatures["button 1"] = feature1;
-	inputFeatures["button 2"] = feature2;
-	inputFeatures["button 3"] = feature3;
+    addSingleInputFeature("button 0", manta.getButtonRef(0), 0, 1);
+    addSingleInputFeature("button 1", manta.getButtonRef(1), 0, 1);
+    addSingleInputFeature("button 2", manta.getButtonRef(2), 0, 1);
+    addSingleInputFeature("button 3", manta.getButtonRef(3), 0, 1);
 }
 
 //-----------
 void MantaLearn::addNumPadsAsInput() {
-	vector<InputFeature> features;
-	features.push_back(InputFeature(&manta.getNumPads(), 0, 48));
-	inputFeatures["number pads"] = features;
+    addSingleInputFeature("number pads", &manta.getNumPads(), 0, 48);
 }
 
 //-----------
 void MantaLearn::addPadSumAsInput() {
-	vector<InputFeature> features;
-	features.push_back(InputFeature(&manta.getPadSum(), 0, 3000));
-	inputFeatures["pad sum"] = features;
+    addSingleInputFeature("pad sum", &manta.getPadSum(), 0, 3000);
 }
 
 //-----------
 void MantaLearn::addPadAverageAsInput() {
-	vector<InputFeature> features;
-	features.push_back(InputFeature(&manta.getPadAverage(), 0, 196));
-	inputFeatures["pad average"] = features;
+    addSingleInputFeature("pad average", &manta.getPadAverage(), 0, 196);
 }
 
 //-----------
 void MantaLearn::addPerimeterAsInput() {
-	vector<InputFeature> features;
-	features.push_back(InputFeature(&manta.getPerimeter(), 0, 3));
-	inputFeatures["perimeter"] = features;
+    addSingleInputFeature("perimeter", &manta.getPerimeter(), 0, 3);
 }
 
 //-----------
 void MantaLearn::addPadWidthAsInput() {
-	vector<InputFeature> features;
-	features.push_back(InputFeature(&manta.getWidth(), 0, 1));
-	inputFeatures["width"] = features;
+    addSingleInputFeature("width", &manta.getWidth(), 0, 1);
 }
 
 //-----------
 void MantaLearn::addPadHeightAsInput() {
-	vector<InputFeature> features;
-	features.push_back(InputFeature(&manta.getHeight(), 0, 1));
-	inputFeatures["height"] = features;
+    addSingleInputFeature("height", &manta.getHeight(), 0, 1);
 }
 
 //-----------
 void MantaLearn::addPadWHRatioAsInput() {
-	vector<InputFeature> features;
-	features.push_back(InputFeature(&manta.getWidthHeightRatio(), 0, 10));
-	inputFeatures["width/height ratio"] = features;
+    addSingleInputFeature("width/height ratio", &manta.getWidthHeightRatio(), 0, 10);
 }
 
 //-----------
 void MantaLearn::addAverageInterFingerDistanceAsInput() {
-	vector<InputFeature> features;
-	features.push_back(InputFeature(&manta.getAverageInterFingerDistance(), 0, 2));
-	inputFeatures["avg finger distance"] = features;
+    addSingleInputFeature("avg finger distance", &manta.getAverageInterFingerDistance(), 0, 2);
 }
 
 //-----------
@@ -216,10 +192,8 @@ void MantaLearn::addAllPadVelocitiesAsInput() {
 	vector<InputFeature> features;
     for (int row=0; row<6; row++) {
         for (int col=0; col<8; col++) {
-            vector<InputFeature> subFeature;
-			subFeature.push_back(InputFeature(manta.getPadVelocityRef(row, col), -20, 20));
+            addSingleInputFeature("pad velocity "+ofToString(row)+" "+ofToString(col), manta.getPadVelocityRef(row, col), -20, 20);
 			features.push_back(InputFeature(manta.getPadVelocityRef(row, col), -20, 20, "pad velocity "+ofToString(row)+" "+ofToString(col)));
-            inputFeatures["pad velocity "+ofToString(row)+" "+ofToString(col)] = subFeature;
         }
     }
 	inputFeatures["all pad velocities"] = features;
@@ -227,88 +201,68 @@ void MantaLearn::addAllPadVelocitiesAsInput() {
 
 //-----------
 void MantaLearn::addSliderVelocitiesAsInput() {
-	vector<InputFeature> features, feature0, feature1;
+	vector<InputFeature> features;
 	features.push_back(InputFeature(manta.getSliderVelocityRef(0), -0.1, 0.1, "slider velocity 0"));
 	features.push_back(InputFeature(manta.getSliderVelocityRef(1), -0.1, 0.1, "slider velocity 1"));
 	inputFeatures["all slider velocities"] = features;
-	feature0.push_back(InputFeature(manta.getSliderVelocityRef(0), -0.1, 0.1));
-	feature1.push_back(InputFeature(manta.getSliderVelocityRef(1), -0.1, 0.1));
-	inputFeatures["slider velocity 0"] = feature0;
-	inputFeatures["slider velocity 1"] = feature1;
+    addSingleInputFeature("slider velocity 0", manta.getSliderVelocityRef(0), -0.1, 0.1);
+    addSingleInputFeature("slider velocity 1", manta.getSliderVelocityRef(1), -0.1, 0.1);
+
 }
 
 //-----------
 void MantaLearn::addButtonVelocitiesAsInput() {
-	vector<InputFeature> features, feature0, feature1, feature2, feature3;
+	vector<InputFeature> features;
 	features.push_back(InputFeature(manta.getButtonVelocityRef(0), -0.1, 0.1, "button velocity 0"));
 	features.push_back(InputFeature(manta.getButtonVelocityRef(1), -0.1, 0.1, "button velocity 1"));
 	features.push_back(InputFeature(manta.getButtonVelocityRef(2), -0.1, 0.1, "button velocity 2"));
 	features.push_back(InputFeature(manta.getButtonVelocityRef(3), -0.1, 0.1, "button velocity 3"));
 	inputFeatures["all button velocities"] = features;
-	feature0.push_back(InputFeature(manta.getButtonVelocityRef(0), -0.1, 0.1));
-	feature1.push_back(InputFeature(manta.getButtonVelocityRef(1), -0.1, 0.1));
-	feature2.push_back(InputFeature(manta.getButtonVelocityRef(2), -0.1, 0.1));
-	feature3.push_back(InputFeature(manta.getButtonVelocityRef(3), -0.1, 0.1));
-	inputFeatures["button velocity 0"] = feature0;
-	inputFeatures["button velocity 1"] = feature1;
-	inputFeatures["button velocity 2"] = feature2;
-	inputFeatures["button velocity 3"] = feature3;
+    addSingleInputFeature("button velocity 0", manta.getButtonVelocityRef(0), -0.1, 0.1);
+    addSingleInputFeature("button velocity 1", manta.getButtonVelocityRef(1), -0.1, 0.1);
+    addSingleInputFeature("button velocity 2", manta.getButtonVelocityRef(2), -0.1, 0.1);
+    addSingleInputFeature("button velocity 3", manta.getButtonVelocityRef(3), -0.1, 0.1);
+
 }
 
 //-----------
 void MantaLearn::addNumPadsVelocityAsInput() {
-	vector<InputFeature> features;
-	features.push_back(InputFeature(&manta.getNumPadsVelocity(), -1, 1));
-	inputFeatures["number pads velocity"] = features;
+    addSingleInputFeature("number pads velocity", &manta.getNumPadsVelocity(), -1, 1);
 }
 
 //-----------
 void MantaLearn::addPadSumVelocityAsInput() {
-	vector<InputFeature> features;
-	features.push_back(InputFeature(&manta.getPadSumVelocity(), -200, 200));
-	inputFeatures["pad sum velocity"] = features;
+    addSingleInputFeature("pad sum velocity", &manta.getPadSumVelocity(), -200, 200);
 }
 
 //-----------
 void MantaLearn::addPadAverageVelocityAsInput() {
-	vector<InputFeature> features;
-	features.push_back(InputFeature(&manta.getPadAverageVelocity(), -30, 30));
-	inputFeatures["pad average velocity"] = features;
+    addSingleInputFeature("pad average velocity", &manta.getPadAverageVelocity(), -30, 30);
 }
 
 //-----------
 void MantaLearn::addPerimeterVelocityAsInput() {
-	vector<InputFeature> features;
-	features.push_back(InputFeature(&manta.getPerimeterVelocity(), -1, 1));
-	inputFeatures["perimeter velocity"] = features;
+    addSingleInputFeature("perimeter velocity", &manta.getPerimeterVelocity(), -1, 1);
 }
 
 //-----------
 void MantaLearn::addPadWidthVelocityAsInput() {
-	vector<InputFeature> features;
-	features.push_back(InputFeature(&manta.getWidthVelocity(), -0.1, 0.1));
-	inputFeatures["width velocity"] = features;
+    addSingleInputFeature("width velocity", &manta.getWidthVelocity(), -0.1, 0.1);
 }
 
 //-----------
 void MantaLearn::addPadHeightVelocityAsInput() {
-	vector<InputFeature> features;
-	features.push_back(InputFeature(&manta.getHeightVelocity(), -0.1, 0.1));
-	inputFeatures["height velocity"] = features;
+    addSingleInputFeature("height velocity", &manta.getHeightVelocity(), -0.1, 0.1);
 }
 
 //-----------
 void MantaLearn::addPadWHRatioVelocityAsInput() {
-	vector<InputFeature> features;
-	features.push_back(InputFeature(&manta.getWidthHeightRatioVelocity(), -0.2, 0.2));
-	inputFeatures["width/height ratio velocity"] = features;
+    addSingleInputFeature("width/height ratio velocity", &manta.getWidthHeightRatioVelocity(), -0.2, 0.2);
 }
 
 //-----------
 void MantaLearn::addAverageInterFingerDistanceVelocityAsInput() {
-	vector<InputFeature> features;
-	features.push_back(InputFeature(&manta.getAverageInterFingerDistanceVelocity(), -0.1, 0.1));
-	inputFeatures["avg finger distance velocity"] = features;
+    addSingleInputFeature("avg finger distance velocity", &manta.getAverageInterFingerDistanceVelocity(), -0.1, 0.1);
 }
 
 //-----------

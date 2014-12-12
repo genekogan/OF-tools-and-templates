@@ -3,27 +3,58 @@
 
 //-----------
 ModuleOpenNi::ModuleOpenNi() : Learn() {
-    setGuiInputsVisible(false);
     x = 5;
     y = 65;
-    visible = true;
-    
     guiInputs = new ofxUICanvas();
+    visible = true;
     ofAddListener(guiInputs->newGUIEvent, this, &ModuleOpenNi::guiInputEvent);
+    setGuiInputsVisible(false);
+    setGuiPosition(x, y);
 }
 
 //-----------
-void ModuleOpenNi::setup(string oni) {
-    if (oni=="") {
-        openNi.setup();
-    }
-    else {
-        openNi.setup(oni);
-    }
+void ModuleOpenNi::setup(string oniFile) {
+    oniFile=="" ? openNi.setup() : openNi.setup(oniFile);
     openNi.enableUserTracking(1);
     openNi.setNormalizeJoints(true);
     openNi.setGuiPosition(x, y);
     setupGuiInputs();
+    
+    // global joint features
+    addJointsAsInput();
+    addNormalizedJointsAsInput();
+    addRelativeJointsAsInput();
+    addVelocityJointsAsInput();
+    addAccelerationJointsAsInput();
+    addRelativeDistanceJointsAsInput();
+    addVelocityMagnitudeJointsAsInput();
+    addVelocityMeanJointsAsInput();
+    addAccelerationMagnitudeJointsAsInput();
+    addAccelerationMeanJointsAsInput();
+    addAccelerationTrajectoryJointsAsInput();
+    
+    // individual joints
+    for (int j=0; j<openNi.getJointNames().size(); j++) {
+        addJointAsInput(j);
+        addNormalizedJointAsInput(j);
+        addRelativeJointAsInput(j);
+        addVelocityJointAsInput(j);
+        addAccelerationJointAsInput(j);
+        
+        addRelativeDistanceJointAsInput(j);
+        addVelocityMagnitudeJointAsInput(j);
+        addVelocityMeanJointAsInput(j);
+        addAccelerationMagnitudeJointAsInput(j);
+        addAccelerationMeanJointAsInput(j);
+        addAccelerationTrajectoryJointAsInput(j);
+    }
+    
+    // stats
+    addSymmetryAsInput();
+    addQomAsInput();
+    addCiAsInput();
+    addDepthAsInput();
+    addYMaxHandsAsInput();
 }
 
 //-----------
@@ -42,38 +73,36 @@ void ModuleOpenNi::draw() {
 
 //-----------
 void ModuleOpenNi::addVec3AsInput(string descriptor, ofVec3f *vec, float min, float max) {
-    vector<LearnInputParameter*> newInputs;
-    newInputs.push_back(addInput(descriptor+"_x", &vec->x, min, max));
-    newInputs.push_back(addInput(descriptor+"_y", &vec->y, min, max));
-    newInputs.push_back(addInput(descriptor+"_z", &vec->z, min, max));
-    addParametersAsInput(descriptor, newInputs);
+    vector<InputFeature> features;
+	features.push_back(InputFeature(&vec->x, min, max, descriptor+"_x"));
+	features.push_back(InputFeature(&vec->y, min, max, descriptor+"_y"));
+	features.push_back(InputFeature(&vec->z, min, max, descriptor+"_z"));
+    inputFeatures[descriptor] = features;
 }
 
 //-----------
 void ModuleOpenNi::addVectorVec3AsInput(string descriptor, string prefix, vector<ofVec3f *> *vec, float min, float max) {
-    vector<LearnInputParameter*> newInputs;
+    vector<InputFeature> features;
     for (int i=0; i<vec->size(); i++) {
-        newInputs.push_back(addInput(prefix+openNi.getJointName(i)+"_x", &vec->at(i)->x, min, max));
-        newInputs.push_back(addInput(prefix+openNi.getJointName(i)+"_y", &vec->at(i)->y, min, max));
-        newInputs.push_back(addInput(prefix+openNi.getJointName(i)+"_z", &vec->at(i)->z, min, max));
+        features.push_back(InputFeature(&vec->at(i)->x, min, max, prefix+openNi.getJointName(i)+"_x"));
+        features.push_back(InputFeature(&vec->at(i)->y, min, max, prefix+openNi.getJointName(i)+"_y"));
+        features.push_back(InputFeature(&vec->at(i)->z, min, max, prefix+openNi.getJointName(i)+"_z"));
     }
-    addParametersAsInput(descriptor, newInputs);
+    inputFeatures[descriptor] = features;
 }
 
 //-----------
 void ModuleOpenNi::addVectorFloatAsInput(string descriptor, string prefix, vector<float *> *vec, float min, float max) {
-    vector<LearnInputParameter*> newInputs;
+    vector<InputFeature> features;
     for (int i=0; i<vec->size(); i++) {
-        newInputs.push_back(addInput(prefix+openNi.getJointName(i), vec->at(i), min, max));
+        features.push_back(InputFeature(vec->at(i), min, max, prefix+openNi.getJointName(i)));
     }
-    addParametersAsInput(descriptor, newInputs);
+    inputFeatures[descriptor] = features;
 }
 
 //-----------
 void ModuleOpenNi::addIndividualAsInput(string descriptor, float *value, float min, float max) {
-    vector<LearnInputParameter*> newInput;
-    newInput.push_back(addInput(descriptor, value, min, max));
-    addParametersAsInput(descriptor, newInput);
+    addSingleInputFeature(descriptor, value, min, max);
 }
 
 // collective
@@ -104,13 +133,13 @@ void ModuleOpenNi::addVelocityMeanJointsAsInput() {
     addVectorFloatAsInput("vel mean joints", "vm_", &openNi.getVelocityMeanJoints(0), 0, 100);
 }
 void ModuleOpenNi::addAccelerationMagnitudeJointsAsInput() {
-    addVectorFloatAsInput("acc mag joints", "ag_", &openNi.getAccelerationMagnitudeJoints(0), -10, 10);
+    addVectorFloatAsInput("accel mag joints", "ag_", &openNi.getAccelerationMagnitudeJoints(0), -10, 10);
 }
 void ModuleOpenNi::addAccelerationMeanJointsAsInput() {
-    addVectorFloatAsInput("acc mean joints", "am_", &openNi.getAccelerationMeanJoints(0), -10, 10);
+    addVectorFloatAsInput("accel mean joints", "am_", &openNi.getAccelerationMeanJoints(0), -10, 10);
 }
 void ModuleOpenNi::addAccelerationTrajectoryJointsAsInput() {
-    addVectorFloatAsInput("acc traj joints", "at_", &openNi.getAccelerationTrajectoryJoints(0), -10, 10);
+    addVectorFloatAsInput("accel trajectory joints", "at_", &openNi.getAccelerationTrajectoryJoints(0), -10, 10);
 }
 
 // individual
@@ -156,39 +185,39 @@ void ModuleOpenNi::addSymmetryAsInput() {
     addIndividualAsInput("symmetry", openNi.getSymmetry(0), 0, 1);
 }
 void ModuleOpenNi::addQomAsInput() {
-    addIndividualAsInput("qom", openNi.getQom(0), 0, 100);
+    addIndividualAsInput("quantity motion", openNi.getQom(0), 0, 100);
 }
 void ModuleOpenNi::addCiAsInput() {
-    addIndividualAsInput("ci", openNi.getCi(0), 0, 1);
+    addIndividualAsInput("contraction index", openNi.getCi(0), 0, 1);
 }
 void ModuleOpenNi::addDepthAsInput() {
     addIndividualAsInput("depth", openNi.getDepth(0), 0, 100);
 }
 void ModuleOpenNi::addYMaxHandsAsInput() {
-    addIndividualAsInput("ymax", openNi.getYMaxHands(0), 0, 1);
+    addIndividualAsInput("ymaxhands", openNi.getYMaxHands(0), 0, 1);
 }
 
 //-----------
 void ModuleOpenNi::setupGuiInputs() {
     vector<string> globalFeatures;
-    globalFeatures.push_back("SymmetryAsInput");
-    globalFeatures.push_back("Quantity of Motion");
-    globalFeatures.push_back("Contraction index");
-    globalFeatures.push_back("Depth");
-    globalFeatures.push_back("YMaxHands");
+    globalFeatures.push_back("symmetry");
+    globalFeatures.push_back("quantity motion");
+    globalFeatures.push_back("contraction index");
+    globalFeatures.push_back("depth");
+    globalFeatures.push_back("ymaxhands");
     
     vector<string> allJointFeatures;
-    allJointFeatures.push_back("Raw Joints");
-    allJointFeatures.push_back("Normalized Joints");
-    allJointFeatures.push_back("Relative Joints");
-    allJointFeatures.push_back("Velocity Joints");
-    allJointFeatures.push_back("Acceleration Joints");
-    allJointFeatures.push_back("RelativeDistance Joints");
-    allJointFeatures.push_back("VelocityMagnitude Joints");
-    allJointFeatures.push_back("VelocityMean Joints");
-    allJointFeatures.push_back("AccelerationMagnitude Joints");
-    allJointFeatures.push_back("AccelerationMean Joints");
-    allJointFeatures.push_back("AccelerationTrajectory Joints");
+    allJointFeatures.push_back("joints");
+    allJointFeatures.push_back("joints norm");
+    allJointFeatures.push_back("relative joints");
+    allJointFeatures.push_back("velocity joints");
+    allJointFeatures.push_back("accel joints");
+    allJointFeatures.push_back("rel dist joints");
+    allJointFeatures.push_back("vel mag joints");
+    allJointFeatures.push_back("vel mean joints");
+    allJointFeatures.push_back("accel mag joints");
+    allJointFeatures.push_back("accel mean joints");
+    allJointFeatures.push_back("accel trajectory joints");
     
     vector<string> jointStats;
     jointStats.push_back("position raw (3)");
@@ -204,7 +233,7 @@ void ModuleOpenNi::setupGuiInputs() {
     jointStats.push_back("accel trajectory (1)");
     
     guiInputs->clearWidgets();
-    guiInputs->setPosition(x+420, y);
+    guiInputs->setPosition(x+120, y+240);
     guiInputs->addLabel("Global stats");
     guiGloalStatSelector = guiInputs->addDropDownList("select global stats", globalFeatures);
     guiGloalStatSelector->setAutoClose(true);
@@ -223,41 +252,26 @@ void ModuleOpenNi::setupGuiInputs() {
 
 //-----------
 void ModuleOpenNi::guiInputEvent(ofxUIEventArgs &e) {
-    if 		(e.getName() == "Raw Joints")	addJointsAsInput();
-    else if (e.getName() == "Normalized Joints")	addNormalizedJointsAsInput();
-    else if (e.getName() == "Relative Joints")	addRelativeJointsAsInput();
-    else if (e.getName() == "Velocity Joints")	addVelocityJointsAsInput();
-    else if (e.getName() == "Acceleration Joints")	addAccelerationJointsAsInput();
-    else if (e.getName() == "RelativeDistance Joints")	addRelativeDistanceJointsAsInput();
-    else if (e.getName() == "VelocityMagnitude Joints")	addVelocityMagnitudeJointsAsInput();
-    else if (e.getName() == "VelocityMean Joints")	addVelocityMeanJointsAsInput();
-    else if (e.getName() == "AccelerationMagnitude Joints")	addAccelerationMagnitudeJointsAsInput();
-    else if (e.getName() == "AccelerationMean Joints")	addAccelerationMeanJointsAsInput();
-    else if (e.getName() == "AccelerationTrajectory Joints")	addAccelerationTrajectoryJointsAsInput();
-
-    else if (e.getName() == "SymmetryAsInput")	addSymmetryAsInput();
-    else if (e.getName() == "Quantity of Motion")	addQomAsInput();
-    else if (e.getName() == "Contraction index")	addCiAsInput();
-    else if (e.getName() == "Depth")	addDepthAsInput();
-    else if (e.getName() == "YMaxHands")	addYMaxHandsAsInput();
-
+    if (inputFeatures.count(e.getName()) != 0) {
+        e.getButton()->getValue() ? addInputFeatureSet(e.getName()) : Learn::removeInputGroup(e.getName());
+    }
     else if (e.getName() == "add custom inputs") {
         if (e.getButton()->getValue())  return;
         vector<ofxUILabelToggle*> jointToggles = guiJointSelector->getToggles();
         vector<ofxUILabelToggle*> statToggles = guiStatSelector->getToggles();
         for (int j=0; j<jointToggles.size(); j++) {
             if (jointToggles[j]->getValue()) {
-                if (statToggles[ 0]->getValue()) addJointAsInput(j);
-                if (statToggles[ 1]->getValue()) addNormalizedJointAsInput(j);
-                if (statToggles[ 2]->getValue()) addRelativeJointAsInput(j);
-                if (statToggles[ 3]->getValue()) addVelocityJointAsInput(j);
-                if (statToggles[ 4]->getValue()) addAccelerationJointAsInput(j);
-                if (statToggles[ 5]->getValue()) addRelativeDistanceJointAsInput(j);
-                if (statToggles[ 6]->getValue()) addVelocityMagnitudeJointAsInput(j);
-                if (statToggles[ 7]->getValue()) addVelocityMeanJointAsInput(j);
-                if (statToggles[ 8]->getValue()) addAccelerationMagnitudeJointAsInput(j);
-                if (statToggles[ 9]->getValue()) addAccelerationMeanJointAsInput(j);
-                if (statToggles[10]->getValue()) addAccelerationTrajectoryJointAsInput(j);
+                statToggles[ 0]->getValue() ? addInputFeatureSet(openNi.getJointName(j)+" pos") : Learn::removeInputGroup(openNi.getJointName(j)+" pos");
+                statToggles[ 1]->getValue() ? addInputFeatureSet(openNi.getJointName(j)+" pos norm") : Learn::removeInputGroup(openNi.getJointName(j)+" pos norm");
+                statToggles[ 2]->getValue() ? addInputFeatureSet(openNi.getJointName(j)+" pos relative") : Learn::removeInputGroup(openNi.getJointName(j)+" pos relative");
+                statToggles[ 3]->getValue() ? addInputFeatureSet(openNi.getJointName(j)+" velocity") : Learn::removeInputGroup(openNi.getJointName(j)+" velocity");
+                statToggles[ 4]->getValue() ? addInputFeatureSet(openNi.getJointName(j)+" accel") : Learn::removeInputGroup(openNi.getJointName(j)+" accel");
+                statToggles[ 5]->getValue() ? addInputFeatureSet(openNi.getJointName(j)+" relative dist") : Learn::removeInputGroup(openNi.getJointName(j)+" relative dist");
+                statToggles[ 6]->getValue() ? addInputFeatureSet(openNi.getJointName(j)+" velocity mag") : Learn::removeInputGroup(openNi.getJointName(j)+" velocity mag");
+                statToggles[ 7]->getValue() ? addInputFeatureSet(openNi.getJointName(j)+" velocity mean") : Learn::removeInputGroup(openNi.getJointName(j)+" velocity mean");
+                statToggles[ 8]->getValue() ? addInputFeatureSet(openNi.getJointName(j)+" accel mag") : Learn::removeInputGroup(openNi.getJointName(j)+" accel mag");
+                statToggles[ 9]->getValue() ? addInputFeatureSet(openNi.getJointName(j)+" accel mean") : Learn::removeInputGroup(openNi.getJointName(j)+" accel mean");
+                statToggles[10]->getValue() ? addInputFeatureSet(openNi.getJointName(j)+" accel trajectory") : Learn::removeInputGroup(openNi.getJointName(j)+" accel trajectory");
             }
         }
     }
@@ -268,7 +282,7 @@ void ModuleOpenNi::setGuiPosition(int x, int y) {
     this->x = x;
     this->y = y;
     openNi.setGuiPosition(x, y);
-    guiInputs->setPosition(x+420, y);
+    guiInputs->setPosition(x+120, y+240);
 }
 
 //-----------

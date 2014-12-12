@@ -2,10 +2,6 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    
-    // decide which manta inputs are available (or do it through interface)
-    //learn.addAllPadsAsInput();
-
     // add outputs
     learn.addOutput("output1", 20, 50);
 
