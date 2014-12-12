@@ -98,7 +98,7 @@ void Instrument::update() {
     manta.update();
     
     if (mantaMap.count(54) > 0)
-        au.setParameter(mantaMap[54].parameterId, 0, ofMap(manta.getNumFingers(), 0, 10, mantaMap[54].rmin, mantaMap[54].rmax));
+        au.setParameter(mantaMap[54].parameterId, 0, ofMap(manta.getNumPads(), 0, 10, mantaMap[54].rmin, mantaMap[54].rmax));
     if (mantaMap.count(55) > 0)
         au.setParameter(mantaMap[55].parameterId, 0, ofMap(manta.getPadSum(), 0, 1024, mantaMap[55].rmin, mantaMap[55].rmax));
     if (mantaMap.count(56) > 0)

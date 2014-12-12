@@ -233,7 +233,7 @@ void ModuleOpenNi::setupGuiInputs() {
     jointStats.push_back("accel trajectory (1)");
     
     guiInputs->clearWidgets();
-    guiInputs->setPosition(x+120, y+240);
+    guiInputs->setPosition(x, y+160);
     guiInputs->addLabel("Global stats");
     guiGloalStatSelector = guiInputs->addDropDownList("select global stats", globalFeatures);
     guiGloalStatSelector->setAutoClose(true);
@@ -282,7 +282,7 @@ void ModuleOpenNi::setGuiPosition(int x, int y) {
     this->x = x;
     this->y = y;
     openNi.setGuiPosition(x, y);
-    guiInputs->setPosition(x+120, y+240);
+    guiInputs->setPosition(x, y+160);
 }
 
 //-----------

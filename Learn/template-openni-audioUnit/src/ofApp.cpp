@@ -6,7 +6,7 @@ void ofApp::setup(){
 
     // setup audio
     audio.setupInstrument(Instrument::AALTO);
-    audio.setGuiPosition(265, 420);
+    audio.setGuiPosition(270, 440);
     audio.start();
     
     // setup audio unit
@@ -15,13 +15,11 @@ void ofApp::setup(){
     output.setGuiPosition(1030, 5);
     
     // add inputs to learn
-    learn.setGuiPosition(275, 70);
+    //learn.setGuiPosition(275, 70);
+    learn.setGuiPosition(5, 255);
     learn.toggleGuiSummaryView();
     learn.setup("/Users/Gene/Code/openFrameworks/templates/Kinect/openni_oniRecording/bin/data/alecsroom.oni");
 
-    // inputs (manually)
-    learn.addCiAsInput();
-    
     // osc
     learn.setupOscSender("localhost", 1234);
     learn.setupOscReceiver(8000);
