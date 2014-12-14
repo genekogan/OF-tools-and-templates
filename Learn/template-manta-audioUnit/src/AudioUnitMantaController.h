@@ -15,7 +15,9 @@ public:
     }
     
     void setActive(bool active);
-    
+    void chooseSequencerMode(string &s);
+    void toggleSmooth(string &s);
+
 private:
     
     enum NoteMode   { MANUAL, AUTO };
@@ -29,13 +31,19 @@ private:
         float rmin, rmax;
     };
     
+    void noteEvent(NoteType type, int note, int velocity=127);
+    void sequencerStepEvent(vector<float> &column);
+    void sequencerInterpolatedStepEvent(vector<float> &column);
+    void processColumn(vector<float> &column);
+
+    void guiParametersEvent(ofxUIEventArgs &e);
+    void guiStatsEvent(ofxUIEventArgs &e);
 
     
     void mantaPadEvent(ofxMantaEvent &e);
     void mantaPadVelocityEvent(ofxMantaEvent &e);
     void mantaSliderEvent(ofxMantaEvent &e);
     void mantaButtonEvent(ofxMantaEvent &e);
-    void guiParametersEvent(ofxUIEventArgs &e);
     
     MantaController *manta;
     

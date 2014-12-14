@@ -28,10 +28,14 @@ protected:
     void setupGuiOutputs(bool showAddOutputOption=true);
     void guiEvent(ofxUIEventArgs &e);
     void guiInputEvent(ofxUIEventArgs &e);
+    void guiEntryHelper(string b1, string b2);
     
     void resetManta();
-    void resetMantaInputSelector();
+    //void resetMantaInputSelector();
 
+    // custom feature set from manta selection
+    void createCustomFeatureSetFromMantaSelection();
+    
     // all feature sets
     void addAllPadsAsInput();
     void addSlidersAsInput();
@@ -61,6 +65,7 @@ protected:
     void addWeightedCentroidVelocityAsInput();
 
     // input selector
+    /*
     bool allPads, allSliders, allButtons,
         numPads, padSum, padAvg, perimeter,
         width, height, whRatio,
@@ -72,6 +77,7 @@ protected:
     bool padVal[6][8], padVel[6][8];
     bool sliderVal[2], sliderVel[2];
     bool buttonVal[4], buttonVel[4];
+    */
     
     // gui
     ofxUICanvas *gui, *guiInputs;
@@ -79,6 +85,7 @@ protected:
     vector<string> rows, cols;
     vector<string> customPads;
     int guiRow, guiCol;
+    int numCustomFeatureSets;
     
     // manta
     MantaController manta;

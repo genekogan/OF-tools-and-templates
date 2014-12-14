@@ -310,7 +310,7 @@ LearnInputParameter * Learn::addInputToGroup(string groupName, string parameterN
     for (map<string, vector<InputFeature> >::iterator it=inputFeatures.begin(); it!=inputFeatures.end(); ++it){
         for (int i=0; i<it->second.size(); i++) {
             string inputFeatureName = it->second[i].name=="" ? it->first : it->second[i].name;
-            if (parameterName == inputFeatureName) {
+            if (parameterName ==  inputFeatureName) {
                 return addInputToGroup(groupName, parameterName, it->second[i].value, min, max, rangeLocked);
             }
         }
@@ -400,6 +400,9 @@ void Learn::removeInputGroup(string name) {
     while (it != inputs.end()) {
         if ((*it)->getName() == name) {
             (*it)->clearParameters();
+            for (int i=0; i<outputs.size(); i++) {
+                outputs[i]->removeInput(*it);
+            }
             delete *it;
             it = inputs.erase(it);
         }
@@ -462,6 +465,16 @@ void Learn::clearOutputs() {
 }
 
 //-------
+bool Learn::hasInput(string name) {
+    for (int i=0; i<inputs.size(); i++) {
+        if (inputs[i]->getName() == name) {
+            return true;
+        }
+    }
+    return false;
+}
+
+//-------
 int Learn::getNumberOfInputParameters() {
     int n = 0;
     for (int i=0; i<inputs.size(); i++) {
@@ -479,11 +492,10 @@ void Learn::addInputFeatureSet(string groupName) {
     else {
         addInputGroup(groupName);
         for (int f=0; f<inputFeatures[groupName].size(); f++) {
-            string name = inputFeatures[groupName][f].name == "" ? groupName : inputFeatures[groupName][f].name;
-            addInputToGroup(groupName, name,
-                            inputFeatures[groupName][f].value,
-                            inputFeatures[groupName][f].min,
-                            inputFeatures[groupName][f].max);
+            InputFeature feature = inputFeatures[groupName][f];
+            string name = feature.name == "" ? groupName : feature.name;
+            addInputToGroup(groupName, name, feature.value, feature.min, feature.max);
+            individualFeatures[name] = feature;
         }
     }
 }
@@ -491,8 +503,10 @@ void Learn::addInputFeatureSet(string groupName) {
 //-----------
 void Learn::addSingleInputFeature(string name, float * value, float min, float max) {
     vector<InputFeature> features;
-    features.push_back(InputFeature(value, min, max));
+    InputFeature feature(value, min, max);
+    features.push_back(feature);
     inputFeatures[name] = features;
+    individualFeatures[name] = feature;
 }
 
 
@@ -1114,19 +1128,47 @@ bool Learn::savePreset(string filename) {
         filename = ofSystemTextBoxDialog("Choose a filename");
     }
     if (filename=="")   return false;
-    string path = ofToDataPath("presets/"+filename+".xml");
     ofXml xml;
     xml.addChild("LearnPreset");
     xml.setTo("LearnPreset");
-    saveInputs(filename, xml);
-    saveOutputs(filename, xml);
+    savePresetProcedure(filename, xml);
+    string path = ofToDataPath("presets/"+filename+".xml");
     xml.save(path);
     return true;
 }
 
 //-------
+void Learn::savePresetProcedure(string filename, ofXml &xml) {
+    saveInputs(filename, xml);
+    saveOutputs(filename, xml);
+}
+
+//-------
 void Learn::saveInputs(string filename, ofXml &xml) {
     Presets presets;
+    
+    /*
+    xml.addChild("CustomInputs");
+    xml.setTo("CustomInputs");
+    for (map<string, CustomFeatureSet>::iterator it=customFeatureSets.begin(); it!=customFeatureSets.end(); ++it){
+        string name = it->first;
+        CustomFeatureSet cfs = it->second;
+        ofXml xmlm;
+        xmlm.addChild("CustomInput");
+        xmlm.setTo("CustomInput");
+        xmlm.addValue("Name", name);
+        for (int i=0; i<cfs.features.size(); i++) {
+            ofXml xmlf;
+            xmlf.addChild("Parameter");
+            xmlf.setTo("Parameter");
+            xmlf.addValue("Name", cfs.features[i].name);
+            xmlm.addXml(xmlf);
+        }
+        xml.addXml(xmlm);
+    }
+    xml.setToParent();
+     */
+    
     xml.addChild("Inputs");
     xml.setTo("Inputs");
     for (int i=0; i<inputs.size(); i++) {
@@ -1235,13 +1277,94 @@ void Learn::loadPreset(string filename) {
         return;
     }
     xml.setTo("LearnPreset");
+    loadPresetProcedure(xml);
+}
+
+//-------
+void Learn::loadPresetProcedure(ofXml &xml) {
+    
+   // customInputs.clear();
+    
+    
+    clearOutputs();
+    clearInputs();
     loadInputs(xml);
     loadOutputs(xml);
+    
+    
+    
+    
+    
+    
+    
+    
+    /*
+    
+    
+    
+    customInputs.clear();
+    for (int i=0; i<inputs.size(); i++) {
+        string name = inputs[i]->getName();
+        if (inputFeatures.count(name) == 0) { // false??
+            customInputs.push_back(name);
+//            guiInputs->addLabelToggle(name, true, 140.0f);
+            //            guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
+            //            guiInputs->addLabelToggle("weighted centroid velocity", &vWCentroid, 50.0f)->setLabelText("velocity");
+            //            guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+            
+        }
+    }
+    
+    */
+    
+    
+
+    predicting = true;
 }
 
 //-------
 void Learn::loadInputs(ofXml &xml) {
-    clearInputs();
+    customInputFeatures.clear();
+    
+    
+    
+    // Custom Inputs
+    /*
+    if (xml.exists("CustomInputs")) {
+        xml.setTo("CustomInputs");
+        if (xml.exists("CustomInput")) {
+            xml.setTo("CustomInput[0]");
+            do {
+                string name = xml.getValue<string>("Name");
+                CustomFeatureSet cfs;
+                cfs.name = name;
+                if (xml.exists("Parameter")) {
+                    xml.setTo("Parameter[0]");
+                    do {
+                        string name = xml.getValue<string>("Name");
+                        if (individualFeatures.count(name)==0) {
+                            ofLog(OF_LOG_ERROR, "Error: feature "+name+" not found");
+                        }
+                        else {
+                            cfs.features.push_back(individualFeatures[name]);
+                        }
+                    }
+                    while (xml.setToSibling());
+                    xml.setToParent();
+                }
+                customFeatureSets[cfs.name] = cfs;
+                if (cfs.features.size() > 0) {
+                    inputFeatures[cfs.name] = cfs.features;
+                }
+            }
+            while (xml.setToSibling());
+            xml.setToParent();
+        }
+        xml.setToParent();
+    }
+     */
+    
+    // Inputs
     xml.setTo("Inputs");
     if (xml.exists("InputGroup")) {
         xml.setTo("InputGroup[0]");
@@ -1258,7 +1381,7 @@ void Learn::loadInputs(ofXml &xml) {
                     float min = xml.getValue<float>("Min");
                     float max = xml.getValue<float>("Max");
                     float warp = xml.getValue<float>("Warp");
-                    
+                                            
                     // input to load settings into
                     LearnInputParameter * newInput = addInputToGroup(groupName, name, min, max);
                     newInput->setOscAddress(oscAddress);
@@ -1269,6 +1392,17 @@ void Learn::loadInputs(ofXml &xml) {
                 }
                 while (xml.setToSibling());
                 xml.setToParent();
+                
+                
+                
+                
+                
+                if (inputFeatures.count(groupName) == 0) {
+                    customInputFeatures.push_back(groupName);
+                }
+                
+                
+                
             }
         }
         while (xml.setToSibling());
@@ -1279,8 +1413,6 @@ void Learn::loadInputs(ofXml &xml) {
 
 //-------
 void Learn::loadOutputs(ofXml &xml, bool loadExamples, bool loadClassifier) {
-    clearOutputs();
-    
     xml.setTo("Outputs");
     if (xml.exists("Parameter")) {
         xml.setTo("Parameter[0]");

@@ -14,15 +14,22 @@ void MantaController::setMouseActive(bool mouseActive) {
     this->mouseActive = mouseActive;
     if (mouseActive) {
         ofAddListener(ofEvents().mousePressed, this, &MantaController::mousePressed);
+        ofAddListener(ofEvents().keyPressed, this, &MantaController::keyPressed);
+        ofAddListener(ofEvents().keyReleased, this, &MantaController::keyReleased);
     }
     else {
         ofRemoveListener(ofEvents().mousePressed, this, &MantaController::mousePressed);
+        ofRemoveListener(ofEvents().keyPressed, this, &MantaController::keyPressed);
+        ofRemoveListener(ofEvents().keyReleased, this, &MantaController::keyReleased);
     }
 }
 
 //-----------
 void MantaController::update(){
-    if (!isConnected)  return;
+    if (!isConnected) {
+        isConnected = manta.getConnected();
+        return;
+    }
     
     // pad velocities
     int idx = 0;
@@ -185,7 +192,16 @@ void MantaController::draw(int x, int y, int width){
     this->x = x;
     this->y = y;
     this->width = width;
+    mainDrawRect = ofRectangle(x, y, width, width * 310.0 / 400.0);
     manta.draw(x, y, width);
+    if (mainDrawRect.inside(ofGetMouseX(), ofGetMouseY())) {
+        ofPushStyle();
+        selection == 0 ? ofSetColor(255, 125, 0) : ofSetColor(0, 255, 125);
+        ofDrawBitmapString("Click to select. SHIFT for multiple. 'v' to toggle velocity",
+                           x+3, y+mainDrawRect.getHeight() * 0.22);
+        ofDrawBitmapString(selection == 0 ? "values" : "velocities", x+width-80, y+13);
+        ofPopStyle();
+    }
     if (px != x || py != y || pwidth != width) {
         px = x;
         py = y;
@@ -197,8 +213,16 @@ void MantaController::draw(int x, int y, int width){
 }
 
 //-----------
+int MantaController::getSizeSelection() {
+    return manta.getPadSelection(0).size()+manta.getPadSelection(1).size()+
+        manta.getSliderSelection(0).size()+manta.getSliderSelection(1).size()+
+        manta.getButtonSelection(0).size()+manta.getButtonSelection(1).size();
+}
+
+//-----------
 void MantaController::drawStats(int x, int y, int w){
     int h = w * 310.0 / 400.0;
+    statsDrawRect = ofRectangle(x, y, w, h);
     
     ofPushStyle();
     ofPushMatrix();
@@ -278,24 +302,52 @@ ofPoint MantaController::getPositionAtPad(int row, int col) {
 
 //----------
 void MantaController::mousePressed(ofMouseEventArgs &evt) {
-    if (!mouseActive)   return;
+    if (!mouseActive ||
+        !mainDrawRect.inside(evt.x, evt.y)) {
+        return;
+    }
     for (int i=0; i<2; i++) {
         if (sliderPositions[i].inside(evt.x, evt.y)) {
+            if (!shift) manta.clearSelection();
+            manta.addSliderToSelection(i, selection);
             ofNotifyEvent(sliderClickEvent, i, this);
             return;
         }
     }
     for (int i=0; i<4; i++) {
         if (buttonPositions[i].inside(evt.x, evt.y)) {
+            if (!shift) manta.clearSelection();
+            manta.addButtonToSelection(i, selection);
             ofNotifyEvent(buttonClickEvent, i, this);
             return;
         }
     }
     for (int i=0; i<48; i++) {
         if (padPositions[i].inside(evt.x, evt.y)) {
+            if (!shift) manta.clearSelection();
+            manta.addPadToSelection(i, selection);
             ofNotifyEvent(padClickEvent, i, this);
             return;
         }
+    }
+    manta.clearSelection();
+}
+
+//----------
+void MantaController::keyPressed(ofKeyEventArgs &e) {
+    if (e.key == OF_KEY_SHIFT) {
+        shift = true;
+    }
+    else if (e.key=='v') {
+        selection = 1 - selection;
+        manta.setSelectionView(selection);
+    }
+}
+
+//----------
+void MantaController::keyReleased(ofKeyEventArgs &e) {
+    if (e.key == OF_KEY_SHIFT) {
+        shift = false;
     }
 }
 

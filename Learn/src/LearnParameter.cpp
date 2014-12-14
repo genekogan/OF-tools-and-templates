@@ -44,8 +44,11 @@ LearnOutputParameter::LearnOutputParameter(string name, float *value, float min,
     
     if (DEFAULT_LEARN_TYPE == "SVM") {
         setTrainingSvm();
-    } else {
-        setTrainingMlp(DEFAULT_MLP_HIDDEN_LAYERS, DEFAULT_MLP_TARGET_RMSE, DEFAULT_MLP_MAX_SAMPLES);
+    }
+    else {
+        setTrainingMlp(DEFAULT_MLP_HIDDEN_LAYERS,
+                       DEFAULT_MLP_TARGET_RMSE,
+                       DEFAULT_MLP_MAX_SAMPLES);
     }
     
     setupGui();
@@ -58,9 +61,8 @@ LearnOutputParameter::LearnOutputParameter(string name, float *value, float min,
 
 //-----------
 LearnParameter::~LearnParameter() {
-    gui->clearWidgets();
-    gui->removeWidgets();
     gui->disable();
+    gui->removeWidgets();
     pSelectedEvent.disable();
     pSelectedEvent.clear();
     pChangedEvent.disable();
@@ -74,9 +76,8 @@ LearnOutputParameter::~LearnOutputParameter() {
     //clearInstances();
     ofRemoveListener(gui->newGUIEvent, this, &LearnOutputParameter::guiEvent);
     ofRemoveListener(guiInputSelect->newGUIEvent, this, &LearnOutputParameter::guiInputSelectEvent);
-    guiInputSelect->clearWidgets();
-    guiInputSelect->removeWidgets();
     guiInputSelect->disable();
+    guiInputSelect->removeWidgets();
     gui->clearWidgets();
     gui->removeWidgets();
     gui->disable();
@@ -493,7 +494,6 @@ void LearnOutputParameter::exportData(string filename) {
 //  GUI
 
 void LearnInputParameter::setupGui() {
-    gui->clearWidgets();
     gui->setColorOutline(ofColor(255,200));
     gui->setDrawOutline(true);
     gui->clearWidgets();
@@ -525,7 +525,8 @@ void LearnInputParameter::setupGui() {
 
 //-----------
 void LearnOutputParameter::setupGui() {
-    gui->clearWidgets();
+    cout << "SETUP LOP GUI " << ofGetFrameNum() << endl;
+    
     guiData->clearWidgets();
     gui->setColorOutline(ofColor(255,200));
     gui->setDrawOutline(true);
@@ -591,6 +592,8 @@ void LearnOutputParameter::setupGui() {
 
 //-----------
 void LearnOutputParameter::setupGuiInputSelector() {
+    cout << "SETUP LOP GUI INSPECT " << ofGetFrameNum() << endl;
+    
     guiInputSelect->clearWidgets();
     guiInputSelect->setColorOutline(ofColor(255,200));
     guiInputSelect->setDrawOutline(true);
@@ -801,6 +804,7 @@ void LearnOutputParameter::guiInputSelectEvent(ofxUIEventArgs &e) {
             addInput(allInputs[i]);
         }
     }
+    setupHeaders();
 }
 
 //-----------

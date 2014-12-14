@@ -183,10 +183,10 @@ public:
     void trainClassifier(TrainMode trainMode);
     void trainClassifierFast() {trainClassifier(FAST);}
     void trainClassifierAccurate() {trainClassifier(ACCURATE);}
-    LearnModel getLearnModel() {return learnModel;}
     int getMlpNumHiddenLayers() {return learn.getMlpNumHiddenLayers();}
     int getMlpMaxSamples() {return learn.getMlpMaxSamples();}
     float getMlpTargetRmse() {return learn.getMlpTargetRmse();}
+    LearnModel getLearnModel() {return learnModel;}
     vector<double> getMlpCoefficients1() {return mlpCoefficientsW1;}
     vector<double> getMlpCoefficients2() {return mlpCoefficientsW3;}
     
@@ -251,7 +251,7 @@ protected:
     // inputs
     vector<LearnInputGroup *> allInputs, activeInputs;
     
-    //  data/spreadsheet
+    // data/spreadsheet
     vector<ofxSpreadsheet *> data;
     int page, dataWidth, dataHeight;
     

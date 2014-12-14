@@ -20,7 +20,10 @@ MantaLearn::MantaLearn() : Learn() {
     guiInputs->setColorOutline(ofColor(255, 200));
     guiInputs->setDrawOutline(true);
     guiInputs->setVisible(inputsVisible);
-    guiInputs->setPosition(5, 87);
+    
+    //guiInputs->setPosition(5, 87);
+    guiInputs->setPosition(420, 200);
+    
     guiInputs->setColorBack(ofColor(60));
     ofAddListener(guiInputs->newGUIEvent, this, &MantaLearn::guiInputEvent);
     setupGuiInputs();
@@ -68,7 +71,8 @@ MantaLearn::MantaLearn() : Learn() {
 //-----------
 void MantaLearn::loadPreset(string path) {
     Learn::loadPreset(path);
-    resetMantaInputSelector();
+    setupGuiInputs();
+    //resetMantaInputSelector();
 }
 
 //-----------
@@ -86,6 +90,62 @@ void MantaLearn::draw() {
         }
         Learn::draw();
     }
+}
+
+//-----------
+void MantaLearn::createCustomFeatureSetFromMantaSelection() {
+    vector<int> padSelection = manta.getPadSelection();
+    vector<int> padVelocitySelection = manta.getPadVelocitySelection();
+    vector<int> sliderSelection = manta.getSliderSelection();
+    vector<int> sliderVelocitySelection = manta.getSliderVelocitySelection();
+    vector<int> buttonSelection = manta.getButtonSelection();
+    vector<int> buttonVelocitySelection = manta.getButtonVelocitySelection();
+    
+    vector<InputFeature> features;
+    for (int i=0; i<padSelection.size(); i++) {
+        int row = floor(padSelection[i] / 8);
+        int col = padSelection[i] % 8;
+        features.push_back(InputFeature(manta.getPadRef(row, col), 0, 196, "pad "+ofToString(row)+" "+ofToString(col)));
+    }
+    for (int i=0; i<padVelocitySelection.size(); i++) {
+        int row = floor(padVelocitySelection[i] / 8);
+        int col = padVelocitySelection[i] % 8;
+        features.push_back(InputFeature(manta.getPadVelocityRef(row, col), 0, 196, "pad velocity "+ofToString(row)+" "+ofToString(col)));
+    }
+    for (int i=0; i<sliderSelection.size(); i++) {
+        features.push_back(InputFeature(manta.getSliderRef(sliderSelection[i]), 0, 1, "slider "+ofToString(sliderSelection[i])));
+    }
+    for (int i=0; i<sliderVelocitySelection.size(); i++) {
+        features.push_back(InputFeature(manta.getSliderVelocityRef(sliderVelocitySelection[i]), 0, 1, "slider velocity "+ofToString(sliderVelocitySelection[i])));
+    }
+    for (int i=0; i<buttonSelection.size(); i++) {
+        features.push_back(InputFeature(manta.getButtonRef(buttonSelection[i]), 0, 1, "button "+ofToString(buttonSelection[i])));
+    }
+    for (int i=0; i<buttonVelocitySelection.size(); i++) {
+        features.push_back(InputFeature(manta.getButtonVelocityRef(buttonVelocitySelection[i]), 0, 1, "button velocity "+ofToString(buttonVelocitySelection[i])));
+    }
+    
+    string newInputName;
+    if (features.size() == 1) {
+        newInputName = features[0].name;
+        addInputFeatureSet(newInputName);
+    }
+    else {
+        newInputName = ofSystemTextBoxDialog("Name of custom feature set:");
+        if (newInputName=="")   newInputName = "custom "+ofToString(numCustomFeatureSets++);
+        if (features.size() > 0) {
+            inputFeatures[newInputName] = features;
+            addInputFeatureSet(newInputName);
+        }
+    }
+    manta.clearSelection();
+    
+    customInputFeatures.push_back(newInputName);
+
+    guiInputs->addLabelToggle(newInputName, hasInput(newInputName), 110.0f);
+    guiInputs->autoSizeToFitWidgets();
+    guiInputs->setWidth(120);
+    guiInputs->setPosition(420, 365-22*customInputFeatures.size());
 }
 
 //-----------
@@ -156,12 +216,12 @@ void MantaLearn::addPadHeightAsInput() {
 
 //-----------
 void MantaLearn::addPadWHRatioAsInput() {
-    addSingleInputFeature("width/height ratio", &manta.getWidthHeightRatio(), 0, 10);
+    addSingleInputFeature("w/h ratio", &manta.getWidthHeightRatio(), 0, 10);
 }
 
 //-----------
 void MantaLearn::addAverageInterFingerDistanceAsInput() {
-    addSingleInputFeature("avg finger distance", &manta.getAverageInterFingerDistance(), 0, 2);
+    addSingleInputFeature("finger dist", &manta.getAverageInterFingerDistance(), 0, 2);
 }
 
 //-----------
@@ -175,9 +235,9 @@ void MantaLearn::addCentroidAsInput() {
 //-----------
 void MantaLearn::addWeightedCentroidAsInput() {
 	vector<InputFeature> features;
-	features.push_back(InputFeature(&manta.getWeightedCentroidX(), 0, 1, "weighted centroid x"));
-	features.push_back(InputFeature(&manta.getWeightedCentroidY(), 0, 1, "weighted centroid y"));
-	inputFeatures["weighted centroid"] = features;
+	features.push_back(InputFeature(&manta.getWeightedCentroidX(), 0, 1, "wtd centroid x"));
+	features.push_back(InputFeature(&manta.getWeightedCentroidY(), 0, 1, "wtd centroid y"));
+	inputFeatures["wtd centroid"] = features;
 }
 
 //-----------
@@ -250,12 +310,12 @@ void MantaLearn::addPadHeightVelocityAsInput() {
 
 //-----------
 void MantaLearn::addPadWHRatioVelocityAsInput() {
-    addSingleInputFeature("width/height ratio velocity", &manta.getWidthHeightRatioVelocity(), -0.2, 0.2);
+    addSingleInputFeature("w/h ratio velocity", &manta.getWidthHeightRatioVelocity(), -0.2, 0.2);
 }
 
 //-----------
 void MantaLearn::addAverageInterFingerDistanceVelocityAsInput() {
-    addSingleInputFeature("avg finger distance velocity", &manta.getAverageInterFingerDistanceVelocity(), -0.1, 0.1);
+    addSingleInputFeature("finger dist velocity", &manta.getAverageInterFingerDistanceVelocity(), -0.1, 0.1);
 }
 
 //-----------
@@ -269,14 +329,13 @@ void MantaLearn::addCentroidVelocityAsInput() {
 //-----------
 void MantaLearn::addWeightedCentroidVelocityAsInput() {
 	vector<InputFeature> features;
-	features.push_back(InputFeature(&manta.getWeightedCentroidVelocityX(), -0.1, 0.1, "weighted centroid x velocity"));
-	features.push_back(InputFeature(&manta.getWeightedCentroidVelocityY(), -0.1, 0.1, "weighted centroid y velocity"));
-	inputFeatures["weighted centroid velocity"] = features;
+	features.push_back(InputFeature(&manta.getWeightedCentroidVelocityX(), -0.1, 0.1, "wtd centroid x velocity"));
+	features.push_back(InputFeature(&manta.getWeightedCentroidVelocityY(), -0.1, 0.1, "wtd centroid y velocity"));
+	inputFeatures["wtd centroid velocity"] = features;
 }
 
 //-----------
 void MantaLearn::setupGuiOutputs(bool showAddOutputOption) {
-    gui->clearWidgets();
     gui->setColorOutline(ofColor(255,200));
     gui->setDrawOutline(true);
     gui->clearWidgets();
@@ -291,118 +350,61 @@ void MantaLearn::setupGuiOutputs(bool showAddOutputOption) {
 
 //-----------
 void MantaLearn::setupGuiInputs() {
+    guiInputs->setPosition(420, 365-22*customInputFeatures.size());
+
+    
+    
+    /* DONT CLEAR? */
+    
     guiInputs->clearWidgets();
-    guiInputs->addLabel("Manta features");
     
-    guiInputs->addLabelToggle("all pads", &allPads, 140.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiInputs->addLabelToggle("all pad velocities", &vAllPads, 50.0f)->setLabelText("velocity");
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+    
+    
+    
+    
+    guiInputs->addLabel("Manta");
+    guiInputs->addSpacer(110, 1);
+    guiInputs->addLabelButton("add custom", false, 110.0f)->setColorBack(ofColor(0,100,0));
+    guiInputs->addSpacer(110, 1);
 
-    guiInputs->addLabelToggle("all sliders", &allSliders, 140.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiInputs->addLabelToggle("all slider velocities", &vAllSliders, 50.0f)->setLabelText("velocity");
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+    guiEntryHelper("all pads", "all pad velocities");
+    guiEntryHelper("all sliders", "all slider velocities");
+    guiEntryHelper("all buttons", "all button velocities");
+    guiInputs->addSpacer(110, 1);
+    guiEntryHelper("number pads", "number pads velocity");
+    guiEntryHelper("pad sum", "pad sum velocity");
+    guiEntryHelper("pad average", "pad average velocity");
+    guiEntryHelper("perimeter", "perimeter velocity");
+    guiEntryHelper("width", "width velocity");
+    guiEntryHelper("height", "height velocity");
+    guiEntryHelper("w/h ratio", "w/h ratio velocity");
+    guiEntryHelper("finger dist", "finger dist velocity");
+    guiEntryHelper("centroid", "centroid velocity");
+    guiEntryHelper("wtd centroid", "wtd centroid velocity");
     
-    guiInputs->addLabelToggle("all buttons", &allButtons, 140.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiInputs->addLabelToggle("all button velocities", &vAllButtons, 50.0f)->setLabelText("velocity");
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    
-    guiInputs->addLabelToggle("number pads", &numPads, 140.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiInputs->addLabelToggle("number pads velocity", &vNumPads, 50.0f)->setLabelText("velocity");
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-
-    guiInputs->addLabelToggle("pad sum", &padSum, 140.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiInputs->addLabelToggle("pad sum velocity", &vPadSum, 50.0f)->setLabelText("velocity");
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    
-    guiInputs->addLabelToggle("pad average", &padAvg, 140.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiInputs->addLabelToggle("pad average velocity", &vPadAvg, 50.0f)->setLabelText("velocity");
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    
-    guiInputs->addLabelToggle("perimeter", &perimeter, 140.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiInputs->addLabelToggle("perimeter velocity", &vPerimeter, 50.0f)->setLabelText("velocity");
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    
-    guiInputs->addLabelToggle("width", &width, 140.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiInputs->addLabelToggle("width velocity", &vWidth, 50.0f)->setLabelText("velocity");
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    
-    guiInputs->addLabelToggle("height", &height, 140.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiInputs->addLabelToggle("height velocity", &vHeight, 50.0f)->setLabelText("velocity");
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-
-    guiInputs->addLabelToggle("width/height ratio", &whRatio, 140.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiInputs->addLabelToggle("width/height ratio velocity", &vWhRatio, 50.0f)->setLabelText("velocity");
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    
-    guiInputs->addLabelToggle("avg finger distance", &avgInterDist, 140.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiInputs->addLabelToggle("avg finger distance velocity", &vAvgInterDist, 50.0f)->setLabelText("velocity");
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    
-    guiInputs->addLabelToggle("centroid", &centroid, 140.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiInputs->addLabelToggle("centroid velocity", &vCentroid, 50.0f)->setLabelText("velocity");
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    
-    guiInputs->addLabelToggle("weighted centroid", &wCentroid, 140.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiInputs->addLabelToggle("weighted centroid velocity", &vWCentroid, 50.0f)->setLabelText("velocity");
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    
-    guiInputs->addSpacer();
-    guiInputs->addLabelToggle("slider 0", &sliderVal[0], 140.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiInputs->addLabelToggle("slider velocity 0", &sliderVel[0], 50.0f)->setLabelText("velocity");
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    guiInputs->addLabelToggle("slider 1", &sliderVal[1], 140.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiInputs->addLabelToggle("slider velocity 1", &sliderVel[1], 50.0f)->setLabelText("velocity");
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    guiInputs->addSpacer();
-    guiInputs->addLabelToggle("button 0", &buttonVal[0], 140.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiInputs->addLabelToggle("button velocity 0", &buttonVel[0], 50.0f)->setLabelText("velocity");
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    guiInputs->addLabelToggle("button 1", &buttonVal[1], 140.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiInputs->addLabelToggle("button velocity 1", &buttonVel[1], 50.0f)->setLabelText("velocity");
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    guiInputs->addLabelToggle("button 2", &buttonVal[2], 140.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiInputs->addLabelToggle("button velocity 2", &buttonVel[2], 50.0f)->setLabelText("velocity");
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    guiInputs->addLabelToggle("button 3", &buttonVal[3], 140.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiInputs->addLabelToggle("button velocity 3", &buttonVel[3], 50.0f)->setLabelText("velocity");
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    guiInputs->addSpacer();
-    
-    guiInputs->addLabel("Select pad: ")->getRect()->setWidth(64.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiInputs->addDropDownList("Row", rows, 42.0f);
-    guiInputs->addDropDownList("Col", cols, 42.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    if (guiRow >= 0 && guiCol >= 0) {
-        guiInputs->addLabel("Pad ("+ofToString(guiRow)+","+ofToString(guiCol)+")")->getRect()->setWidth(64.0f);
-        guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-        guiInputs->addLabelToggle("pad individual value", &padVal[guiRow][guiCol], 48.0f)->setLabelText("value");
-        guiInputs->addLabelToggle("pad individual velocity", &padVel[guiRow][guiCol], 56.0f)->setLabelText("velocity");
-        guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+    guiInputs->addSpacer(110,1);
+    for (int i=0; i<customInputFeatures.size(); i++) {
+        guiInputs->addLabelToggle(customInputFeatures[i], hasInput(customInputFeatures[i]), 110.0f);
     }
-    guiInputs->addSpacer();
-
     guiInputs->autoSizeToFitWidgets();
-    guiInputs->setWidth(210);
+    guiInputs->setWidth(120);
+}
+
+//-----------
+void MantaLearn::guiEntryHelper(string b1, string b2) {
+    /*
+    guiInputs->addLabelToggle(b1, false, 90.0f);
+    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
+    guiInputs->addLabelToggle(b2, false, 15.0f)->setLabelText("V");
+    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+     */
+    
+    
+    guiInputs->addLabelToggle(b1, hasInput(b1), 90.0f);
+    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
+    guiInputs->addLabelToggle(b2, hasInput(b2), 15.0f)->setLabelText("V");
+    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+
 }
 
 //-----------
@@ -418,30 +420,34 @@ void MantaLearn::guiEvent(ofxUIEventArgs &e) {
 
 //-----------
 void MantaLearn::guiInputEvent(ofxUIEventArgs &e) {
-    if      (e.getParentName() == "Row") {
-        guiRow = ofToInt(e.getName());
-        setupGuiInputs();
+    // add custom issue
+    if (e.getName() == "add custom") {
+        if (e.getButton()->getValue())  return;
+        createCustomFeatureSetFromMantaSelection();
+        resetManta();
     }
-    else if (e.getParentName() == "Col") {
-        guiCol = ofToInt(e.getName());
-        setupGuiInputs();
-    }
-    else if (e.getName()=="pad individual value") {
-        if (guiRow >= -1 && guiCol >= -1) {
-            string name = "pad "+ofToString(guiRow)+" "+ofToString(guiCol);
-            e.getButton()->getValue() ? addInputFeatureSet(name) : Learn::removeInputGroup(name);
-        }
-    }
-    else if (e.getName()=="pad individual velocity") {
-        if (guiRow >= -1 && guiCol >= -1) {
-            string name = "pad velocity "+ofToString(guiRow)+" "+ofToString(guiCol);
-            e.getButton()->getValue() ? addInputFeatureSet(name) : Learn::removeInputGroup(name);
-        }
-    }
+    
+    // toggle global inputs
     else if (inputFeatures.count(e.getName()) != 0) {
-        e.getButton()->getValue() ? addInputFeatureSet(e.getName()) : Learn::removeInputGroup(e.getName());
+        if (e.getButton()->getValue()) {
+            addInputFeatureSet(e.getName());
+        }
+        else {
+            Learn::removeInputGroup(e.getName());
+        }
+    }
+    
+    // toggle custom inputs
+    else {
+        for (int i=0; i<customInputFeatures.size(); i++) {
+            if (customInputFeatures[i] == e.getName()) {
+                Learn::removeInputGroup(e.getName());
+                return;
+            }
+        }
     }
 
+    
 
     // reset manta
     if (e.getName() == "all pads" || e.getName() == "all sliders" || e.getName() == "all buttons" ||
@@ -493,8 +499,10 @@ MantaLearn::~MantaLearn() {
     manta.close();
 }
 
+/*
 //-----------
 void MantaLearn::resetMantaInputSelector() {
+    
     allPads = false;
     allSliders = false;
     allButtons = false;
@@ -555,14 +563,14 @@ void MantaLearn::resetMantaInputSelector() {
         else if (inputs[i]->getName() == "width velocity")  vWidth = true;
         else if (inputs[i]->getName() == "height")  height = true;
         else if (inputs[i]->getName() == "height velocity")  vHeight = true;
-        else if (inputs[i]->getName() == "width/height ratio")  whRatio = true;
-        else if (inputs[i]->getName() == "width/height ratio velocity")  vWhRatio = true;
-        else if (inputs[i]->getName() == "avg finger distance")  avgInterDist = true;
-        else if (inputs[i]->getName() == "avg finger distance velocity")  vAvgInterDist = true;
+        else if (inputs[i]->getName() == "w/h ratio")  whRatio = true;
+        else if (inputs[i]->getName() == "w/h ratio velocity")  vWhRatio = true;
+        else if (inputs[i]->getName() == "finger dist")  avgInterDist = true;
+        else if (inputs[i]->getName() == "finger dist velocity")  vAvgInterDist = true;
         else if (inputs[i]->getName() == "centroid")  centroid = true;
         else if (inputs[i]->getName() == "centroid velocity")  vCentroid = true;
-        else if (inputs[i]->getName() == "weighted centroid")  wCentroid = true;
-        else if (inputs[i]->getName() == "weighted centroid velocity")  vWCentroid = true;
+        else if (inputs[i]->getName() == "wtd centroid")  wCentroid = true;
+        else if (inputs[i]->getName() == "wtd centroid velocity")  vWCentroid = true;
         else if (inputs[i]->getName() == "slider 0")  sliderVal[0] = true;
         else if (inputs[i]->getName() == "slider velocity 0")  sliderVel[0] = true;
         else if (inputs[i]->getName() == "slider 1")  sliderVal[1] = true;
@@ -577,3 +585,4 @@ void MantaLearn::resetMantaInputSelector() {
         else if (inputs[i]->getName() == "button velocity 3")  buttonVel[3] = true;
     }
 }
+*/

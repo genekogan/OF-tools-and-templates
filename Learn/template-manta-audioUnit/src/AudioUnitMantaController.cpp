@@ -19,6 +19,32 @@ void AudioUnitMantaController::setActive(bool active) {
 }
 
 
+//-----------
+void AudioUnitMantaController::noteEvent(NoteType type, int note, int velocity) {
+    if      (type == NOTE_ON) {
+        au->midiNoteOn(note, velocity);
+        noteStatus[note] = true;
+    }
+    else if (type == NOTE_OFF) {
+        au->midiNoteOff(note, velocity);
+        noteStatus[note] = false;
+    }
+    else if (type == NOTE_AUTO) {
+        au->midiNoteOn(note, velocity);
+        noteEvents[note] = ofGetFrameNum();
+    }
+}
+
+//-----------
+void AudioUnitMantaController::chooseSequencerMode(string &s) {
+//    sequencerMode = (s == "notes") ? NOTES : PARAMETERS;
+}
+
+//-----------
+void AudioUnitMantaController::toggleSmooth(string &s) {
+//    this->sequencerSmooth = !sequencerSmooth;
+//    sequencer.setSmooth(sequencerSmooth);
+}
 
 //-----------
 void AudioUnitMantaController::mantaPadEvent(ofxMantaEvent &e) {
@@ -55,7 +81,6 @@ void AudioUnitMantaController::mantaButtonEvent(ofxMantaEvent &e) {
 
 //-----------
 void AudioUnitMantaController::guiParametersEvent(ofxUIEventArgs &e) {
-    /*
     if (e.getParentName() == "parameter groups") {
         if (parameterGroups.count(e.getName())>0) {
             guiToSwitchParametersName = e.getName();
@@ -67,20 +92,20 @@ void AudioUnitMantaController::guiParametersEvent(ofxUIEventArgs &e) {
             if (guiActiveIsSequencer) {
                 if (parameters[i].name == e.getName()) {
                     seqMap[guiActiveSeq] = parameters[i];
-                    setupGuiPadInspector();
+                    //setupGuiPadInspector();
                     return;
                 }
             }
             else {
                 if (parameters[i].name == e.getName()) {
                     if (guiActiveManta < 48)
-                        manta.markPad(guiActiveManta / 8, guiActiveManta % 8, true);
+                        manta->markPad(guiActiveManta / 8, guiActiveManta % 8, true);
                     else if (guiActiveManta < 50)
-                        manta.markSlider(guiActiveManta - 48, true);
+                        manta->markSlider(guiActiveManta - 48, true);
                     else if (guiActiveManta < 54)
-                        manta.markButton(guiActiveManta - 50, true);
+                        manta->markButton(guiActiveManta - 50, true);
                     mantaMap[guiActiveManta] = parameters[i];
-                    setupGuiPadInspector();
+                    //setupGuiPadInspector();
                     return;
                 }
             }
@@ -92,14 +117,14 @@ void AudioUnitMantaController::guiParametersEvent(ofxUIEventArgs &e) {
         }
         else {
             if (guiActiveManta < 48)
-                manta.markPad(guiActiveManta / 8, guiActiveManta % 8, false);
+                manta->markPad(guiActiveManta / 8, guiActiveManta % 8, false);
             else if (guiActiveManta < 50)
-                manta.markSlider(guiActiveManta - 48, false);
+                manta->markSlider(guiActiveManta - 48, false);
             else if (guiActiveManta < 54)
-                manta.markButton(guiActiveManta - 50, false);
+                manta->markButton(guiActiveManta - 50, false);
             mantaMap.erase(guiActiveManta);
         }
-        setupGuiPadInspector();
+        //setupGuiPadInspector();
     }
     else if (e.getName() == "range") {
         if (guiActiveIsSequencer) {
@@ -135,7 +160,6 @@ void AudioUnitMantaController::guiParametersEvent(ofxUIEventArgs &e) {
             guiParameterRange->setValueHigh(mantaMap[guiActiveManta].rmax);
         }
     }
-     */
 }
 
 //-----------

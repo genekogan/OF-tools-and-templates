@@ -79,6 +79,16 @@ public:
     // returns gui element positions
     ofPoint getPositionAtPad(int row, int col);
     
+    // selection
+    vector<int> getPadSelection() {return manta.getPadSelection(0);}
+    vector<int> getPadVelocitySelection() {return manta.getPadSelection(1);}
+    vector<int> getSliderSelection() {return manta.getSliderSelection(0);}
+    vector<int> getSliderVelocitySelection() {return manta.getSliderSelection(1);}
+    vector<int> getButtonSelection() {return manta.getButtonSelection(0);}
+    vector<int> getButtonVelocitySelection() {return manta.getButtonSelection(1);}
+    void clearSelection() {manta.clearSelection();}
+    int getSizeSelection();
+
     // wrap manta event listeners
     template <typename L, typename M> void addPadListener(L *listener, M method) {manta.addPadListener(listener, method);}
     template <typename L, typename M> void addSliderListener(L *listener, M method) {manta.addSliderListener(listener, method);}
@@ -139,14 +149,19 @@ protected:
     float perimeterVelocity;
     float widthVelocity, heightVelocity, whRatioVelocity;
 
-    // mouse callbacks
+    // callbacks
     void mousePressed(ofMouseEventArgs &evt);
-    
+    void keyPressed(ofKeyEventArgs &e);
+    void keyReleased(ofKeyEventArgs &e);
+
     ofEvent<int> padClickEvent, sliderClickEvent, buttonClickEvent;
     bool mouseActive;
     void setMouseResponders();
     ofRectangle padPositions[48], sliderPositions[2], buttonPositions[4];
-    int x, y, width;
+    ofRectangle mainDrawRect, statsDrawRect;
+    int x, y, width, height;
     int px, py, pwidth;
     bool visible, animated;
+    int selection = 0;
+    bool shift;
 };

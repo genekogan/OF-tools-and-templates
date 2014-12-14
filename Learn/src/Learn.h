@@ -39,6 +39,7 @@ public:
     int getNumberOfInputParameters();
     void clearInputs();
     void clearOutputs();
+    bool hasInput(string name);
 
     // managing outputs
     virtual LearnOutputParameter * addOutput(string name, float *value, float min, float max, bool rangeLocked=false);
@@ -82,6 +83,7 @@ protected:
         float *value;
         float min, max;
         string name;
+        InputFeature(){}
         InputFeature(float *value, float min, float max, string name="") {
             this->value = value;
             this->min = min;
@@ -140,6 +142,8 @@ protected:
     void trainClassifiers(string trainStrategy);
     
     // presets
+    virtual void savePresetProcedure(string filename, ofXml &xml);
+    virtual void loadPresetProcedure(ofXml &xml);
     void saveInputs(string filename, ofXml &xml);
     void saveOutputs(string filename, ofXml &xml);
     string loadPresetDialog(string filename);
@@ -151,11 +155,12 @@ protected:
     void setFont(string path);
     void setFontSizes(int small, int medium, int large);
     
-    
     // parameters and groups
     vector<LearnInputGroup *> inputs;
     vector<LearnOutputParameter *> outputs;
     map<string, vector<InputFeature> > inputFeatures;
+    map<string, InputFeature> individualFeatures;
+    vector<string> customInputFeatures;
     
     // osc management
     OscManager oscManager;

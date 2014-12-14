@@ -19,5 +19,9 @@ public:
     void PadVelocityEvent(ofxMantaEvent & evt);
     void ButtonVelocityEvent(ofxMantaEvent & evt);
 
+    void PadClick(int & e);
+    void SliderClick(int & e);
+    void ButtonClick(int & e);
+
     MantaController manta;
 };
