@@ -10,14 +10,13 @@ void ofApp::setup(){
     control.addParameter("filled", &filled);
     control.addParameter("point", &point, ofPoint(0,0,0), ofPoint(1,1,1));
     control.addParameter("resolution", &resolution, 4, 24);
-
     
     /* receive parameters */
     osc.setupReceiver(8000);
     osc.registerToOscReceiver(control.getParameters());
 
     /* send parameters  */
-    osc.setupSender("localhost", 9000);
+    osc.setupSender("localhost", 12345);
     osc.registerToOscSender(control.getParameters());
 
     /* convert control parameters into touchOsc layout */

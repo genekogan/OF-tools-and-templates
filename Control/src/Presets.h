@@ -10,6 +10,11 @@ class Sequencer;
 
 class Presets {
 public:
+    Presets();
+    
+    bool getMetaEnabled() {return metaEnabled;}
+    void setMetaEnabled(bool metaEnabled) {this->metaEnabled = metaEnabled;}
+    
     bool savePreset(Control &control, string filename="");
     void loadPreset(Control &control, string path, int numFrames = 0);
     void loadPreset(Control &control, ofXml &xml, int numFrames = 0);
@@ -22,6 +27,8 @@ public:
     ofXml getXml(MetaController *meta);
     
 protected:
+
+    bool metaEnabled;
     
     template <typename T>
     void updateParameter(ofXml &xml, vector<ParameterBase *> &parameters, ParameterBase::Type type, int numFrames = 0);

@@ -25,7 +25,7 @@ void Sequencer::setup(int rows, int cols) {
     gui->addIntSlider("bpm", 1, 300, &bpm);
     gui->addButton("advance", false);
     gui->addToggle("active", &active);
-    //gui->addToggle("discrete", &discrete);
+    gui->addToggle("discrete", &discrete);
     gui->addToggle("smooth", &smooth);
     gui->addButton("reset", false);
     gui->addButton("randomize", false);

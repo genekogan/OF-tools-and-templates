@@ -7,14 +7,20 @@ Control::Control() {
     guiPresets = new ofxUICanvas("controlPresets");
     setWidth(150);
     spacing = gui->getWidgetSpacing();
-    headerSelected = false;
-    setupGuiPresets();
-    visible = true;
-    metaActive = false;
-    setActive(true);
+    
     
     
     meta = new MetaController();
+    
+    
+    setupGui();
+    setupGuiPresets();
+    
+    
+    headerSelected = false;
+    visible = true;
+    metaActive = false;
+    setActive(true);
 }
 
 //-------
@@ -72,15 +78,19 @@ void Control::draw(ofEventArgs &data) {
 //-------
 void Control::setName(string name) {
     this->name = name;
-    setupGuiPresets();
-}
+//    setupGuiPresets();
+    ((ofxUILabelButton *) guiPresets->getWidget("controlHeader"))->setLabelText(name);
+    ((ofxUILabelButton *) gui->getWidget("controlHeader"))->setLabelText(name);
+    resetPresetsList();
+ }
 
 //-------
 void Control::savePreset() {
     Presets presets;
     bool saved = presets.savePreset(*this);
-    if (!saved) return;
-    setupGuiPresets();
+    if (saved) {
+        resetPresetsList();
+    }
 }
 
 //-------
@@ -174,7 +184,19 @@ void Control::setupGuiPresets() {
     ((ofxUILabelToggle *) guiPresets->getWidget("Seq"))->setName("viewMeta");
     guiPresets->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
     guiPresets->addSpacer();
+    guiPresets->addLabelButton(" > TouchOsc", false);
     guiPresets->addIntSlider("Lerp frames", 0, 120, &numLerpFrames);
+    vector<string> filenames;
+    presetNames = guiPresets->addDropDownList("presets", filenames);
+    presetNames->setAutoClose(false);
+    presetNames->open();
+    guiPresets->autoSizeToFitWidgets();
+    guiPresets->setVisible(!visible);
+    resetPresetsList();
+}
+
+//-------
+void Control::resetPresetsList() {
     ofDirectory dir(ofToDataPath("presets/"+getName()+"/"));
     dir.allowExt("xml");
     dir.listDir();
@@ -182,12 +204,8 @@ void Control::setupGuiPresets() {
     for(int i = 0; i < dir.numFiles(); i++) {
         filenames.push_back(dir.getName(i));
     }
-    presetNames = guiPresets->addDropDownList("presets", filenames);
-    presetNames->setAutoClose(false);
-    presetNames->open();
-    guiPresets->addLabelButton(" > TouchOsc", false);
-    guiPresets->autoSizeToFitWidgets();
-    guiPresets->setVisible(!visible);
+    presetNames->clearToggles();
+    presetNames->addToggles(filenames);
 }
 
 //-------
@@ -203,7 +221,8 @@ void Control::setupGui() {
     gui->addLabelToggle("Seq", false, 40.0f);
     ((ofxUILabelToggle *) gui->getWidget("Seq"))->setName("viewMeta");
     gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    
+
+    /*
     for (int i=0; i<guiElements.size(); i++) {
         if      (guiElements[i]->type == GuiElement::GUI_PARAMETER) {
             int idx = guiElements[i]->idxElement;
@@ -252,12 +271,79 @@ void Control::setupGui() {
             gui->addSpacer();
         }
     }
+     */
     
     // set color of color sliders
+    //updateColors();
+    
+    gui->autoSizeToFitWidgets();
+}
+
+
+void Control::addElementToGui(GuiElement *g) {
+    if      (g->type == GuiElement::GUI_PARAMETER) {
+        int idx = g->idxElement;
+        
+        
+        ///// VISIBLITY CAN BE CALLED DIRECTLY
+        
+        if (!parametersVisible[parameters[idx]])   return;
+        
+        ParameterBase::Type type = parameters[idx]->getType();
+        if      (type == ParameterBase::BOOL) {
+            addParameterToGui((Parameter<bool> *) parameters[idx]);
+        }
+        else if (type == ParameterBase::STRING) {
+            addParameterToGui((Parameter<string> *) parameters[idx]);
+        }
+        else if (type == ParameterBase::INT) {
+            addParameterToGui((Parameter<int> *) parameters[idx]);
+        }
+        else if (type == ParameterBase::FLOAT) {
+            addParameterToGui((Parameter<float> *) parameters[idx]);
+        }
+        else if (type == ParameterBase::VEC2F) {
+            addParameterToGui((Parameter<ofVec2f> *) parameters[idx]);
+        }
+        else if (type == ParameterBase::VEC3F) {
+            addParameterToGui((Parameter<ofVec3f> *) parameters[idx]);
+        }
+        else if (type == ParameterBase::VEC4F) {
+            addParameterToGui((Parameter<ofVec4f> *) parameters[idx]);
+        }
+    }
+    else if (g->type == GuiElement::GUI_EVENT) {
+        string name = g->nameElement;
+        gui->addButton(name, false);
+    }
+    else if (g->type == GuiElement::GUI_MENU) {
+        string name = g->nameElement;
+        ofxUIDropDownList *menu = gui->addDropDownList(name, menus[name]);
+        menu->setAutoClose(false);
+        menu->open();
+        menu->setPadding(1);
+    }
+    else if (g->type == GuiElement::GUI_LABEL) {
+        string name = g->nameElement;
+        gui->addSpacer();
+        gui->addLabel(name);
+        gui->addSpacer();
+    }
+    else if (g->type == GuiElement::GUI_SPACER) {
+        gui->addSpacer();
+    }
+    
     updateColors();
     
     gui->autoSizeToFitWidgets();
 }
+
+
+
+
+
+
+
 
 //-------
 void Control::guiEvent(ofxUIEventArgs &e) {
@@ -434,8 +520,14 @@ void Control::addColor(string name, ofColor *value) {
     ParameterBase *parameter = new Parameter<ofVec4f>(name, *vec, ofVec4f(0, 0, 0, 0), ofVec4f(255, 255, 255, 255), 1.0);
     parameters.push_back(parameter);
     parametersVisible[parameter] = true;
-    guiElements.push_back(new GuiElement(GuiElement::GUI_PARAMETER, parameters.size()-1));
-    setupGui();
+    
+    GuiElement *guiElement = new GuiElement(GuiElement::GUI_PARAMETER, parameters.size()-1);
+    guiElements.push_back(guiElement);
+    
+    addElementToGui(guiElement);
+    //setupGui();
+    
+    
 }
 
 //-------
@@ -505,10 +597,10 @@ void Control::updateColors() {
 //-------
 Control::~Control() {
     setActive(false);
-    gui->removeWidgets();
     gui->disable();
-    guiPresets->removeWidgets();
     guiPresets->disable();
+    gui->removeWidgets();
+    guiPresets->removeWidgets();
     clear();
     delete gui;
     delete guiPresets;

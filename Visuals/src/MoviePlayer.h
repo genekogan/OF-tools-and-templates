@@ -30,13 +30,7 @@ public:
     void setClipsHidden(bool clipsHidden);
     
     void clearMovies();
-    
-    /*
-    void loadMovies1();
-    void loadMovies2();
-    void loadMovies3();
-     */
-    
+        
 private:
     
     void setupControl();

@@ -236,7 +236,6 @@ void OscManager::registerParameterToOsc(ParameterBase *parameter, bool send) {
 template <typename T>
 void OscManager::checkIfToSendOscMessage(map<string, TrackerBase*>::iterator &it) {
     if (((Tracker<T> *) it->second)->checkChanged()) {
-        //ofLog(OF_LOG_VERBOSE, "send OSC "+ it->first +" :: "+ ofToString(it->second->getValue<T>()));
         ofxOscMessage msg;
         msg.setAddress(it->first);
         addOscArgs(msg, it->second->getValue<T>());

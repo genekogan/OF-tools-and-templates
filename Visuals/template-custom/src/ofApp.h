@@ -20,9 +20,6 @@ public:
     }
     
     void update() {
-        if (ofGetFrameNum() % 120 == 0) {
-            //position.easeTo(ofVec2f(ofRandom(200, 800), ofRandom(200, 600)), 60);
-        }
     }
     
     void draw() {

@@ -1,0 +1,47 @@
+<Preset>
+	<Parameters>
+		<Parameter>
+			<Name>position</Name>
+			<OscAddress>/position</OscAddress>
+			<Type>Vec2f</Type>
+			<Value>546.595, 298</Value>
+			<Min>0, 0</Min>
+			<Max>1024, 768</Max>
+			<Warp>1</Warp>
+		</Parameter>
+		<Parameter>
+			<Name>radius</Name>
+			<OscAddress>/radius</OscAddress>
+			<Type>Float</Type>
+			<Value>100</Value>
+			<Min>20</Min>
+			<Max>200</Max>
+			<Warp>1</Warp>
+		</Parameter>
+		<Parameter>
+			<Name>filled</Name>
+			<OscAddress>/filled</OscAddress>
+			<Type>Bool</Type>
+			<Value>1</Value>
+		</Parameter>
+		<Parameter>
+			<Name>point</Name>
+			<OscAddress>/point</OscAddress>
+			<Type>Vec3f</Type>
+			<Value>0.461308, 0.677265, 0</Value>
+			<Min>0, 0, 0</Min>
+			<Max>1, 1, 1</Max>
+			<Warp>1</Warp>
+		</Parameter>
+		<Parameter>
+			<Name>resolution</Name>
+			<OscAddress>/resolution</OscAddress>
+			<Type>Int</Type>
+			<Value>18</Value>
+			<Min>4</Min>
+			<Max>24</Max>
+			<Warp>1</Warp>
+		</Parameter>
+	</Parameters>
+	<Menus/>
+</Preset>

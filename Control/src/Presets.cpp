@@ -2,6 +2,11 @@
 
 
 //--------------
+Presets::Presets() {
+    metaEnabled = true;
+}
+
+//--------------
 bool Presets::savePreset(Control &control, string filename) {
     if (filename=="") {
         filename = ofSystemTextBoxDialog("Choose a filename");
@@ -30,10 +35,6 @@ void Presets::loadPreset(Control &control, string path, int numFrames) {
 
 //--------------
 void Presets::loadPreset(Control &control, ofXml &xml, int numFrames) {
-    
-    bool toUseMeta = true;
-    
-    
     vector<ParameterBase *> parameters = control.getParameters();
     vector<ofxUIDropDownList *> menus = control.getMenus();
     
@@ -94,7 +95,7 @@ void Presets::loadPreset(Control &control, ofXml &xml, int numFrames) {
     }
     xml.setToParent();
     
-    if (xml.exists("MetaController") && toUseMeta) {
+    if (xml.exists("MetaController") && metaEnabled) {
         xml.setTo("MetaController");
         int rows = xml.getValue<int>("Rows");
         int cols = xml.getValue<int>("Cols");

@@ -88,6 +88,12 @@ private:
     void setupGuiPresets();
     void updateColors();
     
+    
+    void resetPresetsList();
+    //////
+    void addElementToGui(GuiElement *g);
+    /////
+    
     void addParameterToGui(Parameter<bool> *parameter);
     void addParameterToGui(Parameter<int> *parameter);
     void addParameterToGui(Parameter<float> *parameter);
@@ -122,8 +128,12 @@ template <typename T> void Control::addParameter(string name, T *value, T min, T
     ParameterBase *parameter = new Parameter<T>(name, *value, min, max, warp);
     parameters.push_back(parameter);
     parametersVisible[parameter] = !invisible;
-    guiElements.push_back(new GuiElement(GuiElement::GUI_PARAMETER, parameters.size()-1));
-    setupGui();
+    
+    GuiElement * guiElement = new GuiElement(GuiElement::GUI_PARAMETER, parameters.size()-1);
+    guiElements.push_back(guiElement);
+    //setupGui();
+    
+    addElementToGui(guiElement);
 }
 
 template <typename T> void Control::addParameter(string name, T *value, bool invisible) {
@@ -133,16 +143,24 @@ template <typename T> void Control::addParameter(string name, T *value, bool inv
     if (parameter->getType() == ParameterBase::STRING) {
         stringEvents[name] = parameter;
     }
-    guiElements.push_back(new GuiElement(GuiElement::GUI_PARAMETER, parameters.size()-1));
-    setupGui();
+
+    GuiElement * guiElement = new GuiElement(GuiElement::GUI_PARAMETER, parameters.size()-1);
+    guiElements.push_back(guiElement);
+    //setupGui();
+    
+    
+    addElementToGui(guiElement);
 }
 
 template <typename ListenerClass, typename ListenerMethod>
 void Control::addEvent(string name, ListenerClass *listener, ListenerMethod method) {
     events[name] = new ofEvent<string>();
     ofAddListener(*events[name], listener, method);
-    guiElements.push_back(new GuiElement(GuiElement::GUI_EVENT, 0, name));
-    setupGui();
+    GuiElement * guiElement = new GuiElement(GuiElement::GUI_EVENT, 0, name);
+    guiElements.push_back(guiElement);
+    //setupGui();
+    
+    addElementToGui(guiElement);
 }
 
 template <typename ListenerClass, typename ListenerMethod>
@@ -151,11 +169,23 @@ void Control::addMenu(string name, vector<string> items, ListenerClass *listener
         menus[name] = items;
         menuEvents[name] = new ofEvent<string>();
         ofAddListener(*menuEvents[name], listener, method);
-        guiElements.push_back(new GuiElement(GuiElement::GUI_MENU, 0, name));
-        setupGui();
+        GuiElement * guiElement = new GuiElement(GuiElement::GUI_MENU, 0, name);
+        guiElements.push_back(guiElement);
+        
+        
+        addElementToGui(guiElement);
+        //setupGui();
     }
     else {
         menus[name] = items;
-        setupGui();
+        
+        
+        //////
+        
+        // UPDATE THE MENU
+        //////
+        
+        
+        //setupGui();
     }
 }

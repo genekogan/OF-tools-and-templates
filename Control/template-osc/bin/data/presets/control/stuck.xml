@@ -1,0 +1,57 @@
+<Preset>
+	<Parameters>
+		<Parameter>
+			<Name>position</Name>
+			<OscAddress>/position</OscAddress>
+			<Type>Vec2f</Type>
+			<Value>887.756, 396.636</Value>
+			<Min>0, 0</Min>
+			<Max>1024, 768</Max>
+			<Warp>1</Warp>
+		</Parameter>
+		<Parameter>
+			<Name>radius</Name>
+			<OscAddress>/radius</OscAddress>
+			<Type>Float</Type>
+			<Value>109.351</Value>
+			<Min>20</Min>
+			<Max>200</Max>
+			<Warp>1</Warp>
+		</Parameter>
+		<Parameter>
+			<Name>filled</Name>
+			<OscAddress>/filled</OscAddress>
+			<Type>Bool</Type>
+			<Value>1</Value>
+		</Parameter>
+		<Parameter>
+			<Name>point</Name>
+			<OscAddress>/point</OscAddress>
+			<Type>Vec3f</Type>
+			<Value>0.470569, 0.185764, 0.277868</Value>
+			<Min>0, 0, 0</Min>
+			<Max>1, 1, 1</Max>
+			<Warp>1</Warp>
+		</Parameter>
+		<Parameter>
+			<Name>resolution</Name>
+			<OscAddress>/resolution</OscAddress>
+			<Type>Int</Type>
+			<Value>11</Value>
+			<Min>4</Min>
+			<Max>24</Max>
+			<Warp>1</Warp>
+		</Parameter>
+	</Parameters>
+	<Menus/>
+	<MetaController>
+		<Active>1</Active>
+		<Smooth>1</Smooth>
+		<Discrete>0</Discrete>
+		<Bpm>300</Bpm>
+		<Rows>7</Rows>
+		<Cols>8</Cols>
+		<Values>0.267305,0.596362,0.0510023,0.195834,0.389899,0.0388755,0.381331,0.0226303,0.348139,0.179527,0.306762,0.743804,0.107954,0.378459,0.760596,0.34454,0.688916,0.613793,0.0269484,0.922257,0.377423,0.349609,0.883383,0.0196577,0.387259,0.662869,0.835678,0.242649,0.205175,0.379064,0.925853,0.806057,0.394833,0.961692,0.15496,0.404542,0.136059,0.75052,0.982215,0.0834718,0.910101,0.0594801,0.68258,0.124691,0.689468,0.886077,0.289913,0.572122,0.662569,0.801366,0.560426,0.0816732,0.681704,0.400387,0.309451,0.945453</Values>
+		<SeqActive>1,1,1,1,1,1,1</SeqActive>
+	</MetaController>
+</Preset>
