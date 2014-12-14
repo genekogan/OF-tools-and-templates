@@ -90,9 +90,7 @@ private:
     
     
     void resetPresetsList();
-    //////
     void addElementToGui(GuiElement *g);
-    /////
     
     void addParameterToGui(Parameter<bool> *parameter);
     void addParameterToGui(Parameter<int> *parameter);
@@ -128,12 +126,9 @@ template <typename T> void Control::addParameter(string name, T *value, T min, T
     ParameterBase *parameter = new Parameter<T>(name, *value, min, max, warp);
     parameters.push_back(parameter);
     parametersVisible[parameter] = !invisible;
-    
     GuiElement * guiElement = new GuiElement(GuiElement::GUI_PARAMETER, parameters.size()-1);
     guiElements.push_back(guiElement);
-    //setupGui();
-    
-    addElementToGui(guiElement);
+    if (!invisible) addElementToGui(guiElement);
 }
 
 template <typename T> void Control::addParameter(string name, T *value, bool invisible) {
@@ -143,13 +138,9 @@ template <typename T> void Control::addParameter(string name, T *value, bool inv
     if (parameter->getType() == ParameterBase::STRING) {
         stringEvents[name] = parameter;
     }
-
     GuiElement * guiElement = new GuiElement(GuiElement::GUI_PARAMETER, parameters.size()-1);
     guiElements.push_back(guiElement);
-    //setupGui();
-    
-    
-    addElementToGui(guiElement);
+    if (!invisible) addElementToGui(guiElement);
 }
 
 template <typename ListenerClass, typename ListenerMethod>
@@ -158,8 +149,6 @@ void Control::addEvent(string name, ListenerClass *listener, ListenerMethod meth
     ofAddListener(*events[name], listener, method);
     GuiElement * guiElement = new GuiElement(GuiElement::GUI_EVENT, 0, name);
     guiElements.push_back(guiElement);
-    //setupGui();
-    
     addElementToGui(guiElement);
 }
 
@@ -171,21 +160,11 @@ void Control::addMenu(string name, vector<string> items, ListenerClass *listener
         ofAddListener(*menuEvents[name], listener, method);
         GuiElement * guiElement = new GuiElement(GuiElement::GUI_MENU, 0, name);
         guiElements.push_back(guiElement);
-        
-        
         addElementToGui(guiElement);
-        //setupGui();
     }
     else {
         menus[name] = items;
-        
-        
-        //////
-        
-        // UPDATE THE MENU
-        //////
-        
-        
-        //setupGui();
+        ((ofxUIDropDownList *) gui->getWidget(name))->clearToggles();
+        ((ofxUIDropDownList *) gui->getWidget(name))->addToggles(items);
     }
 }
