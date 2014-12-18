@@ -72,7 +72,6 @@ MantaLearn::MantaLearn() : Learn() {
 void MantaLearn::loadPreset(string path) {
     Learn::loadPreset(path);
     setupGuiInputs();
-    //resetMantaInputSelector();
 }
 
 //-----------
@@ -351,17 +350,7 @@ void MantaLearn::setupGuiOutputs(bool showAddOutputOption) {
 //-----------
 void MantaLearn::setupGuiInputs() {
     guiInputs->setPosition(420, 365-22*customInputFeatures.size());
-
-    
-    
-    /* DONT CLEAR? */
-    
-    guiInputs->clearWidgets();
-    
-    
-    
-    
-    
+    guiInputs->removeWidgets();
     guiInputs->addLabel("Manta");
     guiInputs->addSpacer(110, 1);
     guiInputs->addLabelButton("add custom", false, 110.0f)->setColorBack(ofColor(0,100,0));
@@ -392,19 +381,10 @@ void MantaLearn::setupGuiInputs() {
 
 //-----------
 void MantaLearn::guiEntryHelper(string b1, string b2) {
-    /*
-    guiInputs->addLabelToggle(b1, false, 90.0f);
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    guiInputs->addLabelToggle(b2, false, 15.0f)->setLabelText("V");
-    guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-     */
-    
-    
     guiInputs->addLabelToggle(b1, hasInput(b1), 90.0f);
     guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
     guiInputs->addLabelToggle(b2, hasInput(b2), 15.0f)->setLabelText("V");
     guiInputs->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-
 }
 
 //-----------
@@ -498,91 +478,3 @@ MantaLearn::~MantaLearn() {
     delete guiInputs;
     manta.close();
 }
-
-/*
-//-----------
-void MantaLearn::resetMantaInputSelector() {
-    
-    allPads = false;
-    allSliders = false;
-    allButtons = false;
-    numPads = false;
-    padSum = false;
-    padAvg = false;
-    perimeter = false;
-    width = false;
-    height = false;
-    whRatio = false;
-    avgInterDist = false;
-    centroid = false;
-    wCentroid = false;
-    vAllPads = false;
-    vAllSliders = false;
-    vAllButtons = false;
-    vNumPads = false;
-    vPadSum = false;
-    vPadAvg = false;
-    vPerimeter = false;
-    vWidth = false;
-    vHeight = false;
-    vWhRatio = false;
-    vAvgInterDist = false;
-    vCentroid = false;
-    vWCentroid = false;
-    for (int r=0; r<6; r++) {
-        for (int c=0; c<8; c++) {
-            padVal[r][c] = false;
-            padVel[r][c] = false;
-        }
-    }
-    for (int s=0; s<2; s++) {
-        sliderVal[s] = false;
-        sliderVel[s] = false;
-    }
-    for (int b=0; b<4; b++) {
-        buttonVal[b] = false;
-        buttonVel[b] = false;
-    }
-    
-    for (int i=0; i<inputs.size(); i++) {
-        if      (inputs[i]->getName() == "all pads")  allPads = true;
-        else if (inputs[i]->getName() == "all pad velocities")  vAllPads = true;
-        else if (inputs[i]->getName() == "all sliders")  allSliders = true;
-        else if (inputs[i]->getName() == "all slider velocities")  vAllSliders = true;
-        else if (inputs[i]->getName() == "all buttons")  allButtons = true;
-        else if (inputs[i]->getName() == "all button velocities")  vAllButtons = true;
-        else if (inputs[i]->getName() == "number pads")  numPads = true;
-        else if (inputs[i]->getName() == "number pads velocity")  vNumPads = true;
-        else if (inputs[i]->getName() == "pad sum")  padSum = true;
-        else if (inputs[i]->getName() == "pad sum velocity")  vPadSum = true;
-        else if (inputs[i]->getName() == "pad average")  padAvg = true;
-        else if (inputs[i]->getName() == "pad average velocity")  vPadAvg = true;
-        else if (inputs[i]->getName() == "perimeter")  perimeter = true;
-        else if (inputs[i]->getName() == "perimeter velocity")  vPerimeter = true;
-        else if (inputs[i]->getName() == "width")  width = true;
-        else if (inputs[i]->getName() == "width velocity")  vWidth = true;
-        else if (inputs[i]->getName() == "height")  height = true;
-        else if (inputs[i]->getName() == "height velocity")  vHeight = true;
-        else if (inputs[i]->getName() == "w/h ratio")  whRatio = true;
-        else if (inputs[i]->getName() == "w/h ratio velocity")  vWhRatio = true;
-        else if (inputs[i]->getName() == "finger dist")  avgInterDist = true;
-        else if (inputs[i]->getName() == "finger dist velocity")  vAvgInterDist = true;
-        else if (inputs[i]->getName() == "centroid")  centroid = true;
-        else if (inputs[i]->getName() == "centroid velocity")  vCentroid = true;
-        else if (inputs[i]->getName() == "wtd centroid")  wCentroid = true;
-        else if (inputs[i]->getName() == "wtd centroid velocity")  vWCentroid = true;
-        else if (inputs[i]->getName() == "slider 0")  sliderVal[0] = true;
-        else if (inputs[i]->getName() == "slider velocity 0")  sliderVel[0] = true;
-        else if (inputs[i]->getName() == "slider 1")  sliderVal[1] = true;
-        else if (inputs[i]->getName() == "slider velocity 1")  sliderVel[1] = true;
-        else if (inputs[i]->getName() == "button 0")  buttonVal[0] = true;
-        else if (inputs[i]->getName() == "button velocity 0")  buttonVel[0] = true;
-        else if (inputs[i]->getName() == "button 1")  buttonVal[1] = true;
-        else if (inputs[i]->getName() == "button velocity 1")  buttonVel[1] = true;
-        else if (inputs[i]->getName() == "button 2")  buttonVal[2] = true;
-        else if (inputs[i]->getName() == "button velocity 2")  buttonVel[2] = true;
-        else if (inputs[i]->getName() == "button 3")  buttonVal[3] = true;
-        else if (inputs[i]->getName() == "button velocity 3")  buttonVel[3] = true;
-    }
-}
-*/

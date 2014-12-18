@@ -11,6 +11,32 @@
 //  - check face detection research
 //
 
+
+enum MantaType {
+    PAD,
+    SLIDER,
+    BUTTON
+};
+
+class MantaElement {
+public:
+    MantaType type;
+    int element;
+    int selection;
+    MantaElement(MantaType type, int element, int selection) {
+        this->type = type;
+        this->element = element;
+        this->selection = selection;
+    }
+    MantaElement() {element = -1;}
+};
+
+bool operator <( MantaElement const& left, MantaElement const& right ) {
+    return left.element < right.element || ( left.element == right.element && left.selection < right.selection );
+}
+
+
+
 class MantaController
 {
 public:
@@ -79,13 +105,22 @@ public:
     // returns gui element positions
     ofPoint getPositionAtPad(int row, int col);
     
-    // selection
+    // get selection
     vector<int> getPadSelection() {return manta.getPadSelection(0);}
     vector<int> getPadVelocitySelection() {return manta.getPadSelection(1);}
     vector<int> getSliderSelection() {return manta.getSliderSelection(0);}
     vector<int> getSliderVelocitySelection() {return manta.getSliderSelection(1);}
     vector<int> getButtonSelection() {return manta.getButtonSelection(0);}
     vector<int> getButtonVelocitySelection() {return manta.getButtonSelection(1);}
+    
+    // set selection
+    void addPadToSelection(int idx, int selection) {manta.addPadToSelection(idx, selection);}
+    void addSliderToSelection(int idx, int selection) {manta.addSliderToSelection(idx, selection);}
+    void addButtonToSelection(int idx, int selection) {manta.addButtonToSelection(idx, selection);}
+    void setPadSelection(vector<int> idx, int selection);
+    void setSliderSelection(vector<int> idx, int selection);
+    void setButtonSelection(vector<int> idx, int selection);
+    
     void clearSelection() {manta.clearSelection();}
     int getSizeSelection();
 
@@ -102,13 +137,9 @@ public:
     template <typename L, typename M> void removeButtonVelocityListener(L *listener, M method) {manta.removeButtonVelocityListener(listener, method);}
     
     // add gui interaction listeners
-    template <typename L, typename M> void addPadClickListener(L *listener, M method) {ofAddListener(padClickEvent, listener, method);}
-    template <typename L, typename M> void addSliderClickListener(L *listener, M method) {ofAddListener(sliderClickEvent, listener, method);}
-    template <typename L, typename M> void addButtonClickListener(L *listener, M method) {ofAddListener(buttonClickEvent, listener, method);}
-    template <typename L, typename M> void removePadClickListener(L *listener, M method) {ofRemoveListener(padClickEvent, listener, method);}
-    template <typename L, typename M> void removeSliderClickListener(L *listener, M method) {ofRemoveListener(sliderClickEvent, listener, method);}
-    template <typename L, typename M> void removeButtonClickListener(L *listener, M method) {ofRemoveListener(buttonClickEvent, listener, method);}
-    
+    template <typename L, typename M> void addClickListener(L *listener, M method) {ofAddListener(clickEvent, listener, method);}
+    template <typename L, typename M> void removeClickListener(L *listener, M method) {ofRemoveListener(clickEvent, listener, method);}
+
     
 protected:
     
@@ -151,12 +182,17 @@ protected:
 
     // callbacks
     void mousePressed(ofMouseEventArgs &evt);
+    void mouseDragged(ofMouseEventArgs &evt);
+    void mouseReleased(ofMouseEventArgs &evt);
     void keyPressed(ofKeyEventArgs &e);
     void keyReleased(ofKeyEventArgs &e);
-
-    ofEvent<int> padClickEvent, sliderClickEvent, buttonClickEvent;
-    bool mouseActive;
     void setMouseResponders();
+
+    
+    ofEvent<MantaElement> clickEvent;
+    bool mouseActive;
+    bool dragging;
+    ofPoint dragPoint1, dragPoint2;
     ofRectangle padPositions[48], sliderPositions[2], buttonPositions[4];
     ofRectangle mainDrawRect, statsDrawRect;
     int x, y, width, height;

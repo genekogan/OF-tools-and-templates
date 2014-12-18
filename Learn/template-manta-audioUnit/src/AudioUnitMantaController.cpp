@@ -8,32 +8,18 @@ void AudioUnitMantaController::setActive(bool active) {
         manta->addPadVelocityListener(this, &AudioUnitMantaController::mantaPadVelocityEvent);
         manta->addSliderListener(this, &AudioUnitMantaController::mantaSliderEvent);
         manta->addButtonListener(this, &AudioUnitMantaController::mantaButtonEvent);
+        manta->addClickListener(this, &AudioUnitMantaController::mantaClickEvent);
     }
     else {
         manta->removePadListener(this, &AudioUnitMantaController::mantaPadEvent);
         manta->removePadVelocityListener(this, &AudioUnitMantaController::mantaPadVelocityEvent);
         manta->removeSliderListener(this, &AudioUnitMantaController::mantaSliderEvent);
         manta->removeButtonListener(this, &AudioUnitMantaController::mantaButtonEvent);
-    }
-
-}
-
-
-//-----------
-void AudioUnitMantaController::noteEvent(NoteType type, int note, int velocity) {
-    if      (type == NOTE_ON) {
-        au->midiNoteOn(note, velocity);
-        noteStatus[note] = true;
-    }
-    else if (type == NOTE_OFF) {
-        au->midiNoteOff(note, velocity);
-        noteStatus[note] = false;
-    }
-    else if (type == NOTE_AUTO) {
-        au->midiNoteOn(note, velocity);
-        noteEvents[note] = ofGetFrameNum();
+        manta->removeClickListener(this, &AudioUnitMantaController::mantaClickEvent);
     }
 }
+
+
 
 //-----------
 void AudioUnitMantaController::chooseSequencerMode(string &s) {
@@ -46,41 +32,109 @@ void AudioUnitMantaController::toggleSmooth(string &s) {
 //    sequencer.setSmooth(sequencerSmooth);
 }
 
+
+
 //-----------
 void AudioUnitMantaController::mantaPadEvent(ofxMantaEvent &e) {
-    int idx = e.col + 8 * e.row;
-    if (mantaMap.count(idx) > 0) {
-        au->setParameter(mantaMap[idx].parameterId, 0, ofMap(e.value, 0, 196.0, mantaMap[idx].rmin, mantaMap[idx].rmax));
+    MantaElement m(PAD, e.col + 8 * e.row, 0);
+    if (mantaEffectsMap.count(m)>0) {
+        audioUnit->setParameter(mantaEffectsMap[m]->parameterId, 0,
+                                ofMap(e.value, 0, 196.0, mantaEffectsMap[m]->rmin, mantaEffectsMap[m]->rmax));
     }
+    
+
 }
 
 //-----------
 void AudioUnitMantaController::mantaPadVelocityEvent(ofxMantaEvent &e) {
+    if (e.value > 0) {
+        MantaElement m(PAD, e.col + 8 * e.row, 0);
+        if (mantaNoteMap.count(m) > 0) {
+            int note = mantaNoteMap[m];
+            int velocity = e.value;
+            noteEvent(NOTE_AUTO, note, velocity);
+        }
+    }
+    
+    
+    
+    /*
     int idx = e.col + 8 * e.row;
     if (mantaMap.count(idx) > 0) {
-        au->setParameter(mantaMap[idx].parameterId, 0, ofMap(e.value, 0, 196.0, mantaMap[idx].rmin, mantaMap[idx].rmax));
-    }
+        audioUnit->setParameter(mantaMap[idx].parameterId, 0, ofMap(e.value, 0, 196.0, mantaMap[idx].min, mantaMap[idx].max));
+    }*/
 }
 
 //-----------
 void AudioUnitMantaController::mantaSliderEvent(ofxMantaEvent &e) {
+    /*
     if (e.value == -1)  return;
     int idx = 48 + e.id;
     if (mantaMap.count(idx) > 0) {
-        au->setParameter(mantaMap[idx].parameterId, 0, ofMap(e.value, 0, 4096, mantaMap[idx].rmin, mantaMap[idx].rmax));
-    }
+        audioUnit->setParameter(mantaMap[idx].parameterId, 0, ofMap(e.value, 0, 4096, mantaMap[idx].min, mantaMap[idx].max));
+    }*/
 }
 
 //-----------
 void AudioUnitMantaController::mantaButtonEvent(ofxMantaEvent &e) {
+    /*
     int idx = 50 + e.id;
     if (mantaMap.count(idx) > 0) {
-        au->setParameter(mantaMap[idx].parameterId, 0, ofMap(e.value, 0, 196.0, mantaMap[idx].rmin, mantaMap[idx].rmax));
+        audioUnit->setParameter(mantaMap[idx].parameterId, 0, ofMap(e.value, 0, 196.0, mantaMap[idx].min, mantaMap[idx].max));
+    }*/
+}
+
+//-----------
+void AudioUnitMantaController::parameterSelected(AudioUnitParameter *parameter) {
+    if (selectedMantaElement.selection == -1) return;
+    mantaEffectsMap[selectedMantaElement] = parameter;
+    setupGui();
+}
+
+//-----------
+void AudioUnitMantaController::guiEvent(ofxUIEventArgs &e) {
+    if (e.getName() == "remove effect") {
+        mantaEffectsMap.erase(selectedMantaElement);
+        setupGui();
+        return;
     }
+    else if (e.getName() == "range") {
+        float _rmin = ((ofxUIRangeSlider *) gui->getWidget("range"))->getValueLow();
+        float _rmax = ((ofxUIRangeSlider *) gui->getWidget("range"))->getValueHigh();
+        mantaEffectsMap[selectedMantaElement]->rmin = _rmin;
+        mantaEffectsMap[selectedMantaElement]->rmax = _rmax;
+        return;
+    }
+    else if (e.getName() == "View Selection") {
+        vector<int> selection;
+        for (map<MantaElement, int>::iterator it=mantaNoteMap.begin(); it!=mantaNoteMap.end(); ++it){
+            if (it->first.type != PAD)  continue;
+            selection.push_back(it->first.element);
+        }
+        manta->setPadSelection(selection, 0);
+        return;
+    }
+    else if (e.getName() == "Selection -> MIDI") {
+        mantaNoteMap.clear();
+        vector<int> selection = manta->getPadSelection();
+        for (int i=0; i<selection.size(); i++) {
+            MantaElement m(PAD, selection[i], 0);
+            int row = floor(selection[i] / 8);
+            int col = selection[i] % 8;
+            int degree = (2 * row - (int)(row / 2) + col) % 7;
+            int octave = floor((2 * row - floor(row / 2) + col) / 7);
+            mantaNoteMap[m] = theory.getNote(60, degree, octave);
+        }
+        return;
+    }
+    
+    AudioUnitPlayer::guiEvent(e);
+    
 }
 
 //-----------
 void AudioUnitMantaController::guiParametersEvent(ofxUIEventArgs &e) {
+    /*
     if (e.getParentName() == "parameter groups") {
         if (parameterGroups.count(e.getName())>0) {
             guiToSwitchParametersName = e.getName();
@@ -160,6 +214,7 @@ void AudioUnitMantaController::guiParametersEvent(ofxUIEventArgs &e) {
             guiParameterRange->setValueHigh(mantaMap[guiActiveManta].rmax);
         }
     }
+     */
 }
 
 //-----------

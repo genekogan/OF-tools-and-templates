@@ -525,8 +525,6 @@ void LearnInputParameter::setupGui() {
 
 //-----------
 void LearnOutputParameter::setupGui() {
-    cout << "SETUP LOP GUI " << ofGetFrameNum() << endl;
-    
     guiData->clearWidgets();
     gui->setColorOutline(ofColor(255,200));
     gui->setDrawOutline(true);
@@ -592,8 +590,6 @@ void LearnOutputParameter::setupGui() {
 
 //-----------
 void LearnOutputParameter::setupGuiInputSelector() {
-    cout << "SETUP LOP GUI INSPECT " << ofGetFrameNum() << endl;
-    
     guiInputSelect->clearWidgets();
     guiInputSelect->setColorOutline(ofColor(255,200));
     guiInputSelect->setDrawOutline(true);

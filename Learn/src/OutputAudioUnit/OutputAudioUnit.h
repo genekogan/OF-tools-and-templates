@@ -1,53 +1,24 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxAudioUnit.h"
-#include "ofxUI.h"
+#include "Control.h"
 #include "Learn.h"
+#include "AudioUnitPlayer.h"
 
 
-class OutputAudioUnit
+class OutputAudioUnit : public AudioUnitPlayer
 {
 public:
-    ~OutputAudioUnit();
-    OutputAudioUnit();
-    
-    void setupLearn(Learn *learn) {this->learn = learn;}
     void setupAudioUnit(ofxAudioUnitSampler *audioUnit);
-
+    void setupLearn(Learn *learn) {this->learn = learn;}
+    
     void update();
-    void draw();
     
-    void showUI() {audioUnit->showUI();}
-
-    void setGuiPosition(int x, int y);
-    
-    void resetParameterMappings();
-
 protected:
     
-    struct ParameterMapping {
-        string name;
-        int parameterId;
-        float min, max;
-        float *val;
-    };
-    
-    void setupGui();
-    void guiEvent(ofxUIEventArgs &e);
-    void setupGuiParameterGroup(string parameterGroupName);
-    
-    Learn *learn;
-    ofxAudioUnitSampler *audioUnit;
+    void parameterSelected(AudioUnitParameter *parameter);
+    void resetParameterMappings();
 
-    map<string, vector<string> > parameterGroups;
-    vector<string> parameterGroupNames;
-    vector<ParameterMapping> parameters;
-    vector<ParameterMapping*> activeParameters;
-    
-    ofxUICanvas *gui;
-    ofxUIDropDownList *guiParameterGroups, *guiParameters;
-    bool visible;
-    bool guiToSwitchParameters;
-    string guiToSwitchParametersName;
+    Learn *learn;
+    vector<AudioUnitParameter*> activeParameters;
 };

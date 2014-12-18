@@ -30,11 +30,9 @@ protected:
     void guiInputEvent(ofxUIEventArgs &e);
     void guiEntryHelper(string b1, string b2);
     
-    void resetManta();
-    //void resetMantaInputSelector();
-
-    // custom feature set from manta selection
+    // manta
     void createCustomFeatureSetFromMantaSelection();
+    void resetManta();
     
     // all feature sets
     void addAllPadsAsInput();
@@ -63,21 +61,6 @@ protected:
     void addAverageInterFingerDistanceVelocityAsInput();
     void addCentroidVelocityAsInput();
     void addWeightedCentroidVelocityAsInput();
-
-    // input selector
-    /*
-    bool allPads, allSliders, allButtons,
-        numPads, padSum, padAvg, perimeter,
-        width, height, whRatio,
-        avgInterDist, centroid, wCentroid;
-    bool vAllPads, vAllSliders, vAllButtons,
-        vNumPads, vPadSum, vPadAvg, vPerimeter,
-        vWidth, vHeight, vWhRatio,
-        vAvgInterDist, vCentroid, vWCentroid;
-    bool padVal[6][8], padVel[6][8];
-    bool sliderVal[2], sliderVel[2];
-    bool buttonVal[4], buttonVel[4];
-    */
     
     // gui
     ofxUICanvas *gui, *guiInputs;

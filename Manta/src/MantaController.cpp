@@ -14,11 +14,17 @@ void MantaController::setMouseActive(bool mouseActive) {
     this->mouseActive = mouseActive;
     if (mouseActive) {
         ofAddListener(ofEvents().mousePressed, this, &MantaController::mousePressed);
+        ofAddListener(ofEvents().mouseDragged, this, &MantaController::mouseDragged);
+        ofAddListener(ofEvents().mouseReleased, this, &MantaController::mouseReleased);
+
         ofAddListener(ofEvents().keyPressed, this, &MantaController::keyPressed);
         ofAddListener(ofEvents().keyReleased, this, &MantaController::keyReleased);
     }
     else {
         ofRemoveListener(ofEvents().mousePressed, this, &MantaController::mousePressed);
+        ofRemoveListener(ofEvents().mouseDragged, this, &MantaController::mouseDragged);
+        ofRemoveListener(ofEvents().mouseReleased, this, &MantaController::mouseReleased);
+
         ofRemoveListener(ofEvents().keyPressed, this, &MantaController::keyPressed);
         ofRemoveListener(ofEvents().keyReleased, this, &MantaController::keyReleased);
     }
@@ -166,6 +172,30 @@ void MantaController::update(){
 }
 
 //-----------
+void MantaController::setPadSelection(vector<int> idx, int selection) {
+    manta.clearPadSelection();
+    for (int i=0; i<idx.size(); i++) {
+        manta.addPadToSelection(idx[i], selection);
+    }
+}
+
+//-----------
+void MantaController::setSliderSelection(vector<int> idx, int selection) {
+    manta.clearSliderSelection();
+    for (int i=0; i<idx.size(); i++) {
+        manta.addSliderToSelection(idx[i], selection);
+    }
+}
+
+//-----------
+void MantaController::setButtonSelection(vector<int> idx, int selection) {
+    manta.clearButtonSelection();
+    for (int i=0; i<idx.size(); i++) {
+        manta.addButtonToSelection(idx[i], selection);
+    }
+}
+
+//-----------
 void MantaController::markPad(int row, int col, bool mark) {
     manta.setLedManual(true);
     manta.setPadLedState(row, col, mark ? Manta::Red : Manta::Off);
@@ -300,6 +330,7 @@ ofPoint MantaController::getPositionAtPad(int row, int col) {
     }
 }
 
+/*
 //----------
 void MantaController::mousePressed(ofMouseEventArgs &evt) {
     if (!mouseActive ||
@@ -310,7 +341,8 @@ void MantaController::mousePressed(ofMouseEventArgs &evt) {
         if (sliderPositions[i].inside(evt.x, evt.y)) {
             if (!shift) manta.clearSelection();
             manta.addSliderToSelection(i, selection);
-            ofNotifyEvent(sliderClickEvent, i, this);
+            MantaElement mantaEvt(SLIDER, i, selection);
+            ofNotifyEvent(clickEvent, mantaEvt, this);
             return;
         }
     }
@@ -318,7 +350,8 @@ void MantaController::mousePressed(ofMouseEventArgs &evt) {
         if (buttonPositions[i].inside(evt.x, evt.y)) {
             if (!shift) manta.clearSelection();
             manta.addButtonToSelection(i, selection);
-            ofNotifyEvent(buttonClickEvent, i, this);
+            MantaElement mantaEvt(BUTTON, i, selection);
+            ofNotifyEvent(clickEvent, mantaEvt, this);
             return;
         }
     }
@@ -326,11 +359,95 @@ void MantaController::mousePressed(ofMouseEventArgs &evt) {
         if (padPositions[i].inside(evt.x, evt.y)) {
             if (!shift) manta.clearSelection();
             manta.addPadToSelection(i, selection);
-            ofNotifyEvent(padClickEvent, i, this);
+            MantaElement mantaEvt(PAD, i, selection);
+            ofNotifyEvent(clickEvent, mantaEvt, this);
             return;
         }
     }
     manta.clearSelection();
+}
+*/
+
+
+//----------
+void MantaController::mousePressed(ofMouseEventArgs &evt) {
+    dragging = true;
+    dragPoint1 = ofPoint(evt.x, evt.y);
+    dragPoint2 = dragPoint1;
+    manta.clearSelection();
+}
+//----------
+void MantaController::mouseDragged(ofMouseEventArgs &evt) {
+    if (!mouseActive || !dragging ||
+        !mainDrawRect.inside(evt.x, evt.y))  return;
+    
+    manta.clearSelection();
+    dragPoint2 = ofPoint(evt.x, evt.y);
+    ofRectangle rect = ofRectangle(min(dragPoint1.x, dragPoint2.x), min(dragPoint1.y, dragPoint2.y),
+                                   abs(dragPoint1.x-dragPoint2.x), abs(dragPoint1.y-dragPoint2.y));
+    for (int i=0; i<48; i++) {
+        if (rect.inside(padPositions[i].x, padPositions[i].y) ||
+            rect.inside(padPositions[i].x+ padPositions[i].width, padPositions[i].y) ||
+            rect.inside(padPositions[i].x+ padPositions[i].width, padPositions[i].y+ padPositions[i].height) ||
+            rect.inside(padPositions[i].x, padPositions[i].y+ padPositions[i].height)) {
+            manta.addPadToSelection(i, selection);
+        }
+    }
+    for (int i=0; i<2; i++) {
+        if (rect.inside(sliderPositions[i].x, sliderPositions[i].y) ||
+            rect.inside(sliderPositions[i].x+ sliderPositions[i].width, sliderPositions[i].y) ||
+            rect.inside(sliderPositions[i].x+ sliderPositions[i].width, sliderPositions[i].y+sliderPositions[i].height) ||
+            rect.inside(sliderPositions[i].x, sliderPositions[i].y+ sliderPositions[i].height)) {
+            manta.addSliderToSelection(i, selection);
+        }
+    }
+    for (int i=0; i<2; i++) {
+        if (rect.inside(buttonPositions[i].x, buttonPositions[i].y) ||
+            rect.inside(buttonPositions[i].x+ buttonPositions[i].width, buttonPositions[i].y) ||
+            rect.inside(buttonPositions[i].x+ buttonPositions[i].width, buttonPositions[i].y+ buttonPositions[i].height) ||
+            rect.inside(buttonPositions[i].x, buttonPositions[i].y+ buttonPositions[i].height)) {
+            manta.addButtonToSelection(i, selection);
+        }
+    }
+}
+
+//----------
+void MantaController::mouseReleased(ofMouseEventArgs &evt) {
+    dragging = false;
+
+    if (!mouseActive ||
+        !mainDrawRect.inside(evt.x, evt.y) ||
+        ofDist(dragPoint1.x, dragPoint1.y, dragPoint2.x, dragPoint2.y) > 1 ) {
+        return;
+    }
+    
+    for (int i=0; i<2; i++) {
+        if (sliderPositions[i].inside(evt.x, evt.y)) {
+            if (!shift) manta.clearSelection();
+            manta.addSliderToSelection(i, selection);
+            MantaElement mantaEvt(SLIDER, i, selection);
+            ofNotifyEvent(clickEvent, mantaEvt, this);
+            return;
+        }
+    }
+    for (int i=0; i<4; i++) {
+        if (buttonPositions[i].inside(evt.x, evt.y)) {
+            if (!shift) manta.clearSelection();
+            manta.addButtonToSelection(i, selection);
+            MantaElement mantaEvt(BUTTON, i, selection);
+            ofNotifyEvent(clickEvent, mantaEvt, this);
+            return;
+        }
+    }
+    for (int i=0; i<48; i++) {
+        if (padPositions[i].inside(evt.x, evt.y)) {
+            if (!shift) manta.clearSelection();
+            manta.addPadToSelection(i, selection);
+            MantaElement mantaEvt(PAD, i, selection);
+            ofNotifyEvent(clickEvent, mantaEvt, this);
+            return;
+        }
+    }
 }
 
 //----------

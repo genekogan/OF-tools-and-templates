@@ -468,6 +468,7 @@ void Control::addParameterToGui(Parameter<string> *parameter) {
 
 //-------
 void Control::clear() {
+    /*
     for (map<string, GuiColorVecPair*>::iterator it=colors.begin(); it!=colors.end(); ++it){
         delete it->second;
         colors.erase(it);
@@ -500,6 +501,91 @@ void Control::clear() {
     parameters.clear();
     parametersVisible.clear();
     guiElements.clear();
+     */
+    
+    /*
+    map<string, GuiColorVecPair*>::iterator itc=colors.begin();
+    while (itc!=colors.end()){
+        delete itc->second;
+        colors.erase(itc);
+    }
+    menuEvents.clear();
+    
+    map<string, ofEvent<string>*>::iterator itm=menuEvents.begin();
+    while (itm!=menuEvents.end()){
+        itm->second->disable();
+        itm->second->clear();
+        delete itm->second;
+        menuEvents.erase(itm);
+    }
+     
+    
+    map<string, ofEvent<string>*>::iterator ite=events.begin();
+    while (ite!=events.end()){
+        ite->second->disable();
+        ite->second->clear();
+        delete ite->second;
+        events.erase(ite);
+    }
+    
+    map<ParameterBase *, bool>::iterator itp=parametersVisible.begin();
+    while (itp!=parametersVisible.end()) {
+        parametersVisible.erase(itp);
+    }
+    
+    for (int i=0; i<parameters.size(); i++) {
+        delete parameters[i];
+    }
+    
+    for (int i=0; i<guiElements.size(); i++) {
+        delete guiElements[i];
+    }
+    
+    colors.clear();
+    menuEvents.clear();
+    menus.clear();
+    events.clear();
+    parameters.clear();
+    parametersVisible.clear();
+    guiElements.clear();
+     */
+    
+    
+    for (map<string, GuiColorVecPair*>::iterator it=colors.begin(); it!=colors.end(); ++it){
+        delete it->second;
+        //colors.erase(it);
+    }
+    for (map<string, ofEvent<string>*>::iterator it=menuEvents.begin(); it!=menuEvents.end(); ++it){
+        //it->second->disable();
+        //it->second->clear();
+        delete it->second;
+        //menuEvents.erase(it);
+    }
+    for (map<string, ofEvent<string>*>::iterator it=events.begin(); it!=events.end(); ++it){
+        it->second->disable();
+        it->second->clear();
+        delete it->second;
+        //events.erase(it);
+    }
+    for (map<ParameterBase *, bool>::iterator it=parametersVisible.begin(); it!=parametersVisible.end(); ++it){
+        //parametersVisible.erase(it);
+    }
+    for (int i=0; i<parameters.size(); i++) {
+        delete parameters[i];
+    }
+    for (int i=0; i<guiElements.size(); i++) {
+        delete guiElements[i];
+    }
+    
+    colors.clear();
+    menuEvents.clear();
+    menus.clear();
+    events.clear();
+    parameters.clear();
+    parametersVisible.clear();
+    guiElements.clear();
+
+
 }
 
 //-------

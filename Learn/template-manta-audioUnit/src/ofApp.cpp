@@ -12,15 +12,14 @@ void ofApp::setup(){
     guiSelectUnit->autoSizeToFitWidgets();
     ofAddListener(guiSelectUnit->newGUIEvent, this, &ofApp::selectAudioUnit);
     
+    // setup learn->audio bridge
+    output.setupLearn(&learn);
+    aumc.setup(learn.getMantaControllerRef(), &audio);
+
     // positioning
     guiSelectUnit->setPosition(1030, 5);
     output.setGuiPosition(1030, 85);
-
-    // setup learn->audio bridge
-    output.setupLearn(&learn);
-    
-    
-    aumc.setup(learn.getMantaControllerRef(), &audio);
+    aumc.setGuiPosition(600, 300);
 }
 
 //-------------
@@ -34,18 +33,19 @@ void ofApp::setupAutioUnit(OSType type, OSType subType, OSType manufacturer){
     dac.start();
     
     output.setupAudioUnit(&audio);
+    aumc.setupAudioUnit(&audio);
 }
 
 //-------------
 void ofApp::update(){
     learn.update();
     output.update();
+    aumc.update();
 }
 
 //-------------
 void ofApp::draw(){
     learn.draw();
-    output.draw();
 }
 
 //-------------
