@@ -3,23 +3,20 @@
 
 //-------------
 void ofApp::setup(){
-    learn.setOutputOptionVisible(false);
-
+    
     // setup selection gui
     guiSelectUnit = new ofxUICanvas("Select AudioUnit");
     guiSelectUnit->addLabelButton("Aalto", false);
     guiSelectUnit->addLabelButton("Kaivo", false);
     guiSelectUnit->autoSizeToFitWidgets();
     ofAddListener(guiSelectUnit->newGUIEvent, this, &ofApp::selectAudioUnit);
-    
-    // setup learn->audio bridge
-    output.setupLearn(&learn);
-    aumc.setup(learn.getMantaControllerRef(), &audio);
 
+    manta.setup();
+    aumc.setup(&manta, &audio);
+    
     // positioning
-    guiSelectUnit->setPosition(1030, 5);
-    output.setGuiPosition(1030, 85);
-    aumc.setGuiPosition(1030, 300);
+    guiSelectUnit->setPosition(750, 5);
+    aumc.setGuiPosition(750, 300);
 }
 
 //-------------
@@ -32,29 +29,24 @@ void ofApp::setupAutioUnit(OSType type, OSType subType, OSType manufacturer){
     mixer.connectTo(dac);
     dac.start();
     
-    output.setupAudioUnit(&audio);
     aumc.setupAudioUnit(&audio);
 }
 
 //-------------
 void ofApp::update(){
-    learn.update();
-    output.update();
+    manta.update();
     aumc.update();
 }
 
 //-------------
 void ofApp::draw(){
-    learn.draw();
+    manta.draw(5, 85, 410);
+    manta.drawStats(5, 420, 410);
     aumc.draw();
 }
 
 //-------------
 void ofApp::keyPressed(int key){
-    if (key=='g')
-        learn.toggleVisible();
-    else if (key=='!')
-        learn.toggleMantaVisible();
 }
 
 //-------------

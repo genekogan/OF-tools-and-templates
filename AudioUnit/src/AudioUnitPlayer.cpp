@@ -81,6 +81,13 @@ void AudioUnitPlayer::update() {
 }
 
 //-----------
+void AudioUnitPlayer::draw() {
+    if (sequencer.getActive()) {
+        sequencer.draw();
+    }
+}
+
+//-----------
 void AudioUnitPlayer::noteEvent(NoteType type, int note, int velocity) {
     if      (type == NOTE_ON) {
         audioUnit->midiNoteOn(note, velocity);
@@ -151,6 +158,61 @@ void AudioUnitPlayer::guiEvent(ofxUIEventArgs &e) {
         if (e.getButton()->getValue())  return;
         showUI();
     }
+}
+
+
+//-----------
+void AudioUnitPlayer::setupSequencer() {
+    if (sequencer.getActive())  return;
+    sequencer.setup(6, 8);
+    ofAddListener(sequencer.getSequencer().sequencerEvent, this, &AudioUnitPlayer::sequencerStepEvent);
+    ofAddListener(sequencer.interpolatedSequencerEvent, this, &AudioUnitPlayer::sequencerInterpolatedStepEvent);
+    sequencer.setSmooth(sequencerSmooth);
+    sequencer.setPosition(165, 225, 260, 120);
+}
+
+//-----------
+void AudioUnitPlayer::toggleSequencerSmooth(string &s) {
+    this->sequencerSmooth = !sequencerSmooth;
+    sequencer.setSmooth(sequencerSmooth);
+}
+
+//-----------
+void AudioUnitPlayer::sequencerStepEvent(vector<float> &column) {
+    if (!sequencer.getSmooth()) {
+        processColumn(column);
+    }
+}
+
+//-----------
+void AudioUnitPlayer::sequencerInterpolatedStepEvent(vector<float> &column) {
+    if (sequencer.getSmooth()) {
+        processColumn(column);
+    }
+}
+
+//-----------
+void AudioUnitPlayer::processColumn(vector<float> &column) {
+    /*
+    if (sequencerMode == NOTES) {
+        int col = sequencer.getColumn();
+        for (int r=0; r<column.size(); r++) {
+            if (column[r] > 0.0) {
+                int note = theory.getNote(60, col + 2*(r+1) + floor((r+1)/2));
+                noteEvent(NOTE_AUTO, note, 127.0*column[r]);
+            }
+        }
+    }
+    else if (sequencerMode == PARAMETERS) {
+        int col = sequencer.getColumn();
+        for (int r=0; r<column.size(); r++) {
+            if (seqMap.count(r)) {
+                au.setParameter(seqMap[r].parameterId, 0,
+                                ofMap(column[r], 0, 1,
+                                      seqMap[r].rmin, seqMap[r].rmax));
+            }
+        }
+    }*/
 }
 
 //-----------

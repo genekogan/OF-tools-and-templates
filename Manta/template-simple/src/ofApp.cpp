@@ -12,10 +12,7 @@ void ofApp::setup(){
     manta.addButtonVelocityListener(this, &ofApp::ButtonVelocityEvent);
     
     // manta gui click listeners
-    manta.addPadClickListener(this, &ofApp::PadClick);
-    manta.addSliderClickListener(this, &ofApp::SliderClick);
-    manta.addButtonClickListener(this, &ofApp::ButtonClick);
-
+    manta.addClickListener(this, &ofApp::click);
 }
 
 //----------
@@ -57,10 +54,7 @@ void ofApp::exit() {
     manta.removeButtonListener(this, &ofApp::ButtonEvent);
     manta.removePadVelocityListener(this, &ofApp::PadVelocityEvent);
     manta.removeButtonVelocityListener(this, &ofApp::ButtonVelocityEvent);
-    manta.removePadClickListener(this, &ofApp::PadClick);
-    manta.removeSliderClickListener(this, &ofApp::SliderClick);
-    manta.removeButtonClickListener(this, &ofApp::ButtonClick);
-    
+    manta.removeClickListener(this, &ofApp::click);
     manta.close();
 }
 
@@ -90,17 +84,7 @@ void ofApp::ButtonVelocityEvent(ofxMantaEvent & evt) {
 }
 
 //----------
-void ofApp::PadClick(int & e) {
-    cout << "Clicked pad " << e << endl;
+void ofApp::click(MantaElement &e) {
+    cout << "clicked "<< (e.type == PAD ? "pad" : (e.type == SLIDER ? "slider" : "button")) << " : ";
+    cout << "selection "<<e.selection<<", element "<<e.element << endl;
 }
-
-//----------
-void ofApp::SliderClick(int & e) {
-    cout << "Clicked slider " << e << endl;
-}
-
-//----------
-void ofApp::ButtonClick(int & e) {
-    cout << "Clicked button " << e << endl;
-}
-

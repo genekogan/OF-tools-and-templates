@@ -16,7 +16,6 @@ void MantaController::setMouseActive(bool mouseActive) {
         ofAddListener(ofEvents().mousePressed, this, &MantaController::mousePressed);
         ofAddListener(ofEvents().mouseDragged, this, &MantaController::mouseDragged);
         ofAddListener(ofEvents().mouseReleased, this, &MantaController::mouseReleased);
-
         ofAddListener(ofEvents().keyPressed, this, &MantaController::keyPressed);
         ofAddListener(ofEvents().keyReleased, this, &MantaController::keyReleased);
     }
@@ -24,7 +23,6 @@ void MantaController::setMouseActive(bool mouseActive) {
         ofRemoveListener(ofEvents().mousePressed, this, &MantaController::mousePressed);
         ofRemoveListener(ofEvents().mouseDragged, this, &MantaController::mouseDragged);
         ofRemoveListener(ofEvents().mouseReleased, this, &MantaController::mouseReleased);
-
         ofRemoveListener(ofEvents().keyPressed, this, &MantaController::keyPressed);
         ofRemoveListener(ofEvents().keyReleased, this, &MantaController::keyReleased);
     }
@@ -330,47 +328,10 @@ ofPoint MantaController::getPositionAtPad(int row, int col) {
     }
 }
 
-/*
 //----------
 void MantaController::mousePressed(ofMouseEventArgs &evt) {
     if (!mouseActive ||
-        !mainDrawRect.inside(evt.x, evt.y)) {
-        return;
-    }
-    for (int i=0; i<2; i++) {
-        if (sliderPositions[i].inside(evt.x, evt.y)) {
-            if (!shift) manta.clearSelection();
-            manta.addSliderToSelection(i, selection);
-            MantaElement mantaEvt(SLIDER, i, selection);
-            ofNotifyEvent(clickEvent, mantaEvt, this);
-            return;
-        }
-    }
-    for (int i=0; i<4; i++) {
-        if (buttonPositions[i].inside(evt.x, evt.y)) {
-            if (!shift) manta.clearSelection();
-            manta.addButtonToSelection(i, selection);
-            MantaElement mantaEvt(BUTTON, i, selection);
-            ofNotifyEvent(clickEvent, mantaEvt, this);
-            return;
-        }
-    }
-    for (int i=0; i<48; i++) {
-        if (padPositions[i].inside(evt.x, evt.y)) {
-            if (!shift) manta.clearSelection();
-            manta.addPadToSelection(i, selection);
-            MantaElement mantaEvt(PAD, i, selection);
-            ofNotifyEvent(clickEvent, mantaEvt, this);
-            return;
-        }
-    }
-    manta.clearSelection();
-}
-*/
-
-
-//----------
-void MantaController::mousePressed(ofMouseEventArgs &evt) {
+        !mainDrawRect.inside(evt.x, evt.y))  return;
     dragging = true;
     dragPoint1 = ofPoint(evt.x, evt.y);
     dragPoint2 = dragPoint1;
