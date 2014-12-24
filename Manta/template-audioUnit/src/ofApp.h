@@ -16,6 +16,7 @@ public:
     void setupAutioUnit(OSType type, OSType subType, OSType manufacturer);
     void setupAalto() {setupAutioUnit('aumu', 'Aalt', 'MLbs');}
     void setupKaivo() {setupAutioUnit('aumu', 'Kaiv', 'MLbs');}
+    void showAudioUnitUI() {audio.showUI();}
     
     void selectAudioUnit(ofxUIEventArgs &e);
     void keyPressed(int key);

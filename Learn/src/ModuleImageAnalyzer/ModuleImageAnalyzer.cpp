@@ -8,48 +8,52 @@ ModuleImageAnalyzer::ModuleImageAnalyzer() : Learn() {
     width = 320;
     height = 240;
     
-    cam.initGrabber(width, height);
+    stepSize = 32;
+    numBins = 30;
+    vLerpRate = 0.2;
     
-//    player.loadMovie("/Users/Gene/Media/german_train_grid.mov");
-    player.loadMovie("/Users/Gene/Desktop/german_train_320x240.mp4");
-    player.setLoopState(OF_LOOP_NORMAL);
-    player.play();
-
+    
+    if (mode == 0) {
+        cam.initGrabber(width, height);
+        imitate(previous, cam);
+        imitate(diff, cam);
+        frameDiffCol.resize(cam.getWidth());
+        ySteps = cam.getHeight() / stepSize;
+        xSteps = cam.getWidth() / stepSize;
+    }
+    else if (mode == 1) {
+        player.loadMovie("/Users/Gene/Desktop/german_train_320x240.mp4");
+        player.setLoopState(OF_LOOP_NORMAL);
+        player.play();
+        imitate(previous, player);
+        imitate(diff, player);
+        frameDiffCol.resize(player.getWidth());
+        ySteps = cam.getHeight() / stepSize;
+        xSteps = cam.getWidth() / stepSize;
+    }
+    else if (mode == 2) {
+        ofImage img;
+        img.loadImage("/Users/Gene/Code/openFrameworks/examples/graphics/imageLoaderExample/bin/data/images/bikers.jpg");
+        img.resize(width, height);
+        image.setFromPixels(img.getPixels(), width, height);
+        imitate(previous, image);
+        imitate(diff, image);
+        frameDiffCol.resize(image.getWidth());
+        ySteps = cam.getHeight() / stepSize;
+        xSteps = cam.getWidth() / stepSize;
+    }
+    
     
     
     control.setName("ImageAnalyzer");
-    //control.addParameter("velocity lerp", &vLerpRate, 0.0f, 1.0f);
-    
-    //vLerpRate = 0.2;
-    
-	
-    //imitate(previous, cam);
-	//imitate(diff, cam);
-    imitate(previous, cam);
-	imitate(diff, cam);
-    
-    
-    frameDiffCol.resize(cam.getWidth());
-
-    /*
-     //cvCalcHist(toCv(player), hist);
-
-    ofxCvGrayscaleImage cvImageGray1;
-    
-    cvImageGray1.allocate(320, 240);
-    
-    IplImage** iplImageGray1;
-    iplImageGray1 = cvImageGray1.getCvImage();//<----- Can't do this
-
-    cvCalcHist(iplImageGray1, refHist, 0, 0);
-    */
+    control.addParameter("velocity lerp", &vLerpRate, 0.0f, 1.0f);
+    control.addParameter("bins", &numBins, 6, 64);
     
     
     
+    // set up materials
+    mesh.clear();
     mesh.setMode(OF_PRIMITIVE_TRIANGLES);
-	stepSize = 32;
-	ySteps = cam.getHeight() / stepSize;
-	xSteps = cam.getWidth() / stepSize;
 	for(int y = 0; y < ySteps; y++) {
 		for(int x = 0; x < xSteps; x++) {
 			mesh.addVertex(ofVec2f(x * stepSize, y * stepSize));
@@ -71,8 +75,6 @@ ModuleImageAnalyzer::ModuleImageAnalyzer() : Learn() {
 		}
 	}
 
-    
-    
     // setup histograms
     rgb.allocate(width, height);
     hsv.allocate(width, height);
@@ -97,7 +99,15 @@ ModuleImageAnalyzer::ModuleImageAnalyzer() : Learn() {
 
 //-----------
 void ModuleImageAnalyzer::getHistograms() {
-    rgb.setFromPixels(cam.getPixelsRef());
+    if (mode == 0) {
+        rgb.setFromPixels(cam.getPixelsRef());
+    }
+    else if (mode == 1) {
+        rgb.setFromPixels(player.getPixelsRef());
+    }
+    else if (mode == 2) {
+        rgb.setFromPixels(image.getPixelsRef());
+    }
     
     // get separate red, green, blue channels
     r.setFromPixels(rgb.getPixelsRef().getChannel(0));
@@ -111,12 +121,12 @@ void ModuleImageAnalyzer::getHistograms() {
     v.setFromPixels(hsv.getPixelsRef().getChannel(2));
     
     // get histograms
-    histogramR = histogram.getHistogram(r, 30); // 30 bins
-    histogramG = histogram.getHistogram(g, 30);
-    histogramB = histogram.getHistogram(b, 30);
-    histogramH = histogram.getHistogram(h, 30);
-    histogramS = histogram.getHistogram(s, 30);
-    histogramV = histogram.getHistogram(v, 30);
+    histogramR = histogram.getHistogram(r, numBins); // 30 bins
+    histogramG = histogram.getHistogram(g, numBins);
+    histogramB = histogram.getHistogram(b, numBins);
+    histogramH = histogram.getHistogram(h, numBins);
+    histogramS = histogram.getHistogram(s, numBins);
+    histogramV = histogram.getHistogram(v, numBins);
 }
 
 //-----------
@@ -157,6 +167,7 @@ void ModuleImageAnalyzer::drawHistograms() {
     
     
     ofTranslate(-2*width, -height);
+    image.draw(10, 10, 500, 400);
     ofDrawBitmapString("red", 0, 15);
     ofDrawBitmapString("green", width, 15);
     ofDrawBitmapString("blue", 2*width, 15);
@@ -181,29 +192,55 @@ void ModuleImageAnalyzer::drawHistogram(vector<float> & h) {
 
 //-----------
 void ModuleImageAnalyzer::update() {
-    player.update();
-
-	cam.update();
+    
+    bool toUpdate = false;
+    if (mode == 0) {
+        cam.update();
+        toUpdate = cam.isFrameNew();
+    }
+    else if (mode == 1) {
+        player.update();
+        toUpdate = player.isFrameNew();
+    }
+    else if (mode == 2) {
+        toUpdate = false;
+        
+        // this has to be done at least once upon processing
+    }
 
 	
-//    if(cam.isFrameNew()) {
-    if(player.isFrameNew()) {
+    if(toUpdate) {
         
 		// get frame differencing
-		absdiff(previous, cam, diff);
-		diff.update();
-		copy(cam, previous);
+        if (mode == 0) {
+            absdiff(previous, cam, diff);
+            diff.update();
+            copy(cam, previous);
+        }
+        else if (mode == 1) {
+            absdiff(previous, player, diff);
+            diff.update();
+            copy(player, previous);
+        }
 
 		columnMean = meanCols(diff);
 		diffMean = mean(toCv(diff));
 		diffMean *= Scalar(50);
 
-        
+
         frameDiffTotalRed = diffMean[0];
         frameDiffTotalGreen = diffMean[1];
         frameDiffTotalBlue = diffMean[2];
         frameDiffTotal = frameDiffTotalRed + frameDiffTotalGreen + frameDiffTotalBlue;
+         
+        /*
+        frameDiffTotalRed = ofLerp(frameDiffTotalRed, diffMean[0], 0.2);
+        frameDiffTotalGreen = ofLerp(frameDiffTotalGreen, diffMean[1], 0.2);
+        frameDiffTotalBlue = ofLerp(frameDiffTotalBlue, diffMean[2], 0.2);
+        frameDiffTotal = ofLerp(frameDiffTotal, frameDiffTotalRed + frameDiffTotalGreen + frameDiffTotalBlue, 0.2);
+         */
 
+        
         Vec3b column;
         for(int i = 0; i < columnMean.rows; i++) {
             column = columnMean.at<Vec3b>(i);
@@ -214,7 +251,17 @@ void ModuleImageAnalyzer::update() {
         
         
         flow.setWindowSize(8);
-		flow.calcOpticalFlow(player);
+        if (mode == 0) {
+            flow.calcOpticalFlow(cam);
+        }
+        else if (mode == 1) {
+            flow.calcOpticalFlow(player);
+        }
+        else if (mode == 2) {
+            // this shouldn't work
+            flow.calcOpticalFlow(image);
+        }
+        
 		int i = 0;
 		float distortionStrength = 4;
 		for(int y = 1; y + 1 < ySteps; y++) {

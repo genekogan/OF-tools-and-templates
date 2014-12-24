@@ -15,6 +15,9 @@ public:
     
 protected:
 
+    void mantaFeaturesUpdate();
+    bool selectedElementMapped();
+    
     void setupGui();
     void guiEvent(ofxUIEventArgs &e);
     void parameterSelected(AudioUnitParameter *parameter);
@@ -24,11 +27,11 @@ protected:
     void mantaPadVelocityEvent(ofxMantaEvent &e);
     void mantaSliderEvent(ofxMantaEvent &e);
     void mantaButtonEvent(ofxMantaEvent &e);
-    void mantaElementDoEffects(MantaElement m, float value);
+    void mantaElementDoEffects(MantaElement m, float lerpValue);
     
     MantaController *manta;
     map<MantaElement, AudioUnitParameter*> mantaEffectsMap;
     map<MantaElement, int> mantaNoteMap;
-    MantaElement selectedMantaElement;    
+    MantaElement selectedMantaElement;
     bool active;
 };

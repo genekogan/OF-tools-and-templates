@@ -15,6 +15,7 @@ void ofApp::setup(){
     // setup learn->audio bridge
     output.setupLearn(&learn);
     aumc.setup(learn.getMantaControllerRef(), &audio);
+    setupAalto();
 
     // positioning
     guiSelectUnit->setPosition(1030, 5);

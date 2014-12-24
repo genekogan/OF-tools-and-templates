@@ -384,11 +384,13 @@ void ContourRenderer::renderOutwardLines() {
 
 //-------
 void ContourRenderer::setupPhysics() {
-    img.loadImage("/Users/Gene/Desktop/star.png");
+    //img.loadImage("/Users/Gene/Desktop/star.png");
+//    img.loadImage("/Users/Gene/Desktop/cat_png_by_dbszabo1-d3dn2c8.png");
+        img.loadImage("/Users/Gene/Desktop/shazeb.png");
     img.resize(40, 40);
     
 	box2d.init();
-	box2d.setGravity(0, 16);
+	box2d.setGravity(0, 5);
 	//box2d.createGround(ofPoint(0, secondWindow.getHeight()), ofPoint(secondWindow.getWidth(), secondWindow.getHeight()));
     
     rate = 5;
@@ -447,7 +449,9 @@ void ContourRenderer::renderPhysics() {
         ofSetRectMode(OF_RECTMODE_CENTER);
         ofTranslate(pos.x, pos.y);
         ofRotate(ang);
+        ofEnableBlendMode(OF_BLENDMODE_ADD);
         img.draw(0, 0, 2*rad, 2*rad);
+        ofDisableBlendMode();
         
         ofPopStyle();
         ofPopMatrix();

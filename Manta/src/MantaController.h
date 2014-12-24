@@ -13,10 +13,36 @@
 
 
 enum MantaType {
+    // inputs
     PAD,
     SLIDER,
-    BUTTON
+    BUTTON,
+    // features
+    NUM_PADS,
+    PAD_SUM,
+    PAD_AVG,
+    CENTROID_X,
+    CENTROID_Y,
+    W_CENTROID_X,
+    W_CENTROID_Y,
+    AVG_FING_DIST,
+    PERIMETER,
+    WIDTH,
+    HEIGHT,
+    WH_RATIO
 };
+
+
+struct MantaTypeFeature {
+    MantaType type;
+    string name;
+    MantaTypeFeature(MantaType type, string name) {
+        this->type = type;
+        this->name = name;
+    }
+    MantaTypeFeature() { }
+};
+
 
 class MantaElement {
 public:
@@ -28,7 +54,11 @@ public:
         this->element = element;
         this->selection = selection;
     }
-    MantaElement() {element = -1;}
+    MantaElement() {
+        type = PAD;
+        element = -1;
+        selection = 01;
+    }
 };
 
 bool operator <( MantaElement const& left, MantaElement const& right ) {
@@ -40,6 +70,7 @@ bool operator <( MantaElement const& left, MantaElement const& right ) {
 class MantaController
 {
 public:
+    MantaController();
     ~MantaController();
     void setup();
     void close();
@@ -101,6 +132,9 @@ public:
     void markPad(int row, int col, bool mark);
     void markSlider(int index, int column);
     void markButton(int index, bool mark);
+    void markAllPads(bool mark);
+    void markAllSliders(int column);
+    void markAllButtons(bool mark);
     
     // returns gui element positions
     ofPoint getPositionAtPad(int row, int col);
@@ -114,9 +148,13 @@ public:
     vector<int> getButtonVelocitySelection() {return manta.getButtonSelection(1);}
     
     // set selection
-    void addPadToSelection(int idx, int selection) {manta.addPadToSelection(idx, selection);}
+    void setSelectionView(bool drawAllSelections) {manta.setSelectionView(drawAllSelections);}
+    void addPadToSelection(int row, int col, int selection) {manta.addPadToSelection(row, col, selection);}
     void addSliderToSelection(int idx, int selection) {manta.addSliderToSelection(idx, selection);}
     void addButtonToSelection(int idx, int selection) {manta.addButtonToSelection(idx, selection);}
+    void removePadFromSelection(int row, int col, int selection) {manta.removePadFromSelection(row, col, selection);}
+    void removeSliderFromSelection(int idx, int selection) {manta.removeSliderFromSelection(idx, selection);}
+    void removeButtonFromSelection(int idx, int selection) {manta.removeButtonFromSelection(idx, selection);}
     void setPadSelection(vector<int> idx, int selection);
     void setSliderSelection(vector<int> idx, int selection);
     void setButtonSelection(vector<int> idx, int selection);
@@ -142,6 +180,10 @@ public:
 
     
 protected:
+    
+    void drawParametersSelector();
+    void drawParametersSelectorButton();
+    void getMantaElementsInBox(int x, int y);
     
     ofxManta manta;
     bool isConnected;
@@ -194,10 +236,15 @@ protected:
     bool dragging;
     ofPoint dragPoint1, dragPoint2;
     ofRectangle padPositions[48], sliderPositions[2], buttonPositions[4];
-    ofRectangle mainDrawRect, statsDrawRect;
+    ofRectangle mainDrawRect, statsDrawRect, paramSwitchDrawRect;
     int x, y, width, height;
     int px, py, pwidth;
     bool visible, animated;
     int selection = 0;
     bool shift;
+    bool drawHelperLabel;
+    bool viewParameters;
+    vector<MantaTypeFeature> features;
+    MantaTypeFeature selectedFeature;
+    bool featureValueSelected, featureVelocitySelected;
 };

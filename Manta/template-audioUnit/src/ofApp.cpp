@@ -1,22 +1,23 @@
 #include "ofApp.h"
 
-
 //-------------
 void ofApp::setup(){
     
+    manta.setup();
+    aumc.setup(&manta, &audio);
+
     // setup selection gui
     guiSelectUnit = new ofxUICanvas("Select AudioUnit");
     guiSelectUnit->addLabelButton("Aalto", false);
     guiSelectUnit->addLabelButton("Kaivo", false);
+    guiSelectUnit->addSpacer();
+    guiSelectUnit->addLabelButton("show ui", false);
     guiSelectUnit->autoSizeToFitWidgets();
     ofAddListener(guiSelectUnit->newGUIEvent, this, &ofApp::selectAudioUnit);
 
-    manta.setup();
-    aumc.setup(&manta, &audio);
-    
     // positioning
-    guiSelectUnit->setPosition(750, 5);
-    aumc.setGuiPosition(750, 300);
+    guiSelectUnit->setPosition(760, 5);
+    aumc.setGuiPosition(760, 120);
 }
 
 //-------------
@@ -40,8 +41,8 @@ void ofApp::update(){
 
 //-------------
 void ofApp::draw(){
-    manta.draw(5, 85, 410);
-    manta.drawStats(5, 420, 410);
+    manta.draw(5, 5, 410);
+    manta.drawStats(5, 340, 410);
     aumc.draw();
 }
 
@@ -57,5 +58,8 @@ void ofApp::selectAudioUnit(ofxUIEventArgs &e) {
     }
     else if (e.getName() == "Kaivo") {
         setupKaivo();
+    }
+    else if (e.getName() == "show ui") {
+        showAudioUnitUI();
     }
 }

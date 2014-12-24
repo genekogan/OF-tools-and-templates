@@ -26,7 +26,13 @@
   - edges/saliency map -> downpixel
   - contrast/saturation
 
+ ideas
+  - use MoviePlayer scene as input
+  - use Canvas as input
+  - MoviePlayer class: webcam option
+ 
  */
+
 
 
 
@@ -61,36 +67,33 @@ protected:
     ofxCvGrayscaleImage h, s, v;
     vector<float> histogramR, histogramG, histogramB;
     vector<float> histogramH, histogramS, histogramV;
-
     
-    
-    int width, height;
-    
-    Control control;
-    
+    // input sources
     ofVideoGrabber cam;
     ofVideoPlayer player;
-
+    ofxCvColorImage image;
     
+    // analysis
     ofPixels previous;
 	ofImage diff;
 	cv::Scalar diffMean;
     cv::Mat columnMean;
-    
-    
-    
-    
-    
     ofxCv::FlowFarneback flow;
 	ofMesh mesh;
 	int stepSize, xSteps, ySteps;
 
-    
-    
+    // stats
     float frameDiffTotal;
     float frameDiffTotalRed, frameDiffTotalGreen, frameDiffTotalBlue;
     vector<float> frameDiffCol, frameDiffRow;
 
-    
+    // parameters
+    int mode=0;
+    int width, height;
+    int numBins;
+    float vLerpRate;
+
+    // gui
+    Control control;
     int x, y;
 };

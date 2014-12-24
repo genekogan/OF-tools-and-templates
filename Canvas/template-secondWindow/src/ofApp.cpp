@@ -8,7 +8,6 @@ void ofApp::setup(){
     window.setup("projection", ofGetScreenWidth(), 0, 1280, 800, true);
     
     canvas.setup(window.getWidth(), window.getHeight());
-    
     canvas.addLayer(CANVAS_CREATOR);
 }
 
