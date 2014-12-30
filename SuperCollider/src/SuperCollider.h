@@ -4,57 +4,44 @@
 #include "Control.h"
 #include "ofxSuperCollider.h"
 #include "ofxRegex.h"
-#include "Instrument.h"
+#include "Synth.h"
 
 
 
-class SuperColliderLayer
-{
+
+class SynthGroup {
 public:
-    void setup(string synthType, string synthFile);
-    void update();
-    void guiEvent(string &s);
-    
-    void setBusIn(ofxSCBus *bus) {
-        for (int i=0; i<instruments.size(); i++) {
-            instruments[i]->setBusIn(bus);
+    SynthGroup(string name, int idx) {
+        this->name = name;
+        this->idx = idx;
+        busOut = new ofxSCBus();
+    }
+    void setup(map<string, Synth*> *synths, vector<string> synthNames, Control *control) {
+        this->synths = synths;
+        control->addMenu(name, synthNames, this, &SynthGroup::chooseSynth);
+    }
+    map<string, Synth*> * getSynths() {return synths;}
+    string getName() {return name;}
+    ofxSCBus * getBus() {return busOut;}
+    void chooseSynth(string &s) {
+        map<string, Synth*>::iterator it = synths->begin();
+        while (it != synths->end()) {
+            it->second->setVisible(false);
+            ++it;
+        }
+        if (synths->count(s) > 0) {
+            synths->at(s)->setGuiPosition(170*(idx+1), 5);
+            synths->at(s)->setVisible(true);
         }
     }
-    void setBusOut(ofxSCBus *bus) {
-        for (int i=0; i<instruments.size(); i++) {
-            instruments[i]->setBusOut(bus);
-        }
-    }
-    
-    
-    void setBusOutSelf() {
-        for (int i=0; i<instruments.size(); i++) {
-            instruments[i]->setBusOut(bus);
-        }
-    }
-    
-    
-    void setBusOutToDac() {
-        for (int i=0; i<instruments.size(); i++) {
-            instruments[i]->setBusOutToDac();
-        }
-    }
-    
-    void setGuiPosition(int x, int y) {
-        control.setGuiPosition(x, y);
-        for (int i=0; i<instruments.size(); i++) {
-            instruments[i]->setGuiPosition(x+200, y);
-        }
-    }
-    
-    ofxSCBus * getBus() {return bus;}
-    
-protected:
-    
-    Control control;
-    vector<Instrument *> instruments;
-    ofxSCBus *bus;
+
+private:
+    string name;
+    int idx;
+    map<string, Synth*> *synths;
+    ofxSCBus *busOut;
 };
+
 
 
 
@@ -62,16 +49,19 @@ class SuperCollider
 {
 public:
     void setup();
-    void update();
-    SuperColliderLayer * addLayer(string synthType, string synthFile);
+    void readFromFile(string synthType, string synthFile);
+    void free();
     
-    void setGuiPosition(int x, int y) {
-        for (int i=0; i<layers.size(); i++) {
-            layers[i]->setGuiPosition(i*400, 5);
-        }
-    }
-
+    void update();
+    
 protected:
+    
+    Control control;
 
-    vector<SuperColliderLayer *> layers;
+    map<string, SynthGroup*> groups;
+    map<string, ofxSCBuffer*> buffers;
+    map<string, ofxSCBus*> buses;
+
+    int groupCount;
+    
 };

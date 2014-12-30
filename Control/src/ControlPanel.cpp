@@ -159,6 +159,17 @@ vector<ofxUIDropDownList *> Control::getMenus() {
 }
 
 //-------
+ParameterBase * Control::getParameter(string paramName) {
+    for (int i=0; i<parameters.size(); i++) {
+        if (parameters[i]->getName() == paramName) {
+            return parameters[i];
+        }
+    }
+    ofLog(OF_LOG_ERROR, "Error: no parameter called "+paramName+" found in "+name);
+    return NULL;
+}
+
+//-------
 void Control::setupGuiPresets() {
     guiPresets->clearWidgets();
     guiPresets->setWidth(width);

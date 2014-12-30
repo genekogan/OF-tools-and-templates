@@ -13,5 +13,6 @@ public:
     void draw();
     
 private:
+    
     LeapMotion leap;
 };

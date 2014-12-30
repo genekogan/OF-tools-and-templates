@@ -1,26 +1,31 @@
 #include "SuperCollider.h"
 
 
-
 //-------
-SuperColliderLayer * SuperCollider::addLayer(string synthType, string synthFile) {
-    SuperColliderLayer *newLayer = new SuperColliderLayer();
-    newLayer->setup(synthType, synthFile);
+void SuperCollider::setup() {
+    buses["bus1"] = new ofxSCBus();
+    buses["bus2"] = new ofxSCBus();
+    buses["bus3"] = new ofxSCBus();
     
-    layers.push_back(newLayer);
-    setGuiPosition(5, 5);
-    return newLayer;
+    buffers["buf1"] = new ofxSCBuffer();
+
+    control.setName("Sc3");
+    
+
+    string synthFile = "/Users/Gene/Code/openFrameworks/tools/SuperCollider/synths.scd";
+    readFromFile("buffer", synthFile);
+    readFromFile("event", synthFile);
+    readFromFile("source", synthFile);
+    readFromFile("modifier", synthFile);
 }
 
 //-------
-void SuperCollider::update() {
-    for (int i=0; i<layers.size(); i++) {
-        layers[i]->update();
-    }
-}
-
-//-------
-void SuperColliderLayer::setup(string synthType, string synthFile) {
+void SuperCollider::readFromFile(string synthType, string synthFile) {
+    SynthGroup *synthGroup = new SynthGroup(synthType, groupCount++);
+    map<string, Synth*> *synths = new map<string, Synth*>();
+    vector<string> synthNames;
+    Synth *synth;
+    
     ofxRegex regex;
     ofFile file;
     file.open(synthFile);
@@ -29,57 +34,50 @@ void SuperColliderLayer::setup(string synthType, string synthFile) {
     vector<string> synthDefs = regex.getMatchedStrings(sc3file, exp);
     
     for (int i=0; i<synthDefs.size(); i++) {
-        Instrument *instrument = new Instrument();
-        instruments.push_back(instrument);
         vector <string> statements = ofSplitString(synthDefs[i], "\n");
         for (int j=0; j<statements.size(); j++) {
             vector <string> statement = ofSplitString(statements[j], " ");
             if      (statement[0] == "@name") {
-                instrument->setup(statement[1]);
+                synth = new Synth(statement[1], buses, buffers);
+                (*synths)[statement[1]] = synth;
+                synth->setVisible(false);
+                synthNames.push_back(statement[1]);
             }
             else if (statement[0] == "@param") {
-                instrument->addParameter(statement[1], ofToFloat(statement[2]), ofToFloat(statement[3]));
+                synth->addParameter(statement[1], ofToFloat(statement[2]), ofToFloat(statement[3]));
             }
             else if (statement[0] == "@buffer") {
                 //cout << "buf name " << statement[1] << endl;
             }
         }
     }
-    
-    vector<string> synthNames;
-    for (int i=0; i<instruments.size(); i++) {
-        synthNames.push_back(instruments[i]->getName());
-        instruments[i]->setVisible(false);
-        instruments[i]->setGuiPosition(300, 5);
-    }
-    
-    
-    
-    bus = new ofxSCBus();
-    //for (int i=0; i<instruments.size(); i++) {
-        //instruments[i]->setBusOut(bus);
-        //instruments[i]->setBusOutToDac();
-    //}
-    
-    
-    control.addMenu("synths", synthNames, this, &SuperColliderLayer::guiEvent);
+
+    synthGroup->setup(synths, synthNames, &control);
+    groups[synthType] = synthGroup;
 }
 
 //-------
-void SuperColliderLayer::guiEvent(string &s) {
-    for (int i=0; i<instruments.size(); i++) {
-        if (instruments[i]->getName() == s) {
-            instruments[i]->setVisible(true);
+void SuperCollider::update() {
+    map<string, SynthGroup*>::iterator it = groups.begin();
+    while (it != groups.end()) {
+        map<string, Synth*>::iterator itg = it->second->getSynths()->begin();
+        while (itg != it->second->getSynths()->end()) {
+            itg->second->update();
+            ++itg;
         }
-        else {
-            instruments[i]->setVisible(false);
-        }
+        ++it;
     }
 }
 
 //-------
-void SuperColliderLayer::update() {
-    for (int i=0; i<instruments.size(); i++) {
-        instruments[i]->update();
+void SuperCollider::free() {
+    map<string, SynthGroup*>::iterator it = groups.begin();
+    while (it != groups.end()) {
+        map<string, Synth*>::iterator itg = it->second->getSynths()->begin();
+        while (itg != it->second->getSynths()->end()) {
+            itg->second->free();
+            ++itg;
+        }
+        ++it;
     }
 }

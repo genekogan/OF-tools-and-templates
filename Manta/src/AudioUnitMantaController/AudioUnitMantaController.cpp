@@ -7,6 +7,7 @@ void AudioUnitMantaController::setup(MantaController *manta, ofxAudioUnitSampler
     manta->setSelectionView(true);
     setupAudioUnit(audioUnit);
     setActive(true);
+    noteAuto = true;
 }
 
 //-----------
@@ -40,7 +41,14 @@ void AudioUnitMantaController::mantaPadVelocityEvent(ofxMantaEvent &e) {
         if (mantaNoteMap.count(m) > 0) {
             int note = mantaNoteMap[m];
             int velocity = e.value;
-            noteEvent(NOTE_AUTO, note, velocity);
+            noteEvent(noteAuto ? NOTE_AUTO : NOTE_ON, note, velocity);
+        }
+    }
+    else if (!noteAuto) {
+        MantaElement m(PAD, e.col + 8 * e.row, 0);
+        if (mantaNoteMap.count(m) > 0) {
+            int note = mantaNoteMap[m];
+            noteEvent(NOTE_OFF, note, noteAutoOffVelocity);
         }
     }
 }
@@ -68,7 +76,6 @@ void AudioUnitMantaController::mantaButtonEvent(ofxMantaEvent &e) {
 
 //-----------
 void AudioUnitMantaController::mantaFeaturesUpdate() {
-    return;
     mantaElementDoEffects(MantaElement(NUM_PADS, 0, 0), manta->getNumPads() / 48.0f);
     mantaElementDoEffects(MantaElement(PAD_SUM, 0, 0), manta->getPadSum() / 3000.0f);
     mantaElementDoEffects(MantaElement(PAD_AVG, 0, 0), manta->getPadAverage() / 196.0f);
@@ -115,6 +122,10 @@ void AudioUnitMantaController::setupGui() {
     gui->clearWidgets();
     gui->addLabel("AudioUnit");
     gui->addLabelToggle("Sequencer", false);
+    gui->addLabelToggle("NoteAuto", &noteAuto);
+    gui->addIntSlider("Key", 0, 12, &key);
+    gui->addIntSlider("Note Auto Length", 1, 180, &noteAutoFrameLength);
+    gui->addIntSlider("Note Off Velocity", 0, 127, &noteAutoOffVelocity);
     gui->addSpacer();
     
     gui->addLabel("MIDI Selection");
@@ -168,9 +179,8 @@ void AudioUnitMantaController::setupGui() {
 
 //-----------
 bool AudioUnitMantaController::selectedElementMapped() {
-    // hack... for some reason, this doesn't work right:
+    // manual hack... for some reason, this doesn't work right:
     // return mantaEffectsMap.count(selectedMantaElement) > 0;
-    // so this checks manually
     map<MantaElement, AudioUnitParameter*>::iterator it = mantaEffectsMap.begin();
     while (it != mantaEffectsMap.end()) {
         if (it->first.type      == selectedMantaElement.type      &&
@@ -228,7 +238,7 @@ void AudioUnitMantaController::guiEvent(ofxUIEventArgs &e) {
             int col = selectionValues[i] % 8;
             int degree = (2 * row - (int)(row / 2) + col) % 7;
             int octave = floor((2 * row - floor(row / 2) + col) / 7);
-            mantaNoteMap[m] = theory.getNote(60, degree, octave);
+            mantaNoteMap[m] = theory.getNote(60+key, degree, octave);
             manta->markPad(row, col, true);
             manta->addPadToSelection(row, col, 3);
         }
@@ -238,7 +248,7 @@ void AudioUnitMantaController::guiEvent(ofxUIEventArgs &e) {
             int col = selectionVelocities[i] % 8;
             int degree = (2 * row - (int)(row / 2) + col) % 7;
             int octave = floor((2 * row - floor(row / 2) + col) / 7);
-            mantaNoteMap[m] = theory.getNote(60, degree, octave);
+            mantaNoteMap[m] = theory.getNote(60+key, degree, octave);
             manta->markPad(row, col, true);
             manta->addPadToSelection(row, col, 4);
         }

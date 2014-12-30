@@ -5,6 +5,7 @@
 AudioUnitPlayer::AudioUnitPlayer() {
     noteAutoFrameLength = 10;
     noteAutoOffVelocity = 100;
+    key = 0;    // MIDI 60
     gui = new ofxUICanvas("AudioUnit Selector");
     ofAddListener(gui->newGUIEvent, this, &AudioUnitPlayer::guiEvent);
 }
@@ -163,7 +164,6 @@ void AudioUnitPlayer::guiEvent(ofxUIEventArgs &e) {
 
 //-----------
 void AudioUnitPlayer::setupSequencer() {
-    if (sequencer.getActive())  return;
     sequencer.setup(6, 8);
     ofAddListener(sequencer.getSequencer().sequencerEvent, this, &AudioUnitPlayer::sequencerStepEvent);
     ofAddListener(sequencer.interpolatedSequencerEvent, this, &AudioUnitPlayer::sequencerInterpolatedStepEvent);

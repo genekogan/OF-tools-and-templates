@@ -21,8 +21,9 @@ public:
     void              drawVelocityGraph(Handedness hand, int x, int y, int w, int h);
     
     // left hand getters
+    ofPoint *         getLeftHandPositionRef() {return &lHandPosition;}
     vector<ofPoint> * getLeftHandFingerTipsRef() {return &leftHandTips;}
-    ofPoint *         getLeftHandIndexFingerTipRef() {return &leftHandTips[1];}
+    ofPoint *         getLeftHandFingerTipRef(int index) {return &leftHandTips[index];}
     ofPoint *         getLeftHandVelocityRef() {return &handVelocity[0];}
     float *           getLeftOpenHandSizeRef() {return &lOpenHandSize;}
     ofPoint *         getLeftHandNormalRef() {return &lHandNormal;}
@@ -32,8 +33,9 @@ public:
     float *           getLeftHandYawRef() {return &lHandYaw;}
 
     // right hand getters
+    ofPoint *         getRightHandPositionRef() {return &rHandPosition;}
     vector<ofPoint> * getRightHandFingerTipsRef() {return &rightHandTips;}
-    ofPoint *         getRightHandIndexFingerTipRef() {return &rightHandTips[1];}
+    ofPoint *         getRightHandFingerTipRef(int index) {return &rightHandTips[index];}
     ofPoint *         getRightHandVelocityRef() {return &handVelocity[1];}
     float *           getRightOpenHandSizeRef() {return &rOpenHandSize;}
     ofPoint *         getRightHandNormalRef() {return &rHandNormal;}
@@ -42,6 +44,11 @@ public:
     float *           getRightHandPitchRef() {return &rHandPitch;}
     float *           getRightHandYawRef() {return &rHandYaw;}
 
+    bool *            hasFoundHands() {return &foundHands;}
+    bool *            hasFoundLeftHand() {return &foundLeftHand;}
+    bool *            hasFoundRightHand() {return &foundRightHand;}
+    bool              isConnected() {return leap.isConnected();}
+    
 private:
     
     void              updateFingerTips(bool isNormalized=false);
@@ -49,11 +56,13 @@ private:
 
     // stats
     vector<ofPoint>   leftHandTips, rightHandTips;
-    ofPoint           lHandNormal, lHandDirection;
-    ofPoint           rHandNormal, rHandDirection;
+    ofPoint           lHandPosition, rHandPosition;
+    ofPoint           lHandNormal, rHandNormal;
+    ofPoint           lHandDirection, rHandDirection;
     float             lOpenHandSize, lHandRoll, lHandPitch, lHandYaw;
     float             rOpenHandSize, rHandRoll, rHandPitch, rHandYaw;
-
+    bool              foundHands, foundLeftHand, foundRightHand;
+    
     // velocity stats
     vector<ofPoint>   vLeftHandTips, vRightHandTips;
     ofPoint           vLHandNormal, vLHandDirection;

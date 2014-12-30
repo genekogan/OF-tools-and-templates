@@ -42,6 +42,7 @@ public:
     
     ofEvent<vector<float> > interpolatedSequencerEvent;
     
+
 protected:
     
     void guiEvent(ofxUIEventArgs &e);
@@ -55,6 +56,7 @@ protected:
     bool discrete, pDiscrete;
     int rows, cols;
     int bpm, pBpm;
+    float density;
     float bpmTime;
     float bpmInterval;
     bool visible;

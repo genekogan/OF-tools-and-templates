@@ -21,25 +21,28 @@ public:
     void jumpRandom(string &s);
     void selectMedia(string &s);
     void chooseMovie(string &s);
+    void chooseImage(string &s);
     
+    void triggerImage(int idx);
+    void triggerImage();
     void triggerMovie(int idx);
     void triggerMovie();
-    void triggerCallback(string &s) {triggerMovie();}
+    void triggerCallback(string &s) { mode == MOVIE ? triggerMovie() : triggerImage(); }
 
     void toggleClipsHidden(string & s);
     void setClipsHidden(bool clipsHidden);
     
     void clearMovies();
-        
-private:
-    
     void setupControl();
     
+private:
+    
     vector<ofVideoPlayer> player;
-    vector<string> moviePaths;
+    vector<string> moviePaths, imagePaths;
     int active;
     
-    ofImage img;
+    //ofImage img;
+    vector<ofImage> img;
     
     int w, h;
     float speed;
@@ -51,8 +54,10 @@ private:
     
     bool clipsHidden;
     
+    float alpha;
     
     int idxLoad;
+    int idxImgLoad;
 };
 
 

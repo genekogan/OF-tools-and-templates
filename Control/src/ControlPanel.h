@@ -31,6 +31,8 @@ public:
     
     vector<ofxUIDropDownList *> getMenus();
     vector<ParameterBase *> & getParameters() {return parameters;}
+    ParameterBase * getParameter(string name);
+    
     void clear();
     
     template <typename T>
@@ -166,5 +168,6 @@ void Control::addMenu(string name, vector<string> items, ListenerClass *listener
         menus[name] = items;
         ((ofxUIDropDownList *) gui->getWidget(name))->clearToggles();
         ((ofxUIDropDownList *) gui->getWidget(name))->addToggles(items);
+
     }
 }

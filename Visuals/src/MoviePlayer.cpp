@@ -9,18 +9,31 @@ void MoviePlayer::setup() {
     oldSpeed = speed;
     
     clipsHidden = false;
+    
+    
+    
     setupControl();
 
-    player.resize(22);
-    idxLoad = 0;
     
+    // this needs to be not hardcoded...
+    player.resize(20);
+    img.resize(20);
+    
+    idxLoad = 0;
+    idxImgLoad = 0;
     //loadMovie("/Users/Gene/media/sinuses.mov");
+    
+    alpha = 255;
+    
+    width = 800;
+    height = 600;
 }
 
 //--------
 void MoviePlayer::setupControl() {
     control.clear();
     control.addParameter("speed", &speed, -3.0f, 3.0f);
+    control.addParameter("alpha", &alpha, 0.0f, 255.0f);
     control.addEvent("clipsHidden", this, &MoviePlayer::toggleClipsHidden);
     control.addEvent("jump", this, &MoviePlayer::jumpBack);
     control.addEvent("random", this, &MoviePlayer::jumpRandom);;
@@ -28,11 +41,15 @@ void MoviePlayer::setupControl() {
     control.addEvent("next", this, &MoviePlayer::triggerCallback);
     
     if (!clipsHidden) {
-        vector<string> paths;
+        vector<string> mPaths, iPaths;
         for (int i=0; i<moviePaths.size(); i++) {
-            paths.push_back(moviePaths[i]);
+            mPaths.push_back(moviePaths[i]);
         }
-        control.addMenu("movies", paths, this, &MoviePlayer::chooseMovie);
+        for (int i=0; i<imagePaths.size(); i++) {
+            iPaths.push_back(imagePaths[i]);
+        }
+        control.addMenu("movies", mPaths, this, &MoviePlayer::chooseMovie);
+        control.addMenu("images", iPaths, this, &MoviePlayer::chooseImage);
     }
 }
 
@@ -93,7 +110,7 @@ void MoviePlayer::loadMovie(string path) {
     moviePaths.push_back(path);
     
     if (!clipsHidden) {
-        setupControl();
+        //setupControl();
     }
 }
 
@@ -102,18 +119,26 @@ void MoviePlayer::loadImage(string path) {
     mode = IMAGE;
 
     playing = false;
-    img.loadImage(path);
+    img[idxImgLoad].loadImage(path);
     
-    if ((float)width/height > (float)img.getWidth()/img.getHeight()) {
+    if ((float)width/height > (float)img[idxImgLoad].getWidth()/img[idxImgLoad].getHeight()) {
         h = height;
-        w = img.getWidth() * h / img.getHeight();
+        w = img[idxImgLoad].getWidth() * h / img[idxImgLoad].getHeight();
         centeredHoriz = true;
     }
     else {
         w = width;
-        h = img.getHeight() * w / img.getWidth();
+        h = img[idxImgLoad].getHeight() * w / img[idxImgLoad].getWidth();
         centeredHoriz = false;
     }
+    
+    idxImgLoad++;
+    
+    imagePaths.push_back(path);
+    if (!clipsHidden) {
+        //setupControl();
+    }
+
 }
 
 //--------
@@ -141,12 +166,17 @@ void MoviePlayer::update() {
 
 //--------
 void MoviePlayer::draw() {
+    ofSetColor(255, alpha);
     if (mode == IMAGE) {
-        if (centeredHoriz) {
-            img.draw(0.5 * (width - w), 0, w, h);
+        if ((float)width/height > (float)img[active].getWidth()/img[active].getHeight()) {
+            h = height;
+            w = img[active].getWidth() * h / img[active].getHeight();
+            img[active].draw(0.5 * (width - w), 0, w, h);
         }
         else {
-            img.draw(0, 0.5 * (height - h), w, h);
+            w = width;
+            h = img[active].getHeight() * w / img[active].getWidth();
+            img[active].draw(0, 0.5 * (height - h), w, h);
         }
     }
     else if (mode == MOVIE) {
@@ -170,24 +200,25 @@ void MoviePlayer::draw() {
             player[active].draw(0, 0.5 * (height - h), w, h);
         }
     }
+    ofSetColor(255);
 }
 
 //--------
 void MoviePlayer::chooseMovie(string &s) {
-    /*
-    for (int i=0; i<moviePaths.size(); i++) {
-        if (moviePaths[i] == s) {
-            triggerMovie(i);
-        }
-    }
-     */
-    
     for (int i=0; i<idxLoad; i++) {
         if (moviePaths[i] == s) {
             triggerMovie(i);
         }
     }
+}
 
+//--------
+void MoviePlayer::chooseImage(string &s) {
+    for (int i=0; i<idxImgLoad; i++) {
+        if (imagePaths[i] == s) {
+            triggerImage(i);
+        }
+    }
 }
 
 //--------
@@ -200,20 +231,32 @@ void MoviePlayer::triggerMovie(int idx) {
 }
 
 //--------
+void MoviePlayer::triggerImage(int idx) {
+    //if (idx >= player.size())   return;
+    if (idx >= idxImgLoad)   return;
+    active = idx;
+}
+
+//--------
 void MoviePlayer::triggerMovie() {
     triggerMovie((active+1)%player.size());
 }
 
 //--------
+void MoviePlayer::triggerImage() {
+    triggerImage((active+1)%(idxImgLoad-1));
+}
+
+//--------
 void MoviePlayer::setClipsHidden(bool clipsHidden) {
     this->clipsHidden = clipsHidden;
-    setupControl();
+    //setupControl();
 }
 
 //--------
 void MoviePlayer::toggleClipsHidden(string & s) {
     clipsHidden = !clipsHidden;
-    setupControl();
+    //setupControl();
 }
 
 //--------

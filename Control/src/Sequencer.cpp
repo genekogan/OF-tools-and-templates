@@ -11,6 +11,7 @@ void Sequencer::setup(int rows, int cols) {
     pActive = false;
     bpm = 120;
     pBpm = 120;
+    density = 0.5;
     discrete = false;
     pDiscrete = false;
     bpmInterval = 1;
@@ -22,7 +23,8 @@ void Sequencer::setup(int rows, int cols) {
     gui = new ofxUICanvas("sequencer");
     gui->setWidth(100);
     gui->clearWidgets();
-    gui->addIntSlider("bpm", 1, 300, &bpm);
+    gui->addIntSlider("bpm", 1, 800, &bpm);
+    gui->addSlider("density", 0.0f, 1.0f, &density);
     gui->addButton("advance", false);
     gui->addToggle("active", &active);
     gui->addToggle("discrete", &discrete);
@@ -122,7 +124,7 @@ void Sequencer::guiEvent(ofxUIEventArgs &e) {
     }
     else if (e.getName() == "randomize") {
         if (e.getButton()->getValue()==0) {
-            sequencer.randomize();
+            sequencer.randomize(density);
         }
     }
     else if (e.getName() == "bpm") {

@@ -524,24 +524,18 @@ void OpenNi::drawCalibratedContours(int width, int height){
     ofSetColor(255, 255, 100, 50);
     RectTracker& tracker = contourFinder.getTracker();
     for(int i = 0; i < contourFinder.size(); i++) {
+        vector<ofVec2f> calibratedPoints;
         vector<cv::Point> points = contourFinder.getContour(i);
+        getCalibratedContour(points, calibratedPoints, width, height);
         ofBeginShape();
-        for (int j=0; j<points.size(); j+=smoothness) {
-            ofPoint depthPoint = ofPoint(points[j].x, points[j].y,
-                                         depthPixels[(int)(points[j].x + points[j].y*640)]);
-            ofVec3f worldPoint = kinect.projectiveToWorld(depthPoint);
-            
-            // discrepancy between ofxKinect (used for calibration) and ofxOpenNi
-            worldPoint.x *= -1.0;
-            worldPoint.y *= -1.0;
-            
-            ofVec2f projectedPoint = kpt.getProjectedPoint(worldPoint);
-            ofPoint mappedPoint(ofMap(projectedPoint.x, 0, 1, 0, width),
-                                ofMap(projectedPoint.y, 0, 1, 0, height));
-            if (curved) {
-                ofCurveVertex(mappedPoint.x, mappedPoint.y);
-            } else {
-                ofVertex(mappedPoint.x, mappedPoint.y);
+        if (curved) {
+            for (int j=0; j<calibratedPoints.size(); j+=smoothness) {
+                ofCurveVertex(calibratedPoints[j].x, calibratedPoints[j].y);
+            }
+        }
+        else {
+            for (int j=0; j<calibratedPoints.size(); j+=smoothness) {
+                ofVertex(calibratedPoints[j].x, calibratedPoints[j].y);
             }
         }
         ofEndShape();

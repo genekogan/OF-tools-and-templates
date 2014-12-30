@@ -3,7 +3,7 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
-    canvas1.setup(800, 600);
+    canvas1.setup(600, 796);
     canvas1.addLayer(CANVAS_CREATOR);
     canvas1.addLayer(CANVAS_POST_FX);
     
@@ -14,7 +14,7 @@ void ofApp::setup(){
     canvas1.setVisible(true);
     canvas2.setVisible(false);
 
-    window.setup("projection", 400, 0, 1280, 800, false);
+    window.setup("projection", ofGetScreenWidth(), 0, 1280, 800, true);
     mapping.setMappingResolution(ofGetWidth(), ofGetHeight(),
                                  window.getWidth(), window.getHeight());
     mapping.addCanvas(&canvas1);

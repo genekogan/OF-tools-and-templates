@@ -3,6 +3,7 @@
 //-----------
 void LeapMotion::setup(){
     leap.open();
+    
     cam.setOrientation(ofPoint(-20, 0, 0));
     fbo.allocate(1024, 768, GL_RGBA);
     
@@ -57,6 +58,7 @@ void LeapMotion::setVelocityTracking(bool trackVelocity, int numFrames) {
 
 //-----------
 void LeapMotion::update(){
+    if (!leap.isConnected())    return;
     
     // check if parameters have changed to setVelocity tracking parameters
     if (trackVelocity != pTrackVelocity || numFrames != pNumFrames) {
@@ -110,9 +112,14 @@ void LeapMotion::updateFingerTips(bool isNormalized) {
 
 //-----------
 void LeapMotion::updateHandStats() {
+    foundHands = simpleHands.size() > 0;
+    foundLeftHand = false;
+    foundRightHand = false;
+    
     for (int i = 0; i < simpleHands.size(); i++) {
         ofPoint minPos = ofPoint( 999,  999,  999);
         ofPoint maxPos = ofPoint(-999, -999, -999);
+        
         for (int j=0; j<5; j++) {
             ofPoint f = simpleHands[i].fingers[finger[j]].tip;
             if      (f.x < minPos.x)    minPos.x = f.x;
@@ -123,6 +130,8 @@ void LeapMotion::updateHandStats() {
             else if (f.z > maxPos.z)    maxPos.z = f.z;
         }
         if (simpleHands[i].isLeft) {
+            foundLeftHand = true;
+            lHandPosition = simpleHands[i].handPos;
             lOpenHandSize = (maxPos.x-minPos.x) * (maxPos.y-minPos.y) * (maxPos.z-minPos.z);
             lHandNormal = simpleHands[i].handNormal;
             lHandDirection = simpleHands[i].direction;
@@ -131,6 +140,8 @@ void LeapMotion::updateHandStats() {
             lHandYaw = simpleHands[i].yaw;
         }
         else {
+            foundRightHand = true;
+            rHandPosition = simpleHands[i].handPos;
             rOpenHandSize = (maxPos.x-minPos.x) * (maxPos.y-minPos.y) * (maxPos.z-minPos.z);
             rHandNormal = simpleHands[i].handNormal;
             rHandDirection = simpleHands[i].direction;

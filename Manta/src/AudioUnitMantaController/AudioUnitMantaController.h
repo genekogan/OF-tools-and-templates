@@ -33,5 +33,6 @@ protected:
     map<MantaElement, AudioUnitParameter*> mantaEffectsMap;
     map<MantaElement, int> mantaNoteMap;
     MantaElement selectedMantaElement;
+    bool noteAuto;
     bool active;
 };

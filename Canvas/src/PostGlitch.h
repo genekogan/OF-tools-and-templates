@@ -13,16 +13,7 @@ public:
     void setTexLayer(CanvasLayer *texLayer=NULL);
     void render();
     
-private:
-    void setGuiPosition(int x, int y);
-    void toggleVisible();
-    void setVisible(bool visible);
-
-    void checkGuiCalls(){}
-    void updateEffects();
-    void noiseChange();
-    
-    ofxPostGlitch post;
+    void setDelTime(float delTime) {this->delTime = delTime;}
     
     bool convergence;
     bool glow;
@@ -41,6 +32,18 @@ private:
     bool crBlueInvert;
     bool crRedInvert;
     bool crGreenInvert;
+    
+private:
+    
+    void setGuiPosition(int x, int y);
+    void toggleVisible();
+    void setVisible(bool visible);
+
+    void checkGuiCalls(){}
+    void updateEffects();
+    void noiseChange();
+    
+    ofxPostGlitch post;
     
     bool customParameters;
     float stepMin, stepMax;

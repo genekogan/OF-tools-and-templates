@@ -87,6 +87,10 @@ public:
         }
     }
     
+    virtual vector<ParameterBase*> getParameters() {
+        return scene->getControl().getParameters();
+    }
+    
     Scene * getScene() {return scene;}
     
     string getName() {return control.getName();}

@@ -142,7 +142,6 @@ void Canvas::clearLayers(bool skipCreator) {
 //----------------
 void Canvas::runAutoMode() {
     if ((ofGetFrameNum() - lastFrame) % autoNumFrames == 0) {
-        // load new preset
         //idxAutoPreset = (idxAutoPreset+1) % presetFilenames.size();
         idxAutoPreset = floor(ofRandom(presetFilenames.size()));
         string newPreset = presetFilenames[idxAutoPreset];
@@ -157,7 +156,7 @@ Canvas::~Canvas() {
 }
 
 //----------------
-void Canvas::loadPreset(string &filename) {\
+void Canvas::loadPreset(string &filename) {
     Presets presets;
     ofXml xml;
     

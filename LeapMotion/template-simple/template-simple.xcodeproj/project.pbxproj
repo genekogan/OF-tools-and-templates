@@ -907,12 +907,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0E994D91A0306FF00F5F941 /* LeapMotion.cpp in Sources */,
 				B0E994DA1A0306FF00F5F941 /* ControlPanel.cpp in Sources */,
 				B0E994DB1A0306FF00F5F941 /* MetaController.cpp in Sources */,
 				B0E994DC1A0306FF00F5F941 /* OscManager.cpp in Sources */,
 				B0E994DD1A0306FF00F5F941 /* Presets.cpp in Sources */,
 				B0E994DE1A0306FF00F5F941 /* Sequencer.cpp in Sources */,
+				B0E994D91A0306FF00F5F941 /* LeapMotion.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				72A929D3561B8232A182ABFC /* ofxOscBundle.cpp in Sources */,

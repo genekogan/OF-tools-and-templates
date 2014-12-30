@@ -11,22 +11,49 @@ s.boot;
 
 
 /*
+@synthDef buffer
+@name bufWriter
+@param rate 0.1 2.5
+*/
+SynthDef(\bufWriter, { arg rate, bufOut;
+	var in, cursor;
+	in = SoundIn.ar(1);
+	cursor = Phasor.ar(0, BufRateScale.kr(0) * rate, 0, BufFrames.kr(0));
+    BufWr.ar(in, bufOut, cursor);
+}).store;
+
+
+/*
+@synthDef event
+@name fmEvent
+@param freq 100 1000
+*/
+SynthDef(\fmEvent, { arg busOut, freq;
+	var out;
+	out = EnvGen.kr(Env.perc, doneAction: 2) * SinOsc.ar(freq, 0);
+	Out.ar(busOut, out);
+}).store;
+
+
+
+/*
 @synthDef source
 @name sourceBuffer
 @buffer buf
 @param reset 0 1
 @param rate 0.5 1.5
 */
-SynthDef(\sourceBuffer, { arg busOut, buf, reset, rate;
+SynthDef(\sourceBuffer, { arg busOut, bufIn, reset, rate;
 	var trig, nf, idx, out;
-	nf = BufFrames.kr(buf);
+	nf = BufFrames.kr(bufIn);
 	//trig = In.kr(bus_trig);
 	//idx = Phasor.ar(trig, BufRateScale.kr(buf), 0, nf, reset * nf);
-	idx = Phasor.ar(1, rate * BufRateScale.kr(buf), 0, nf, reset * nf);
-	out = BufRd.ar(1, buf, idx);
+	idx = Phasor.ar(1, rate * BufRateScale.kr(bufIn), 0, nf, reset * nf);
+	out = BufRd.ar(1, bufIn, idx);
 	//Out.kr(bus_cursor, idx);
 	Out.ar(busOut, out);
 }).store;
+
 
 /*
 @synthDef source
@@ -61,7 +88,7 @@ SynthDef(\audioIn, { arg busOut;
 @param ambience 0.001 0.99
 @param numharmonics 1 16
 */
-SynthDef(\pickler, { arg busOut, pulserate, numharmonics, ambience;
+SynthDef(\pickler, { arg busOut=0, pulserate, numharmonics, ambience;
 	var trig, pitches, freq, idxfreq, out, out2, delay;
 	pitches = -12 + [ 28, 36, 40, 47, 60, 64, 67, 71, 72, 76, 79, 83, 84 ];
 	trig = Impulse.kr(pulserate);                    // trigger rate (5 hz)

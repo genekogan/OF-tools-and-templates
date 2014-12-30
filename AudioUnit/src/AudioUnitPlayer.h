@@ -59,12 +59,14 @@ public:
     virtual void setParameterScaled(int idx, float value);
     void noteEvent(NoteType type, int note, int velocity);
     
-    // midi events
+    // note events
     void setNoteAutoFrameLength(int noteAutoFrameLength) {this->noteAutoFrameLength = noteAutoFrameLength;}
     void setNoteAutoOffVelocity(int noteAutoOffVelocity) {this->noteAutoOffVelocity = noteAutoOffVelocity;}
+    void setKey(int key) {this->key = key;}
     int getNoteAutoFrameLength() {return noteAutoFrameLength;}
     int getNoteAutoOffVelocity() {return noteAutoOffVelocity;}
-
+    int getKey() {return key;}
+    
     // sequencer
     void toggleSequencerSmooth(string &s);
     
@@ -99,6 +101,7 @@ protected:
     
     // theory
     Theory theory;
+    int key;
     
     // sequencer
     Sequencer sequencer;
