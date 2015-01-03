@@ -1,6 +1,8 @@
 #pragma once
 
 #include "ProjectionMapping.h"
+
+/*
 #include "Canvas.h"
 
 
@@ -19,4 +21,4 @@ protected:
     
     vector<Canvas*> canvases;
     ofVec2f mappingResolution;
-};
+};*/

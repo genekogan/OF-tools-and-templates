@@ -13,7 +13,7 @@ public:
     ~LeapMotion();
     void              setup();
     void              setGuiPosition(int x, int y);
-    void              close() { leap.close(); }
+    void              close() { if (leap.isConnected()) leap.close(); }
     void              setVelocityTracking(bool trackVelocity, int numFrames=10);
     void              setNormalizeTips(bool normalizeTips) {this->normalizeTips = normalizeTips;}
     void              update();

@@ -384,9 +384,10 @@ void ContourRenderer::renderOutwardLines() {
 
 //-------
 void ContourRenderer::setupPhysics() {
-    //img.loadImage("/Users/Gene/Desktop/star.png");
-//    img.loadImage("/Users/Gene/Desktop/cat_png_by_dbszabo1-d3dn2c8.png");
-        img.loadImage("/Users/Gene/Desktop/shazeb.png");
+    img.loadImage("/Users/Gene/Desktop/star.png");
+    //img.loadImage("/Users/Gene/Desktop/cat_png_by_dbszabo1-d3dn2c8.png");
+    //img.loadImage("/Users/Gene/Desktop/shazeb.png");
+    
     img.resize(40, 40);
     
 	box2d.init();

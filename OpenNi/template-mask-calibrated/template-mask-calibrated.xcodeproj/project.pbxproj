@@ -27,6 +27,7 @@
 		B01D1F1119FD8AF200D164A7 /* OscManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B01D1F0719FD8ADA00D164A7 /* OscManager.cpp */; };
 		B01D1F1219FD8AF200D164A7 /* Presets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B01D1F0A19FD8ADA00D164A7 /* Presets.cpp */; };
 		B01D1F1319FD8AF200D164A7 /* Sequencer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B01D1F0C19FD8ADA00D164A7 /* Sequencer.cpp */; };
+		B02EA77C1A559245004C4D2E /* ofxConvexHull.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B02EA77A1A559245004C4D2E /* ofxConvexHull.cpp */; };
 		B086E6761A336AE800B0A857 /* ofxFluid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B086E6741A336AE800B0A857 /* ofxFluid.cpp */; };
 		B086E6F81A336AEC00B0A857 /* ofxBox2d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B086E6791A336AEC00B0A857 /* ofxBox2d.cpp */; };
 		B086E6F91A336AEC00B0A857 /* ofxBox2dBaseShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B086E67B1A336AEC00B0A857 /* ofxBox2dBaseShape.cpp */; };
@@ -331,6 +332,8 @@
 		B01D1F0C19FD8ADA00D164A7 /* Sequencer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Sequencer.cpp; sourceTree = "<group>"; };
 		B01D1F0D19FD8ADA00D164A7 /* Sequencer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sequencer.h; sourceTree = "<group>"; };
 		B01D1F1619FD8B1400D164A7 /* OpenNi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenNi.h; sourceTree = "<group>"; };
+		B02EA77A1A559245004C4D2E /* ofxConvexHull.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxConvexHull.cpp; sourceTree = "<group>"; };
+		B02EA77B1A559245004C4D2E /* ofxConvexHull.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxConvexHull.h; sourceTree = "<group>"; };
 		B047FF96258DC01792B272DB /* ETF.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ETF.cpp; path = ../../../addons/ofxCv/libs/CLD/src/ETF.cpp; sourceTree = SOURCE_ROOT; };
 		B086E6741A336AE800B0A857 /* ofxFluid.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxFluid.cpp; sourceTree = "<group>"; };
 		B086E6751A336AE800B0A857 /* ofxFluid.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxFluid.h; sourceTree = "<group>"; };
@@ -1361,6 +1364,24 @@
 			path = ../src;
 			sourceTree = "<group>";
 		};
+		B02EA7781A559245004C4D2E /* ofxConvexHull */ = {
+			isa = PBXGroup;
+			children = (
+				B02EA7791A559245004C4D2E /* src */,
+			);
+			name = ofxConvexHull;
+			sourceTree = "<group>";
+		};
+		B02EA7791A559245004C4D2E /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B02EA77A1A559245004C4D2E /* ofxConvexHull.cpp */,
+				B02EA77B1A559245004C4D2E /* ofxConvexHull.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxConvexHull/src;
+			sourceTree = "<group>";
+		};
 		B086E6721A336AE800B0A857 /* ofxFluid */ = {
 			isa = PBXGroup;
 			children = (
@@ -2366,6 +2387,7 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				B02EA7781A559245004C4D2E /* ofxConvexHull */,
 				B01D1EFF19FD8ACC00D164A7 /* OpenNi */,
 				B01D1EFE19FD8AC800D164A7 /* Control */,
 				B086E72E1A336AF100B0A857 /* ofxFX */,
@@ -2797,6 +2819,7 @@
 				B0C5DE1E19DC823C00AFAE23 /* ofxUIImage.cpp in Sources */,
 				B086E7121A336AEC00B0A857 /* b2ContactManager.cpp in Sources */,
 				53B8DC1D45EBD5267B24B601 /* ofxOpenNITypes.cpp in Sources */,
+				B02EA77C1A559245004C4D2E /* ofxConvexHull.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -29,8 +29,11 @@ OpenNi::OpenNi() {
     skeletonVisuals = false;
     calibrationLoaded = false;
     
+    guiScale = 0.5;
     visible = true;
     setGuiPosition(0, 0);
+    
+    ofAddListener(ofEvents().mousePressed, this, &OpenNi::mousePressed);
 }
 
 //-------
@@ -69,7 +72,6 @@ void OpenNi::setup(string oni){
     kinect.setMirror(true);
     kinect.setUseDepthRawPixels(true);
     kinect.setDepthColoring(COLORING_GREY);
-    
     setupControl();
     active = true;
 }
@@ -168,9 +170,25 @@ void OpenNi::disableContourTracking() {
 void OpenNi::enableContourTracking() {
     trackingContours = true;
     pTrackingContours = true;
-    grayImage.allocate(kinect.getWidth(), kinect.getHeight());
-    grayThreshNear.allocate(kinect.getWidth(), kinect.getHeight());
-    grayThreshFar.allocate(kinect.getWidth(), kinect.getHeight());
+    
+    kinectWidth = 640;
+    kinectHeight  = 480;
+
+    grayImage.allocate(kinectWidth, kinectHeight);
+    grayThreshNear.allocate(kinectWidth, kinectHeight);
+    grayThreshFar.allocate(kinectWidth, kinectHeight);
+    
+    
+    cvMask.allocate(kinectWidth, kinectHeight);
+    cvGrayMask.allocate(kinectWidth, kinectHeight);
+    
+    maskPixels.allocate(kinectWidth, kinectHeight, OF_PIXELS_RGB);    // the channel count for all three have to be indentical!
+    maskImage.allocate(kinectWidth, kinectHeight, OF_IMAGE_COLOR);
+    maskFBO.allocate(kinectWidth, kinectHeight, GL_RGB);    // fbo for drawing a new mask
+
+    
+    applyDepthMask();
+    
     setupControl();
 }
 
@@ -186,6 +204,9 @@ void OpenNi::setupControl() {
     control.addParameter("track keypoints", &trackingKeypoints);
     
     if (trackingContours) {
+        control.addParameter("enable mask", &depthMaskEnabled);
+        control.addParameter("edit mask", &editingDepthMask);
+        control.addEvent("clear mask", this, &OpenNi::clearMask);
         control.addParameter("farThreshold", &farThreshold, 0.0f, 255.0f);
         control.addParameter("nearThreshold", &nearThreshold, 0.0f, 255.0f);
         control.addParameter("minArea", &minArea, 0.0f, 100000.0f);
@@ -216,6 +237,7 @@ void OpenNi::setMaxUsers(int maxUsers) {
 //-------
 bool OpenNi::update(){
     if (!active)    return false;
+    
     checkTrackingOptions();
     kinect.update();
     if (kinect.isNewFrame()) {
@@ -259,7 +281,14 @@ void OpenNi::checkTrackingOptions() {
 
 //---------
 void OpenNi::updateContours() {
-    grayImage.setFromPixels(kinect.getDepthPixels().getChannel(1));
+    grayImage.setFromPixels(depthPixels);
+
+    if (depthMaskEnabled) {
+        cvMask.setFromPixels(maskImage.getPixels(), kinectWidth, kinectHeight); // copy it to a cvColorImage
+        cvInRangeS(cvMask.getCvImage(), cvScalarAll(250), cvScalarAll(255), cvGrayMask.getCvImage());
+        cvSet(grayImage.getCvImage(), cvScalarAll(0), cvGrayMask.getCvImage());
+    }
+
     grayThreshNear = grayImage;
     grayThreshFar = grayImage;
     grayThreshNear.threshold(nearThreshold, true);
@@ -341,6 +370,24 @@ void OpenNi::updateOpticalFlow() {
     //flow.calcOpticalFlow(kinect.getDepthPixelsRef());
 }
 
+void OpenNi::applyDepthMask() {
+    maskFBO.begin();
+    ofClear(0, 0, 0);
+    ofDisableAlphaBlending();
+    ofFill();
+    ofSetColor(255);
+    ofRect(0, 0, 640, 480);
+    ofSetColor(0, 0, 0);
+    ofBeginShape();
+    for (int i=0; i<depthMaskVertices.size(); i++) {
+        ofVertex(depthMaskVertices[i].x, depthMaskVertices[i].y);
+    }
+    ofEndShape();
+    maskFBO.end();
+    maskFBO.readToPixels(maskPixels);
+    maskImage.setFromPixels(maskPixels);
+}
+
 //-------
 void OpenNi::draw() {
     if (!visible)   return;
@@ -348,10 +395,19 @@ void OpenNi::draw() {
     ofPushMatrix();
     ofPushStyle();
     
-    ofTranslate(guiX+120, guiY);
-    ofScale(0.5, 0.5);
-
+    ofTranslate(guiX+135, guiY);
+    ofScale(guiScale, guiScale);
+    ofSetColor(255);
+    
     kinect.drawImage();
+    if (editingDepthMask) {
+        ofSetColor(255, 0, 0);
+        ofFill();
+        for (int i=0; i<depthMaskPoints.size(); i++) {
+            ofCircle(depthMaskPoints[i], 5);
+        }
+        ofSetColor(255);
+    }
     if (trackingUsers) {
         kinect.drawSkeletons();
     }
@@ -377,6 +433,25 @@ void OpenNi::drawVisuals() {
     }
 }
 
+//---------
+void OpenNi::mousePressed(ofMouseEventArgs &evt) {
+    if (!editingDepthMask) return;
+    ofRectangle rect(guiX+120, guiY, kinectWidth * guiScale, kinectHeight * guiScale);
+    if (rect.inside(evt.x, evt.y)) {
+        ofPoint newPoint((evt.x - (guiX+120))/guiScale, (evt.y - guiY)/guiScale);
+        depthMaskPoints.push_back(newPoint);
+        if (depthMaskPoints.size() > 2) {
+            ofxConvexHull hull;
+            depthMaskVertices = hull.getConvexHull(depthMaskPoints);
+            applyDepthMask();
+        }
+    }
+}
+
+//---------
+void OpenNi::clearMask(string &s) {
+    depthMaskPoints.clear();
+}
 
 //---------
 void OpenNi::setCalibration(string path){
@@ -515,6 +590,15 @@ void OpenNi::getCalibratedContour(vector<cv::Point> & points, vector<ofVec2f> & 
 
         calibratedPoints.push_back(mappedPoint);
     }
+}
+
+//-------
+ofPoint OpenNi::getCalibratedPoint(int x, int y) {
+    ofPoint depthPoint = ofPoint(x, y, depthPixels[(int)(x + y*640)]);
+    ofVec3f worldPoint = kinect.projectiveToWorld(depthPoint);
+    worldPoint.x *= -1.0;   // discrepancy between ofxKinect and ofxOpenNi
+    worldPoint.y *= -1.0;
+    return kpt.getProjectedPoint(worldPoint);
 }
 
 //-------

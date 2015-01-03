@@ -10,6 +10,7 @@
 #include "ofxOpenCv.h"
 #include "ofxKinectProjectorToolkit.h"
 #include "ofxKinectFeatures.h"
+#include "ofxConvexHull.h"
 
 using namespace ofxCv;
 using namespace cv;

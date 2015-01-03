@@ -42,7 +42,8 @@ public:
     void setGuiPosition(int guiX, int guiY);
     void setVisible(bool visible);
     void toggleVisible();
-    
+
+    ofPoint getCalibratedPoint(int x, int y);
     void getCalibratedContour(vector<cv::Point> &points, vector<ofVec2f> &calibratedPoints, int width, int height);
 
     ContourFinder & getContourFinder() {return contourFinder;}
@@ -101,6 +102,10 @@ private:
     void updateUsers();
     void updateOpticalFlow();
     
+    void applyDepthMask();
+    void mousePressed(ofMouseEventArgs &evt);
+    void clearMask(string &s);
+    
     void checkTrackingOptions();
     void userEvent(ofxOpenNIUserEvent & event);
     
@@ -110,6 +115,7 @@ private:
     ContourFinder contourFinder;
     ofxKinectFeatures featExtractor;
     bool calibrationLoaded;
+    int kinectWidth, kinectHeight;
     
     // kinect data
     vector<string> jointNames;
@@ -126,6 +132,7 @@ private:
     
     Control control;
     int guiX, guiY;
+    float guiScale;
     
     bool trackingContours, trackingUsers, trackingKeypoints;
     bool pTrackingContours, pTrackingUsers, pTrackingKeypoints;
@@ -148,6 +155,15 @@ private:
 	ofxCvGrayscaleImage grayThreshFar;
     ofShortPixels depthPixels;
     
+    // depth mask
+    ofxCvColorImage cvMask;
+    ofxCvGrayscaleImage cvGrayMask;
+    ofFbo maskFBO;
+    ofImage maskImage;
+    ofPixels maskPixels;
+    bool depthMaskEnabled, editingDepthMask;
+    vector<ofPoint> depthMaskPoints, depthMaskVertices;
+
     // drawing
     ContourRenderer *contourRenderer;
     SkeletonRenderer *skeletonRenderer;

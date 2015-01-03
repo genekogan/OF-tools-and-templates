@@ -47,8 +47,8 @@ public:
     
     void addQuad(int width, int height);
 
-    void begin(int idx) { quads[idx]->begin(); }
-    void end(int idx)   { quads[idx]->end(); }
+    void begin(int idx);
+    void end(int idx);
     
     void mousePressed(ofMouseEventArgs &e);
     void mouseDragged(ofMouseEventArgs &e);

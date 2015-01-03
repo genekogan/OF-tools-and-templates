@@ -51,6 +51,7 @@ public:
     ofVec2f                 getCalibratedPoint(ofVec2f depthPoint);
     
     void                    setKeypointROI(ofPoint topLeft, ofPoint bottomRight);
+    ofxKinect *             getKinect() {return &kinect;}
     
 private:
     

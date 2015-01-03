@@ -92,6 +92,14 @@
 		B0A14AB519D917A30077DA40 /* OscReceivedElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0A14AA719D917A30077DA40 /* OscReceivedElements.cpp */; };
 		B0A14AB619D917A30077DA40 /* OscTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0A14AA919D917A30077DA40 /* OscTypes.cpp */; };
 		B0A14AB719D917BA0077DA40 /* Kinect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0A149D319D9177A0077DA40 /* Kinect.cpp */; };
+		B0C0C1621A57FC3600D34E25 /* ofxSecondWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C0C1601A57FC3600D34E25 /* ofxSecondWindow.cpp */; };
+		B0C0C1801A57FDB600D34E25 /* ofxPointInPolyline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C0C1681A57FD6300D34E25 /* ofxPointInPolyline.cpp */; };
+		B0C0C1811A57FDB600D34E25 /* ProjectionMapping.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C0C16A1A57FD6300D34E25 /* ProjectionMapping.cpp */; };
+		B0C0C18F1A57FDFC00D34E25 /* ofxQuad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C0C1851A57FDFC00D34E25 /* ofxQuad.cpp */; };
+		B0C0C1901A57FDFC00D34E25 /* ofxQuadManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C0C1871A57FDFC00D34E25 /* ofxQuadManager.cpp */; };
+		B0C0C1911A57FDFC00D34E25 /* ofxQuadSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C0C1891A57FDFC00D34E25 /* ofxQuadSource.cpp */; };
+		B0C0C1921A57FDFC00D34E25 /* ofxQuadSourceImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C0C18B1A57FDFC00D34E25 /* ofxQuadSourceImage.cpp */; };
+		B0C0C1931A57FDFC00D34E25 /* ofxQuadSourceVideo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C0C18D1A57FDFC00D34E25 /* ofxQuadSourceVideo.cpp */; };
 		B0E994621A03040A00F5F941 /* ofxBpm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0E994601A03040A00F5F941 /* ofxBpm.cpp */; };
 		B0E994671A03041200F5F941 /* ofxSequencer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0E994651A03041200F5F941 /* ofxSequencer.cpp */; };
 		B0E994681A03042300F5F941 /* ControlPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0E994531A03040700F5F941 /* ControlPanel.cpp */; };
@@ -460,6 +468,23 @@
 		B0A14AA819D917A30077DA40 /* OscReceivedElements.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OscReceivedElements.h; sourceTree = "<group>"; };
 		B0A14AA919D917A30077DA40 /* OscTypes.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OscTypes.cpp; sourceTree = "<group>"; };
 		B0A14AAA19D917A30077DA40 /* OscTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OscTypes.h; sourceTree = "<group>"; };
+		B0C0C1601A57FC3600D34E25 /* ofxSecondWindow.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxSecondWindow.cpp; sourceTree = "<group>"; };
+		B0C0C1611A57FC3600D34E25 /* ofxSecondWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxSecondWindow.h; sourceTree = "<group>"; };
+		B0C0C1681A57FD6300D34E25 /* ofxPointInPolyline.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxPointInPolyline.cpp; sourceTree = "<group>"; };
+		B0C0C1691A57FD6300D34E25 /* ofxPointInPolyline.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxPointInPolyline.h; sourceTree = "<group>"; };
+		B0C0C16A1A57FD6300D34E25 /* ProjectionMapping.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ProjectionMapping.cpp; sourceTree = "<group>"; };
+		B0C0C16B1A57FD6300D34E25 /* ProjectionMapping.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProjectionMapping.h; sourceTree = "<group>"; };
+		B0C0C1841A57FDFC00D34E25 /* homography.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = homography.h; sourceTree = "<group>"; };
+		B0C0C1851A57FDFC00D34E25 /* ofxQuad.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxQuad.cpp; sourceTree = "<group>"; };
+		B0C0C1861A57FDFC00D34E25 /* ofxQuad.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxQuad.h; sourceTree = "<group>"; };
+		B0C0C1871A57FDFC00D34E25 /* ofxQuadManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxQuadManager.cpp; sourceTree = "<group>"; };
+		B0C0C1881A57FDFC00D34E25 /* ofxQuadManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxQuadManager.h; sourceTree = "<group>"; };
+		B0C0C1891A57FDFC00D34E25 /* ofxQuadSource.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxQuadSource.cpp; sourceTree = "<group>"; };
+		B0C0C18A1A57FDFC00D34E25 /* ofxQuadSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxQuadSource.h; sourceTree = "<group>"; };
+		B0C0C18B1A57FDFC00D34E25 /* ofxQuadSourceImage.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxQuadSourceImage.cpp; sourceTree = "<group>"; };
+		B0C0C18C1A57FDFC00D34E25 /* ofxQuadSourceImage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxQuadSourceImage.h; sourceTree = "<group>"; };
+		B0C0C18D1A57FDFC00D34E25 /* ofxQuadSourceVideo.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxQuadSourceVideo.cpp; sourceTree = "<group>"; };
+		B0C0C18E1A57FDFC00D34E25 /* ofxQuadSourceVideo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxQuadSourceVideo.h; sourceTree = "<group>"; };
 		B0E994521A03040700F5F941 /* Control.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Control.h; sourceTree = "<group>"; };
 		B0E994531A03040700F5F941 /* ControlPanel.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ControlPanel.cpp; sourceTree = "<group>"; };
 		B0E994541A03040700F5F941 /* ControlPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ControlPanel.h; sourceTree = "<group>"; };
@@ -1358,6 +1383,71 @@
 			path = osc;
 			sourceTree = "<group>";
 		};
+		B0C0C15E1A57FC3600D34E25 /* ofxSecondWindow */ = {
+			isa = PBXGroup;
+			children = (
+				B0C0C15F1A57FC3600D34E25 /* src */,
+			);
+			name = ofxSecondWindow;
+			sourceTree = "<group>";
+		};
+		B0C0C15F1A57FC3600D34E25 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B0C0C1601A57FC3600D34E25 /* ofxSecondWindow.cpp */,
+				B0C0C1611A57FC3600D34E25 /* ofxSecondWindow.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxSecondWindow/src;
+			sourceTree = "<group>";
+		};
+		B0C0C1641A57FD5400D34E25 /* ProjectionMapping */ = {
+			isa = PBXGroup;
+			children = (
+				B0C0C1651A57FD6300D34E25 /* src */,
+			);
+			name = ProjectionMapping;
+			sourceTree = "<group>";
+		};
+		B0C0C1651A57FD6300D34E25 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B0C0C1681A57FD6300D34E25 /* ofxPointInPolyline.cpp */,
+				B0C0C1691A57FD6300D34E25 /* ofxPointInPolyline.h */,
+				B0C0C16A1A57FD6300D34E25 /* ProjectionMapping.cpp */,
+				B0C0C16B1A57FD6300D34E25 /* ProjectionMapping.h */,
+			);
+			name = src;
+			path = ../../ProjectionMapping/src;
+			sourceTree = "<group>";
+		};
+		B0C0C1821A57FDFC00D34E25 /* ofxVideoMapping */ = {
+			isa = PBXGroup;
+			children = (
+				B0C0C1831A57FDFC00D34E25 /* src */,
+			);
+			name = ofxVideoMapping;
+			sourceTree = "<group>";
+		};
+		B0C0C1831A57FDFC00D34E25 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B0C0C1841A57FDFC00D34E25 /* homography.h */,
+				B0C0C1851A57FDFC00D34E25 /* ofxQuad.cpp */,
+				B0C0C1861A57FDFC00D34E25 /* ofxQuad.h */,
+				B0C0C1871A57FDFC00D34E25 /* ofxQuadManager.cpp */,
+				B0C0C1881A57FDFC00D34E25 /* ofxQuadManager.h */,
+				B0C0C1891A57FDFC00D34E25 /* ofxQuadSource.cpp */,
+				B0C0C18A1A57FDFC00D34E25 /* ofxQuadSource.h */,
+				B0C0C18B1A57FDFC00D34E25 /* ofxQuadSourceImage.cpp */,
+				B0C0C18C1A57FDFC00D34E25 /* ofxQuadSourceImage.h */,
+				B0C0C18D1A57FDFC00D34E25 /* ofxQuadSourceVideo.cpp */,
+				B0C0C18E1A57FDFC00D34E25 /* ofxQuadSourceVideo.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxVideoMapping/src;
+			sourceTree = "<group>";
+		};
 		B0E994511A03040700F5F941 /* src */ = {
 			isa = PBXGroup;
 			children = (
@@ -1427,6 +1517,9 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				B0C0C1821A57FDFC00D34E25 /* ofxVideoMapping */,
+				B0C0C1641A57FD5400D34E25 /* ProjectionMapping */,
+				B0C0C15E1A57FC3600D34E25 /* ofxSecondWindow */,
 				B0A149D119D917720077DA40 /* Kinect */,
 				B0A149D019D9176D0077DA40 /* Control */,
 				B0E994631A03041200F5F941 /* ofxSequencer */,
@@ -1778,6 +1871,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0C0C1801A57FDB600D34E25 /* ofxPointInPolyline.cpp in Sources */,
+				B0C0C1811A57FDB600D34E25 /* ProjectionMapping.cpp in Sources */,
 				B0E994681A03042300F5F941 /* ControlPanel.cpp in Sources */,
 				B0E994691A03042300F5F941 /* MetaController.cpp in Sources */,
 				B0E9946A1A03042300F5F941 /* OscManager.cpp in Sources */,
@@ -1829,6 +1924,7 @@
 				B0A14A7F19D917900077DA40 /* ofxTouchOsc.cpp in Sources */,
 				B0A14A7E19D917900077DA40 /* Base64.cpp in Sources */,
 				B0A14A7219D9178B0077DA40 /* ofxUIToggle.cpp in Sources */,
+				B0C0C1901A57FDFC00D34E25 /* ofxQuadManager.cpp in Sources */,
 				B0A14A5719D9178B0077DA40 /* ofxUIImage.cpp in Sources */,
 				B0A14AAB19D917A30077DA40 /* ofxOscBundle.cpp in Sources */,
 				B0A14A6F19D9178B0077DA40 /* ofxUITabBar.cpp in Sources */,
@@ -1839,6 +1935,7 @@
 				B0A14A5E19D9178B0077DA40 /* ofxUILabelToggle.cpp in Sources */,
 				B0A14AB419D917A30077DA40 /* OscPrintReceivedElements.cpp in Sources */,
 				B0A14A7519D9178B0077DA40 /* ofxUIWaveform.cpp in Sources */,
+				B0C0C1921A57FDFC00D34E25 /* ofxQuadSourceImage.cpp in Sources */,
 				B0A14A7619D9178B0077DA40 /* ofxUIWidget.cpp in Sources */,
 				7ADB04AF67C568EAFAEBA546 /* ofxKinectExtras.cpp in Sources */,
 				B0A14A5819D9178B0077DA40 /* ofxUIImageButton.cpp in Sources */,
@@ -1850,6 +1947,7 @@
 				F4135EEFC911E9ED211FB6F9 /* core.c in Sources */,
 				B0A14AB619D917A30077DA40 /* OscTypes.cpp in Sources */,
 				B0A14A6319D9178B0077DA40 /* ofxUIMultiImageToggle.cpp in Sources */,
+				B0C0C1621A57FC3600D34E25 /* ofxSecondWindow.cpp in Sources */,
 				E55DEEF784A10419E444669E /* flags.c in Sources */,
 				21A059755481CC0BF969FD2D /* keep_alive.c in Sources */,
 				FCC16AB16073FF0581F50ED7 /* loader.c in Sources */,
@@ -1863,15 +1961,18 @@
 				49BEEB2DFA5319D55AA6899F /* tilt.c in Sources */,
 				B0A14A5319D9178B0077DA40 /* ofxUIDropDownList.cpp in Sources */,
 				255A7B680DC81E543C875794 /* usb_libusb10.c in Sources */,
+				B0C0C18F1A57FDFC00D34E25 /* ofxQuad.cpp in Sources */,
 				B0E994671A03041200F5F941 /* ofxSequencer.cpp in Sources */,
 				12898A2212C6B1397854D45E /* ofxKinectProjectorToolkit.cpp in Sources */,
 				B0A14AAF19D917A30077DA40 /* ofxOscSender.cpp in Sources */,
 				A81AF6FC4B1FD63D16781582 /* unicode.cpp in Sources */,
 				250A95BA26587BE85DB0A353 /* ofxCvColorImage.cpp in Sources */,
 				1D5F3298C2FA073628012944 /* ofxCvContourFinder.cpp in Sources */,
+				B0C0C1911A57FDFC00D34E25 /* ofxQuadSource.cpp in Sources */,
 				B0A14A5B19D9178B0077DA40 /* ofxUIImageToggle.cpp in Sources */,
 				169D3C72FDE6C5590A1616F5 /* ofxCvFloatImage.cpp in Sources */,
 				B0A14A5219D9178B0077DA40 /* ofxUIDragableLabelButton.cpp in Sources */,
+				B0C0C1931A57FDFC00D34E25 /* ofxQuadSourceVideo.cpp in Sources */,
 				B0A14A5619D9178B0077DA40 /* ofxUIFPSSlider.cpp in Sources */,
 				B0A14A6519D9178B0077DA40 /* ofxUIRadio.cpp in Sources */,
 				FB09C6B2A1DA0EA217240CB8 /* ofxCvGrayscaleImage.cpp in Sources */,

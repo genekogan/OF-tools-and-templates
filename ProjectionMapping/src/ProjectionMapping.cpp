@@ -45,6 +45,7 @@ void Quad::drawDebug() {
     ofVertex(quad.getOutputPoint(2).x, quad.getOutputPoint(2).y);
     ofVertex(quad.getOutputPoint(3).x, quad.getOutputPoint(3).y);
     ofEndShape(close);
+
     ofPopStyle();
 }
 
@@ -148,6 +149,25 @@ void ProjectionMapping::addQuad(int width, int height) {
     quad->setOutputCorner(2, offset+width, offset+height);
     quad->setOutputCorner(3, offset, offset+height);
     quads.push_back(quad);
+}
+
+//--------
+void ProjectionMapping::begin(int idx) {
+    quads[idx]->begin();
+}
+
+//--------
+void ProjectionMapping::end(int idx) {
+    quads[idx]->end();
+    if (debug) {
+        ofPushStyle();
+        ofSetColor(255, 0, 0);
+        ofFill();
+        float x = ofMap(ofGetMouseX(), 0, ofGetWidth(), 0, mouseResolution.x);
+        float y = ofMap(ofGetMouseY(), 0, ofGetHeight(), 0, mouseResolution.y);
+        ofCircle(x, y, 20);
+        ofPopStyle();
+    }
 }
 
 //--------

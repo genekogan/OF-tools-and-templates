@@ -5,13 +5,22 @@ void ofApp::setup(){
     kinect.setup();
     kinect.setTrackingBlobs(true);
     
-    for (int i=0; i<n; i++) {
+    for (int i=0; i<800; i++) {
         ofFbo newFbo;
         newFbo.allocate(640, 480);
         fbo.push_back(newFbo);
     }
     
     osc.setup(8000);
+    
+    window.setup("projection", ofGetScreenWidth(), 0, 1280, 800, true);
+    mapping.addQuad(1280, 800);
+    mapping.setMouseResolution(window.getWidth(), window.getHeight());
+
+    control.addParameter("numFramesTotal", &numTotalFrames, 200, 800);
+    control.addParameter("numFramesSkip", &numFramesSkip, 1, 30);
+    control.addParameter("Margin", &margin, 5, 100);
+
 }
 
 //--------------------------------------------------------------
@@ -37,7 +46,7 @@ void ofApp::update(){
             kinect.drawRgb(0, 0, 640, 480);
             kinect.endMask();
             fbo[idx].end();
-            idx = (idx+1)%n;
+            idx = (idx+1)%numTotalFrames;
         }
     }
 }
@@ -46,25 +55,26 @@ void ofApp::update(){
 void ofApp::draw(){
     ofBackground(0);
     
-    if (recording) {
-        kinect.beginMask(640, 480);
-        kinect.drawRgb(0, 0, 640, 480);
-        kinect.endMask();
-    }
-    else {
-        //ofEnableBlendMode(OF_BLENDMODE_ADD);
-        for (int i=0; i<6; i++) {
-            int j = (i * 40 + ofGetFrameNum()) % n;
-            fbo[j].draw(0, 0, ofGetWidth(), ofGetHeight());
-        }
-        //ofDisableBlendMode();
-    }
+    kinect.beginMask(640, 480);
+    kinect.drawRgb(0, 0, 640, 480);
+    kinect.endMask();
     
+    window.begin();
+    mapping.begin(0);
+    ofBackground(255);
+    for (int i=0; i<numFramesSkip; i++) {
+        int j = (i * margin + ofGetFrameNum()) % numTotalFrames;
+        fbo[j].draw(0, 0, ofGetWidth(), ofGetHeight());
+    }
+    mapping.end(0);
+    window.end();
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     if (key==' ')   recording = !recording;
+    if (key=='c')   mapping.toggleDebug();
+
 }
 
 //--------------------------------------------------------------
