@@ -1,3 +1,17 @@
+/*
+
+// synthetic drums
+"http://sccode.org/1-4WI"
+
+//server side seq
+"http://sccode.org/1-4WH"
+
+
+// dubstep
+"http://sccode.org/1-4QE"
+
+*/
+
 (
 s.quit;
 s.options.memSize = 64000;

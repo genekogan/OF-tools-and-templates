@@ -576,18 +576,9 @@ void OpenNi::userEvent(ofxOpenNIUserEvent & event) {
 //-------
 void OpenNi::getCalibratedContour(vector<cv::Point> & points, vector<ofVec2f> & calibratedPoints, int width, int height) {
     for (int j=0; j<points.size(); j+=smoothness) {
-        ofPoint depthPoint = ofPoint(points[j].x, points[j].y,
-                                     depthPixels[(int)(points[j].x + points[j].y*640)]);
-        ofVec3f worldPoint = kinect.projectiveToWorld(depthPoint);
-        
-        // discrepancy between ofxKinect (used for calibration) and ofxOpenNi
-        worldPoint.x *= -1.0;
-        worldPoint.y *= -1.0;
-        
-        ofVec2f projectedPoint = kpt.getProjectedPoint(worldPoint);
+        ofVec2f projectedPoint = getCalibratedPoint(points[j].x, points[j].y);
         ofPoint mappedPoint(ofMap(projectedPoint.x, 0, 1, 0, width),
                             ofMap(projectedPoint.y, 0, 1, 0, height));
-
         calibratedPoints.push_back(mappedPoint);
     }
 }
@@ -596,8 +587,11 @@ void OpenNi::getCalibratedContour(vector<cv::Point> & points, vector<ofVec2f> & 
 ofPoint OpenNi::getCalibratedPoint(int x, int y) {
     ofPoint depthPoint = ofPoint(x, y, depthPixels[(int)(x + y*640)]);
     ofVec3f worldPoint = kinect.projectiveToWorld(depthPoint);
-    worldPoint.x *= -1.0;   // discrepancy between ofxKinect and ofxOpenNi
+    
+    // discrepancy between ofxKinect (used for calibration) and ofxOpenNi
+    worldPoint.x *= -1.0;
     worldPoint.y *= -1.0;
+    
     return kpt.getProjectedPoint(worldPoint);
 }
 

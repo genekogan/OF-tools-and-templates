@@ -99,7 +99,7 @@ void MoviePlayer::loadMovie(string path) {
     player[idxLoad].setLoopState(OF_LOOP_NORMAL);
     player[idxLoad].play();
     player[idxLoad].update();
-    player[idxLoad].setPaused(true);
+    //player[idxLoad].setPaused(true);
     
     
     //player[idx].push_back(newPlayer);
